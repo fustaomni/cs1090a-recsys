@@ -109,7 +109,7 @@ class GateReport(Contract):
 # WITHDRAWN IN THE PORT (recsys founding F7, plan A.3): cscie103's registry named gates whose
 # script, task or tool recsys does not have, so the pre-push gate failed closed on gates that
 # could never run. Each returns with its script or tool; until then it is named, not skipped.
-# Hooks: policy, policy decisions, repo hygiene, secrets (history) [plan A.4], workflows,
+# Hooks: policy, policy decisions, repo hygiene, workflows,
 # assertions, evidence, models, exemptions, suppressions, problems, mutation anchors,
 # schemas, nix contract. CI-only: pii, fixtures, prereqs, env-parity, nix flake.
 GATES: tuple[GateSpec, ...] = (
@@ -146,6 +146,26 @@ GATES: tuple[GateSpec, ...] = (
         command=("uv", "run", "pytest", "-q"),
         runs_in_hooks=True,
         timeout_seconds=900.0,
+    ),
+    # FULL HISTORY, NOT THE WORKING TREE. A pre-commit hook only ever sees the
+    # incoming change, so anything committed before hooks existed -- or pushed
+    # with --no-verify -- has never been scanned. This repo already leaked an
+    # OAuth secret to a terminal; the credential never reached a commit, but the
+    # class of mistake did happen here.
+    #
+    # betterleaks rather than gitleaks: same author, MIT, drop-in, and gitleaks
+    # now receives security patches only. It replaces Shannon entropy with token
+    # efficiency scoring, which raises precision substantially -- precision
+    # matters as much as recall, because a scanner that cries wolf trains people
+    # to bypass it, which is how the gate really fails.
+    #
+    # --redact keeps any finding out of CI logs, where it would become a second
+    # leak in the process of reporting the first.
+    GateSpec(
+        name="secrets (history)",
+        command=("betterleaks", "git", "--redact", "--no-banner"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
     ),
     # The integration-marked tests, deselected from the hermetic `test` gate.
     GateSpec(
