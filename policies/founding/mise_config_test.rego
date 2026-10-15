@@ -3,12 +3,12 @@ package founding.mise_test
 import data.founding.mise
 
 good := {
-	"min_version": "2026.10.4",
+	"min_version": data.founding.pins.min_version,
 	"task_config": {"shell": "bash -c"},
 	"tasks": {"test": {"description": "d", "run": "uv run --no-sync pytest"}},
-	"tools": {"betterleaks": "1.9.0", "lefthook": "2.2.0", "opa": "1.21.1", "regal": "0.43.0", "uv": "0.12.23"},
-	"settings": {"lockfile": true, "minimum_release_age": "2026-10-08T00:00:00Z"},
-	"env": {"UV_CACHE_DIR": "{{config_root}}/.cache/uv"},
+	"tools": data.founding.pins.tools,
+	"settings": data.founding.pins.settings,
+	"env": data.founding.pins.env,
 }
 
 test_intended_config_allowed if mise.allow with input as good

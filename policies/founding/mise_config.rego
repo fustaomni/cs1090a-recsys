@@ -6,13 +6,13 @@
 #   it false. violations explains why.
 package founding.mise
 
-expected_min_version := "2026.10.4"
+expected_min_version := data.founding.pins.min_version
 
-expected_tools := {"betterleaks": "1.9.0", "lefthook": "2.2.0", "opa": "1.21.1", "regal": "0.43.0", "uv": "0.12.23"}
+expected_tools := data.founding.pins.tools
 
-expected_settings := {"lockfile": true, "minimum_release_age": "2026-10-08T00:00:00Z"}
+expected_settings := data.founding.pins.settings
 
-expected_env := {"UV_CACHE_DIR": "{{config_root}}/.cache/uv"}
+expected_env := data.founding.pins.env
 
 allowed_root := {"min_version", "task_config", "tasks", "tools", "settings", "env"}
 
