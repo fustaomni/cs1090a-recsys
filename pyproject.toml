@@ -1,0 +1,78 @@
+# pyproject.toml
+# cscie103-data-engineering's project configuration, narrowed to this repository's kernel.
+# Removed from cscie103's: Presidio, spaCy and Copier (features not yet planned here), and
+# the notebook rules (no notebooks yet). Each returns only with the step that needs it.
+[project]
+name = "cs1090a-recsys"
+version = "0.1.0"
+description = "Offline prediction of the next recorded MovieLens 1M rating, governed as code and data"
+# PINNED EXACTLY, AS cscie103 PINS IT. uv installs this interpreter into the project's own
+# .venv; the python3 that PATH resolves on FAS OnDemand belongs to a course environment and
+# is never used.
+requires-python = "==3.12.3"
+dependencies = [
+    "securesystemslib[crypto]>=1.5.1",
+    "tomlkit>=0.15.1",
+]
+
+[dependency-groups]
+dev = [
+  "mypy>=1.14",
+  "pytest>=8.3",
+  "ruff>=0.9",
+  # Ambient process state as a validated, frozen snapshot (environment.py), as in cscie103.
+  "pydantic-settings>=2.6",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+# First-party code is found by location, not by a list of names that goes stale.
+src = ["scripts", "."]
+
+[tool.ruff.lint]
+# Broader than the defaults; S is bandit, so executed code is checked as well as data.
+select = ["E", "F", "I", "N", "UP", "B", "S", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# Fixed argument lists, no user input: subprocess warnings are noise here, ignored by path.
+"scripts/*.py" = ["S603", "S607"]
+# Asserts are the mechanism in tests, and a scanner's proof has to shell out.
+"tests/*.py" = ["S101", "S603", "S607"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+# The file set, declared once: mypy checks these only when no path is given.
+files = ["scripts", "tests"]
+# Fail closed: silence becomes failure.
+warn_unused_configs = true
+warn_unreachable = true
+enable_error_code = [
+  "ignore-without-code",
+  "possibly-undefined",
+  "redundant-expr",
+  "truthy-bool",
+]
+
+# securesystemslib.signer documents its re-exports without an __all__; scoped to that module.
+[[tool.mypy.overrides]]
+module = "securesystemslib.signer"
+implicit_reexport = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "integration: requires network access; excluded from the default run",
+  "acceptance: drives the real gateway in a sandboxed copy of this repository, faults at the OS boundary",
+]
+# Fail closed: a typo'd marker or unknown option is an error, every non-pass reports its
+# reason, and the default run is hermetic so the pre-push hook needs no network.
+addopts = ["--strict-markers", "--strict-config", "-ra", "-m", "not integration"]
+xfail_strict = true
+# scripts/ is importable by tests, declared rather than hacked, so tests exercise the real code.
+pythonpath = ["scripts"]
+
+[tool.uv]
+exclude-newer = "2026-10-08T00:00:00Z"
+python-preference = "only-managed"

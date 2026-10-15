@@ -1,0 +1,8 @@
+--- a/tests/test_run_gateway.py
++++ b/tests/test_run_gateway.py
+@@ -78,4 +78,4 @@
+ 
+ def test_the_real_registry_is_read_from_mise_toml() -> None:
+     declared = _declared(ROOT)
+-    assert {"check", "run", "audit:assertions"} <= set(nonempty(declared)), declared
++    assert {"check", "run", "plan:trace"} <= set(nonempty(declared)), declared

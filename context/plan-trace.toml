@@ -1,0 +1,14 @@
+# context/plan-trace.toml
+# Where every plan item came from (plan-trace/v1), traced in both directions.
+contract = "plan-trace/v1"
+sources = [
+  { id = "TEMPLATE", title = "the platform template this project was generated from", locator = ".copier-answers.yml" },
+  { id = "SESSION", title = "the recsys founding sessions: the critique register and the port of cscie103", locator = "claude.ai conversations of 2026-10-15, recsys founding (transcript journal)" },
+]
+candidates = [
+  { source = "TEMPLATE", ref = "day one", text = "its own plan, from day one", maps_to = ["A.1"] },
+  { source = "SESSION", ref = "2026-10-15 F6c", text = "recsys is founded by porting cscie103's governance kernel; it was not generated from the platform template that the day-one TEMPLATE source describes", maps_to = ["A.1"] },
+  { source = "SESSION", ref = "2026-10-15 F6c", text = "a 0600 key under a group-writable directory can be replaced: make the directory 0700 and refuse the key at use", maps_to = ["A.2"] },
+  { source = "SESSION", ref = "2026-10-15 F7", text = "the pre-push gate failed closed on twenty gates naming scripts, tasks or tools recsys does not have", maps_to = ["A.3", "A.4"] },
+  { source = "SESSION", ref = "2026-10-15 F6d", text = "the founding commit's outcome reported its branch as (unknown)", maps_to = ["A.5"] },
+]

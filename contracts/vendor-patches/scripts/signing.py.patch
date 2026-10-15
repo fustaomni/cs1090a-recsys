@@ -1,0 +1,49 @@
+--- a/scripts/signing.py
++++ b/scripts/signing.py
+@@ -42,6 +42,7 @@
+ REGISTRY = Path("contracts") / "signing-keys.toml"
+ PRIVATE = Path(".config") / "governance-keys" / "ed25519.pem"
+ OWNER_MODE = 0o600
++DIRECTORY_MODE = 0o700
+ HEADER = (
+     "# contracts/signing-keys.toml",
+     "# The public halves of the keys that sign this project's claims (D.109). The private halves",
+@@ -97,12 +98,17 @@
+     return {key.keyid: key for key in _registry(root)}
+ 
+ 
++def _owner_only(directory: Path) -> bool:
++    """No one else can write it: write access to a directory governs replacing its files."""
++    return (directory.stat().st_mode & 0o077) == 0
++
++
+ def _in_custody(root: Path, home: Path) -> bool:
+     """The private key is a file, mode 0600, outside the repository: checked at every use."""
+     path = private_key_path(home)
+     if not path.is_file():
+         return False
+-    protected = (path.stat().st_mode & 0o777) == OWNER_MODE
++    protected = (path.stat().st_mode & 0o777) == OWNER_MODE and _owner_only(path.parent)
+     return protected and not path.resolve().is_relative_to(root.resolve())
+ 
+ 
+@@ -169,7 +175,7 @@
+ 
+ def _generate(path: Path) -> None:
+     """A new key, written 0600 from creation: never readable by anyone else, even briefly."""
+-    path.parent.mkdir(parents=True, exist_ok=True)
++    path.parent.mkdir(mode=DIRECTORY_MODE, parents=True, exist_ok=True)
+     pem = Ed25519PrivateKey.generate().private_bytes(
+         Encoding.PEM, PrivateFormat.PKCS8, NoEncryption()
+     )
+@@ -307,6 +313,10 @@
+     path = private_key_path(home)
+     try:
+         before = observe(root, home)
++        # A DIRECTORY OTHERS CAN WRITE LETS THEM REPLACE A 0600 KEY: tighten it too (A.2).
++        if not before.inside_repository:
++            path.parent.mkdir(mode=DIRECTORY_MODE, parents=True, exist_ok=True)
++            path.parent.chmod(DIRECTORY_MODE)
+         # DECIDE BEFORE ACT: a home inside the repository is never written to.
+         if not before.inside_repository and not before.private_exists:
+             _generate(path)

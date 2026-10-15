@@ -1,0 +1,53 @@
+--- a/tests/test_ledger_signing.py
++++ b/tests/test_ledger_signing.py
+@@ -21,14 +21,11 @@
+ import pytest
+ from securesystemslib.signer import CryptoSigner
+ 
+-import repo_report
+ import spine
+ from claim import PAYLOAD_TYPE as CLAIM_PAYLOAD_TYPE
+ from command_outcome import CommandOutcome
+ from library_errors import PreconditionError
+ from pr_logs import main as pr_logs
+-from repo_report import ReportVerdicts, RepositoryReport
+-from repo_report import main as repo_state
+ from run_ledger import (
+     ENTRYPOINT,
+     GENESIS,
+@@ -148,21 +145,12 @@
+ 
+ 
+ def test_every_writer_seals_through_append(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+-    """D.165: repo:state and pr:logs seal their own records with the signer they are given."""
++    """D.165: pr:logs seals its own record with the signer it is given.
+ 
+-    def observed(root: Path = repo_report.ROOT) -> RepositoryReport:
+-        """OBSERVE'S OWN SIGNATURE: mutation:check runs killers in a copy with no repository."""
+-        verdicts = ReportVerdicts(
+-            every_worktree_clean=True,
+-            no_worktree_behind_develop=True,
+-            long_lived_branches_in_sync=True,
+-        )
+-        return RepositoryReport(worktrees=(), long_lived=(), verdicts=verdicts)
+-
+-    monkeypatch.setattr(repo_report, "observe", observed)
++    ADAPTED FROM cscie103: the original also drove repo:state, which recsys does not have.
++    """
+     signer = CryptoSigner.generate_ed25519()
+     ledger = tmp_path / "ledger.jsonl"
+-    assert repo_state(ledger=ledger, signer=signer) == 0
+ 
+     def gh(args: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+         output = "[]" if args[:3] == ["gh", "run", "list"] else "feature/x\n"
+@@ -171,8 +159,8 @@
+     monkeypatch.setattr(subprocess, "run", gh)
+     assert pr_logs(ledger=ledger, signer=signer) == 0
+     report = verify(ledger, (signer.public_key,))
+-    assert (report.records, report.signed) == (2, 2), report
+-    assert report.tasks == ("repo:state", "pr:logs"), report
++    assert (report.records, report.signed) == (1, 1), report
++    assert report.tasks == ("pr:logs",), report
+ 
+ 
+ def test_a_waiver_must_name_the_exact_record(tmp_path: Path) -> None:

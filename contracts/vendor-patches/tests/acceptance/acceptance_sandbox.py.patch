@@ -1,0 +1,24 @@
+--- a/tests/acceptance/acceptance_sandbox.py
++++ b/tests/acceptance/acceptance_sandbox.py
+@@ -7,8 +7,11 @@
+ this checkout's. The working tree is copied, not HEAD, so the tier tests the change
+ under development.
+ 
+-NOTHING IS STUBBED: the sandbox's run_task.py, real mise, real nix develop, the task's
+-own script. Only the environment is shaped -- git's repository variables removed, as
++NOTHING IS STUBBED: the sandbox's run_task.py, real mise, the task's own
++script. ADAPTED FROM cscie103: recsys has no Nix. Under paranoid mode the sandbox is
++trusted by path (MISE_TRUSTED_CONFIG_PATHS, set only for the child, never persisted):
++mise's one documented path-based exception, scoped to this throwaway copy.
++Only the environment is shaped -- git's repository variables removed, as
+ test_git_isolation does; the sandbox trusted by mise; uv pointed at the running interpreter's
+ environment -- and faults are made at the operating-system boundary.
+ """
+@@ -31,6 +34,7 @@
+     ".git",
+     ".venv",
+     ".artifacts",
++    ".cache",
+     ".mypy_cache",
+     ".ruff_cache",
+     ".pytest_cache",

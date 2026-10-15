@@ -1,0 +1,40 @@
+--- a/scripts/plan_init.py
++++ b/scripts/plan_init.py
+@@ -58,19 +58,24 @@
+ ]
+ """
+ 
+-DAY_ONE_TRACE = """\
+-# context/plan-trace.toml
+-# Where every plan item came from (plan-trace/v1), traced in both directions.
+-contract = "plan-trace/v1"
+-candidates = [
+-  { source = "TEMPLATE", ref = "day one", text = "its own plan, from day one", maps_to = ["A.1"] },
+-]
+-
+-[[sources]]
+-id = "TEMPLATE"
+-title = "the platform template this project was generated from"
+-locator = ".copier-answers.yml"
+-"""
++_TEMPLATE_SOURCE = (
++    '{ id = "TEMPLATE", title = "the platform template this project was generated from", '
++    'locator = ".copier-answers.yml" }'
++)
++# ONE LAYOUT FOR EVERY WRITER: sources and candidates are inline arrays, as plan:record edits
++# them and as cscie103's own trace is written (recsys founding F6c).
++DAY_ONE_TRACE = (
++    "# context/plan-trace.toml\n"
++    "# Where every plan item came from (plan-trace/v1), traced in both directions.\n"
++    'contract = "plan-trace/v1"\n'
++    "sources = [\n"
++    f"  {_TEMPLATE_SOURCE},\n"
++    "]\n"
++    "candidates = [\n"
++    '  { source = "TEMPLATE", ref = "day one", text = "its own plan, from day one", '
++    'maps_to = ["A.1"] },\n'
++    "]\n"
++)
+ 
+ 
+ def _report(outcome: str, code: str, message: str, data: dict[str, object]) -> int:
