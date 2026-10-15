@@ -1094,3 +1094,172 @@ reason = "its three proofs are integration-level, and this repository declares a
 [[files]]
 path = "{{ _copier_conf.answers_file }}.jinja"
 sha256 = "3b3aaae43448091c81e1a75ef97c6c9caabd2c4931b2bed39907839e1cde70c7"
+
+[[withdrawn]]
+path = "assignments/assignment-01/notebooks/assignment_01_spark_api.py"
+reason = "cscie103 coursework: course content, not a capability"
+[[withdrawn]]
+path = "assignments/assignment-02/notebooks/assignment_02_etl.py"
+reason = "cscie103 coursework: course content, not a capability"
+[[withdrawn]]
+path = "context/review-d168.toml"
+reason = "cscie103's own plan review: plan data belongs to the project it plans"
+[[withdrawn]]
+path = "contracts/schemas/contracts/export_copy.ExportCopy.json"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "contracts/schemas/nix-contract-output.schema.json"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "databricks.yml"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "flake.lock"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "flake.nix"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "policies/bundle/bundle.rego"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "policies/bundle/bundle_test.rego"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "policies/export/copy/copy.rego"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "policies/machine/nix/helpers.rego"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "policies/machine/nix/nix.rego"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "policies/machine/nix/nix_test.rego"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "policies/machine/nix/problems.rego"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "policies/machine/nix/warnings.rego"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "policies/runs/nix_lock/nix_lock.rego"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "resources/assignment_01_job.yml"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "resources/assignment_02_job.yml"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "resources/coursework.yml"
+reason = "cscie103 coursework: course content, not a capability"
+[[withdrawn]]
+path = "resources/unity_catalog.yml"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "scripts/databricks_cli.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "scripts/export_copy.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "scripts/load_assignment_data.py"
+reason = "cscie103 coursework: course content, not a capability"
+[[withdrawn]]
+path = "scripts/nix_contract.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_evidence.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_ledger.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_lock_update.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_models.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_observability.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_output.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_policy.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_request.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_system.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/verify_export.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "tests/fixtures/bundle-resolved-fixture-target.json"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "tests/fixtures/release/bundle-with-a-job.json"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "tests/test_assignment_02.py"
+reason = "cscie103 coursework: course content, not a capability"
+[[withdrawn]]
+path = "tests/test_bundle_tasks.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "tests/test_databricks_cli.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "tests/test_export_copy.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "tests/test_nix_contract.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_errors.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_evidence.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_ledger_binding.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_lock_update.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_observe.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_output_contract.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_policy_inputs.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_project_flake.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_report_invariants.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_run.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_schemas.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_verify_export.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
+[upstream_tree]
+commit = "58af9d32a9972d6abb5a18acd94ee1235843da66"
+paths = 494
+sha256 = "ceec2cac8590ba189f46fb315e122c081a2e1561f31d5cafed09dbcb7ca09e09"
+note = "every path here is in [[files]] or [[withdrawn]]; tests/test_provenance.py proves it (A.13)"
