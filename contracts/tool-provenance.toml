@@ -1,0 +1,24 @@
+# contracts/tool-provenance.toml
+# Provenance mise cannot record (plan A.9). mise.lock holds slsa, cosign, minisign or
+# github-attestations; these tools publish none, but their releases are immutable and GitHub
+# attests every asset. Each entry is the digest gh release verify-asset confirmed, so a
+# re-lock to other bytes fails tests/test_tool_provenance.py until it is verified again.
+contract = "tool-provenance/v1"
+
+[[tools]]
+name = "opa"
+version = "1.21.1"
+kind = "github-immutable-release"
+asset = "opa_linux_amd64_static"
+sha256 = "668506eb17a2eaa1fce6cc0d1f42ef85125d4ac5bda5fc74d1152d0c77145031"
+verified = "2026-10-15"
+command = "gh release verify-asset v1.21.1 opa_linux_amd64_static -R open-policy-agent/opa"
+
+[[tools]]
+name = "regal"
+version = "0.43.0"
+kind = "github-immutable-release"
+asset = "regal_Linux_x86_64"
+sha256 = "5e7d030064e307d54e6ffa3d85b8d9052d3d40b7afa10262c86c886f8a76559d"
+verified = "2026-10-15"
+command = "gh release verify-asset v0.43.0 regal_Linux_x86_64 -R open-policy-agent/regal"

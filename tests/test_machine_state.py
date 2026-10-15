@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import os
 import stat
+import subprocess
 from pathlib import Path
 
 
@@ -39,7 +40,14 @@ def test_mise_state_is_owner_only() -> None:
     assert not loose, f"{len(loose)} group- or world-writable: " + "; ".join(loose[:8])
 
 
-def test_the_umask_never_grants_group_or_world_write() -> None:
-    current = os.umask(0o077)
-    os.umask(current)
-    assert current & 0o022 == 0o022, f"umask {current:04o} lets the group or the world write"
+def test_a_new_login_shell_never_grants_group_or_world_write() -> None:
+    """The umask a new session starts with: what every terminal and hook from now on inherits.
+
+    Measured in a fresh login shell, not in this process: a umask is inherited from whichever
+    terminal launched the tests, and one opened before the fix keeps the platform's 0002.
+    """
+    shell = ["env", "-i", f"HOME={Path.home()}", "TERM=dumb", "bash", "-l", "-c", "umask"]
+    done = subprocess.run(shell, capture_output=True, text=True, check=False)
+    assert done.returncode == 0, done.stderr
+    mask = int(done.stdout.strip().splitlines()[-1], 8)
+    assert mask & 0o022 == 0o022, f"a new login shell's umask {mask:04o} lets others write"
