@@ -119,8 +119,45 @@ done_when = [
 id = "A.20"
 title = "Every pull request runs the quality gate in CI, the one check pr waits for before it merges"
 thread = "A"
-depends_on = ["A.18"]
-because = { "A.18" = "the workflow and its expected-checks contract arrive through source:apply specs" }
+depends_on = ["A.18", "A.22", "A.23"]
+because = { "A.18" = "the workflow and its expected-checks contract arrive through source:apply specs", "A.22" = "the audit runs the pinned zizmor", "A.23" = "the workflow passes the audit before it runs" }
 done_when = [
   { kind = "proof", test = "tests/test_workflow_audit.py::test_the_repositorys_workflows_pass_the_audit" },
+]
+[[steps]]
+id = "A.21"
+title = "A dependency enters only through deps:add, and the environment is exactly the lock through deps:install"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "deps:add and deps:install arrive through source:apply specs" }
+done_when = [
+  { kind = "proof", test = "tests/test_deps_add.py::test_a_package_is_added_with_its_lock" },
+]
+[[steps]]
+id = "A.22"
+title = "zizmor 1.30.1 is pinned, its provenance verified and locked, through the founding gate"
+thread = "A"
+depends_on = ["A.21"]
+because = { "A.21" = "the workflow audit's yaml dependency arrives through deps:add first" }
+done_when = [
+  { kind = "proof", test = "tests/test_founding_policy.py::test_the_policy_pins_are_the_lockfile_pins" },
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_every_locked_tool_names_its_provenance" },
+]
+[[steps]]
+id = "A.23"
+title = "The workflow audit arrives: every workflow passes zizmor and the permission allow-list"
+thread = "A"
+depends_on = ["A.22"]
+because = { "A.22" = "the audit runs the pinned zizmor" }
+done_when = [
+  { kind = "proof", test = "tests/test_workflow_audit.py::test_an_action_pinned_by_tag_is_refused" },
+]
+[[steps]]
+id = "A.24"
+title = "A file is removed only through a source:apply spec, judged like every other write"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "removal is one more operation of the engine every mutation goes through" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_delete_removes_only_an_existing_file_inside_the_repository" },
 ]

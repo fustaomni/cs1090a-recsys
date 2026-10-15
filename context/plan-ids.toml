@@ -17,4 +17,8 @@ issued = [
   { id = "A.18", first_title = "Every repository mutation is a source:apply spec, never a shell heredoc writing files" },
   { id = "A.19", first_title = "A branch reaches develop only through the pr task: pushed with a lease, merged on GitHub's verdict" },
   { id = "A.20", first_title = "Every pull request runs the quality gate in CI, the one check pr waits for before it merges" },
+  { id = "A.21", first_title = "A dependency enters only through deps:add, and the environment is exactly the lock through deps:install" },
+  { id = "A.22", first_title = "zizmor 1.30.1 is pinned, its provenance verified and locked, through the founding gate" },
+  { id = "A.23", first_title = "The workflow audit arrives: every workflow passes zizmor and the permission allow-list" },
+  { id = "A.24", first_title = "A file is removed only through a source:apply spec, judged like every other write" },
 ]
