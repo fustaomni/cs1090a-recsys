@@ -14,4 +14,9 @@ issued = [
   { id = "A.10", first_title = "No installed tool version is outside the pinned set" },
   { id = "A.11", first_title = "The policies pass Regal, and Regal runs as a gate" },
   { id = "A.12", first_title = "Committing nothing is refused by name, and git's reason is never lost" },
+  { id = "A.13", first_title = "Every applicable cscie103 capability is ported whole, or withdrawn by name with its reason" },
+  { id = "A.14", first_title = "Features reach develop only through pr, branches start only through worktree:add, and main moves only through release" },
+  { id = "A.15", first_title = "Repository settings and the develop-and-main ruleset are code, applied by repo:configure" },
+  { id = "A.16", first_title = "Every repository operation is a declared task run through the recording gateway, enforced as policy" },
+  { id = "A.17", first_title = "Toolchain operations -- trust, lock, install, prune -- are tasks" },
 ]

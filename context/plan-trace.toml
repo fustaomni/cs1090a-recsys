@@ -13,4 +13,5 @@ candidates = [
   { source = "SESSION", ref = "2026-10-15 F6d", text = "the founding commit's outcome reported its branch as (unknown)", maps_to = ["A.5"] },
   { source = "SESSION", ref = "2026-10-15 founding outstanding", text = "the founding left seven known debts: patches unchecked, pins in two places, group-writable state, unattested tools, stray installs, Regal findings, withdrawn gates", maps_to = ["A.6", "A.7", "A.8", "A.9", "A.10", "A.11"] },
   { source = "SESSION", ref = "2026-10-15 A.9 rerun", text = "a repeated commit sent an empty stage to git; the task reported lefthook's banner, and git's reason, printed on stdout, was lost", maps_to = ["A.12"] },
+  { source = "SESSION", ref = "2026-10-15 operating rules", text = "every repository operation is a mise task run through mise run run and recorded; strict GitFlow as cscie103 (worktree:add, pr, release, ruleset); every applicable cscie103 capability ported before repo-specific work; plan data on disk before any code. This branch alone is cut by hand, because worktree:add arrives with the port it carries.", maps_to = ["A.13", "A.14", "A.15", "A.16", "A.17"] },
 ]
