@@ -363,6 +363,16 @@ path = "scripts/check_all.py"
 reason = "gates whose script, task or tool recsys lacks are withdrawn by name (A.3)"
 patch = "contracts/vendor-patches/scripts/check_all.py.patch"
 sha256 = "b6ffa595cf61c7fe8882bed079c867380b83c86a3ed46ed433adb289bbf6a70d"
+[[adapted]]
+path = "scripts/commit.py"
+reason = "the branch is named before its first commit; only the root commit is exempt (A.5)"
+patch = "contracts/vendor-patches/scripts/commit.py.patch"
+sha256 = "6c2a69d10a474ad84e3d2737dc7c7fb6cc11d4b63169624412244ad6ea7dce86"
+[[adapted]]
+path = "tests/test_commit.py"
+reason = "A.5's proofs: the root commit names main, and only it may land on main"
+patch = "contracts/vendor-patches/tests/test_commit.py.patch"
+sha256 = "83a8b286ea5c0d0551af4762cb9fb8584076d9851922f6b3ab095ca44f4b0e93"
 [[withdrawn]]
 path = "tests/test_policy_inputs.py"
 sha256 = "20b42d632e5a2534b5767966722b8909157723f5e93e768d3c35c0a66ed4d8f6"
