@@ -565,6 +565,6 @@ reason = "Databricks bundle and export: recsys has no Databricks workspace"
 
 [upstream_tree]
 commit = "58af9d32a9972d6abb5a18acd94ee1235843da66"
-paths = 494
-sha256 = "ceec2cac8590ba189f46fb315e122c081a2e1561f31d5cafed09dbcb7ca09e09"
+paths = 492
+sha256 = "3fc90cf97b28133d551b8313b214189f404dcba19c87cf3dd53dbc042d44c810"
 note = "every path here is in [[files]] or [[withdrawn]]; tests/test_provenance.py proves it (A.13)"
