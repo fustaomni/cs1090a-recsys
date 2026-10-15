@@ -13,4 +13,5 @@ candidates = [
   { source = "SESSION", ref = "2026-10-15 F6d", text = "the founding commit's outcome reported its branch as (unknown)", maps_to = ["A.5"] },
   { source = "SESSION", ref = "2026-10-15 founding outstanding", text = "the founding left seven known debts: patches unchecked, pins in two places, group-writable state, unattested tools, stray installs, Regal findings, withdrawn gates", maps_to = ["A.6", "A.7", "A.8", "A.9", "A.10", "A.11"] },
   { source = "SESSION", ref = "2026-10-15 A.9 rerun", text = "a repeated commit sent an empty stage to git; the task reported lefthook's banner, and git's reason, printed on stdout, was lost", maps_to = ["A.12"] },
+  { source = "SESSION", ref = "2026-10-15 spec-driven mutation", text = "every repository mutation goes through mise run run source:apply with a spec on stdin; plan specs are created under .artifacts/plan-specs by the same task. source:apply lands whole once, as the precedent requires: it cannot apply its own first implementation.", maps_to = ["A.18"] },
 ]

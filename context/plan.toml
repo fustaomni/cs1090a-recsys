@@ -98,3 +98,11 @@ thread = "A"
 done_when = [
   { kind = "proof", test = "tests/test_commit_execution.py::test_nothing_staged_is_refused_before_git_commits" },
 ]
+[[steps]]
+id = "A.18"
+title = "Every repository mutation is a source:apply spec, never a shell heredoc writing files"
+thread = "A"
+done_when = [
+  { kind = "proof", test = "tests/test_source_apply.py::test_the_claim_names_the_repository_parsed_from_origin" },
+  { kind = "task", name = "source:apply" },
+]

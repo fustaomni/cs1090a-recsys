@@ -1,0 +1,24 @@
+--- a/tests/test_source_apply.py
++++ b/tests/test_source_apply.py
+@@ -115,3 +115,21 @@
+     spec = io.StringIO(_spec(_op("create", "pkg/new.py", content="x = 1\n")))
+     assert main(["-"], root=repo, stdin=spec) == 0
+     assert (repo / "pkg" / "new.py").read_text(encoding="utf-8") == "x = 1\n"
++
++
++def test_the_claim_names_the_repository_parsed_from_origin() -> None:
++    """recsys declares no project identity: git's origin names the repository (A.13).
++
++    Every GitHub form of the remote gives the one https URL a claim records, whatever transport
++    is configured; a remote that is not GitHub is refused rather than recorded.
++    """
++    from source_apply import _github_url
++
++    for remote in (
++        "git@github.com:o/r.git",
++        "ssh://git@github.com/o/r",
++        "https://github.com/o/r.git\n",
++    ):
++        assert _github_url(remote) == "https://github.com/o/r"
++    with pytest.raises(ValueError):
++        _github_url("https://gitlab.com/o/r")

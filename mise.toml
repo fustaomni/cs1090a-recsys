@@ -343,3 +343,10 @@ minimum_release_age = "2026-10-08T00:00:00Z"
 
 [env]
 UV_CACHE_DIR = "{{config_root}}/.cache/uv"
+
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.18): every mutation is a spec.
+[tasks."source:apply"]
+description = "Create and edit source from a declarative spec, judged by policy, all or nothing"
+# THE ONLY WAY SOURCE CHANGES (D.25): a source-apply/v1 spec, or - for stdin. No
+# edit logic is written at execution time; runs.source_apply judges every operation.
+run = "uv run --no-sync python scripts/source_apply.py"

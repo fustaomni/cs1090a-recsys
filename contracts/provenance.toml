@@ -306,6 +306,18 @@ sha256 = "c536c981746031ea681718de90a42c7bf3cc7a411ed734d4ab31dfc154069937"
 [[files]]
 path = "tests/test_secret_scanning.py"
 sha256 = "dcde6cb0310e50c3e7d5f0dd9da91d9b74a14f12fe54ff16cd78bd241eee815f"
+[[files]]
+path = "tests/test_source_apply.py"
+sha256 = "8596f67209845fda0607bda524b7917ab966f84abe1fb8d36cb6f1f7908f3662"
+[[files]]
+path = "scripts/source_apply.py"
+sha256 = "f0e4fd1311a4cb251c19dff76c4378354842fab783274e3bd6dec3fe48fbfa3c"
+[[files]]
+path = "policies/runs/source_apply/source_apply.rego"
+sha256 = "784ab2aad5854721af32074d5405b77d2b5dfe8dee73ae1eefa67ffacd19790a"
+[[files]]
+path = "contracts/schemas/contracts/source_apply.ApplySpec.json"
+sha256 = "6faa29b447723c585550198e481ed39e3ce83c7fe35fd57f74edbdfc25989173"
 [[adapted]]
 path = "tests/conftest.py"
 reason = "publication guards absent until pr and publish_push are ported; plan and develop tests strict-xfail until their preconditions exist"
@@ -396,6 +408,16 @@ path = "tests/test_commit_amend.py"
 reason = "AmendGit reports a staged change, as a real ordinary commit has (A.12)"
 patch = "contracts/vendor-patches/tests/test_commit_amend.py.patch"
 sha256 = "bb48b746c596b2f55358430c9d9ca3b79b74bfc63ec8ad6333117e8c47e05661"
+[[adapted]]
+path = "tests/test_source_apply.py"
+patch = "contracts/vendor-patches/tests/test_source_apply.py.patch"
+sha256 = "59071945131295923ab5253c80f1452baf0b01c0d9cca1b588ce2683e6e342de"
+reason = "A.18's proof: the claim's repository parsed from origin"
+[[adapted]]
+path = "scripts/source_apply.py"
+patch = "contracts/vendor-patches/scripts/source_apply.py.patch"
+sha256 = "bcd677b62c8e0c3e005ff6eca49ace8e417dd94b593c84c2aa81c10790638c41"
+reason = "origin names the repository in a claim; recsys has no Databricks identity (A.18)"
 [[withdrawn]]
 path = "tests/test_policy_inputs.py"
 sha256 = "20b42d632e5a2534b5767966722b8909157723f5e93e768d3c35c0a66ed4d8f6"
