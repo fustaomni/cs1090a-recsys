@@ -11,4 +11,5 @@ candidates = [
   { source = "SESSION", ref = "2026-10-15 F6c", text = "a 0600 key under a group-writable directory can be replaced: make the directory 0700 and refuse the key at use", maps_to = ["A.2"] },
   { source = "SESSION", ref = "2026-10-15 F7", text = "the pre-push gate failed closed on twenty gates naming scripts, tasks or tools recsys does not have", maps_to = ["A.3", "A.4"] },
   { source = "SESSION", ref = "2026-10-15 F6d", text = "the founding commit's outcome reported its branch as (unknown)", maps_to = ["A.5"] },
+  { source = "SESSION", ref = "2026-10-15 founding outstanding", text = "the founding left seven known debts: patches unchecked, pins in two places, group-writable state, unattested tools, stray installs, Regal findings, withdrawn gates", maps_to = ["A.6", "A.7", "A.8", "A.9", "A.10", "A.11"] },
 ]
