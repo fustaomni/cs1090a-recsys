@@ -1,0 +1,34 @@
+# lefthook.yml
+# Git hooks, committed so they belong to the repository rather than to one machine.
+# Mirrored from cscie103-data-engineering. Everything runs through `mise run`, so no version
+# or binary path appears here and this file cannot drift from the toolchain.
+#
+#   pre-commit  fast and offline: branch guard, format, lint
+#   commit-msg  every commit names the plan steps it serves
+#   pre-push    the offline gate
+#
+# cscie103's pre-commit also runs audit:workflows; it returns with this repository's first
+# workflow, since a hook calling a task that does not exist would refuse every commit.
+
+pre-commit:
+  # Not parallel: the formatter rewrites files, so it finishes before any check reads them.
+  parallel: false
+  jobs:
+    # Branch guard first: a commit on develop or main is refused before any work.
+    - name: branch
+      run: mise run start:check
+    - name: format
+      run: mise run fmt
+      stage_fixed: true
+    - name: lint
+      run: mise run lint
+
+commit-msg:
+  jobs:
+    - name: plan steps
+      run: mise run plan:trailers {1}
+
+pre-push:
+  jobs:
+    - name: gate (offline)
+      run: mise run check:offline

@@ -1,0 +1,49 @@
+# context/plan.toml
+# This project's plan: intent only, never status (project-plan/v1). plan:status decides
+# each step's state from its evidence; plan:add and plan:amend are its only writers.
+contract = "project-plan/v1"
+
+threads = [
+  { id = "A", title = "Platform" },
+]
+
+[[steps]]
+id = "A.1"
+title = "The project is founded by porting cscie103's governance kernel"
+thread = "A"
+done_when = [
+  { kind = "task", name = "plan:init" },
+  { kind = "task", name = "keys:provision" },
+]
+[[steps]]
+id = "A.2"
+title = "A signing key's directory is owner-only: made 0700, and refused at use when others can write"
+thread = "A"
+done_when = [
+  { kind = "proof", test = "tests/test_signing.py::test_provisioning_makes_the_key_directory_owner_only" },
+  { kind = "proof", test = "tests/test_signing.py::test_a_key_whose_directory_others_can_write_never_signs" },
+]
+[[steps]]
+id = "A.3"
+title = "Every gate in the registry resolves in this repository; a withdrawn gate is named, never skipped"
+thread = "A"
+done_when = [
+  { kind = "proof", test = "tests/test_gate_registry.py::test_every_gate_resolves_in_this_repository" },
+  { kind = "proof", test = "tests/test_gate_registry.py::test_an_unresolvable_gate_is_named" },
+]
+[[steps]]
+id = "A.4"
+title = "A secret scanner pinned under the release cutoff restores the history scan as a gate"
+thread = "A"
+depends_on = ["A.3"]
+because = { "A.3" = "the scan returns as a gate, and every gate must resolve here" }
+done_when = [
+  { kind = "proof", test = "tests/test_gate_registry.py::test_the_history_is_scanned_for_secrets" },
+]
+[[steps]]
+id = "A.5"
+title = "A commit's outcome names its branch, the repository's root commit included"
+thread = "A"
+done_when = [
+  { kind = "proof", test = "tests/test_commit.py::test_the_root_commit_names_its_branch" },
+]

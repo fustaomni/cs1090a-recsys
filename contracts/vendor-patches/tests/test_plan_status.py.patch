@@ -1,0 +1,12 @@
+--- a/tests/test_plan_status.py
++++ b/tests/test_plan_status.py
+@@ -20,8 +20,8 @@
+ from pydantic import JsonValue
+ 
+ from contract_base import from_document
+-from evaluate_policies import evaluate
+ from nonvacuous import nonempty
++from opa import denials as evaluate
+ from plan_models import PlanFacts
+ from plan_status import decide, defined_tests, gather
+ 
