@@ -1,0 +1,66 @@
+--- a/tests/test_commit.py
++++ b/tests/test_commit.py
+@@ -25,12 +25,17 @@
+ 
+ from __future__ import annotations
+ 
++import json
+ from pathlib import Path
+ 
++import pytest
++
+ from command_outcome import CommandOutcome
+ from commit import (
+     CONVENTIONAL_SUBJECT,
+     PROTECTED,
++    current_branch,
++    main,
+     plan_commit,
+ )
+ from nonvacuous import nonempty
+@@ -65,6 +70,45 @@
+     assert plan().outcome == "success"
+ 
+ 
++def test_the_root_commit_names_its_branch() -> None:
++    """Before its first commit, HEAD names a branch that rev-parse cannot resolve (A.5)."""
++
++    def unborn(argv: list[str]) -> tuple[int, str]:
++        if argv[:1] == ["symbolic-ref"]:
++            return 0, "main"
++        return 128, "fatal: ambiguous argument 'HEAD'"
++
++    assert current_branch(unborn) == "main"
++
++
++def test_the_root_commit_on_a_protected_branch_is_allowed() -> None:
++    """The one exemption start:check has: main with no commit yet, and only then (A.5)."""
++    root = plan_commit(
++        branch="main",
++        message="chore(founding): root",
++        paths=("scripts/commit.py",),
++        root_commit=True,
++    )
++    assert root.outcome == "success", root
++    assert plan(branch="main").code == "protected_branch"
++
++
++def test_the_root_commit_is_made_on_main_through_the_task(
++    capsys: pytest.CaptureFixture[str],
++) -> None:
++    """The boundary reads the unborn HEAD and the branch; the outcome names main (A.5)."""
++
++    def unborn(argv: list[str]) -> tuple[int, str]:
++        if argv[:1] == ["symbolic-ref"]:
++            return 0, "main"
++        return (1, "") if argv[:3] == ["rev-parse", "--quiet", "--verify"] else (0, "")
++
++    argv = ["--message", "chore(founding): root", "--path", "scripts/commit.py"]
++    assert main(argv, git=unborn) == 0
++    outcome = json.loads(capsys.readouterr().out)
++    assert (outcome["code"], outcome["message"]) == ("committed", "committed 1 path(s) on main")
++
++
+ # --- the message ----------------------------------------------------------------
+ 
+ 

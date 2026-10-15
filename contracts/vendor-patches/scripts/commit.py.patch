@@ -1,0 +1,81 @@
+--- a/scripts/commit.py
++++ b/scripts/commit.py
+@@ -95,6 +95,7 @@
+     tracked: frozenset[str] = frozenset(),
+     amend: bool = False,
+     published: bool | None = False,
++    root_commit: bool = False,
+ ) -> CommandOutcome:
+     """Decide whether this commit may proceed, and say why when it may not.
+ 
+@@ -103,7 +104,9 @@
+     conventional, no path was named. None of them is a crash, and the exit code
+     says so -- 2 rather than 1 -- so a caller can tell a rule from a bug.
+     """
+-    if branch in PROTECTED:
++    # THE ROOT COMMIT IS THE ONE EXCEPTION (A.5): no branch can be cut from a main with
++    # no commit, so the commit that creates it is allowed here, as start:check allows it.
++    if branch in PROTECTED and not root_commit:
+         return _outcome(
+             "protected_branch",
+             f"refusing to commit on {branch!r}: work happens on a feature branch "
+@@ -206,6 +209,7 @@
+     git: GitRunner = run_git,
+     root: Path = ROOT,
+     amend: bool = False,
++    root_commit: bool = False,
+ ) -> CommandOutcome:
+     """Stage the named paths and commit them, THROUGH THE HOOKS.
+ 
+@@ -231,6 +235,7 @@
+         tracked=tracked,
+         amend=amend,
+         published=published,
++        root_commit=root_commit,
+     )
+     if planned.outcome != "success":
+         return planned
+@@ -298,12 +303,25 @@
+     PASSED IN, NOT READ INSIDE main(). The branch is ambient state; reading it
+     where the decision happens would make the decision untestable without
+     checking out a protected branch to prove the guard fires.
++
++    SYMBOLIC-REF NAMES THE BRANCH EVEN BEFORE ITS FIRST COMMIT (A.5); rev-parse fails there,
++    and the root commit was reported "on (unknown)". rev-parse remains for a detached HEAD.
+     """
+-    code, _ = git(["rev-parse", "--abbrev-ref", "HEAD"])
+-    if code != 0:
+-        return "(unknown)"
+-    done = scrubbed_git("rev-parse", "--abbrev-ref", "HEAD", cwd=ROOT)
+-    return done.stdout.strip() or "(unknown)"
++    code, name = git(["symbolic-ref", "--quiet", "--short", "HEAD"])
++    if code == 0 and name:
++        return name
++    code, name = git(["rev-parse", "--abbrev-ref", "HEAD"])
++    return name if code == 0 and name else "(unknown)"
++
++
++def head_is_unborn(git: GitRunner = run_git) -> bool:
++    """Whether HEAD names no commit yet: true only before the root commit (A.5).
++
++    READ AT THE BOUNDARY, LIKE THE BRANCH, so a refusal inside the plan never reaches git.
++    --verify --quiet exits 1 only for an absent commit; any other status is an error, and an
++    error is never read as the root commit.
++    """
++    return git(["rev-parse", "--quiet", "--verify", "HEAD^{commit}"])[0] == 1
+ 
+ 
+ def main(
+@@ -329,8 +347,11 @@
+     parser.add_argument("--amend", action="store_true")
+     parsed = parser.parse_args(list(argv) if argv is not None else None)
+ 
++    on = branch if branch is not None else current_branch(git)
+     outcome = execute_commit(
+-        branch=branch if branch is not None else current_branch(git),
++        branch=on,
++        # ONLY A PROTECTED BRANCH ASKS: the exemption exists for nothing else.
++        root_commit=on in PROTECTED and head_is_unborn(git),
+         message=parsed.message,
+         paths=tuple(parsed.path),
+         git=git,
