@@ -1189,3 +1189,46 @@ done_when = [
   { kind = "proof", test = "tests/test_plan_edit_refusals.py::test_a_spec_with_an_undeclared_field_is_a_closed_refusal" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.13"
+title = "Every applicable cscie103 capability is ported whole, or withdrawn by name with its reason"
+thread = "A"
+done_when = [
+  { kind = "proof", test = "tests/test_provenance.py::test_every_upstream_path_is_ported_or_withdrawn" },
+]
+[[steps]]
+id = "A.14"
+title = "Features reach develop only through pr, branches start only through worktree:add, and main moves only through release"
+thread = "A"
+depends_on = ["A.13"]
+because = { "A.13" = "the GitFlow tasks arrive with the port" }
+done_when = [
+  { kind = "proof", test = "tests/test_gitflow.py::test_every_gitflow_task_is_declared_and_recorded" },
+]
+[[steps]]
+id = "A.15"
+title = "Repository settings and the develop-and-main ruleset are code, applied by repo:configure"
+thread = "A"
+depends_on = ["A.13"]
+because = { "A.13" = "repo:configure and the ruleset contract arrive with the port" }
+done_when = [
+  { kind = "proof", test = "tests/test_repo_settings.py::test_the_ruleset_protects_develop_and_main" },
+]
+[[steps]]
+id = "A.16"
+title = "Every repository operation is a declared task run through the recording gateway, enforced as policy"
+thread = "A"
+depends_on = ["A.13"]
+because = { "A.13" = "cscie103's every-operation-is-a-task policy arrives with the port" }
+done_when = [
+  { kind = "proof", test = "tests/test_task_coverage.py::test_every_operation_is_a_declared_task" },
+]
+[[steps]]
+id = "A.17"
+title = "Toolchain operations -- trust, lock, install, prune -- are tasks"
+thread = "A"
+depends_on = ["A.16"]
+because = { "A.16" = "the coverage policy is what names the toolchain operations still run by hand" }
+done_when = [
+  { kind = "proof", test = "tests/test_task_coverage.py::test_toolchain_operations_are_tasks" },
+]
