@@ -13,4 +13,5 @@ issued = [
   { id = "A.9", first_title = "Every pinned tool installs with verified provenance, or its absence is a recorded decision" },
   { id = "A.10", first_title = "No installed tool version is outside the pinned set" },
   { id = "A.11", first_title = "The policies pass Regal, and Regal runs as a gate" },
+  { id = "A.12", first_title = "Committing nothing is refused by name, and git's reason is never lost" },
 ]
