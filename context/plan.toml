@@ -91,3 +91,10 @@ because = { "A.9" = "regal must install with a decided provenance before it gate
 done_when = [
   { kind = "proof", test = "tests/test_gate_registry.py::test_the_policies_are_linted" },
 ]
+[[steps]]
+id = "A.12"
+title = "Committing nothing is refused by name, and git's reason is never lost"
+thread = "A"
+done_when = [
+  { kind = "proof", test = "tests/test_commit_execution.py::test_nothing_staged_is_refused_before_git_commits" },
+]

@@ -37,6 +37,7 @@ from commit import (
     current_branch,
     main,
     plan_commit,
+    run_git,
 )
 from nonvacuous import nonempty
 
@@ -101,6 +102,8 @@ def test_the_root_commit_is_made_on_main_through_the_task(
     def unborn(argv: list[str]) -> tuple[int, str]:
         if argv[:1] == ["symbolic-ref"]:
             return 0, "main"
+        if argv[:2] == ["diff", "--cached"]:
+            return 1, ""
         return (1, "") if argv[:3] == ["rev-parse", "--quiet", "--verify"] else (0, "")
 
     argv = ["--message", "chore(founding): root", "--path", "scripts/commit.py"]
@@ -188,3 +191,12 @@ def test_a_refusal_exits_two_and_a_success_exits_zero() -> None:
     is distinguishable from a crash."""
     assert plan().exit_code == 0
     assert plan(branch="develop").exit_code == 2
+
+
+def test_a_refusal_on_stdout_is_not_lost(tmp_path: Path) -> None:
+    """git prints some refusals -- "nothing to commit" among them -- on stdout (A.12)."""
+    before, after = tmp_path / "a", tmp_path / "b"
+    before.write_text("a\n", encoding="utf-8")
+    after.write_text("b\n", encoding="utf-8")
+    code, text = run_git(["diff", "--no-index", "--exit-code", str(before), str(after)])
+    assert code == 1 and "+b" in text, repr(text)

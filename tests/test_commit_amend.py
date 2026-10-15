@@ -28,6 +28,10 @@ class AmendGit:
         self.heads = ["a" * 40, "b" * 40]
 
     def __call__(self, argv: list[str]) -> tuple[int, str]:
+        # THE STAGE (A.12): changes are staged, answered before the call is recorded so
+        # the call sequences asserted here are unchanged.
+        if argv[:3] == ["diff", "--cached", "--quiet"]:
+            return 1, ""
         self.calls.append(list(argv))
         if argv[:3] == ["rev-parse", "--verify", "--quiet"]:
             return self.remote, ""
