@@ -140,8 +140,7 @@ thread = "A"
 depends_on = ["A.21"]
 because = { "A.21" = "the workflow audit's yaml dependency arrives through deps:add first" }
 done_when = [
-  { kind = "proof", test = "tests/test_founding_policy.py::test_the_policy_pins_are_the_lockfile_pins" },
-  { kind = "proof", test = "tests/test_tool_provenance.py::test_every_locked_tool_names_its_provenance" },
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_zizmor_is_pinned_and_its_provenance_verified" },
 ]
 [[steps]]
 id = "A.23"
