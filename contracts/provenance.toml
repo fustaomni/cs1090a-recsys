@@ -376,6 +376,16 @@ path = "tests/test_commit.py"
 reason = "A.5's proofs: the root commit names main, and only it may land on main"
 patch = "contracts/vendor-patches/tests/test_commit.py.patch"
 sha256 = "83a8b286ea5c0d0551af4762cb9fb8584076d9851922f6b3ab095ca44f4b0e93"
+[[adapted]]
+path = ".gitignore"
+reason = ".cache/ is ignored: mise.toml points uv at it, and it is regenerable (founding F4b)"
+patch = "contracts/vendor-patches/.gitignore.patch"
+sha256 = "6989ece4fd552419385c146173d68e66debeb42b96ea1ba827f4e43eb58c92e1"
+[[adapted]]
+path = "lefthook.yml"
+reason = "pre-commit omits cscie103's audit:workflows until recsys has a workflow to audit"
+patch = "contracts/vendor-patches/lefthook.yml.patch"
+sha256 = "acb4c0aaddb4c80cf4c30ab69af99a4dc0f5622b72b1a18f5734cecd7bb829a7"
 [[withdrawn]]
 path = "tests/test_policy_inputs.py"
 sha256 = "20b42d632e5a2534b5767966722b8909157723f5e93e768d3c35c0a66ed4d8f6"
