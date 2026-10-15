@@ -7,4 +7,10 @@ issued = [
   { id = "A.3", first_title = "Every gate in the registry resolves in this repository; a withdrawn gate is named, never skipped" },
   { id = "A.4", first_title = "A secret scanner pinned under the release cutoff restores the history scan as a gate" },
   { id = "A.5", first_title = "A commit's outcome names its branch, the repository's root commit included" },
+  { id = "A.6", first_title = "Every adapted file is its upstream bytes plus its recorded patch, re-proven by a gate" },
+  { id = "A.7", first_title = "The founding policy's pins come from one source, so a pin cannot drift from its test" },
+  { id = "A.8", first_title = "mise's trust and state directories are owner-only, whatever the umask" },
+  { id = "A.9", first_title = "Every pinned tool installs with verified provenance, or its absence is a recorded decision" },
+  { id = "A.10", first_title = "No installed tool version is outside the pinned set" },
+  { id = "A.11", first_title = "The policies pass Regal, and Regal runs as a gate" },
 ]

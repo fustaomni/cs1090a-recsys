@@ -47,3 +47,47 @@ thread = "A"
 done_when = [
   { kind = "proof", test = "tests/test_commit.py::test_the_root_commit_names_its_branch" },
 ]
+[[steps]]
+id = "A.6"
+title = "Every adapted file is its upstream bytes plus its recorded patch, re-proven by a gate"
+thread = "A"
+done_when = [
+  { kind = "proof", test = "tests/test_provenance.py::test_every_adapted_file_is_upstream_plus_its_patch" },
+]
+[[steps]]
+id = "A.7"
+title = "The founding policy's pins come from one source, so a pin cannot drift from its test"
+thread = "A"
+done_when = [
+  { kind = "proof", test = "tests/test_founding_policy.py::test_the_policy_pins_are_the_lockfile_pins" },
+]
+[[steps]]
+id = "A.8"
+title = "mise's trust and state directories are owner-only, whatever the umask"
+thread = "A"
+done_when = [
+  { kind = "proof", test = "tests/test_machine_state.py::test_mise_state_is_owner_only" },
+]
+[[steps]]
+id = "A.9"
+title = "Every pinned tool installs with verified provenance, or its absence is a recorded decision"
+thread = "A"
+done_when = [
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_every_locked_tool_names_its_provenance" },
+]
+[[steps]]
+id = "A.10"
+title = "No installed tool version is outside the pinned set"
+thread = "A"
+done_when = [
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_no_installed_version_is_unpinned" },
+]
+[[steps]]
+id = "A.11"
+title = "The policies pass Regal, and Regal runs as a gate"
+thread = "A"
+depends_on = ["A.9"]
+because = { "A.9" = "regal must install with a decided provenance before it gates anything" }
+done_when = [
+  { kind = "proof", test = "tests/test_gate_registry.py::test_the_policies_are_linted" },
+]
