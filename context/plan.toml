@@ -106,3 +106,21 @@ done_when = [
   { kind = "proof", test = "tests/test_source_apply.py::test_the_claim_names_the_repository_parsed_from_origin" },
   { kind = "task", name = "source:apply" },
 ]
+[[steps]]
+id = "A.19"
+title = "A branch reaches develop only through the pr task: pushed with a lease, merged on GitHub's verdict"
+thread = "A"
+depends_on = ["A.18", "A.20"]
+because = { "A.18" = "pr and its modules arrive through source:apply specs", "A.20" = "pr merges only on a check that reported; the quality gate is that check" }
+done_when = [
+  { kind = "proof", test = "tests/test_pr_push_failure.py::test_a_test_cannot_reach_the_real_publication" },
+]
+[[steps]]
+id = "A.20"
+title = "Every pull request runs the quality gate in CI, the one check pr waits for before it merges"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "the workflow and its expected-checks contract arrive through source:apply specs" }
+done_when = [
+  { kind = "proof", test = "tests/test_workflow_audit.py::test_the_repositorys_workflows_pass_the_audit" },
+]
