@@ -6,7 +6,7 @@ good := {
 	"min_version": "2026.10.4",
 	"task_config": {"shell": "bash -c"},
 	"tasks": {"test": {"description": "d", "run": "uv run --no-sync pytest"}},
-	"tools": {"lefthook": "2.2.0", "opa": "1.21.1", "regal": "0.43.0", "uv": "0.12.23"},
+	"tools": {"betterleaks": "1.9.0", "lefthook": "2.2.0", "opa": "1.21.1", "regal": "0.43.0", "uv": "0.12.23"},
 	"settings": {"lockfile": true, "minimum_release_age": "2026-10-08T00:00:00Z"},
 	"env": {"UV_CACHE_DIR": "{{config_root}}/.cache/uv"},
 }
@@ -39,4 +39,8 @@ test_task_template_denied if {
 
 test_task_unknown_key_denied if {
 	not mise.allow with input as object.union(good, {"tasks": {"x": {"run": "id", "dir": "/"}}})
+}
+
+test_betterleaks_drift_denied if {
+	not mise.allow with input as object.union(good, {"tools": {"betterleaks": "2.0.0-rc.2"}})
 }
