@@ -182,7 +182,12 @@ def run_git(argv: list[str]) -> tuple[int, str]:
     Every other caller reads the text only on failure, where it is still stderr.
     """
     done = scrubbed_git(*argv, cwd=ROOT)
-    return done.returncode, (done.stdout if done.returncode == 0 else done.stderr).strip()
+    if done.returncode == 0:
+        return 0, done.stdout.strip()
+    # BOTH STREAMS ON FAILURE (A.12): git prints some refusals, "nothing to commit" among
+    # them, on stdout, and a reason read from stderr alone was lost.
+    reason = [part.strip() for part in (done.stderr, done.stdout) if part.strip()]
+    return done.returncode, NEWLINE.join(reason)
 
 
 def publication(branch: str, git: GitRunner = run_git) -> bool | None:
@@ -244,6 +249,19 @@ def execute_commit(
     code, err = git(["add", "--", *paths])
     if code != 0:
         return _outcome("stage_failed", "could not stage: " + err, "failed", paths=list(paths))
+
+    # NOTHING STAGED IS A REFUSAL, decided before git is asked to commit (A.12): paths that
+    # match HEAD stage nothing. --quiet exits 1 when the named paths have staged changes and
+    # 0 when they have none; any other status is an error, never read as either. An amend
+    # may change only the message, so it is exempt.
+    if not amend:
+        staged, err = git(["diff", "--cached", "--quiet", "--", *paths])
+        if staged == 0:
+            reason = "nothing to commit: the named paths match HEAD"
+            return _outcome("nothing_staged", reason, "refused", paths=list(paths))
+        if staged != 1:
+            reason = "could not read the stage: " + err
+            return _outcome("stage_unverified", reason, "failed", paths=list(paths))
 
     # delete_on_close=False IS THE DOCUMENTED ANSWER TO EXACTLY THIS NEED.
     #

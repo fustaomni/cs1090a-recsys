@@ -38,12 +38,18 @@ class FakeGit:
         self, code: int = 0, stderr: str = "", tracked: frozenset[str] = frozenset()
     ) -> None:
         self.calls: list[list[str]] = []
+        # THE STAGE AS GIT REPORTS IT (A.12): True staged, False nothing, None unreadable.
+        self.staged: bool | None = True
         self.code = code
         self.stderr = stderr
         self.tracked = tracked
 
     def __call__(self, argv: list[str]) -> tuple[int, str]:
         self.calls.append(list(argv))
+        if argv[:3] == ["diff", "--cached", "--quiet"]:
+            if self.staged is None:
+                return 128, ""
+            return (1 if self.staged else 0), ""
         if argv[:3] == ["ls-files", "--error-unmatch", "--"]:
             if argv[3] in self.tracked:
                 return 0, ""
@@ -207,3 +213,22 @@ def test_a_missing_path_never_reaches_git(tmp_path: Path) -> None:
     # A READ IS NOT A WRITE (D.79): git's index is asked whether the path is tracked,
     # and nothing is staged or committed.
     assert git.calls == [["ls-files", "--error-unmatch", "--", "scripts/nope.py"]]
+
+
+def test_nothing_staged_is_refused_before_git_commits() -> None:
+    """Paths that match HEAD stage nothing: refused by name, and git never commits (A.12)."""
+    git = FakeGit(code=0)
+    git.staged = False
+    outcome = run(git)
+    assert (outcome.outcome, outcome.code) == ("refused", "nothing_staged"), outcome
+    assert outcome.exit_code == 2
+    assert not [call for call in git.calls if call[:1] == ["commit"]], git.calls
+
+
+def test_an_unreadable_stage_fails_closed() -> None:
+    """A status other than 0 or 1 is an error, never read as staged or as empty (A.12)."""
+    git = FakeGit(code=0)
+    git.staged = None
+    outcome = run(git)
+    assert (outcome.outcome, outcome.code) == ("failed", "stage_unverified"), outcome
+    assert not [call for call in git.calls if call[:1] == ["commit"]], git.calls
