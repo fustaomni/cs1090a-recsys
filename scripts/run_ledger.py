@@ -144,6 +144,24 @@ class LedgerReport(Contract):
     unsigned_after_signing: tuple[PositiveInt, ...] = ()
     waived: tuple[PositiveInt, ...] = ()
     waivers_unmatched: tuple[PositiveInt, ...] = ()
+    anchor_broken: bool = False
+
+
+class LedgerAnchor(Contract):
+    """ledger-anchor/v1: the ledger's record at a position has this run id and digest (A.87).
+
+    Committed and pushed, it sits where no process writing the ledger can reach. An append never
+    disturbs it; cutting the tail, or cutting it and writing new records in its place, does.
+    """
+
+    contract: Literal["ledger-anchor/v1"] = "ledger-anchor/v1"
+    ledger: str = Field(min_length=1)
+    position: PositiveInt
+    run_id: str = Field(pattern=r"^[0-9a-f]{32}$")
+    sha256: str = Field(pattern=HASH)
+
+
+ANCHOR = Path("contracts") / "ledger-anchor.toml"
 
 
 def _canonical(fields: dict[str, JsonValue]) -> str:
@@ -273,6 +291,7 @@ def verify(
     keys: Sequence[Key] = (),
     waivers: Sequence[Waiver] = (),
     lifecycle: dict[str, PublicKey] | None = None,
+    anchor: LedgerAnchor | None = None,
 ) -> LedgerReport:
     """Walk the chain, then classify every record against the published keys (M46, M47).
 
@@ -294,6 +313,7 @@ def verify(
     runs: dict[int, str] = {}
     sealing_began = False
     broken_at: int | None = None
+    held: dict[int, tuple[str, str]] = {}
     for position, line in enumerate(lines, start=1):
         try:
             record = RunRecord.model_validate_json(line)
@@ -307,6 +327,7 @@ def verify(
             broken_at = position
             break
         previous = record.sha256
+        held[position] = (record.run_id, record.sha256)
         tasks.append(record.task)
         if record.contract == "run-record/v1":
             legacy += 1
@@ -335,7 +356,25 @@ def verify(
         unsigned_after_signing=tuple(unsigned_after),
         waived=tuple(w.position for w in waivers if runs.get(w.position) == w.run_id),
         waivers_unmatched=tuple(w.position for w in waivers if runs.get(w.position) != w.run_id),
+        anchor_broken=_anchor_broken(anchor, ledger, held),
     )
+
+
+def _anchor_broken(
+    anchor: LedgerAnchor | None, ledger: Path, held: dict[int, tuple[str, str]]
+) -> bool:
+    """An anchor for this ledger breaks when its record is gone or another has taken its place."""
+    if anchor is None or anchor.ledger != str(ledger):
+        return False
+    return held.get(anchor.position) != (anchor.run_id, anchor.sha256)
+
+
+def declared_anchor(root: Path = ROOT) -> LedgerAnchor | None:
+    """The committed anchor, if the ledger has been anchored (A.87)."""
+    path = root / ANCHOR
+    if not path.exists():
+        return None
+    return from_document(LedgerAnchor, tomllib.loads(path.read_text(encoding="utf-8")))
 
 
 def declared_waivers(root: Path = ROOT) -> tuple[Waiver, ...]:
@@ -353,7 +392,10 @@ def main() -> int:
     gateway already records, and seals, every runs:verify run.
     """
     lifecycle = published_keys(ROOT)
-    report = verify(default_ledger(), registered_keys(ROOT), declared_waivers(ROOT), lifecycle)
+    anchor = declared_anchor(ROOT)
+    report = verify(
+        default_ledger(), registered_keys(ROOT), declared_waivers(ROOT), lifecycle, anchor
+    )
     data = report.model_dump(mode="json")
     found = evaluate(report, SUBJECT, POLICY, ENTRYPOINT)
     decision = decide(found)

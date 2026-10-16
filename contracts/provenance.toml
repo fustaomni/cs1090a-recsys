@@ -42,6 +42,12 @@ sha256 = "ab4604edd6b7402879eb4770c3832cd78d8d9ff739c8d4f0c97a7caa4741e050"
 path = "policies/runs/ledger/ledger.rego"
 sha256 = "1bc0b991736265df060b99a8bda427378ba607c5a196232110b0236a74cfd0bf"
 
+[[adapted]]
+path = "policies/runs/ledger/ledger.rego"
+reason = "the ledger is anchored, so a cut or refilled tail is refused; A.87"
+patch = "contracts/vendor-patches/policies/runs/ledger/ledger.rego.patch"
+sha256 = "f0969c55285298ca6926e3e33eb0dce5c2ebfa2f89f279d97f3e6680ed8fb99c"
+
 [[files]]
 path = "policies/runs/run_request/run_request.rego"
 sha256 = "967f464795c7428611e99db93b816eb0e6a330b84e1c7ca6227ad098f46d7e1b"
@@ -129,6 +135,12 @@ sha256 = "0de1e58d66f20e243d62406adf787856488819e978393876c4fe450bcb31b7a9"
 [[files]]
 path = "scripts/run_ledger.py"
 sha256 = "51f6b9a7dafff415bd3b0a5088a23814749cb722303259bf6c36f9bda3b36ab3"
+
+[[adapted]]
+path = "scripts/run_ledger.py"
+reason = "the ledger is anchored, so a cut or refilled tail is refused; A.87"
+patch = "contracts/vendor-patches/scripts/run_ledger.py.patch"
+sha256 = "adfe21049725c9f16d90fc820c02c498b4512453e23a767978c11f8365d7fd50"
 
 [[files]]
 path = "scripts/run_task.py"

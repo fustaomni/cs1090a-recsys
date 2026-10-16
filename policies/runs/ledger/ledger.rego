@@ -66,3 +66,15 @@ deny contains denial if {
 		"message": sprintf("the waiver for record %d does not name that record's unsigned run", [position]),
 	}
 }
+
+# METADATA
+# title: The anchored record is still in the ledger, unchanged
+# custom:
+#   code: ERR_LEDGER_ANCHOR_BROKEN
+deny contains denial if {
+	input.ledger.anchor_broken
+	denial := {
+		"code": rego.metadata.rule().custom.code,
+		"message": "the anchored record is gone or replaced: the ledger was cut or rewritten",
+	}
+}
