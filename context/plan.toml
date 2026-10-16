@@ -204,4 +204,5 @@ depends_on = ["A.18"]
 because = { "A.18" = "the task's own files arrive through source:apply specs, written literally" }
 done_when = [
   { kind = "proof", test = "tests/test_source_port.py::test_an_upstream_file_becomes_a_create_spec" },
+  { kind = "proof", test = "tests/test_source_port.py::test_a_plan_is_saved_under_artifacts_for_apply_to_read" },
 ]
