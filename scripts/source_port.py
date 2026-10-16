@@ -21,6 +21,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PROVENANCE = "contracts/provenance.toml"
 LINE_LIMIT = 100
+EVIDENCE = ".artifacts"
+USAGE = "usage: source_port.py [--out <file under .artifacts>] <source-checkout> <path>..."
 
 
 def _string(text: str) -> str:
@@ -63,12 +65,27 @@ def build(source: Path, paths: list[str], here: Path = ROOT) -> str:
 
 
 def main() -> int:
+    """Print the plan, or save it with --out: a saved plan is applied exactly as reviewed.
+
+    THE SAVED PLAN. The run gateway writes its run summary to the same stdout, so a piped spec
+    would end in a line that is not TOML. As with `terraform plan -out`, the plan is saved as a
+    file and `source:apply <file>` applies that exact file. It is saved under .artifacts, where
+    evidence lives and git does not look, and nowhere else.
+    """
     match sys.argv[1:]:
+        case ["--out", out, source, *paths] if paths:
+            target = ROOT / out
+            if not _inside(target, ROOT / EVIDENCE):
+                raise SystemExit(f"--out must be under {EVIDENCE}, where evidence lives: {out}")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(build(Path(source), paths, ROOT), encoding="utf-8")
+            print(f"planned {len(paths)} file(s) into {out}; apply it with source:apply {out}")
+            return 0
         case [source, *paths] if paths:
-            print(build(Path(source), paths), end="")
+            print(build(Path(source), paths, ROOT), end="")
             return 0
         case other:
-            raise SystemExit(f"usage: source_port.py <source-checkout> <path>...  (got {other})")
+            raise SystemExit(f"{USAGE}  (got {other})")
 
 
 if __name__ == "__main__":
