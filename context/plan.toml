@@ -443,7 +443,8 @@ thread = "A"
 depends_on = ["A.36"]
 because = { "A.36" = "safeguards feed the claims register" }
 done_when = [
-  { kind = "proof", test = "tests/test_safeguard_register.py::test_a_listed_safeguard_without_a_killing_proof_is_refused" },
+  { kind = "task", name = "safeguards:prove" },
+  { kind = "proof", test = "tests/test_safeguards.py::test_a_listed_safeguard_without_a_killing_proof_is_refused" },
 ]
 [[steps]]
 id = "A.53"
