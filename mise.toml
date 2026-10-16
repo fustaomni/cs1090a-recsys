@@ -346,6 +346,10 @@ minimum_release_age = "2026-10-08T00:00:00Z"
 UV_CACHE_DIR = "{{config_root}}/.cache/uv"
 
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.18): every mutation is a spec.
+[tasks."upstream:checkout"]
+description = "Check out another repository at a pinned 40-character commit, blobless, under .artifacts/upstream"
+run = "uv run --no-sync python scripts/upstream.py"
+
 [tasks."source:port"]
 description = "Plan a port: print a source:apply spec bringing files from another checkout, as they are"
 run = "uv run --no-sync python scripts/source_port.py"
