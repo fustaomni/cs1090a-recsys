@@ -229,10 +229,12 @@ thread = "A"
 depends_on = ["A.18"]
 because = { "A.18" = "the verifier arrives through source:apply specs" }
 done_when = [
+  { kind = "task", name = "test:red" },
   { kind = "proof", test = "tests/test_red_verify.py::test_a_red_needs_exit_code_one_and_a_report_from_this_run" },
   { kind = "proof", test = "tests/test_red_verify.py::test_a_collection_error_or_an_unrelated_failure_is_refused" },
   { kind = "proof", test = "tests/test_red_verify.py::test_an_import_red_never_satisfies_red_verified" },
   { kind = "proof", test = "tests/test_red_verify.py::test_a_missing_named_proof_is_refused_not_skipped" },
+  { kind = "proof", test = "tests/test_red_verify.py::test_a_malformed_report_is_refused_not_raised" },
 ]
 [[steps]]
 id = "A.32"
