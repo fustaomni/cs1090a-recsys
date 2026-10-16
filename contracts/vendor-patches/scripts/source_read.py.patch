@@ -1,0 +1,42 @@
+--- a/scripts/source_read.py
++++ b/scripts/source_read.py
+@@ -58,6 +58,30 @@
+     )
+ 
+ 
++Refusal = Literal[
++    "not_found", "access_denied", "not_a_file", "not_text", "range_outside", "unreadable"
++]
++
++
++def refusal(problem: Exception) -> Refusal:
++    """A read that failed, as a closed outcome: only a verified absence is not_found (A.60).
++
++    FileNotFoundError is the operating system's own ENOENT verdict that the path does not exist.
++    A permission or any other failure says nothing about absence, so it is never reported as one.
++    """
++    if isinstance(problem, FileNotFoundError):
++        return "not_found"
++    if isinstance(problem, PermissionError):
++        return "access_denied"
++    if isinstance(problem, IsADirectoryError):
++        return "not_a_file"
++    if isinstance(problem, UnicodeDecodeError):
++        return "not_text"
++    if isinstance(problem, ValueError):
++        return "range_outside"
++    return "unreadable"
++
++
+ def main(argv: Sequence[str] | None = None) -> int:
+     """source:read <path> [first] [last]."""
+     args = list(sys.argv[1:] if argv is None else argv)
+@@ -73,7 +97,7 @@
+             {
+                 "command": "source:read",
+                 "outcome": "refused",
+-                "code": "read_refused",
++                "code": refusal(problem),
+                 "message": f"{path}: {problem}",
+                 "data": {"file": str(path)},
+             }

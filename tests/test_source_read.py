@@ -8,7 +8,10 @@ shape. A range past the end is refused rather than silently shortened.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
+
+import pytest
 
 from source_read import main, read_lines
 
@@ -36,3 +39,24 @@ def test_a_range_past_the_end_is_refused(tmp_path: Path) -> None:
 
 def test_a_missing_file_is_refused(tmp_path: Path) -> None:
     assert main([str(tmp_path / "missing.txt")]) == 2
+
+
+def _code(capsys: pytest.CaptureFixture[str]) -> str:
+    return str(json.loads(capsys.readouterr().out)["code"])
+
+
+def test_a_missing_file_is_not_found(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    assert main([str(tmp_path / "missing.txt")]) == 2
+    assert _code(capsys) == "not_found"
+
+
+def test_an_unreadable_file_is_access_denied_not_absent(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    locked = _file(tmp_path)
+    locked.chmod(0)
+    try:
+        assert main([str(locked)]) == 2
+    finally:
+        locked.chmod(0o600)
+    assert _code(capsys) == "access_denied"
