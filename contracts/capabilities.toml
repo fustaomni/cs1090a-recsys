@@ -184,6 +184,30 @@ implementation = "scripts/policy_admission.py"
 emits = "text"
 
 [[capabilities]]
+task = "worktree:add"
+version = "1.0.0"
+implementation = "scripts/worktree.py"
+emits = "text"
+
+[[capabilities]]
+task = "worktree:list"
+version = "1.0.0"
+implementation = "scripts/worktree.py"
+emits = "text"
+
+[[capabilities]]
+task = "worktree:refresh"
+version = "1.0.0"
+implementation = "scripts/worktree.py"
+emits = "text"
+
+[[capabilities]]
+task = "worktree:remove"
+version = "1.0.0"
+implementation = "scripts/worktree.py"
+emits = "text"
+
+[[capabilities]]
 task = "capabilities:list"
 version = "1.0.0"
 implementation = "scripts/capabilities.py"

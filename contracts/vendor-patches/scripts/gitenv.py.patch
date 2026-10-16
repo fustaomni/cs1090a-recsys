@@ -1,0 +1,22 @@
+--- a/scripts/gitenv.py
++++ b/scripts/gitenv.py
+@@ -80,6 +80,19 @@
+     return environment
+ 
+ 
++def git_bytes(
++    *args: str, cwd: str | os.PathLike[str] | None = None
++) -> subprocess.CompletedProcess[bytes]:
++    """Run git exactly as git() does, but return its output as raw bytes (A.93).
++
++    ONE MODULE SPAWNS GIT. A -z listing must be split on NUL bytes before anything is decoded,
++    and git() decodes; callers that needed bytes spawned git themselves, outside this module.
++    """
++    return subprocess.run(
++        ["git", *args], capture_output=True, check=False, cwd=cwd, env=scrubbed_env()
++    )
++
++
+ def git(*args: str, cwd: str | os.PathLike[str] | None = None) -> subprocess.CompletedProcess[str]:
+     """Run git with a scrubbed environment, resolving the repo from cwd alone."""
+     return subprocess.run(

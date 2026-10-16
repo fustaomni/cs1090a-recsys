@@ -452,3 +452,39 @@ path = "policies/runs/branch_push/branch_push.rego"
 anchor = "\tnot request.gate_passed_at_head\n"
 mutant = "\tfalse\n"
 proof = "tests/test_branch_push.py::test_a_push_without_the_gate_passed_is_refused"
+
+[[safeguards]]
+id = "SETUP.UNOBSERVED"
+engine = "worktree:add"
+guard = "ERR_SETUP_ENV_UNOBSERVED"
+path = "policies/machine/setup/setup_env.rego"
+anchor = "\tnot input.setup_environment.selecting_variables[0]\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_env.py::test_an_absent_observation_is_refused"
+
+[[safeguards]]
+id = "SETUP.INHERITED"
+engine = "worktree:add"
+guard = "ERR_SETUP_ENV_INHERITED"
+path = "policies/machine/setup/setup_env.rego"
+anchor = "\tsome name in leaked\n"
+mutant = "\tsome name in leaked\n\tfalse\n"
+proof = "tests/test_worktree_env.py::test_the_policy_refuses_an_inherited_environment"
+
+[[safeguards]]
+id = "ENV.UNOBSERVED"
+engine = "worktree:refresh"
+guard = "ERR_ENV_UNOBSERVED"
+path = "policies/machine/environment/environment.rego"
+anchor = "\tnot input.environment_sync\n"
+mutant = "\tfalse\n"
+proof = "tests/test_environment_policy.py::test_an_unobserved_sync_is_refused"
+
+[[safeguards]]
+id = "ENV.STALE"
+engine = "worktree:refresh"
+guard = "ERR_ENV_STALE"
+path = "policies/machine/environment/environment.rego"
+anchor = "\tnot input.environment_sync.installed\n"
+mutant = "\tfalse\n"
+proof = "tests/test_environment_policy.py::test_a_changed_lock_left_uninstalled_is_refused"
