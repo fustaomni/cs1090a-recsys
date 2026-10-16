@@ -28,6 +28,9 @@ def _run(tail: list[str], exit_code: int = 1) -> TaskRun:
         output_lines=len(tail),
         output_sha256="0" * 64,
         tail=tuple(tail),
+        evidence=None,
+        stdout_sha256="0" * 64,
+        stderr_sha256="0" * 64,
     )
 
 

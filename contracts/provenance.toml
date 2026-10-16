@@ -146,6 +146,12 @@ sha256 = "adfe21049725c9f16d90fc820c02c498b4512453e23a767978c11f8365d7fd50"
 path = "scripts/run_task.py"
 sha256 = "d61b5303a5ff3c00a79398b6574018a03b94f56b335d473c921d1bb314c637c1"
 
+[[adapted]]
+path = "scripts/run_task.py"
+reason = "both streams kept whole per run in a unique evidence directory, with digests; A.41"
+patch = "contracts/vendor-patches/scripts/run_task.py.patch"
+sha256 = "69a242bf5abad8ac84fd08df0971f54d12ae358068b988903692a65bd1ae4da4"
+
 [[files]]
 path = "scripts/signing.py"
 sha256 = "b10e61c90cc03b210a6b83a2256c36b0b3fda324fded41ab90563154eca562ae"
@@ -209,6 +215,12 @@ sha256 = "d77cb56b1cf748e2183afc6dad9f83af6a946b01fde09ed82d981b7421cb2ed1"
 [[files]]
 path = "tests/test_last_resort.py"
 sha256 = "da0c8f90103715c62ee893b4a0130796207d07fcbfb2c00a100fdc48000eeb66"
+
+[[adapted]]
+path = "tests/test_last_resort.py"
+reason = "its runs carry task-run/v2's evidence path and stream digests; A.41"
+patch = "contracts/vendor-patches/tests/test_last_resort.py.patch"
+sha256 = "424f361d23ae1ccf74d57e8056c1e8645c9c0082e0bfddb437c5cda71748712d"
 
 [[files]]
 path = "tests/test_ledger_lock.py"
