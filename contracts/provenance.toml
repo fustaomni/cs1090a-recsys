@@ -318,6 +318,18 @@ sha256 = "784ab2aad5854721af32074d5405b77d2b5dfe8dee73ae1eefa67ffacd19790a"
 [[files]]
 path = "contracts/schemas/contracts/source_apply.ApplySpec.json"
 sha256 = "6faa29b447723c585550198e481ed39e3ce83c7fe35fd57f74edbdfc25989173"
+[[files]]
+path = "tests/test_deps_add.py"
+sha256 = "6b7cc9ceb3f2db6035414d7a7538a7faab2430d0461f66c8f965c2b6a11af7f0"
+[[files]]
+path = "scripts/deps_add.py"
+sha256 = "2f0f07322d1d39e66740135ae2fd843e94a3734e3931fcf856ed50b38a24597f"
+[[files]]
+path = "policies/deps/add/add.rego"
+sha256 = "aad209ebdfbd7681e93fea58e595fb1abe7e152d4651d9e1d0ca37395507a8a6"
+[[files]]
+path = "contracts/schemas/contracts/deps_add.DepsChange.json"
+sha256 = "73dbed77bfee4919c1be1c5199c0cc8ca6f6139ed4311120812d7b35fd72a92d"
 [[adapted]]
 path = "tests/conftest.py"
 reason = "publication guards absent until pr and publish_push are ported; plan and develop tests strict-xfail until their preconditions exist"
