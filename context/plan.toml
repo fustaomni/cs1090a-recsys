@@ -765,7 +765,10 @@ thread = "A"
 depends_on = ["A.86"]
 because = { "A.86" = "the ledger's existing guards are proven first" }
 done_when = [
+  { kind = "task", name = "ledger:anchor" },
   { kind = "proof", test = "tests/test_ledger_policy.py::test_a_truncated_ledger_is_refused" },
+  { kind = "proof", test = "tests/test_ledger_policy.py::test_a_refilled_tail_is_refused" },
+  { kind = "proof", test = "tests/test_ledger_anchor.py::test_an_anchor_never_moves_past_a_broken_one" },
 ]
 [[steps]]
 id = "A.88"
