@@ -353,3 +353,57 @@ path = "policies/plan/trailers.rego"
 anchor = "\tstep in retired\n"
 mutant = "\tfalse\n"
 proof = "tests/test_plan_trailers.py::test_a_retired_step_is_denied"
+
+[[safeguards]]
+id = "DEPS.LOCK_STALE"
+engine = "deps:add"
+guard = "ERR_DEPS_LOCK_STALE"
+path = "policies/deps/add/add.rego"
+anchor = "\tnot input.deps_change.lock_current\n"
+mutant = "\tfalse\n"
+proof = "tests/test_policy_codes.py::test_a_stale_lock_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "DEPS.NOT_ADDED"
+engine = "deps:add"
+guard = "ERR_DEPS_NOT_ADDED"
+path = "policies/deps/add/add.rego"
+anchor = "\tnot input.deps_change.landed\n"
+mutant = "\tfalse\n"
+proof = "tests/test_policy_codes.py::test_a_package_that_did_not_land_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "DEPS.EXISTING_CHANGED"
+engine = "deps:add"
+guard = "ERR_DEPS_EXISTING_CHANGED"
+path = "policies/deps/add/add.rego"
+anchor = "\tsome name in input.deps_change.changed\n"
+mutant = "\tsome name in input.deps_change.changed\n\tfalse\n"
+proof = "tests/test_policy_codes.py::test_a_changed_package_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "DEPS.REMOVED"
+engine = "deps:add"
+guard = "ERR_DEPS_REMOVED"
+path = "policies/deps/add/add.rego"
+anchor = "\tsome name in input.deps_change.removed\n"
+mutant = "\tsome name in input.deps_change.removed\n\tfalse\n"
+proof = "tests/test_policy_codes.py::test_a_removed_package_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "GIT_ENV.UNOBSERVED"
+engine = "test session"
+guard = "ERR_TEST_GIT_ENV_UNOBSERVED"
+path = "policies/machine/testing/git_env.rego"
+anchor = "\tnot input.git_isolation.local_variables[0]\n"
+mutant = "\tfalse\n"
+proof = "tests/test_policy_codes.py::test_an_unobserved_git_environment_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "GIT_ENV.LEAKED"
+engine = "test session"
+guard = "ERR_TEST_GIT_ENV_LEAKED"
+path = "policies/machine/testing/git_env.rego"
+anchor = "\tsome name in leaked\n"
+mutant = "\tsome name in leaked\n\tfalse\n"
+proof = "tests/test_policy_codes.py::test_a_leaked_git_variable_is_refused_by_the_policy"
