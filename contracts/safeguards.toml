@@ -1,0 +1,76 @@
+# contracts/safeguards.toml
+# safeguards-register/v1 (A.52). Each safeguard names one mutation that disables exactly its
+# guard and the proof that must fail when it is applied; safeguards:prove runs every trial.
+contract = "safeguards-register/v1"
+
+[[safeguards]]
+id = "SA.INPUT_MISSING"
+engine = "source:apply"
+guard = "ERR_SOURCE_APPLY_INPUT_MISSING"
+path = "policies/runs/source_apply/source_apply.rego"
+anchor = "\tnot input.source_apply\n"
+mutant = "\tfalse\n"
+proof = "tests/test_source_apply.py::test_an_absent_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SA.PATH_OUTSIDE"
+engine = "source:apply"
+guard = "ERR_SOURCE_APPLY_PATH_OUTSIDE"
+path = "policies/runs/source_apply/source_apply.rego"
+anchor = "\tnot operation.inside\n"
+mutant = "\tfalse\n"
+proof = "tests/test_source_apply.py::test_a_path_outside_the_repository_is_refused"
+
+[[safeguards]]
+id = "SA.CREATE_EXISTS"
+engine = "source:apply"
+guard = "ERR_SOURCE_APPLY_CREATE_EXISTS"
+path = "policies/runs/source_apply/source_apply.rego"
+anchor = "\toperation.op == \"create\"\n\toperation.exists_before\n"
+mutant = "\toperation.op == \"create\"\n\tfalse\n"
+proof = "tests/test_source_apply.py::test_creating_a_file_that_exists_is_refused"
+
+[[safeguards]]
+id = "SA.REPLACE_MISSING"
+engine = "source:apply"
+guard = "ERR_SOURCE_APPLY_REPLACE_MISSING"
+path = "policies/runs/source_apply/source_apply.rego"
+anchor = "\tnot operation.exists_before\n"
+mutant = "\tfalse\n"
+proof = "tests/test_source_apply.py::test_replacing_in_a_missing_file_is_refused"
+
+[[safeguards]]
+id = "SA.ANCHOR_COUNT"
+engine = "source:apply"
+guard = "ERR_SOURCE_APPLY_ANCHOR_COUNT"
+path = "policies/runs/source_apply/source_apply.rego"
+anchor = "\toperation.anchor_count != operation.expected_count\n"
+mutant = "\tfalse\n"
+proof = "tests/test_source_apply.py::test_an_anchor_found_twice_is_refused"
+
+[[safeguards]]
+id = "SA.PYTHON_UNPARSEABLE"
+engine = "source:apply"
+guard = "ERR_SOURCE_APPLY_PYTHON_UNPARSEABLE"
+path = "policies/runs/source_apply/source_apply.rego"
+anchor = "\tfile.python_parses == false\n"
+mutant = "\tfalse\n"
+proof = "tests/test_source_apply.py::test_a_python_file_left_unparseable_is_refused"
+
+[[safeguards]]
+id = "SA.TOML_UNPARSEABLE"
+engine = "source:apply"
+guard = "ERR_SOURCE_APPLY_TOML_UNPARSEABLE"
+path = "policies/runs/source_apply/source_apply.rego"
+anchor = "\tfile.toml_parses == false\n"
+mutant = "\tfalse\n"
+proof = "tests/test_source_apply.py::test_a_toml_file_left_unparseable_is_refused"
+
+[[safeguards]]
+id = "SA.LINE_TOO_LONG"
+engine = "source:apply"
+guard = "ERR_SOURCE_APPLY_LINE_TOO_LONG"
+path = "policies/runs/source_apply/source_apply.rego"
+anchor = "\toperation.longest_written_python_line > input.source_apply.line_limit\n"
+mutant = "\tfalse\n"
+proof = "tests/test_source_apply.py::test_a_written_python_line_over_100_is_refused"

@@ -55,3 +55,25 @@ def test_an_upstream_copy_that_differs_from_the_record_is_refused(tmp_path: Path
     root, upstream = _setup(tmp_path, "def answer() -> int:\n    return 0\n")
     with pytest.raises(SystemExit, match="does not match the recorded upstream digest"):
         provenance_adapt.plan(root, upstream, "scripts/answer.py", "why")
+
+
+def _stale(sha: str) -> str:
+    return f'[[adapted]]\npath = "scripts/answer.py"\npatch = "a.patch"\nsha256 = "{sha}"\n'
+
+
+def test_an_adaptation_recorded_twice_is_consolidated_into_one(tmp_path: Path) -> None:
+    root, upstream = _setup(tmp_path, UPSTREAM)
+    record = root / "contracts" / "provenance.toml"
+    other = '[[adapted]]\npath = "scripts/other.py"\npatch = "o.patch"\nsha256 = "o"\n'
+    blocks = _stale("one") + other + _stale("two")
+    record.write_text(record.read_text(encoding="utf-8") + "\n" + blocks, encoding="utf-8")
+    text = record.read_text(encoding="utf-8")
+    spec = tomllib.loads(provenance_adapt.plan(root, upstream, "scripts/answer.py", "why"))
+    for op in spec["operations"]:
+        if op["path"] == "contracts/provenance.toml":
+            assert text.count(op["anchor"]) == 1
+            text = text.replace(op["anchor"], op["replacement"])
+    adapted = tomllib.loads(text)["adapted"]
+    mine = [entry for entry in adapted if entry["path"] == "scripts/answer.py"]
+    assert [entry["sha256"] for entry in mine] == [_digest(LOCAL)]
+    assert [entry["path"] for entry in adapted].count("scripts/other.py") == 1

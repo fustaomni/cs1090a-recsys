@@ -309,6 +309,12 @@ sha256 = "dcde6cb0310e50c3e7d5f0dd9da91d9b74a14f12fe54ff16cd78bd241eee815f"
 [[files]]
 path = "tests/test_source_apply.py"
 sha256 = "8596f67209845fda0607bda524b7917ab966f84abe1fb8d36cb6f1f7908f3662"
+
+[[adapted]]
+path = "tests/test_source_apply.py"
+reason = "killing proofs for three source:apply guards that had none; A.52"
+patch = "contracts/vendor-patches/tests/test_source_apply.py.patch"
+sha256 = "cc3c7dae25bed4981dd852f1c8bbeb0fd741cea1a444283e2d3d78d9a41fae82"
 [[files]]
 path = "scripts/source_apply.py"
 sha256 = "f0e4fd1311a4cb251c19dff76c4378354842fab783274e3bd6dec3fe48fbfa3c"
@@ -420,11 +426,6 @@ path = "tests/test_commit_amend.py"
 reason = "AmendGit reports a staged change, as a real ordinary commit has (A.12)"
 patch = "contracts/vendor-patches/tests/test_commit_amend.py.patch"
 sha256 = "bb48b746c596b2f55358430c9d9ca3b79b74bfc63ec8ad6333117e8c47e05661"
-[[adapted]]
-path = "tests/test_source_apply.py"
-patch = "contracts/vendor-patches/tests/test_source_apply.py.patch"
-sha256 = "59071945131295923ab5253c80f1452baf0b01c0d9cca1b588ce2683e6e342de"
-reason = "A.18's proof: the claim's repository parsed from origin"
 [[adapted]]
 path = "scripts/source_apply.py"
 patch = "contracts/vendor-patches/scripts/source_apply.py.patch"
