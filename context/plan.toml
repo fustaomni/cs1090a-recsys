@@ -728,8 +728,19 @@ done_when = [
 id = "A.84"
 title = "source:search matches in one declared dialect, extended, recorded in its contract"
 thread = "A"
-depends_on = ["A.81"]
-because = { "A.81" = "it changes the ported source:search" }
+depends_on = ["A.81", "A.85"]
+because = { "A.81" = "it changes the ported source:search", "A.85" = "the change is recorded as an adaptation by provenance:adapt" }
 done_when = [
   { kind = "proof", test = "tests/test_source_search.py::test_an_alternation_with_groups_matches_as_extended" },
+]
+[[steps]]
+id = "A.85"
+title = "A change to a ported file is planned as its recorded, reversible patch by provenance:adapt"
+thread = "A"
+depends_on = ["A.29", "A.81"]
+because = { "A.29" = "it follows source:port: a saved spec, applied as reviewed", "A.81" = "its first use adapts the ported source:search" }
+done_when = [
+  { kind = "task", name = "provenance:adapt" },
+  { kind = "proof", test = "tests/test_provenance_adapt.py::test_an_adaptation_is_planned_as_a_reversible_patch" },
+  { kind = "proof", test = "tests/test_provenance_adapt.py::test_an_upstream_copy_that_differs_from_the_record_is_refused" },
 ]
