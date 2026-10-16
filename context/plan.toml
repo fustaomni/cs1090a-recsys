@@ -882,3 +882,12 @@ done_when = [
   { kind = "proof", test = "tests/test_upstream_checkout.py::test_a_checkout_is_found_from_every_worktree_of_the_clone" },
   { kind = "proof", test = "tests/test_provenance_adapt.py::test_a_missing_upstream_is_refused_not_raised" },
 ]
+[[steps]]
+id = "A.97"
+title = "A founding refusal names every violation, never only that the file was refused"
+thread = "A"
+depends_on = ["A.27"]
+because = { "A.27" = "source:apply and machine:trust both gate on the founding policy" }
+done_when = [
+  { kind = "proof", test = "tests/test_machine_tasks.py::test_a_founding_refusal_names_each_violation" },
+]
