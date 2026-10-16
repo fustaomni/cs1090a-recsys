@@ -748,3 +748,22 @@ done_when = [
   { kind = "proof", test = "tests/test_provenance_adapt.py::test_an_adaptation_recorded_twice_is_consolidated_into_one" },
   { kind = "proof", test = "tests/test_provenance_record.py::test_no_path_is_recorded_twice" },
 ]
+[[steps]]
+id = "A.86"
+title = "The run ledger's guards join the safeguards register, each killed by its proof"
+thread = "A"
+depends_on = ["A.52"]
+because = { "A.52" = "the register and its trial exist" }
+done_when = [
+  { kind = "task", name = "safeguards:prove" },
+  { kind = "proof", test = "tests/test_ledger_policy.py::test_a_broken_chain_is_refused_by_the_policy" },
+]
+[[steps]]
+id = "A.87"
+title = "Cutting the ledger's newest records is detected by a signed checkpoint of its length and head"
+thread = "A"
+depends_on = ["A.86"]
+because = { "A.86" = "the ledger's existing guards are proven first" }
+done_when = [
+  { kind = "proof", test = "tests/test_ledger_policy.py::test_a_truncated_ledger_is_refused" },
+]
