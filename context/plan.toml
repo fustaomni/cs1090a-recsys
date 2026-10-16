@@ -745,4 +745,6 @@ done_when = [
   { kind = "task", name = "provenance:adapt" },
   { kind = "proof", test = "tests/test_provenance_adapt.py::test_an_adaptation_is_planned_as_a_reversible_patch" },
   { kind = "proof", test = "tests/test_provenance_adapt.py::test_an_upstream_copy_that_differs_from_the_record_is_refused" },
+  { kind = "proof", test = "tests/test_provenance_adapt.py::test_an_adaptation_recorded_twice_is_consolidated_into_one" },
+  { kind = "proof", test = "tests/test_provenance_record.py::test_no_path_is_recorded_twice" },
 ]
