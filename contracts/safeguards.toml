@@ -220,6 +220,24 @@ mutant = "\tfalse\n"
 proof = "tests/test_git_subprocesses.py::test_git_handed_to_a_generic_runner_is_refused"
 
 [[safeguards]]
+id = "GIT.SPAWNS_INPUT_MISSING"
+engine = "check:git-spawns"
+guard = "ERR_GIT_SPAWNS_INPUT_MISSING"
+path = "policies/runs/git_spawns/git_spawns.rego"
+anchor = "\tnot inventory.contract\n"
+mutant = "\tfalse\n"
+proof = "tests/test_git_spawn_policy.py::test_an_unobserved_inventory_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "GIT.SPAWNS_NOTHING_SCANNED"
+engine = "check:git-spawns"
+guard = "ERR_GIT_SPAWNS_NOTHING_SCANNED"
+path = "policies/runs/git_spawns/git_spawns.rego"
+anchor = "\tinventory.files_scanned == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_git_spawn_policy.py::test_an_empty_scan_is_refused_by_the_policy"
+
+[[safeguards]]
 id = "SIGNING.INPUT_MISSING"
 engine = "signing"
 guard = "ERR_SIGNING_INPUT_MISSING"
