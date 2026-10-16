@@ -195,7 +195,10 @@ thread = "A"
 depends_on = ["A.18"]
 because = { "A.18" = "the read tasks arrive through source:apply specs on this branch" }
 done_when = [
-  { kind = "proof", test = "tests/test_repo_history.py::test_another_repository_is_read_at_a_pinned_commit" },
+  { kind = "task", name = "upstream:checkout" },
+  { kind = "proof", test = "tests/test_upstream_checkout.py::test_another_repository_is_checked_out_at_a_pinned_commit" },
+  { kind = "proof", test = "tests/test_upstream_checkout.py::test_an_abbreviated_commit_is_refused" },
+  { kind = "proof", test = "tests/test_upstream_checkout.py::test_a_commit_not_in_the_repository_is_refused" },
 ]
 [[steps]]
 id = "A.29"
@@ -689,8 +692,8 @@ done_when = [
 id = "A.81"
 title = "The source read tasks (read, outline, search) are on this branch, ported by spec"
 thread = "A"
-depends_on = ["A.29"]
-because = { "A.29" = "they are planned by source:port" }
+depends_on = ["A.28", "A.29"]
+because = { "A.28" = "the read tasks are ported from cscie103 at its pinned commit, never from an uncommitted checkout", "A.29" = "they are planned by source:port" }
 done_when = [
   { kind = "task", name = "source:read" },
   { kind = "proof", test = "tests/test_source_read.py::test_a_range_past_the_end_is_refused" },
