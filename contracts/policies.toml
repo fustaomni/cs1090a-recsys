@@ -2,3 +2,19 @@
 # policy-manifest/v1 (A.30): each admitted policy domain, its root package, every file with
 # its SHA-256, and its test file. Written by policies:admit --plan, never by hand.
 contract = "policy-manifest/v1"
+
+[[domains]]
+name = "machine/environment"
+root = "machine.environment"
+test = "environment_test.rego"
+files = [
+  { name = "environment.rego", sha256 = "6977d460116c31242f5663b06231f9a7e33edc6e0d593e6b2d8124c787ad1769" },
+]
+
+[[domains]]
+name = "machine/setup"
+root = "machine.setup"
+test = "setup_env_test.rego"
+files = [
+  { name = "setup_env.rego", sha256 = "7d5bf19e4e73b058475aea97009020aa007540045584b0c17667d04a23cd6236" },
+]

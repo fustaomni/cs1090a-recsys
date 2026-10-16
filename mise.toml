@@ -367,6 +367,25 @@ description = "Refuse any policy domain the manifest declares but cannot admit, 
 raw_args = true
 run = "uv run --no-sync python scripts/policy_admission.py"
 
+[tasks."worktree:add"]
+description = "Cut a sibling worktree on a new feature branch from [base] or a fresh develop, trusted and set up"
+raw_args = true
+run = "uv run --no-sync python scripts/worktree.py add"
+
+[tasks."worktree:list"]
+description = "List worktrees, their branches, and any locked or prunable flags"
+run = "uv run --no-sync python scripts/worktree.py list"
+
+[tasks."worktree:refresh"]
+description = "Rebase a worktree's branch onto current origin/develop; its environment follows the lock"
+raw_args = true
+run = "uv run --no-sync python scripts/worktree.py refresh"
+
+[tasks."worktree:remove"]
+description = "Remove a worktree and delete its branch, refusing to force either"
+raw_args = true
+run = "uv run --no-sync python scripts/worktree.py remove"
+
 [tasks."capabilities:list"]
 description = "List every task as a versioned capability with its enforced effect, or refuse on drift"
 run = "uv run --no-sync python scripts/capabilities.py"

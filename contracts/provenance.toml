@@ -84,6 +84,12 @@ sha256 = "66118456c15421dfc1b6341bb6e0f2b45931d78fc7c0f25c24cb6dbdd6b90432"
 path = "scripts/gitenv.py"
 sha256 = "7c9c3e77a41bcba164ce41e68d95d7a13abae54b9f4f32ad7971d38ba7b93d60"
 
+[[adapted]]
+path = "scripts/gitenv.py"
+reason = "git_bytes: raw output for -z formats, so every git spawn stays in gitenv; A.93"
+patch = "contracts/vendor-patches/scripts/gitenv.py.patch"
+sha256 = "5e9d362af2ec4b0f2933bf2adffbce9f2f4af31cbf1bed2d39e8af0bf09a145c"
+
 [[files]]
 path = "scripts/library_errors.py"
 sha256 = "4de9dd3db04e2449adfd4900e27be93620dd8198b742e2295b47d078dcf73d42"
@@ -511,3 +517,47 @@ sha256 = "e820f8f4ea1184a1bfed75a02e153f02f2add508390daf1f23a4e06efd4b482d"
 [[files]]
 path = "policies/runs/source_outline/source_outline.rego"
 sha256 = "4bc7f84074629a854a9135116690479d997ac61187c4134813a19bd7af5b15e4"
+
+[[files]]
+path = "scripts/setup_env.py"
+sha256 = "9291f866c294d350d98f94ed29450e2ac3facc2f1343f8216afc70cc3eb01f4d"
+
+[[files]]
+path = "scripts/env_sync.py"
+sha256 = "a7733ce329b4c6c787cdc97bbec065ba57120cf9373b46e3f7aa256ce5b9b6c1"
+
+[[files]]
+path = "scripts/worktree.py"
+sha256 = "fa7e99480e9c10832ce0c93b9a74fd82d741846bf1c94a8ce2a4544e6e5e005d"
+
+[[adapted]]
+path = "scripts/worktree.py"
+reason = "cut from an optional base with --no-track; trusted through machine_trust; -z listings through gitenv.git_bytes; A.93"
+patch = "contracts/vendor-patches/scripts/worktree.py.patch"
+sha256 = "5a24d7260e003d2dc680c06de293b05c1cfab841f0b65a80085cebf7352cb3fd"
+
+[[files]]
+path = "policies/machine/setup/setup_env.rego"
+sha256 = "7d5bf19e4e73b058475aea97009020aa007540045584b0c17667d04a23cd6236"
+
+[[files]]
+path = "policies/machine/environment/environment.rego"
+sha256 = "6977d460116c31242f5663b06231f9a7e33edc6e0d593e6b2d8124c787ad1769"
+
+[[files]]
+path = "tests/test_worktree_env.py"
+sha256 = "ef30727e25989d4f95337d1ec98e355b713fed24f686404acdf49a3dd64df630"
+
+[[adapted]]
+path = "tests/test_worktree_env.py"
+reason = "setup's founding gate, trust by path and setup each get the cleaned environment; A.93"
+patch = "contracts/vendor-patches/tests/test_worktree_env.py.patch"
+sha256 = "14c1688fb310abe90b5724406081ec3c705ebc7a1c653d6b903149273e49ee3d"
+
+[[files]]
+path = "tests/test_worktree_refresh.py"
+sha256 = "7a7c2b8900df46055d005cd78d67e4da1637cba0ddea2de0b6e56fdfda844f4d"
+
+[[files]]
+path = "tests/test_worktree_remove.py"
+sha256 = "446e49bce584d01a264e808c500b11e6d5a0df18f76c63d9b7bf8e43604636e8"
