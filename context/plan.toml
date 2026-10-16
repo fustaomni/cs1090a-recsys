@@ -445,6 +445,7 @@ because = { "A.36" = "safeguards feed the claims register" }
 done_when = [
   { kind = "task", name = "safeguards:prove" },
   { kind = "proof", test = "tests/test_safeguards.py::test_a_listed_safeguard_without_a_killing_proof_is_refused" },
+  { kind = "proof", test = "tests/test_safeguards.py::test_only_tracked_files_are_copied" },
 ]
 [[steps]]
 id = "A.53"
