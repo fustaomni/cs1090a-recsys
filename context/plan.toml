@@ -372,7 +372,10 @@ thread = "A"
 depends_on = ["A.36"]
 because = { "A.36" = "the register credits capabilities by contract" }
 done_when = [
-  { kind = "proof", test = "tests/test_capability_contract.py::test_a_task_without_a_capability_contract_is_refused" },
+  { kind = "task", name = "capabilities:list" },
+  { kind = "path", path = "contracts/capabilities.toml" },
+  { kind = "proof", test = "tests/test_capabilities.py::test_every_task_is_a_registered_capability" },
+  { kind = "proof", test = "tests/test_capabilities.py::test_a_mislabelled_or_missing_capability_is_refused" },
 ]
 [[steps]]
 id = "A.45"
