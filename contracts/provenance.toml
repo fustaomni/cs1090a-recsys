@@ -464,6 +464,12 @@ reason = "tests cscie103 Nix and Databricks policy inputs, outside the approved 
 path = "scripts/source_read.py"
 sha256 = "9105497945136c55cf05572a72f6d761ddc866d3407a7b9a534a8acf3e1b579a"
 
+[[adapted]]
+path = "scripts/source_read.py"
+reason = "a failed read is a closed outcome; only a verified absence is not_found; A.60"
+patch = "contracts/vendor-patches/scripts/source_read.py.patch"
+sha256 = "19654189124476a257aca5d4db61b191c3204978a6a081266a77993a8006777d"
+
 [[files]]
 path = "scripts/source_outline.py"
 sha256 = "bd0b55a11f694e8dde9acc52fd31ce466884de2d069e557ece70c21fb568d0a0"
@@ -481,6 +487,12 @@ sha256 = "1f179b3519e9f543eba2f7bd200952e3e412b9678a272c5727ea0eb66544fb14"
 [[files]]
 path = "tests/test_source_read.py"
 sha256 = "6a77d6915387a09ea3bea6b2aee61f8b65ee360ffa8832917b4a9371cbd1ced9"
+
+[[adapted]]
+path = "tests/test_source_read.py"
+reason = "proofs that absence and denied access are told apart; A.60"
+patch = "contracts/vendor-patches/tests/test_source_read.py.patch"
+sha256 = "ce0143d9c2d38814e51e1bb0d40c52640b3a3ad2eec27e494e46ff8cd7c165ba"
 
 [[files]]
 path = "tests/test_source_outline.py"
