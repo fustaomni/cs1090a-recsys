@@ -416,3 +416,39 @@ path = "policies/machine/testing/git_env.rego"
 anchor = "\tsome name in leaked\n"
 mutant = "\tsome name in leaked\n\tfalse\n"
 proof = "tests/test_policy_codes.py::test_a_leaked_git_variable_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "PUSH.INPUT_MISSING"
+engine = "branch:push"
+guard = "ERR_PUSH_INPUT_MISSING"
+path = "policies/runs/branch_push/branch_push.rego"
+anchor = "\tnot input.branch_push\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branch_push.py::test_an_absent_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "PUSH.DETACHED"
+engine = "branch:push"
+guard = "ERR_PUSH_DETACHED"
+path = "policies/runs/branch_push/branch_push.rego"
+anchor = "\trequest.branch == null\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branch_push.py::test_a_detached_head_is_refused"
+
+[[safeguards]]
+id = "PUSH.PROTECTED_BRANCH"
+engine = "branch:push"
+guard = "ERR_PUSH_PROTECTED_BRANCH"
+path = "policies/runs/branch_push/branch_push.rego"
+anchor = "\trequest.protected\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branch_push.py::test_a_protected_branch_is_refused"
+
+[[safeguards]]
+id = "PUSH.GATE_UNPROVEN"
+engine = "branch:push"
+guard = "ERR_PUSH_GATE_UNPROVEN"
+path = "policies/runs/branch_push/branch_push.rego"
+anchor = "\tnot request.gate_passed_at_head\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branch_push.py::test_a_push_without_the_gate_passed_is_refused"
