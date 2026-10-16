@@ -767,3 +767,12 @@ because = { "A.86" = "the ledger's existing guards are proven first" }
 done_when = [
   { kind = "proof", test = "tests/test_ledger_policy.py::test_a_truncated_ledger_is_refused" },
 ]
+[[steps]]
+id = "A.88"
+title = "A report's freshness is judged in its own file system's clock, and a run without one says why"
+thread = "A"
+depends_on = ["A.52"]
+because = { "A.52" = "the trial runner is one of the three readers of a run's report" }
+done_when = [
+  { kind = "proof", test = "tests/test_junit_report.py::test_freshness_is_judged_in_the_report_directorys_own_clock" },
+]
