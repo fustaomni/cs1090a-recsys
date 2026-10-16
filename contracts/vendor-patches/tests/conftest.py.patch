@@ -1,6 +1,6 @@
 --- a/tests/conftest.py
 +++ b/tests/conftest.py
-@@ -5,48 +5,66 @@
+@@ -5,48 +5,83 @@
  every repository-local variable machine.testing names, then requires the policy
  to allow what remains -- so no test, existing or future, can reach the
  repository a hook's GIT_DIR names.
@@ -25,6 +25,7 @@
  
  from git_isolation import isolate
 +from gitenv import git
++from levels import classify, declared
 +
 +ROOT = Path(__file__).resolve().parent.parent
 +NOFILE = FileNotFoundError
@@ -72,8 +73,20 @@
 -        raise RuntimeError(f"a test reached the real publication {args!r}; patch pr._publish")
 -
 -    monkeypatch.setattr(pr, "_publish", refuse)
--
--
++def _classify(items: list[pytest.Item]) -> None:
++    """Every test takes its level from its directory, or the session is refused (A.39)."""
++    levels = declared()
++    refused: list[str] = []
++    for item in items:
++        names = [mark.name for mark in item.iter_markers()]
++        try:
++            item.add_marker(classify(item.nodeid, names, levels))
++        except ValueError as problem:
++            refused.append(str(problem))
++    if refused:
++        raise pytest.UsageError("tests without a level (A.39):\n" + "\n".join(refused))
+ 
+ 
 -@pytest.fixture(autouse=True)
 -def _no_real_decision_record(monkeypatch: pytest.MonkeyPatch) -> None:
 -    """No test appends a publication decision to the real run ledger (D.178).
@@ -86,7 +99,9 @@
 -        return None
 -
 -    monkeypatch.setattr(publish_push, "_record", discard)
++@pytest.hookimpl(tryfirst=True)
 +def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
++    _classify(items)
 +    plan_missing = not (ROOT / "context" / "plan.toml").is_file()
 +    probe = git("rev-parse", "--verify", "--quiet", "origin/develop", cwd=ROOT)
 +    develop_missing = probe.returncode != 0

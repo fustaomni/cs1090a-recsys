@@ -25,6 +25,7 @@ import pytest
 
 from git_isolation import isolate
 from gitenv import git
+from levels import classify, declared
 
 ROOT = Path(__file__).resolve().parent.parent
 NOFILE = FileNotFoundError
@@ -57,7 +58,23 @@ def pytest_configure() -> None:
     isolate(os.environ)
 
 
+def _classify(items: list[pytest.Item]) -> None:
+    """Every test takes its level from its directory, or the session is refused (A.39)."""
+    levels = declared()
+    refused: list[str] = []
+    for item in items:
+        names = [mark.name for mark in item.iter_markers()]
+        try:
+            item.add_marker(classify(item.nodeid, names, levels))
+        except ValueError as problem:
+            refused.append(str(problem))
+    if refused:
+        raise pytest.UsageError("tests without a level (A.39):\n" + "\n".join(refused))
+
+
+@pytest.hookimpl(tryfirst=True)
 def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
+    _classify(items)
     plan_missing = not (ROOT / "context" / "plan.toml").is_file()
     probe = git("rev-parse", "--verify", "--quiet", "origin/develop", cwd=ROOT)
     develop_missing = probe.returncode != 0

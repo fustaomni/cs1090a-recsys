@@ -67,6 +67,7 @@ implicit_reexport = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
+  "unit: hermetic and fast; the default run on every push",
   "integration: requires network access; excluded from the default run",
   "acceptance: drives the real gateway in a sandboxed copy of this repository, faults at the OS boundary",
 ]

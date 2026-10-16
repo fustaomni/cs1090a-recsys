@@ -350,9 +350,9 @@ path = "contracts/schemas/contracts/deps_add.DepsChange.json"
 sha256 = "73dbed77bfee4919c1be1c5199c0cc8ca6f6139ed4311120812d7b35fd72a92d"
 [[adapted]]
 path = "tests/conftest.py"
-reason = "publication guards absent until pr and publish_push are ported; plan and develop tests strict-xfail until their preconditions exist"
+reason = "every test takes its level from its directory, or is refused; A.39"
 patch = "contracts/vendor-patches/tests/conftest.py.patch"
-sha256 = "de1d79a0d12fcb2e31b8bafed3c61b28e55462593af3eea804ab2fa9ae335a15"
+sha256 = "d7cb7ca8ce3e1db4ce0c73f68f9b72b2c0d9a85a922b7b4f1fb237a316dc356e"
 
 [[adapted]]
 path = "tests/test_plan_status.py"

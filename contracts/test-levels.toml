@@ -1,0 +1,9 @@
+# contracts/test-levels.toml
+# test-levels/v1 (A.39): each test directory's level. A test takes the level of the deepest
+# directory named here; one in no named directory, or marked with another level, is refused.
+contract = "test-levels/v1"
+
+[directories]
+"tests" = "unit"
+"tests/acceptance" = "acceptance"
+"tests/integration" = "integration"
