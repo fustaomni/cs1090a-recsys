@@ -776,3 +776,13 @@ because = { "A.52" = "the trial runner is one of the three readers of a run's re
 done_when = [
   { kind = "proof", test = "tests/test_junit_report.py::test_freshness_is_judged_in_the_report_directorys_own_clock" },
 ]
+[[steps]]
+id = "A.89"
+title = "Every closed code under policies is a registered safeguard whose mutant its proof kills"
+thread = "A"
+depends_on = ["A.86"]
+because = { "A.86" = "the register holds source:apply's and the ledger's guards; the rest follow" }
+done_when = [
+  { kind = "task", name = "safeguards:prove" },
+  { kind = "proof", test = "tests/test_safeguard_coverage.py::test_every_closed_code_is_a_registered_safeguard" },
+]
