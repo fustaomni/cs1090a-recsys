@@ -11,6 +11,7 @@ description = "Offline prediction of the next recorded MovieLens 1M rating, gove
 # is never used.
 requires-python = "==3.12.3"
 dependencies = [
+    "defusedxml==0.7.1",
     "securesystemslib[crypto]>=1.5.1",
     "tomlkit>=0.15.1",
 ]
@@ -24,6 +25,7 @@ dev = [
   "pydantic-settings>=2.6",
   "pyyaml>=6.0.2",
   "types-pyyaml>=6.0.12.20260906",
+  "types-defusedxml==0.7.0.20260504",
 ]
 
 [tool.ruff]
