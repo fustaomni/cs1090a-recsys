@@ -83,4 +83,5 @@ issued = [
   { id = "A.88", first_title = "A report's freshness is judged in its own file system's clock, and a run without one says why" },
   { id = "A.89", first_title = "Every closed code under policies is a registered safeguard whose mutant its proof kills" },
   { id = "A.90", first_title = "A gate lane that may be empty reports nothing to run; every other lane still fails on it" },
+  { id = "A.91", first_title = "A feature branch reaches GitHub only through branch:push: its own ref, never a protected one, after the gate" },
 ]
