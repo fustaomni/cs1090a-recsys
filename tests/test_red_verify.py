@@ -80,3 +80,20 @@ def test_a_malformed_report_is_refused_not_raised(tmp_path: Path) -> None:
     report.write_text("<testsuites><testsuite>", encoding="utf-8")
     verdict = red_verify.judge(1, report, NODE, 0.0)
     assert verdict.reason_code == "REFUSED_MALFORMED_REPORT"
+
+
+SECOND = "tests/test_widget.py::test_widget_keeps_its_parent"
+SECOND_FAILED = (
+    '<testcase classname="tests.test_widget" name="test_widget_keeps_its_parent">'
+    '<failure message="AssertionError: parent lost">trace</failure></testcase>'
+)
+SECOND_PASSED = '<testcase classname="tests.test_widget" name="test_widget_keeps_its_parent" />'
+
+
+def test_several_named_proofs_are_red_together(tmp_path: Path) -> None:
+    nodes = (NODE, SECOND)
+    together = _report(tmp_path, FAILED + SECOND_FAILED + PASSED_OTHER)
+    verdict = red_verify.judge_set(1, together, nodes, 0.0)
+    assert (verdict.reason_code, verdict.nodes) == ("RED_BEHAVIOURAL", nodes)
+    one_passes = _report(tmp_path, FAILED + SECOND_PASSED)
+    assert red_verify.judge_set(1, one_passes, nodes, 0.0).reason_code == "REFUSED_NODE_NOT_FAILED"
