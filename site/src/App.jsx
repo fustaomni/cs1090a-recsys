@@ -140,7 +140,67 @@ function Phases() {
   );
 }
 
-const READY = { overview: Overview, scope: Scope, phases: Phases };
+function Deploys() {
+  const groups = [];
+  for (const model of data.models) {
+    const last = groups[groups.length - 1];
+    if (last && last.phase === model.phase) {
+      last.models.push(model);
+    } else {
+      groups.push({ phase: model.phase, models: [model] });
+    }
+  }
+  return (
+    <section id="deploys" className="section">
+      <h2>What the project deploys</h2>
+      <h3>Twelve predictive models, simplest first</h3>
+      <ol className="ladder">
+        {groups.map((group) => (
+          <li key={group.phase}>
+            <p className="eyebrow">
+              Phase {group.phase} · {data.families[group.phase]}
+            </p>
+            <ul className="rungs">
+              {group.models.map((model) => (
+                <li key={model.id}>
+                  <span className="rung-id">{model.id}</span>
+                  {model.name}
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ol>
+      <div className="opponent">
+        <h3>The opponent every model must beat</h3>
+        <ul className="chips">
+          {data.baselines.map((baseline) => (
+            <li key={baseline.name}>{baseline.name}</li>
+          ))}
+        </ul>
+        <p>{data.baseline_note}</p>
+      </div>
+      <h3>Ten supporting techniques</h3>
+      <ul className="cards">
+        {data.techniques.map((technique) => (
+          <li key={technique.id}>
+            <p className="eyebrow">Technique {technique.id}</p>
+            <h4>{technique.name}</h4>
+            <p className="muted">{technique.where}</p>
+          </li>
+        ))}
+      </ul>
+      <h3>Deliberately excluded</h3>
+      <ul>
+        {data.excluded.map((entry) => (
+          <li key={entry}>{entry}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+const READY = { overview: Overview, scope: Scope, phases: Phases, deploys: Deploys };
 
 export default function App() {
   return (
