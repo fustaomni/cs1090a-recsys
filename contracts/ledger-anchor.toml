@@ -1,0 +1,9 @@
+# contracts/ledger-anchor.toml
+# ledger-anchor/v1 (A.87), written only by ledger:anchor.
+# The run ledger's record at this position has this run id and digest.
+# It never moves backwards, nor past an anchor that no longer holds.
+contract = "ledger-anchor/v1"
+ledger = "/shared/home/phl690/fustaomni/cs1090a-recsys/.artifacts/runs/ledger.jsonl"
+position = 531
+run_id = "82141603e736441bbe7f4c3e9c9f0b39"
+sha256 = "f49ba2b38f877bcade7f0a4caf78b7833efe78307061e9b6919b511c380957b4"
