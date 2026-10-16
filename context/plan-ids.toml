@@ -81,4 +81,5 @@ issued = [
   { id = "A.86", first_title = "The run ledger's guards join the safeguards register, each killed by its proof" },
   { id = "A.87", first_title = "Cutting the ledger's newest records is detected by a signed checkpoint of its length and head" },
   { id = "A.88", first_title = "A report's freshness is judged in its own file system's clock, and a run without one says why" },
+  { id = "A.89", first_title = "Every closed code under policies is a registered safeguard whose mutant its proof kills" },
 ]
