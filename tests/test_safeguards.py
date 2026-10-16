@@ -10,7 +10,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from safeguards import Safeguard, copy_tracked, trial
+from safeguards import Safeguard, copy_committable, trial
 
 PROOF = "tests/test_guard.py::test_guard_holds"
 
@@ -55,13 +55,18 @@ def test_a_listed_safeguard_without_a_killing_proof_is_refused(tmp_path: Path) -
     assert trial(broken, root, _killing, _copy).verdict == "mutation_invalid"
 
 
-def test_only_tracked_files_are_copied(tmp_path: Path) -> None:
+def test_ignored_files_are_never_copied(tmp_path: Path) -> None:
+    """The copy is what a commit could contain: tracked and new files, never ignored ones."""
     root = tmp_path / "repo"
     (root / "pkg").mkdir(parents=True)
     (root / "pkg" / "kept.py").write_text("x = 1\n", encoding="utf-8")
-    (root / "loose.txt").write_text("untracked\n", encoding="utf-8")
+    (root / "new_proof.py").write_text("y = 2\n", encoding="utf-8")
+    (root / ".gitignore").write_text("scratch.log\n", encoding="utf-8")
+    (root / "scratch.log").write_text("noise\n", encoding="utf-8")
     subprocess.run(["git", "init", "-q"], cwd=root, check=True)
     subprocess.run(["git", "add", "pkg/kept.py"], cwd=root, check=True)
-    copy_tracked(root, tmp_path / "copy")
-    assert (tmp_path / "copy" / "pkg" / "kept.py").read_text(encoding="utf-8") == "x = 1\n"
-    assert not (tmp_path / "copy" / "loose.txt").exists()
+    copied = tmp_path / "copy"
+    copy_committable(root, copied)
+    assert (copied / "pkg" / "kept.py").read_text(encoding="utf-8") == "x = 1\n"
+    assert (copied / "new_proof.py").read_text(encoding="utf-8") == "y = 2\n"
+    assert not (copied / "scratch.log").exists()

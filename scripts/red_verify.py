@@ -24,7 +24,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
-from junit_report import ReportError, load, node_of, outcome_of
+from junit_report import ReportError, filesystem_now, load, node_of, outcome_of
 
 ROOT = Path(__file__).resolve().parent.parent
 REPORTS = ROOT / ".artifacts" / "runs" / "red"
@@ -133,7 +133,7 @@ def main() -> int:
             REPORTS.mkdir(parents=True, exist_ok=True)
             stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
             report = REPORTS / f"{stamp}-{nodes[0].split('::')[-1]}.xml"
-            started = time.time()
+            started = filesystem_now(REPORTS)
             files = list(dict.fromkeys(node.split("::")[0] for node in nodes))
             argv = [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider"]
             argv += ["--junitxml", str(report), *files]

@@ -3,7 +3,7 @@
 A GUARD IS PROVEN BY WHAT BREAKS WITHOUT IT. Each safeguard names its engine and guard, one
 mutation that disables exactly that guard (an anchor found once, and its replacement), and the
 proof that must fail when the mutation is applied. A trial runs the proof three times: on the
-repository as it is and on an unmutated scratch copy of its tracked files, both of which must
+repository as it is and on an unmutated scratch copy of its committable files, both of which must
 pass, since mutation testing on a failing baseline measures nothing; then on the copy with the
 mutation applied. Only a proof that fails there kills the mutant. A proof that still passes lets
 it survive; an error or a missing node is inconclusive and never counted as killed; a missing
@@ -16,7 +16,6 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import time
 import tomllib
 from collections.abc import Callable
 from pathlib import Path
@@ -26,7 +25,7 @@ from pydantic import BaseModel, ConfigDict
 
 from contract_base import from_document
 from gitenv import git
-from junit_report import ReportError, load, node_of, outcome_of
+from junit_report import ReportError, filesystem_now, load, node_of, outcome_of
 
 ROOT = Path(__file__).resolve().parent.parent
 REGISTER = ROOT / "contracts" / "safeguards.toml"
@@ -85,35 +84,45 @@ class TrialReport(BaseModel):
     trials: tuple[Trial, ...]
 
 
-def copy_tracked(root: Path, destination: Path) -> None:
-    """Copy every tracked file of root into destination, nothing untracked or ignored."""
-    listed = git("ls-files", "-z", cwd=root)
+def copy_committable(root: Path, destination: Path) -> None:
+    """Copy into destination every file a commit of root could contain, never an ignored one.
+
+    A trial runs before its commit, as a gate, so a new proof is still untracked: the copy is
+    git's index plus untracked files outside the standard exclusions, and a tracked file deleted
+    from the working tree is not copied.
+    """
+    listed = git("ls-files", "-z", "--cached", "--others", "--exclude-standard", cwd=root)
     if listed.returncode != 0:
         raise SystemExit(f"git ls-files failed in {root}: {listed.stderr.strip()}")
     for name in filter(None, listed.stdout.split("\0")):
+        source = root / name
+        if not source.is_file():
+            continue
         target = destination / name
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(root / name, target)
+        shutil.copy2(source, target)
 
 
 def run_proof(base: Path, node: str) -> str:
     """How the named proof ended when run in base, from the JUnit report that run wrote."""
     with tempfile.TemporaryDirectory() as reports:
         report = Path(reports) / "proof.xml"
-        started = time.time()
+        started = filesystem_now(Path(reports))
         argv = [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider"]
         argv += ["--junitxml", str(report), node]
-        subprocess.run(argv, cwd=base, check=False, capture_output=True)
+        ran = subprocess.run(argv, cwd=base, check=False, capture_output=True, text=True)
         try:
             cases = load(report, started)
         except ReportError as problem:
-            return f"error: {problem.detail}"
+            output = (ran.stdout + ran.stderr).strip().splitlines()
+            last = output[-1] if output else "no output"
+            return f"error: {problem.detail} (exit {ran.returncode}: {last})"
         found = [outcome_of(case) for case in cases if node_of(case) == node]
         return found[0] if found else "missing"
 
 
 def trial(
-    safeguard: Safeguard, root: Path, run: RunProof = run_proof, copy: Copy = copy_tracked
+    safeguard: Safeguard, root: Path, run: RunProof = run_proof, copy: Copy = copy_committable
 ) -> Trial:
     """Baseline and control pass, then the mutant: killed only if the proof then fails."""
 
