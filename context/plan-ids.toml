@@ -21,4 +21,9 @@ issued = [
   { id = "A.22", first_title = "zizmor 1.30.1 is pinned, its provenance verified and locked, through the founding gate" },
   { id = "A.23", first_title = "The workflow audit arrives: every workflow passes zizmor and the permission allow-list" },
   { id = "A.24", first_title = "A file is removed only through a source:apply spec, judged like every other write" },
+  { id = "A.25", first_title = "worktree:add takes an optional base, so stacked work gets its own worktree" },
+  { id = "A.26", first_title = "tools:lock and tools:install are tasks, recorded like every other operation" },
+  { id = "A.27", first_title = "The founding gate and the re-trust of a checkout are one machine-level task, shipped in the repository" },
+  { id = "A.28", first_title = "Another repository is read at a pinned commit by recorded tasks" },
+  { id = "A.29", first_title = "Spec building is a task: an upstream file or a formatted edit becomes a measured source:apply spec" },
 ]
