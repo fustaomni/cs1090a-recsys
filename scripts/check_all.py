@@ -33,7 +33,10 @@ from pydantic import Field, model_validator
 from bounded import Exited, TimedOut, run
 from contract_base import Contract
 
-State = Literal["executed_passed", "executed_failed", "timed_out", "reused"]
+State = Literal["executed_passed", "executed_failed", "timed_out", "reused", "nothing_to_run"]
+
+# pytest's ExitCode.NO_TESTS_COLLECTED: nothing was selected, so nothing ran (A.90).
+NO_TESTS_COLLECTED = 5
 
 
 class GateSpec(Contract):
@@ -43,6 +46,8 @@ class GateSpec(Contract):
     command: tuple[str, ...] = Field(min_length=1)
     runs_in_hooks: bool
     timeout_seconds: float = Field(gt=0)
+    # A LANE MAY DECLARE ITSELF EMPTY (A.90): only then is pytest's exit 5 nothing to run.
+    may_be_empty: bool = False
 
 
 class GateRun(Contract):
@@ -172,6 +177,7 @@ GATES: tuple[GateSpec, ...] = (
         name="test (integration)",
         command=("uv", "run", "pytest", "-m", "integration"),
         runs_in_hooks=False,
+        may_be_empty=True,
         timeout_seconds=1200.0,
     ),
 )
@@ -191,6 +197,8 @@ def run_gate(spec: GateSpec) -> GateRun:
         state: State = "timed_out"
     elif isinstance(ended, Exited) and ended.code == 0:
         state = "executed_passed"
+    elif isinstance(ended, Exited) and ended.code == NO_TESTS_COLLECTED and spec.may_be_empty:
+        state = "nothing_to_run"
     else:
         state = "executed_failed"
     return GateRun(
@@ -222,13 +230,14 @@ def main() -> int:
         ran = run_gate(spec)
         runs.append(ran)
         late = f" (timed out after {spec.timeout_seconds:g}s)" if ran.state == "timed_out" else ""
-        print(f"{'PASS' if ran.passed else 'FAIL'}  {spec.name}{late}", flush=True)
+        label = "NONE" if ran.state == "nothing_to_run" else "PASS" if ran.passed else "FAIL"
+        print(f"{label}  {spec.name}{late}", flush=True)
 
     report = _report_path(sys.argv)
     if report is not None:
         report.write_text(GateReport(gates=tuple(runs)).model_dump_json(), encoding="utf-8")
 
-    failed = [ran for ran in runs if not ran.passed]
+    failed = [ran for ran in runs if not ran.passed and ran.state != "nothing_to_run"]
 
     if failed:
         for ran in failed:
@@ -240,7 +249,9 @@ def main() -> int:
         )
         return 1
 
-    print(f"\nall {len(runs)} gates passed")
+    empty = [ran.name for ran in runs if ran.state == "nothing_to_run"]
+    note = f"; nothing to run in {', '.join(empty)}" if empty else ""
+    print(f"\nall {len(runs) - len(empty)} gates passed{note}")
     return 0
 
 

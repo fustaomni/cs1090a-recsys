@@ -405,9 +405,9 @@ patch = "contracts/vendor-patches/tests/test_signing.py.patch"
 sha256 = "e79583063db873058c6af6a2e3129fbee985d965f177bc249940cf2f0bb0b62d"
 [[adapted]]
 path = "scripts/check_all.py"
-reason = "gates whose script, task or tool recsys lacks are withdrawn by name (A.3); the history scan returns (A.4)"
+reason = "a lane that may be empty reports nothing to run instead of failing; A.90"
 patch = "contracts/vendor-patches/scripts/check_all.py.patch"
-sha256 = "a8b7580aaba3a2fca300ffbaa0c10721d17a01ee679047396b421388eb98046a"
+sha256 = "571f44a4b2af09bfbc5c46a1baddcf781e32c8ad984d3fcf6df01c57079a3154"
 [[adapted]]
 path = "scripts/commit.py"
 reason = "the root commit names its branch (A.5); nothing staged is refused and git reasons kept (A.12)"
