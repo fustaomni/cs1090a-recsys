@@ -172,6 +172,12 @@ implementation = "scripts/claims_audit.py"
 emits = "claims-audit/v1"
 
 [[capabilities]]
+task = "machine:trust"
+version = "1.0.0"
+implementation = "scripts/machine_trust.py"
+emits = "trust-decision/v1"
+
+[[capabilities]]
 task = "capabilities:list"
 version = "1.0.0"
 implementation = "scripts/capabilities.py"

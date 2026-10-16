@@ -440,9 +440,9 @@ patch = "contracts/vendor-patches/tests/test_commit_amend.py.patch"
 sha256 = "bb48b746c596b2f55358430c9d9ca3b79b74bfc63ec8ad6333117e8c47e05661"
 [[adapted]]
 path = "scripts/source_apply.py"
+reason = "a staged mise.toml is gated by the founding policy and re-trusted after writing; A.27"
 patch = "contracts/vendor-patches/scripts/source_apply.py.patch"
-sha256 = "bcd677b62c8e0c3e005ff6eca49ace8e417dd94b593c84c2aa81c10790638c41"
-reason = "origin names the repository in a claim; recsys has no Databricks identity (A.18)"
+sha256 = "3669dc93e6922b3ae925492f179d491564c0bf0dccdbd9cd3bbe4303c536ebd8"
 [[withdrawn]]
 path = "tests/test_policy_inputs.py"
 sha256 = "20b42d632e5a2534b5767966722b8909157723f5e93e768d3c35c0a66ed4d8f6"
