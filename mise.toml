@@ -346,6 +346,10 @@ minimum_release_age = "2026-10-08T00:00:00Z"
 UV_CACHE_DIR = "{{config_root}}/.cache/uv"
 
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.18): every mutation is a spec.
+[tasks."ledger:anchor"]
+description = "Plan the run ledger's anchor at its newest record, never past an anchor that broke"
+run = "uv run --no-sync python scripts/ledger_anchor.py"
+
 [tasks."safeguards:prove"]
 description = "Prove every listed safeguard: its proof passes, then fails once its guard is mutated away"
 run = "uv run --no-sync python scripts/safeguards.py"
