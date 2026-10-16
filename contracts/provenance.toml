@@ -447,6 +447,12 @@ sha256 = "bd0b55a11f694e8dde9acc52fd31ce466884de2d069e557ece70c21fb568d0a0"
 path = "scripts/source_search.py"
 sha256 = "b23f7eff57e4af910a3d1975466481802aef82bf637ecf64016057122700e2e3"
 
+[[adapted]]
+path = "scripts/source_search.py"
+reason = "patterns matched as POSIX extended (-E), the dialect recorded in source-matches; A.84"
+patch = "contracts/vendor-patches/scripts/source_search.py.patch"
+sha256 = "1f179b3519e9f543eba2f7bd200952e3e412b9678a272c5727ea0eb66544fb14"
+
 [[files]]
 path = "tests/test_source_read.py"
 sha256 = "6a77d6915387a09ea3bea6b2aee61f8b65ee360ffa8832917b4a9371cbd1ced9"
@@ -458,6 +464,12 @@ sha256 = "4afbb4444dbd8f822fdcf6411de5e0f5664774c7a004aa286c0d7a0b1416f1a5"
 [[files]]
 path = "tests/test_source_search.py"
 sha256 = "12c99812afd1ec7fe4d52654ecdbdf075460cba02203c6e7775969242914ab20"
+
+[[adapted]]
+path = "tests/test_source_search.py"
+reason = "proof that an alternation with groups matches as extended; A.84"
+patch = "contracts/vendor-patches/tests/test_source_search.py.patch"
+sha256 = "e820f8f4ea1184a1bfed75a02e153f02f2add508390daf1f23a4e06efd4b482d"
 
 [[files]]
 path = "policies/runs/source_outline/source_outline.rego"

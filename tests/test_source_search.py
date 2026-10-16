@@ -62,3 +62,10 @@ def test_a_crlf_carriage_return_is_stripped(tmp_path: Path) -> None:
 def test_no_match_is_an_empty_result(tmp_path: Path) -> None:
     found = search(_repo(tmp_path), "no-such-thing", ())
     assert (found.count, found.matches) == (0, ())
+
+
+def test_an_alternation_with_groups_matches_as_extended(tmp_path: Path) -> None:
+    """Grouping and alternation work unescaped: one declared dialect, never git's default."""
+    found = search(_repo(tmp_path), "^(x|needle) = [0-9]$", ("a.py",))
+    assert [m.number for m in found.matches] == [1, 2]
+    assert found.dialect == "extended"
