@@ -10,8 +10,7 @@ ONLY A BEHAVIOURAL RED SATISFIES RED_VERIFIED: exit 1, the named node failing, n
 failing and nothing failing to collect. Collection errors that are all a missing module are an
 import red, recorded but never sufficient, since they show the code is absent, not wrong.
 
-The report is parsed with defusedxml, which refuses entity expansion and external references,
-so even a tampered report cannot turn the parse against the verifier.
+The report is read by junit_report, the one reader the GREEN verdict shares.
 """
 
 from __future__ import annotations
@@ -23,9 +22,9 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Literal
 
-from defusedxml import DefusedXmlException
-from defusedxml import ElementTree as SafeET
 from pydantic import BaseModel, ConfigDict
+
+from junit_report import ReportError, load, node_of, outcome_of
 
 ROOT = Path(__file__).resolve().parent.parent
 REPORTS = ROOT / ".artifacts" / "runs" / "red"
@@ -64,11 +63,6 @@ class RedVerdict(BaseModel):
         return self.reason_code == "RED_BEHAVIOURAL"
 
 
-def _node_of(case: ET.Element) -> str:
-    module = case.get("classname", "")
-    return f"{module.replace('.', '/')}.py::{case.get('name', '')}"
-
-
 def _text(element: ET.Element) -> str:
     return f"{element.get('message', '')} {element.text or ''}"
 
@@ -86,17 +80,10 @@ def judge(exit_code: int, report: Path, node: str, started: float) -> RedVerdict
             detail=detail,
         )
 
-    if not report.is_file() or report.stat().st_size == 0:
-        return verdict("REFUSED_NO_REPORT", "no report was written by this run")
-    if report.stat().st_mtime < started:
-        return verdict("REFUSED_STALE_REPORT", "the report predates this run")
     try:
-        root = SafeET.parse(report).getroot()
-    except (SafeET.ParseError, DefusedXmlException) as error:
-        return verdict("REFUSED_MALFORMED_REPORT", f"the report is not readable XML: {error}")
-    if root is None:
-        return verdict("REFUSED_MALFORMED_REPORT", "the report has no root element")
-    cases = list(root.iter("testcase"))
+        cases = load(report, started)
+    except ReportError as problem:
+        return verdict(problem.code, problem.detail)
     collection = [
         error for case in cases if not case.get("classname") for error in case.findall("error")
     ]
@@ -108,17 +95,16 @@ def judge(exit_code: int, report: Path, node: str, started: float) -> RedVerdict
         return verdict("REFUSED_COLLECTION_ERROR", f"{len(collection)} collection error(s)")
     if exit_code != 1:
         return verdict("REFUSED_EXIT_CODE", f"exit {exit_code}; a red is exit 1")
-    target = [case for case in cases if _node_of(case) == node]
+    target = [case for case in cases if node_of(case) == node]
     if not target:
         return verdict("REFUSED_NODE_MISSING", f"{node} was not collected")
     failure = target[0].find("failure")
     if failure is None:
         return verdict("REFUSED_NODE_NOT_FAILED", f"{node} did not fail on its behaviour")
     others = [
-        _node_of(case)
+        node_of(case)
         for case in cases
-        if _node_of(case) != node
-        and (case.find("failure") is not None or case.find("error") is not None)
+        if node_of(case) != node and outcome_of(case) in ("failed", "error")
     ]
     if others:
         return verdict("REFUSED_UNRELATED_FAILURE", "also failed: " + ", ".join(others))
