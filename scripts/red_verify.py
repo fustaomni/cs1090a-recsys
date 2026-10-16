@@ -46,12 +46,12 @@ RedKind = Literal["behavioural", "import"]
 
 
 class RedVerdict(BaseModel):
-    """red-verdict/v1: whether a run showed the named proof failing for its behaviour."""
+    """red-verdict/v2: whether a run showed every named proof failing for its behaviour."""
 
     model_config = ConfigDict(frozen=True, extra="forbid", strict=True)
 
-    contract: Literal["red-verdict/v1"] = "red-verdict/v1"
-    node: str
+    contract: Literal["red-verdict/v2"] = "red-verdict/v2"
+    nodes: tuple[str, ...]
     exit_code: int
     report: str
     reason_code: ReasonCode
@@ -67,12 +67,23 @@ def _text(element: ET.Element) -> str:
     return f"{element.get('message', '')} {element.text or ''}"
 
 
+def _message(case: ET.Element) -> str:
+    failure = case.find("failure")
+    return failure.get("message", "") if failure is not None else ""
+
+
 def judge(exit_code: int, report: Path, node: str, started: float) -> RedVerdict:
-    """The verdict for one run: exit code, its report, the named node, and when it started."""
+    """The verdict for one named proof: judge_set over a set of one."""
+    return judge_set(exit_code, report, (node,), started)
+
+
+def judge_set(exit_code: int, report: Path, nodes: tuple[str, ...], started: float) -> RedVerdict:
+    """The verdict for one run over a set of named proofs, every one of which must be red."""
+    wanted = tuple(dict.fromkeys(nodes))
 
     def verdict(code: ReasonCode, detail: str, kind: RedKind | None = None) -> RedVerdict:
         return RedVerdict(
-            node=node,
+            nodes=wanted,
             exit_code=exit_code,
             report=str(report),
             reason_code=code,
@@ -95,37 +106,43 @@ def judge(exit_code: int, report: Path, node: str, started: float) -> RedVerdict
         return verdict("REFUSED_COLLECTION_ERROR", f"{len(collection)} collection error(s)")
     if exit_code != 1:
         return verdict("REFUSED_EXIT_CODE", f"exit {exit_code}; a red is exit 1")
-    target = [case for case in cases if node_of(case) == node]
-    if not target:
-        return verdict("REFUSED_NODE_MISSING", f"{node} was not collected")
-    failure = target[0].find("failure")
-    if failure is None:
-        return verdict("REFUSED_NODE_NOT_FAILED", f"{node} did not fail on its behaviour")
+    if not wanted:
+        return verdict("REFUSED_NODE_MISSING", "no proof was named")
+    found = {node_of(case): case for case in cases}
+    missing = [node for node in wanted if node not in found]
+    if missing:
+        return verdict("REFUSED_NODE_MISSING", "not collected: " + ", ".join(missing))
+    unfailed = [node for node in wanted if outcome_of(found[node]) != "failed"]
+    if unfailed:
+        detail = "did not fail on its behaviour: " + ", ".join(unfailed)
+        return verdict("REFUSED_NODE_NOT_FAILED", detail)
     others = [
         node_of(case)
         for case in cases
-        if node_of(case) != node and outcome_of(case) in ("failed", "error")
+        if node_of(case) not in wanted and outcome_of(case) in ("failed", "error")
     ]
     if others:
         return verdict("REFUSED_UNRELATED_FAILURE", "also failed: " + ", ".join(others))
-    return verdict("RED_BEHAVIOURAL", failure.get("message", ""), "behavioural")
+    messages = [f"{node}: {_message(found[node])}" for node in wanted]
+    return verdict("RED_BEHAVIOURAL", "; ".join(messages), "behavioural")
 
 
 def main() -> int:
     match sys.argv[1:]:
-        case [node] if "::" in node:
+        case [*nodes] if nodes and all("::" in node for node in nodes):
             REPORTS.mkdir(parents=True, exist_ok=True)
             stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-            report = REPORTS / f"{stamp}-{node.split('::')[-1]}.xml"
+            report = REPORTS / f"{stamp}-{nodes[0].split('::')[-1]}.xml"
             started = time.time()
+            files = list(dict.fromkeys(node.split("::")[0] for node in nodes))
             argv = [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider"]
-            argv += ["--junitxml", str(report), node.split("::")[0]]
+            argv += ["--junitxml", str(report), *files]
             ran = subprocess.run(argv, cwd=ROOT, check=False)
-            result = judge(ran.returncode, report, node, started)
+            result = judge_set(ran.returncode, report, tuple(nodes), started)
             print(result.model_dump_json(indent=2))
             return 0 if result.satisfies_red_verified else 2
         case other:
-            raise SystemExit(f"usage: red_verify.py <tests/file.py::test_name>  (got {other})")
+            raise SystemExit(f"usage: red_verify.py <file.py::test>...  (got {other})")
 
 
 if __name__ == "__main__":
