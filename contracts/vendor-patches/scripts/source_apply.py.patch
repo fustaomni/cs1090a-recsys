@@ -1,15 +1,16 @@
 --- a/scripts/source_apply.py
 +++ b/scripts/source_apply.py
-@@ -30,7 +30,7 @@
+@@ -30,7 +30,8 @@
  from claim import claim, decision_predicate_type, seal, store
  from command_outcome import announce
  from contract_base import Contract, from_document
 -from project_identity import load as load_identity
 +from gitenv import git as _git
++from machine_trust import founding_allows, trust
  from spine import decide, enforce, evaluate, halted, reasons, refusal_code, schema_verdict
  
  ROOT = Path(__file__).resolve().parent.parent
-@@ -189,6 +189,29 @@
+@@ -189,6 +190,29 @@
          return None, f"{args[0]}: {error.strerror}"
  
  
@@ -39,8 +40,17 @@
  def main(
      argv: Sequence[str] | None = None, *, root: Path = ROOT, stdin: TextIO | None = None
  ) -> int:
-@@ -213,7 +236,7 @@
+@@ -211,9 +235,16 @@
+     if decision.action != "proceed":
+         code = refusal_code(decision, "spec_refused")
          return enforce(announce(COMMAND, decision, code, reasons(found), observed))
++    # mise.toml IS GATED BEFORE IT IS WRITTEN (A.27): under paranoid a write untrusts it, and an
++    # untrusted mise.toml runs no task, so the founding policy judges the staged text first.
++    config = root.resolve() / "mise.toml"
++    if config in staged and not founding_allows(staged[config]):
++        reason = "the founding policy refuses the mise.toml this spec would write"
++        stopped = halted(SUBJECT, ENTRYPOINT, POLICY, reason)
++        return enforce(announce(COMMAND, stopped, "founding_refused", reason, observed))
      # IDENTITY IS READ NOW, NEVER AT IMPORT: a claim names the repository running this.
      try:
 -        repository = load_identity(ROOT).repository
@@ -48,3 +58,14 @@
          # LOADED BEFORE ANYTHING IS WRITTEN (D.109): a corrupt key stops the apply, not a claim.
          from signing import load_signer
  
+@@ -230,6 +261,10 @@
+         reason = f"bytes on disk differ from the spec: {', '.join(differing)}"
+         stopped = halted(SUBJECT, ENTRYPOINT, POLICY, reason)
+         return enforce(announce(COMMAND, stopped, "apply_unverified", reason, observed))
++    if config in staged and not trust(root, staged[config]).trusted:
++        reason = "mise.toml was written but could not be re-trusted"
++        stopped = halted(SUBJECT, ENTRYPOINT, POLICY, reason)
++        return enforce(announce(COMMAND, stopped, "mise_untrusted", reason, observed))
+     base = root.resolve()
+     written = [
+         {"path": str(target.relative_to(base)), "sha256": _digest(text)}

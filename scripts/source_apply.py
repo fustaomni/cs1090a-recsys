@@ -31,6 +31,7 @@ from claim import claim, decision_predicate_type, seal, store
 from command_outcome import announce
 from contract_base import Contract, from_document
 from gitenv import git as _git
+from machine_trust import founding_allows, trust
 from spine import decide, enforce, evaluate, halted, reasons, refusal_code, schema_verdict
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -234,6 +235,13 @@ def main(
     if decision.action != "proceed":
         code = refusal_code(decision, "spec_refused")
         return enforce(announce(COMMAND, decision, code, reasons(found), observed))
+    # mise.toml IS GATED BEFORE IT IS WRITTEN (A.27): under paranoid a write untrusts it, and an
+    # untrusted mise.toml runs no task, so the founding policy judges the staged text first.
+    config = root.resolve() / "mise.toml"
+    if config in staged and not founding_allows(staged[config]):
+        reason = "the founding policy refuses the mise.toml this spec would write"
+        stopped = halted(SUBJECT, ENTRYPOINT, POLICY, reason)
+        return enforce(announce(COMMAND, stopped, "founding_refused", reason, observed))
     # IDENTITY IS READ NOW, NEVER AT IMPORT: a claim names the repository running this.
     try:
         repository = _origin_repository(ROOT)
@@ -253,6 +261,10 @@ def main(
         reason = f"bytes on disk differ from the spec: {', '.join(differing)}"
         stopped = halted(SUBJECT, ENTRYPOINT, POLICY, reason)
         return enforce(announce(COMMAND, stopped, "apply_unverified", reason, observed))
+    if config in staged and not trust(root, staged[config]).trusted:
+        reason = "mise.toml was written but could not be re-trusted"
+        stopped = halted(SUBJECT, ENTRYPOINT, POLICY, reason)
+        return enforce(announce(COMMAND, stopped, "mise_untrusted", reason, observed))
     base = root.resolve()
     written = [
         {"path": str(target.relative_to(base)), "sha256": _digest(text)}

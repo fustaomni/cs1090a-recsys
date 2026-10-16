@@ -358,6 +358,10 @@ run = "uv run --no-sync python scripts/ledger_anchor.py"
 description = "Prove every listed safeguard: its proof passes, then fails once its guard is mutated away"
 run = "uv run --no-sync python scripts/safeguards.py"
 
+[tasks."machine:trust"]
+description = "Trust this checkout's mise.toml by its own path, only after the founding policy allows it"
+run = "uv run --no-sync python scripts/machine_trust.py"
+
 [tasks."capabilities:list"]
 description = "List every task as a versioned capability with its enforced effect, or refuse on drift"
 run = "uv run --no-sync python scripts/capabilities.py"
