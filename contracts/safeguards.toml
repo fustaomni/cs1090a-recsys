@@ -173,3 +173,84 @@ path = "policies/runs/source_outline/source_outline.rego"
 anchor = "\tevidence.definitions > evidence.limit\n"
 mutant = "\tfalse\n"
 proof = "tests/test_source_outline.py::test_an_outline_past_its_bound_is_refused"
+
+[[safeguards]]
+id = "RUN.INPUT_MISSING"
+engine = "run"
+guard = "ERR_RUN_INPUT_MISSING"
+path = "policies/runs/run_request/run_request.rego"
+anchor = "\tnot input.run_request\n"
+mutant = "\tfalse\n"
+proof = "tests/test_run_gateway.py::test_an_absent_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "RUN.TASK_UNDECLARED"
+engine = "run"
+guard = "ERR_RUN_TASK_UNDECLARED"
+path = "policies/runs/run_request/run_request.rego"
+anchor = "\tnot request.declared\n"
+mutant = "\tfalse\n"
+proof = "tests/test_run_gateway.py::test_an_undeclared_task_is_refused_before_it_runs"
+
+[[safeguards]]
+id = "RUN.DUPLICATE_EXECUTION"
+engine = "run"
+guard = "ERR_RUN_DUPLICATE_EXECUTION"
+path = "policies/runs/run_request/run_request.rego"
+anchor = "\tnot request.exclusive\n"
+mutant = "\tfalse\n"
+proof = "tests/test_duplicate_execution.py::test_the_policy_refuses_a_mutating_task_it_cannot_hold"
+
+[[safeguards]]
+id = "GIT.SPAWN_UNSCRUBBED"
+engine = "check:git-spawns"
+guard = "ERR_GIT_SPAWN_UNSCRUBBED"
+path = "policies/runs/git_spawns/git_spawns.rego"
+anchor = "\tnot spawn.env_from_gitenv\n"
+mutant = "\tfalse\n"
+proof = "tests/test_git_subprocesses.py::test_a_bare_git_subprocess_is_refused"
+
+[[safeguards]]
+id = "GIT.SPAWN_HELPER"
+engine = "check:git-spawns"
+guard = "ERR_GIT_SPAWN_HELPER"
+path = "policies/runs/git_spawns/git_spawns.rego"
+anchor = "\tspawn.kind == \"helper\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_git_subprocesses.py::test_git_handed_to_a_generic_runner_is_refused"
+
+[[safeguards]]
+id = "SIGNING.INPUT_MISSING"
+engine = "signing"
+guard = "ERR_SIGNING_INPUT_MISSING"
+path = "policies/runs/signing_keys/signing_keys.rego"
+anchor = "\tnot input.signing_keys\n"
+mutant = "\tfalse\n"
+proof = "tests/test_signing.py::test_an_absent_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SIGNING.KEY_EXPOSED"
+engine = "signing"
+guard = "ERR_SIGNING_KEY_EXPOSED"
+path = "policies/runs/signing_keys/signing_keys.rego"
+anchor = "\t_exposed(state)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_signing.py::test_a_world_readable_key_is_refused"
+
+[[safeguards]]
+id = "SIGNING.KEY_UNLISTED"
+engine = "signing"
+guard = "ERR_SIGNING_KEY_UNLISTED"
+path = "policies/runs/signing_keys/signing_keys.rego"
+anchor = "\tnot state.listed\n"
+mutant = "\tfalse\n"
+proof = "tests/test_signing_policy.py::test_an_unlisted_key_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SIGNING.KEY_ABSENT"
+engine = "signing"
+guard = "ERR_SIGNING_KEY_ABSENT"
+path = "policies/runs/signing_keys/signing_keys.rego"
+anchor = "\tnot state.private_exists\n"
+mutant = "\tfalse\n"
+proof = "tests/test_signing_policy.py::test_an_absent_key_is_refused_by_the_policy"
