@@ -434,3 +434,31 @@ reason = "origin names the repository in a claim; recsys has no Databricks ident
 path = "tests/test_policy_inputs.py"
 sha256 = "20b42d632e5a2534b5767966722b8909157723f5e93e768d3c35c0a66ed4d8f6"
 reason = "tests cscie103 Nix and Databricks policy inputs, outside the approved scope"
+
+[[files]]
+path = "scripts/source_read.py"
+sha256 = "9105497945136c55cf05572a72f6d761ddc866d3407a7b9a534a8acf3e1b579a"
+
+[[files]]
+path = "scripts/source_outline.py"
+sha256 = "bd0b55a11f694e8dde9acc52fd31ce466884de2d069e557ece70c21fb568d0a0"
+
+[[files]]
+path = "scripts/source_search.py"
+sha256 = "b23f7eff57e4af910a3d1975466481802aef82bf637ecf64016057122700e2e3"
+
+[[files]]
+path = "tests/test_source_read.py"
+sha256 = "6a77d6915387a09ea3bea6b2aee61f8b65ee360ffa8832917b4a9371cbd1ced9"
+
+[[files]]
+path = "tests/test_source_outline.py"
+sha256 = "4afbb4444dbd8f822fdcf6411de5e0f5664774c7a004aa286c0d7a0b1416f1a5"
+
+[[files]]
+path = "tests/test_source_search.py"
+sha256 = "12c99812afd1ec7fe4d52654ecdbdf075460cba02203c6e7775969242914ab20"
+
+[[files]]
+path = "policies/runs/source_outline/source_outline.rego"
+sha256 = "4bc7f84074629a854a9135116690479d997ac61187c4134813a19bd7af5b15e4"
