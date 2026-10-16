@@ -1,0 +1,145 @@
+"""provenance:adapt -- a change to a ported file is planned as its recorded patch (A.85).
+
+AN ADAPTATION IS RECORDED, NEVER HAND-WRITTEN. A file ported from cscie103 may differ from its
+upstream bytes only as upstream plus a recorded patch (A.6). This task reads the upstream file
+from a pinned checkout and refuses it unless it hashes to the digest provenance records, builds
+the unified diff from upstream to the working file, proves in a scratch repository that
+reversing it reproduces upstream exactly, and plans both writes -- the patch and its [[adapted]]
+entry -- as one source-apply/v1 spec under .artifacts for source:apply. Nothing else is written.
+"""
+
+from __future__ import annotations
+
+import difflib
+import hashlib
+import sys
+import tempfile
+import tomllib
+from pathlib import Path
+
+from gitenv import git
+
+ROOT = Path(__file__).resolve().parent.parent
+RECORD = Path("contracts") / "provenance.toml"
+PATCHES = Path("contracts") / "vendor-patches"
+USAGE = "usage: provenance_adapt.py --out <spec.toml> --reason <why> <upstream-checkout> <path>"
+TRIPLE = "'" * 3
+
+
+def _digest(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def _toml_string(value: str) -> str:
+    return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def _literal(value: str) -> str:
+    if TRIPLE in value:
+        raise SystemExit("content holds a triple single quote; it cannot be a TOML literal")
+    return TRIPLE + "\n" + value + TRIPLE
+
+
+def _replace(path: str, anchor: str, replacement: str) -> str:
+    return (
+        '[[operations]]\nop = "replace"\n'
+        f"path = {_toml_string(path)}\n"
+        f"anchor = {_literal(anchor)}\n"
+        f"replacement = {_literal(replacement)}\n"
+    )
+
+
+def _patch(path: str, upstream: str, local: str) -> str:
+    if not upstream.endswith("\n") or not local.endswith("\n"):
+        raise SystemExit(f"{path}: both versions must end with a newline to be patched")
+    lines = difflib.unified_diff(
+        upstream.splitlines(keepends=True),
+        local.splitlines(keepends=True),
+        fromfile=f"a/{path}",
+        tofile=f"b/{path}",
+    )
+    return "".join(lines)
+
+
+def reverses_to_upstream(path: str, patch: str, local: bytes, upstream_sha: str) -> bool:
+    """Reversing the patch on the working bytes, in a scratch repository, gives upstream."""
+    with tempfile.TemporaryDirectory() as scratch:
+        base = Path(scratch)
+        if git("init", "-q", str(base), cwd=base).returncode != 0:
+            return False
+        copy = base / path
+        copy.parent.mkdir(parents=True, exist_ok=True)
+        copy.write_bytes(local)
+        (base / "adaptation.patch").write_text(patch, encoding="utf-8")
+        reversed_ = git("apply", "-R", "adaptation.patch", cwd=base)
+        return reversed_.returncode == 0 and _digest(copy.read_bytes()) == upstream_sha
+
+
+def _adapted_block(text: str, path: str) -> str | None:
+    """The [[adapted]] block already recorded for path, exactly as written, if any."""
+    for block in text.split("\n\n"):
+        lines = block.strip("\n").splitlines()
+        if lines[:2] == ["[[adapted]]", f"path = {_toml_string(path)}"]:
+            return block.strip("\n") + "\n"
+    return None
+
+
+def plan(root: Path, upstream: Path, path: str, reason: str) -> str:
+    """The source-apply/v1 spec recording path's adaptation, after every check has held."""
+    record_text = (root / RECORD).read_text(encoding="utf-8")
+    record = tomllib.loads(record_text)
+    files = {entry["path"]: entry["sha256"] for entry in record.get("files", [])}
+    if path not in files:
+        raise SystemExit(f"{path} is not a ported file in {RECORD}")
+    upstream_bytes = (upstream / path).read_bytes()
+    if _digest(upstream_bytes) != files[path]:
+        raise SystemExit(f"{upstream / path} does not match the recorded upstream digest")
+    local_bytes = (root / path).read_bytes()
+    if local_bytes == upstream_bytes:
+        raise SystemExit(f"{path} equals upstream; there is nothing to adapt")
+    patch = _patch(path, upstream_bytes.decode("utf-8"), local_bytes.decode("utf-8"))
+    if not reverses_to_upstream(path, patch, local_bytes, files[path]):
+        raise SystemExit(f"{path}: the patch does not lead back to upstream; nothing planned")
+    patch_path = (PATCHES / f"{path}.patch").as_posix()
+    entry = (
+        "[[adapted]]\n"
+        f"path = {_toml_string(path)}\n"
+        f"reason = {_toml_string(reason)}\n"
+        f"patch = {_toml_string(patch_path)}\n"
+        f"sha256 = {_toml_string(_digest(local_bytes))}\n"
+    )
+    existing = _adapted_block(record_text, path)
+    if existing is None:
+        anchor = f"[[files]]\npath = {_toml_string(path)}\nsha256 = {_toml_string(files[path])}\n"
+        record_op = _replace(RECORD.as_posix(), anchor, anchor + "\n" + entry)
+    else:
+        record_op = _replace(RECORD.as_posix(), existing, entry)
+    current = root / patch_path
+    if current.exists():
+        patch_op = _replace(patch_path, current.read_text(encoding="utf-8"), patch)
+    else:
+        patch_op = (
+            '[[operations]]\nop = "create"\n'
+            f"path = {_toml_string(patch_path)}\n"
+            f"content = {_literal(patch)}\n"
+        )
+    return 'contract = "source-apply/v1"\n\n' + patch_op + "\n" + record_op
+
+
+def main() -> int:
+    match sys.argv[1:]:
+        case ["--out", out, "--reason", reason, upstream, path]:
+            if Path(out).parts[:1] != (".artifacts",):
+                raise SystemExit(f"{out}: a planned spec is written only under .artifacts")
+            spec = plan(ROOT, Path(upstream), path, reason)
+            target = ROOT / out
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(spec, encoding="utf-8")
+            print(f"planned {path}'s adaptation into {out}; apply it with source:apply {out}")
+            return 0
+        case other:
+            raise SystemExit(f"{USAGE}  (got {other})")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
