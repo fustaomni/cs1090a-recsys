@@ -78,4 +78,6 @@ issued = [
   { id = "A.83", first_title = "test:red judges a set of named proofs: each red on its behaviour, nothing else failing" },
   { id = "A.84", first_title = "source:search matches in one declared dialect, extended, recorded in its contract" },
   { id = "A.85", first_title = "A change to a ported file is planned as its recorded, reversible patch by provenance:adapt" },
+  { id = "A.86", first_title = "The run ledger's guards join the safeguards register, each killed by its proof" },
+  { id = "A.87", first_title = "Cutting the ledger's newest records is detected by a signed checkpoint of its length and head" },
 ]
