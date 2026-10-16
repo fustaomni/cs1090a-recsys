@@ -75,13 +75,23 @@ def reverses_to_upstream(path: str, patch: str, local: bytes, upstream_sha: str)
         return reversed_.returncode == 0 and _digest(copy.read_bytes()) == upstream_sha
 
 
-def _adapted_block(text: str, path: str) -> str | None:
-    """The [[adapted]] block already recorded for path, exactly as written, if any."""
-    for block in text.split("\n\n"):
-        lines = block.strip("\n").splitlines()
-        if lines[:2] == ["[[adapted]]", f"path = {_toml_string(path)}"]:
-            return block.strip("\n") + "\n"
-    return None
+def _adapted_blocks(text: str, path: str) -> list[str]:
+    """Every [[adapted]] block recorded for path, exactly as written, blank lines or not.
+
+    A block is its header and its path line, then key lines up to a blank line or the next table
+    header: the record's later entries sit back to back, so blank lines cannot delimit them.
+    """
+    lines = text.splitlines(keepends=True)
+    path_line = f"path = {_toml_string(path)}\n"
+    blocks: list[str] = []
+    for index, line in enumerate(lines):
+        if line != "[[adapted]]\n" or lines[index + 1 : index + 2] != [path_line]:
+            continue
+        end = index + 1
+        while end < len(lines) and lines[end].strip() and not lines[end].startswith("["):
+            end += 1
+        blocks.append("".join(lines[index:end]))
+    return blocks
 
 
 def plan(root: Path, upstream: Path, path: str, reason: str) -> str:
@@ -108,12 +118,13 @@ def plan(root: Path, upstream: Path, path: str, reason: str) -> str:
         f"patch = {_toml_string(patch_path)}\n"
         f"sha256 = {_toml_string(_digest(local_bytes))}\n"
     )
-    existing = _adapted_block(record_text, path)
-    if existing is None:
+    existing = _adapted_blocks(record_text, path)
+    if not existing:
         anchor = f"[[files]]\npath = {_toml_string(path)}\nsha256 = {_toml_string(files[path])}\n"
-        record_op = _replace(RECORD.as_posix(), anchor, anchor + "\n" + entry)
+        record_ops = [_replace(RECORD.as_posix(), anchor, anchor + "\n" + entry)]
     else:
-        record_op = _replace(RECORD.as_posix(), existing, entry)
+        record_ops = [_replace(RECORD.as_posix(), existing[0], entry)]
+        record_ops += [_replace(RECORD.as_posix(), block, "") for block in existing[1:]]
     current = root / patch_path
     if current.exists():
         patch_op = _replace(patch_path, current.read_text(encoding="utf-8"), patch)
@@ -123,7 +134,7 @@ def plan(root: Path, upstream: Path, path: str, reason: str) -> str:
             f"path = {_toml_string(patch_path)}\n"
             f"content = {_literal(patch)}\n"
         )
-    return 'contract = "source-apply/v1"\n\n' + patch_op + "\n" + record_op
+    return 'contract = "source-apply/v1"\n\n' + patch_op + "\n" + "\n".join(record_ops)
 
 
 def main() -> int:

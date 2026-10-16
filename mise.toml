@@ -346,6 +346,10 @@ minimum_release_age = "2026-10-08T00:00:00Z"
 UV_CACHE_DIR = "{{config_root}}/.cache/uv"
 
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.18): every mutation is a spec.
+[tasks."safeguards:prove"]
+description = "Prove every listed safeguard: its proof passes, then fails once its guard is mutated away"
+run = "uv run --no-sync python scripts/safeguards.py"
+
 [tasks."claims:audit"]
 description = "Audit the claims register: pillars need contract, task, proofs and passing ledger runs"
 run = "uv run --no-sync python scripts/claims_audit.py"

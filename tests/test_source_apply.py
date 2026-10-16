@@ -93,6 +93,32 @@ def test_a_python_file_left_unparseable_is_refused(
     assert "ERR_SOURCE_APPLY_PYTHON_UNPARSEABLE" in _message(capsys)
 
 
+def test_creating_a_file_that_exists_is_refused(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    repo = _repo(tmp_path, {"pkg/old.py": "z = 2\n"})
+    assert _apply(tmp_path, repo, _op("create", "pkg/old.py", content="x = 1\n")) == 2
+    assert "ERR_SOURCE_APPLY_CREATE_EXISTS" in _message(capsys)
+    assert (repo / "pkg" / "old.py").read_text(encoding="utf-8") == "z = 2\n"
+
+
+def test_replacing_in_a_missing_file_is_refused(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    repo = _repo(tmp_path, {})
+    absent = _op("replace", "pkg/absent.py", anchor="z = 2", replacement="z = 3")
+    assert _apply(tmp_path, repo, absent) == 2
+    assert "ERR_SOURCE_APPLY_REPLACE_MISSING" in _message(capsys)
+
+
+def test_a_toml_file_left_unparseable_is_refused(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    repo = _repo(tmp_path, {})
+    assert _apply(tmp_path, repo, _op("create", "conf/bad.toml", content="x = [\n")) == 2
+    assert "ERR_SOURCE_APPLY_TOML_UNPARSEABLE" in _message(capsys)
+
+
 def test_a_written_python_line_over_100_is_refused(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
