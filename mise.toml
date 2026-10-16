@@ -350,3 +350,18 @@ description = "Create and edit source from a declarative spec, judged by policy,
 # THE ONLY WAY SOURCE CHANGES (D.25): a source-apply/v1 spec, or - for stdin. No
 # edit logic is written at execution time; runs.source_apply judges every operation.
 run = "uv run --no-sync python scripts/source_apply.py"
+
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.20).
+[tasks."deps:add"]
+description = "Add a dependency with uv and its lock, refusing any change to packages already locked"
+# AN ADDITION ONLY ADDS: a stale lock, or any locked package changed or removed, is
+# refused and both files restored. raw_args passes --group <name> through untouched.
+raw_args = true
+run = "uv run --no-sync python scripts/deps_add.py"
+
+[tasks."deps:install"]
+description = "Install exactly what uv.lock pins, refusing a lock that no longer resolves"
+# --locked, NOT --frozen: --frozen installs a stale lock without complaint and
+# lets a later `uv run` fail for it under another step's name. --locked never
+# rewrites uv.lock, so starting this task cannot dirty the lockfile (D.9).
+run = "uv sync --locked"
