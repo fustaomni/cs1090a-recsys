@@ -290,6 +290,7 @@ thread = "A"
 depends_on = ["A.32"]
 because = { "A.32" = "run evidence includes verdicts" }
 done_when = [
+  { kind = "task", name = "claims:audit" },
   { kind = "proof", test = "tests/test_pillar_register.py::test_a_pillar_without_run_evidence_is_refused" },
   { kind = "proof", test = "tests/test_pillar_register.py::test_a_credit_contradicting_a_recorded_finding_is_refuted" },
 ]
@@ -691,6 +692,7 @@ because = { "A.27" = "the manifest is written by the machine-level task" }
 done_when = [
   { kind = "proof", test = "tests/test_machine_manifest.py::test_a_sourced_script_with_a_changed_digest_refuses_the_run" },
   { kind = "proof", test = "tests/test_machine_manifest.py::test_a_mise_inside_an_advisory_range_refuses_the_run" },
+  { kind = "proof", test = "tests/test_machine_manifest.py::test_the_jupyterlab_settings_seed_is_pinned" },
 ]
 [[steps]]
 id = "A.81"
