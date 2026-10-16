@@ -1,6 +1,7 @@
 {
   "title": "A recommender that records why it recommended",
   "author": "Thanh Phong Le",
+  "status": "Design complete and reviewed. Data work begins with Milestone 2, once groups are assigned on October 19.",
   "contact": "phl690@g.harvard.edu",
   "overview": {
     "question": "Can a carefully tuned, leakage-safe pipeline predict the next rating a user submits on MovieLens 1M better than a well-tuned simple baseline, and can it show that with honest intervals?",
@@ -15,10 +16,10 @@
     ]
   },
   "milestones": [
-    { "id": "M1", "due": "Fri, October 16", "name": "Group formation and project selection", "focus": "Form a group of three to five and submit project preferences.", "phases": "—" },
-    { "id": "M2", "due": "Fri, November 13", "name": "Data wrangling and redefinition", "focus": "Acquire and preprocess the data: missingness, imbalance, scaling and the split. A 10-minute presentation.", "phases": "0, 1A, 2, 1B, 3" },
-    { "id": "M3", "due": "Mon, November 30", "name": "EDA, baseline and pipeline", "focus": "EDA that refines the goals, the baseline to beat, and the full training and evaluation pipeline. A 10-minute presentation.", "phases": "4, 5, 6" },
-    { "id": "M4", "due": "Thu, December 10", "name": "Final modeling and deliverables", "focus": "Final models, findings and limitations; a 2,000 to 2,500 word report, a 6-minute video and the commented notebook.", "phases": "7 to 13" }
+    { "id": "M1", "due": "Fri, October 16", "name": "Group formation and project selection", "focus": "Form a group of three to five and submit project preferences.", "phases": "—", "status": "current", "phase_ids": [] },
+    { "id": "M2", "due": "Fri, November 13", "name": "Data wrangling and redefinition", "focus": "Acquire and preprocess the data: missingness, imbalance, scaling and the split. A 10-minute presentation.", "phases": "0, 1A, 2, 1B, 3", "status": "planned", "phase_ids": ["0", "1A", "2", "1B", "3"] },
+    { "id": "M3", "due": "Mon, November 30", "name": "EDA, baseline and pipeline", "focus": "EDA that refines the goals, the baseline to beat, and the full training and evaluation pipeline. A 10-minute presentation.", "phases": "4, 5, 6", "status": "planned", "phase_ids": ["4", "5", "6"] },
+    { "id": "M4", "due": "Thu, December 10", "name": "Final modeling and deliverables", "focus": "Final models, findings and limitations; a 2,000 to 2,500 word report, a 6-minute video and the commented notebook.", "phases": "7 to 13", "status": "planned", "phase_ids": ["7", "8", "9", "10", "11", "12", "13"] }
   ],
   "join": {
     "title": "Join the project",
