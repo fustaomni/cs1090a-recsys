@@ -346,6 +346,10 @@ minimum_release_age = "2026-10-08T00:00:00Z"
 UV_CACHE_DIR = "{{config_root}}/.cache/uv"
 
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.18): every mutation is a spec.
+[tasks."claims:audit"]
+description = "Audit the claims register: pillars need contract, task, proofs and passing ledger runs"
+run = "uv run --no-sync python scripts/claims_audit.py"
+
 [tasks."test:green"]
 description = "Run the full suite, or a selection with its reason, and judge GREEN from the JUnit report"
 run = "uv run --no-sync python scripts/green_verify.py"
