@@ -578,6 +578,8 @@ thread = "A"
 depends_on = ["A.36"]
 because = { "A.36" = "the pairs live in the register" }
 done_when = [
+  { kind = "path", path = "contracts/expectations.toml" },
+  { kind = "proof", test = "tests/test_expectation_records.py::test_every_expectation_the_plan_uses_has_a_record_and_producer" },
   { kind = "proof", test = "tests/test_expectation_records.py::test_an_expectation_without_a_record_type_is_refused" },
 ]
 [[steps]]
@@ -815,4 +817,13 @@ done_when = [
   { kind = "proof", test = "tests/test_branch_push.py::test_a_protected_branch_is_refused" },
   { kind = "proof", test = "tests/test_branch_push.py::test_a_push_without_the_gate_passed_is_refused" },
   { kind = "proof", test = "tests/test_branch_push.py::test_the_gate_is_read_from_the_ledger_at_this_head" },
+]
+[[steps]]
+id = "A.92"
+title = "A proof expectation holds only when a recorded green verdict names it, never because the test exists"
+thread = "A"
+depends_on = ["A.65"]
+because = { "A.65" = "the proof kind's runtime record, green-verdict/v1 by test:green, is registered" }
+done_when = [
+  { kind = "proof", test = "tests/test_plan_status.py::test_a_defined_but_never_green_proof_is_not_done" },
 ]
