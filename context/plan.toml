@@ -790,3 +790,12 @@ done_when = [
   { kind = "task", name = "safeguards:prove" },
   { kind = "proof", test = "tests/test_safeguard_coverage.py::test_every_closed_code_is_a_registered_safeguard" },
 ]
+[[steps]]
+id = "A.90"
+title = "A gate lane that may be empty reports nothing to run; every other lane still fails on it"
+thread = "A"
+depends_on = ["A.39"]
+because = { "A.39" = "levels are declared, so an integration lane can be empty by declaration" }
+done_when = [
+  { kind = "proof", test = "tests/test_gate_lanes.py::test_a_lane_that_may_be_empty_reports_nothing_to_run" },
+]
