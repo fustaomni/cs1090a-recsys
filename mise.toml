@@ -336,6 +336,7 @@ lefthook = "2.2.0"
 opa = "1.21.1"
 regal = "0.43.0"
 uv = "0.12.23"
+zizmor = "1.30.1"
 
 [settings]
 lockfile = true
