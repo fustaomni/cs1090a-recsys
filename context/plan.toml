@@ -858,3 +858,27 @@ done_when = [
   { kind = "proof", test = "tests/test_environment_policy.py::test_an_unobserved_sync_is_refused" },
   { kind = "proof", test = "tests/test_environment_policy.py::test_a_changed_lock_left_uninstalled_is_refused" },
 ]
+[[steps]]
+id = "A.95"
+title = "A public project site, deployed on every push, rendering the design from one data file"
+thread = "A"
+depends_on = ["A.91"]
+because = { "A.91" = "every push of the site branch is a deploy, and branch:push is the only push" }
+done_when = [
+  { kind = "task", name = "site:lock" },
+  { kind = "task", name = "site:build" },
+  { kind = "path", path = "site/package-lock.json" },
+  { kind = "path", path = "site/railway.json" },
+  { kind = "proof", test = "tests/test_site_content.py::test_the_site_names_no_course_material" },
+  { kind = "proof", test = "tests/test_site_content.py::test_the_site_data_carries_every_phase_model_and_technique" },
+]
+[[steps]]
+id = "A.96"
+title = "Pinned upstream checkouts live in the clone's shared evidence root, and a missing one is refused"
+thread = "A"
+depends_on = ["A.93"]
+because = { "A.93" = "worktrees are cut by task, and each starts without ignored files" }
+done_when = [
+  { kind = "proof", test = "tests/test_upstream_checkout.py::test_a_checkout_is_found_from_every_worktree_of_the_clone" },
+  { kind = "proof", test = "tests/test_provenance_adapt.py::test_a_missing_upstream_is_refused_not_raised" },
+]

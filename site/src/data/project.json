@@ -1,0 +1,100 @@
+{
+  "title": "A recommender that records why it recommended",
+  "author": "Thanh Phong Le",
+  "contact": "phl690@g.harvard.edu",
+  "overview": {
+    "question": "Can a carefully tuned, leakage-safe pipeline predict the next rating a user submits on MovieLens 1M better than a well-tuned simple baseline, and can it show that with honest intervals?",
+    "summary": "Every phase is fixed before any result is seen: the split, the baselines, the tuning budget and the conclusion's possible verdicts. Twelve predictive models climb from simple linear regression to stacking, each judged against a regularised bias model under the same budget, with uncertainty clustered by user.",
+    "stats": [
+      { "value": "1,000,209", "label": "ratings" },
+      { "value": "6,040", "label": "users" },
+      { "value": "3,706", "label": "rated films" },
+      { "value": "12", "label": "predictive models" },
+      { "value": "10", "label": "supporting techniques" },
+      { "value": "4", "label": "milestones to December" }
+    ]
+  },
+  "milestones": [
+    { "id": "M1", "due": "Fri, October 16", "name": "Group formation and project selection", "focus": "Form a group of three to five and submit project preferences.", "phases": "—" },
+    { "id": "M2", "due": "Fri, November 13", "name": "Data wrangling and redefinition", "focus": "Acquire and preprocess the data: missingness, imbalance, scaling and the split. A 10-minute presentation.", "phases": "0, 1A, 2, 1B, 3" },
+    { "id": "M3", "due": "Mon, November 30", "name": "EDA, baseline and pipeline", "focus": "EDA that refines the goals, the baseline to beat, and the full training and evaluation pipeline. A 10-minute presentation.", "phases": "4, 5, 6" },
+    { "id": "M4", "due": "Thu, December 10", "name": "Final modeling and deliverables", "focus": "Final models, findings and limitations; a 2,000 to 2,500 word report, a 6-minute video and the commented notebook.", "phases": "7 to 13" }
+  ],
+  "join": {
+    "title": "Join the project",
+    "need": "This is a group project: at least three members are required, and a solo group is not allowed. Each member owns a block of phases end to end, with the plan, the split and the evaluation already designed.",
+    "roles": [
+      { "name": "Data and leakage", "owns": "phases 0 to 3: audit, temporal split, EDA and leakage-safe features" },
+      { "name": "Linear and regularised models", "owns": "phases 4 to 6: baselines, the linear family, ridge and lasso" },
+      { "name": "Neighbours, trees and ensembles", "owns": "phases 7 to 10: kNN, trees, bagging, forests, boosting and stacking" },
+      { "name": "Inference and the report", "owns": "phases 11 to 13: intervals, tests, diagnostics, the model card and the report" }
+    ]
+  },
+  "scope": {
+    "removed": [
+      { "item": "The live application, serving and latency budget", "why": "Building a live application exceeds the project scope" },
+      { "item": "Real-user impression logging and off-policy evaluation", "why": "Live-user data would not meet the public-data requirement" },
+      { "item": "The Open Bandit Dataset", "why": "Analysing a second large dataset exceeds the scope" },
+      { "item": "The self-attention sequence model", "why": "Outside the chosen family of methods" }
+    ],
+    "retained": [
+      { "item": "MovieLens 1M, offline only", "form": "ratings.dat, users.dat, movies.dat — 1,000,209 ratings, 6,040 users, 3,706 rated films" },
+      { "item": "Predicting the next recorded rating", "form": "The value of the next rating a user submits — never a film watched" },
+      { "item": "Tabular inputs, classical methods", "form": "Twelve models and ten supporting techniques" }
+    ],
+    "principle": "The timestamps record when a rating was submitted, not when a film was watched. Every question, feature and metric concerns rating submissions."
+  },
+  "phases": [
+    { "id": "0", "title": "Scope, fixed before anything runs", "points": ["Question, unit and target declared in writing before any code.", "Target: rating in {1..5}, ordinal, modelled as continuous — recorded as a limitation, not hidden.", "Metrics: RMSE, MAE, and the macro-averaged MAEM and RMSEM, which an imbalanced ordinal target requires.", "Predictions left unrounded, so figures stay comparable with published work."] },
+    { "id": "1A", "title": "Structural audit (all rows)", "points": ["Load with latin-1; movies.dat is not UTF-8.", "Shape, types, duplicates, target sanity, referential integrity.", "Distinguish 3,706 films that were rated from 3,883 rows in movies.dat.", "Timestamp to datetime; confirm the May 2000 – January 2003 span.", "Leakage scan: per-user first and last rating; cumulative ratings over time."] },
+    { "id": "2", "title": "Split design — before any feature is computed", "points": ["Ttest at the 0.9 quantile of rating timestamps; Tval at the 0.8 quantile. A quantile, never a calendar date.", "Protocol A — global temporal split. The real protocol.", "Protocol B — per-user last-k. Leaks across users; what most published work does.", "Protocol C — random k-fold. The ceiling of optimism.", "Sensitivity across quantiles 0.8 / 0.85 / 0.9 / 0.95.", "Cost accounting: users and films that survive A but not B.", "Leakage assertions, including the count of training ratings that postdate a test rating under B — the leak, quantified."] },
+    { "id": "1B", "title": "Distributional EDA (training window only)", "points": ["Ratings per month; per-user active-span histogram; rating distribution and skew.", "Long tails by film and by user; demographics coverage, zip in aggregate only.", "Genre matrix, 18 binary columns.", "Deliverable: a risk register and a preprocessing plan — not a folder of plots."] },
+    { "id": "3", "title": "Leakage-safe feature engineering", "points": ["One control, applied uniformly: rolling, time-ordered cross-fitting. Random out-of-fold folds would reintroduce exactly what Phase 2 removed.", "User and film history: count, mean, std, median, Q20, Q80 of prior ratings; recency.", "Target-encoded means with smoothing toward the global mean, which handles cold users and films without a special case.", "Content, static and context features carry no target and need no control.", "Two feature views of the same statistics: one-hot for the linear rungs, target-encoded for the tree rungs.", "Diagnostics with pass thresholds: permuted target (< 1% advantage), shuffled groups (no advantage), temporal boundary assertion."] },
+    { "id": "4", "title": "Baselines — the real opponent", "points": ["Global mean, user mean, film mean.", "Regularised bias model with its own tuned penalties — the opponent.", "Computed under all three protocols; a baseline's value is protocol-specific.", "Tuning budget declared before fitting, identical for the baseline and for the twelfth model.", "The primary comparison and its three possible verdicts are written here, before any result is seen."] },
+    { "id": "5", "title": "The linear family", "points": ["Simple, then multi-linear, then interactions, then polynomial count terms.", "Centre continuous predictors; measure VIF before and after interacting, threshold 5.", "Residuals vs fitted will show five diagonal bands — an artefact of a five-level target, not non-linearity.", "The real diagnostic is shrinkage in predicted-vs-observed, and accepting it is a bias–variance decision.", "A bounded ordinal cannot be log-transformed, so the usual heteroscedasticity remedy does not apply.", "Count predictions outside [1,5]; report clipped and unclipped."] },
+    { "id": "6", "title": "Regularisation", "points": ["Standardisation inside the fold — mandatory, since the penalty treats all coefficients alike.", "Ridge and lasso over ~100 penalties, selected by the one-standard-error rule.", "Stability selection over half-sample bootstraps: a selection frequency per feature.", "Correlated groups flagged, with the member lasso happened to pick.", "Train and validation error against complexity — the bias–variance figure as computable evidence."] },
+    { "id": "7", "title": "kNN regression", "points": ["The prediction is stated first: at ~900k rows and 50+ features, kNN is outside its documented range on both axes. The phase tests that claim.", "Distance treated as a tuned choice: Euclidean, Manhattan, Gower.", "PCA first, then kNN — the documented remedy; accuracy and time reported.", "Error against retained components, crossing the ~30–40 feature mark: the curse of dimensionality drawn from this project's own data."] },
+    { "id": "8", "title": "Trees", "points": ["Continuous features win splits over binary ones by construction, so genre dummies will rarely be chosen.", "Stopping conditions and cost-complexity pruning, alpha by time-aware CV; under 100 leaves for the readable version.", "Permutation importance, never the default impurity measure.", "Refit without the target-encoded means: what does the tree use when it is not handed the answer?", "A tree cannot predict outside its training range."] },
+    { "id": "9", "title": "Ensembles", "points": ["Bagging: variance reduction against the single tree, over repeated seeds.", "OOB compared against the temporal validation, not against random CV; the gap is the finding.", "Random Forest with subsample size and feature count declared, not defaulted.", "Permutation importance tests the published 35% / 30% user-versus-film split rather than assuming it.", "Gradient boosting with early stopping on the temporal validation set; staged error curve; residual fitting shown on one worked example."] },
+    { "id": "10", "title": "Stacking", "points": ["Diversity measured first: the correlation matrix of out-of-fold predictions.", "Out-of-fold predictions by time-ordered folds.", "Non-negative ridge meta-learner, not ordinary least squares.", "The weights are reported as a model-selection verdict: which rungs survived, which were zeroed.", "Does the ensemble beat its best member, with intervals?"] },
+    { "id": "11", "title": "Uncertainty and significance", "points": ["Bootstrap clustered by user, not by row: ~100k test ratings come from at most 6,040 users.", "Per-model intervals are descriptive and labelled “not a test”.", "The primary comparison — best model against the regularised bias baseline — is paired, user-clustered, and pre-specified in Phase 4.", "All other pairs form an exploratory family under Holm correction.", "Coefficient tests for the unregularised model only; the post-selection limitation stated.", "Prediction intervals, and seed spread kept separate from sampling uncertainty."] },
+    { "id": "12", "title": "Diagnostics", "points": ["Every check here is exploratory and descriptive, declared in advance.", "Leakage audit; calibration reliability diagram — predicted vs observed by decile.", "Cold user and cold film, threshold declared with its reason plus sensitivity.", "Error by rating value, read beside macro-MAEM.", "Error by activity decile tested for a monotone trend.", "Failure taxonomy: which kinds of rating are missed.", "The optimism gap from four mechanisms: Protocol C, Protocol B, OOB, random k-fold."] },
+    { "id": "13", "title": "Report", "points": ["Structured on the REFORMS checklist: leakage, evaluation design and uncertainty.", "Reproducibility record: every seed, grid and budget, the data version, the environment, the wall-clock cost.", "The pre-specified conclusion resolved, including the row that says the baseline was not beaten.", "Model card; limitations stated plainly, including that these conclusions concern 6,040 users between 2000 and 2003."] }
+  ],
+  "models": [
+    { "id": 1, "name": "Simple linear regression", "phase": "5" },
+    { "id": 2, "name": "Multi-linear regression", "phase": "5" },
+    { "id": 3, "name": "Polynomial and interaction terms", "phase": "5" },
+    { "id": 4, "name": "Ridge regression", "phase": "6" },
+    { "id": 5, "name": "Lasso regression", "phase": "6" },
+    { "id": 6, "name": "kNN regression", "phase": "7" },
+    { "id": 7, "name": "Decision tree regression, with pruning", "phase": "8" },
+    { "id": 8, "name": "Bagging", "phase": "9" },
+    { "id": 9, "name": "Random Forest", "phase": "9" },
+    { "id": 10, "name": "AdaBoost for regression", "phase": "9" },
+    { "id": 11, "name": "Gradient boosting", "phase": "9" },
+    { "id": 12, "name": "Stacking and blending", "phase": "10" }
+  ],
+  "baselines": [
+    { "name": "Global mean" },
+    { "name": "User mean" },
+    { "name": "Film mean" },
+    { "name": "Regularised bias model, with its own tuned penalties" }
+  ],
+  "techniques": [
+    { "id": 1, "name": "EDA and visualisation", "where": "Phases 1A and 1B, split across the leakage boundary" },
+    { "id": 2, "name": "Missingness and imputation", "where": "Phase 3, fitted inside the fold" },
+    { "id": 3, "name": "Data imbalance", "where": "Phases 0 and 12 — why macro-averaged metrics are needed" },
+    { "id": 4, "name": "PCA", "where": "Phase 3 genre block; Phase 7 as the remedy for dimensionality" },
+    { "id": 5, "name": "Cross-validation", "where": "Phase 2 time-aware selection, compared against random k-fold" },
+    { "id": 6, "name": "Bias–variance", "where": "Phases 5 and 6 — shrinkage as a decision, error vs complexity" },
+    { "id": 7, "name": "Out-of-bag error", "where": "Phase 9, measured against temporal validation" },
+    { "id": 8, "name": "Variable importance", "where": "Phases 8 and 9, permutation rather than impurity" },
+    { "id": 9, "name": "Bootstrap inference", "where": "Phases 6 and 11, clustered by user" },
+    { "id": 10, "name": "Hypothesis tests and prediction intervals", "where": "Phase 11, one pre-specified primary test" }
+  ],
+  "excluded": [
+    "Ordinal regression, outside the chosen family of methods",
+    "A classification arm on a rating of 4 or more: a different question, whose metrics could not share the same table"
+  ]
+}

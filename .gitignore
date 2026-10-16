@@ -12,7 +12,7 @@
 # produced it.
 assignments/**/exports/
 
-data/
+/data/
 *.parquet
 *.avro
 *.orc

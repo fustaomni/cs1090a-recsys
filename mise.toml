@@ -386,6 +386,14 @@ description = "Remove a worktree and delete its branch, refusing to force either
 raw_args = true
 run = "uv run --no-sync python scripts/worktree.py remove"
 
+[tasks."site:lock"]
+description = "Resolve the project site's npm dependencies into site/package-lock.json with a pinned Node"
+run = "cd site && mise exec node@24 -- npm install --package-lock-only --no-audit --no-fund"
+
+[tasks."site:build"]
+description = "Install the site's locked dependencies and build it with Vite, exactly as Railway will"
+run = "cd site && mise exec node@24 -- npm ci --no-audit --no-fund && mise exec node@24 -- npm run build"
+
 [tasks."capabilities:list"]
 description = "List every task as a versioned capability with its enforced effect, or refuse on drift"
 run = "uv run --no-sync python scripts/capabilities.py"

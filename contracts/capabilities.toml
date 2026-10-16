@@ -208,6 +208,18 @@ implementation = "scripts/worktree.py"
 emits = "text"
 
 [[capabilities]]
+task = "site:lock"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "site:build"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
 task = "capabilities:list"
 version = "1.0.0"
 implementation = "scripts/capabilities.py"
