@@ -11,6 +11,7 @@ until it is verified again.
 
 from __future__ import annotations
 
+import json
 import tomllib
 from pathlib import Path
 
@@ -73,3 +74,13 @@ def test_an_unverified_tool_is_named() -> None:
         "bare: no provenance in mise.lock and no recorded verification",
         "stale: the recorded verification is not of the locked artifact",
     ]
+
+
+def test_zizmor_is_pinned_and_its_provenance_verified() -> None:
+    """A.22: the workflow audit's scanner is pinned once, locked, and verified by mise."""
+    founding = ROOT / "policies" / "founding" / "data.json"
+    tools = json.loads(founding.read_text(encoding="utf-8"))["founding"]["pins"]["tools"]
+    assert tools.get("zizmor") == "1.30.1", "zizmor 1.30.1 is not pinned"
+    lock = tomllib.loads((ROOT / "mise.lock").read_text(encoding="utf-8"))["tools"]
+    platform = lock["zizmor"][0]["platforms.linux-x64"]
+    assert platform.get("provenance") == "github-attestations", platform
