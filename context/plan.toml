@@ -160,3 +160,48 @@ because = { "A.18" = "removal is one more operation of the engine every mutation
 done_when = [
   { kind = "proof", test = "tests/test_source_apply.py::test_a_delete_removes_only_an_existing_file_inside_the_repository" },
 ]
+[[steps]]
+id = "A.25"
+title = "worktree:add takes an optional base, so stacked work gets its own worktree"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "worktree.py and its tests arrive through source:apply specs" }
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_base.py::test_a_worktree_starts_from_a_named_local_branch" },
+]
+[[steps]]
+id = "A.26"
+title = "tools:lock and tools:install are tasks, recorded like every other operation"
+thread = "A"
+depends_on = ["A.25"]
+because = { "A.25" = "the work is done in its own worktree, cut by the task" }
+done_when = [
+  { kind = "proof", test = "tests/test_task_coverage.py::test_every_toolchain_operation_is_a_task" },
+]
+[[steps]]
+id = "A.27"
+title = "The founding gate and the re-trust of a checkout are one machine-level task, shipped in the repository"
+thread = "A"
+depends_on = ["A.25"]
+because = { "A.25" = "the work is done in its own worktree, cut by the task" }
+done_when = [
+  { kind = "proof", test = "tests/test_machine_tasks.py::test_the_trust_task_gates_before_it_trusts" },
+]
+[[steps]]
+id = "A.28"
+title = "Another repository is read at a pinned commit by recorded tasks"
+thread = "A"
+depends_on = ["A.25"]
+because = { "A.25" = "the work is done in its own worktree, cut by the task" }
+done_when = [
+  { kind = "proof", test = "tests/test_repo_history.py::test_another_repository_is_read_at_a_pinned_commit" },
+]
+[[steps]]
+id = "A.29"
+title = "Spec building is a task: an upstream file or a formatted edit becomes a measured source:apply spec"
+thread = "A"
+depends_on = ["A.28"]
+because = { "A.28" = "a spec built from upstream reads upstream through the recorded task" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_port.py::test_an_upstream_file_becomes_a_create_spec" },
+]
