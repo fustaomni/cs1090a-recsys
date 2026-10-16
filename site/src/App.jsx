@@ -1,4 +1,5 @@
 import data from "./data/project.json";
+import results from "./data/results.json";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
@@ -200,7 +201,86 @@ function Deploys() {
   );
 }
 
-const READY = { overview: Overview, scope: Scope, phases: Phases, deploys: Deploys };
+const METRICS = [
+  ["rmse", "RMSE"],
+  ["mae", "MAE"],
+  ["rmsem", "RMSEM"],
+  ["maem", "MAEM"],
+];
+
+function estimate(metric) {
+  return `${metric.value.toFixed(3)} [${metric.low.toFixed(3)}, ${metric.high.toFixed(3)}]`;
+}
+
+function Results() {
+  const { primary, rows } = results;
+  return (
+    <section id="results" className="section">
+      <h2>Results</h2>
+      <p className="muted">
+        {results.protocol}. Updated {results.updated}.
+      </p>
+      <div className="opponent">
+        <p className="status-line">
+          <span className={`badge ${primary.status === "decided" ? "done" : "current"}`}>
+            {primary.status === "decided" ? "Decided" : "Pending"}
+          </span>
+          <strong>Primary comparison, fixed before any result</strong>
+        </p>
+        <p>{primary.question}</p>
+        <ul className="verdicts">
+          {primary.verdicts.map((verdict) => (
+            <li key={verdict} className={verdict === primary.verdict ? "chosen" : ""}>
+              {verdict}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Baseline or model</th>
+              {METRICS.map(([key, label]) => (
+                <th key={key} scope="col">
+                  {label}
+                </th>
+              ))}
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.key} className={row.kind}>
+                <th scope="row">{row.name}</th>
+                {METRICS.map(([key]) => (
+                  <td key={key}>{row.metrics ? estimate(row.metrics[key]) : "—"}</td>
+                ))}
+                <td>
+                  <span className={`badge ${row.status === "measured" ? "done" : "planned"}`}>
+                    {row.status === "measured" ? "Measured" : `Pending · ${row.milestone}`}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="muted">
+        Intervals are 95%, from a bootstrap clustered by user. Each is descriptive, not a test:
+        only the primary comparison above is tested, paired, as pre-registered.
+      </p>
+    </section>
+  );
+}
+
+const READY = {
+  overview: Overview,
+  scope: Scope,
+  phases: Phases,
+  deploys: Deploys,
+  results: Results,
+};
 
 export default function App() {
   return (
