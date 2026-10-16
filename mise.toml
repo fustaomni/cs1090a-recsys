@@ -362,6 +362,11 @@ run = "uv run --no-sync python scripts/safeguards.py"
 description = "Trust this checkout's mise.toml by its own path, only after the founding policy allows it"
 run = "uv run --no-sync python scripts/machine_trust.py"
 
+[tasks."policies:admit"]
+description = "Refuse any policy domain the manifest declares but cannot admit, or plan one's admission"
+raw_args = true
+run = "uv run --no-sync python scripts/policy_admission.py"
+
 [tasks."capabilities:list"]
 description = "List every task as a versioned capability with its enforced effect, or refuse on drift"
 run = "uv run --no-sync python scripts/capabilities.py"

@@ -1,0 +1,4 @@
+# contracts/policies.toml
+# policy-manifest/v1 (A.30): each admitted policy domain, its root package, every file with
+# its SHA-256, and its test file. Written by policies:admit --plan, never by hand.
+contract = "policy-manifest/v1"
