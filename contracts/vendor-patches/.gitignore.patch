@@ -1,5 +1,14 @@
 --- a/.gitignore
 +++ b/.gitignore
+@@ -12,7 +12,7 @@
+ # produced it.
+ assignments/**/exports/
+ 
+-data/
++/data/
+ *.parquet
+ *.avro
+ *.orc
 @@ -68,3 +68,8 @@
  
  # Recorded evidence: plan:status and other runs write here.

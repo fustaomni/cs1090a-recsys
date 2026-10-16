@@ -438,9 +438,9 @@ patch = "contracts/vendor-patches/tests/test_commit.py.patch"
 sha256 = "8e9612d1b3f1fdee95e664819ac4dcb187900ef428c50b0d5cd991737d9d5e2f"
 [[adapted]]
 path = ".gitignore"
-reason = ".cache/ is ignored: mise.toml points uv at it, and it is regenerable (founding F4b)"
+reason = "data ignored only at the repository root, so a nested data directory is never hidden; A.95"
 patch = "contracts/vendor-patches/.gitignore.patch"
-sha256 = "6989ece4fd552419385c146173d68e66debeb42b96ea1ba827f4e43eb58c92e1"
+sha256 = "7510fa70ceb99fd8ce6eeae1b43d45de2a50cb14167222f0a91a9c1d524e7cc8"
 [[adapted]]
 path = "lefthook.yml"
 reason = "pre-commit omits cscie103's audit:workflows until recsys has a workflow to audit"
