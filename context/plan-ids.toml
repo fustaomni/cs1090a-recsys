@@ -85,4 +85,5 @@ issued = [
   { id = "A.90", first_title = "A gate lane that may be empty reports nothing to run; every other lane still fails on it" },
   { id = "A.91", first_title = "A feature branch reaches GitHub only through branch:push: its own ref, never a protected one, after the gate" },
   { id = "A.92", first_title = "A proof expectation holds only when a recorded green verdict names it, never because the test exists" },
+  { id = "A.93", first_title = "A worktree is cut from a named base, set up without the caller's environment, and trusted by task" },
 ]

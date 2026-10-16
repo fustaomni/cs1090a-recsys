@@ -827,3 +827,34 @@ because = { "A.65" = "the proof kind's runtime record, green-verdict/v1 by test:
 done_when = [
   { kind = "proof", test = "tests/test_plan_status.py::test_a_defined_but_never_green_proof_is_not_done" },
 ]
+[[steps]]
+id = "A.93"
+title = "A worktree is cut from a named base, set up without the caller's environment, and trusted by task"
+thread = "A"
+depends_on = ["A.27", "A.30"]
+because = { "A.27" = "its mise.toml is trusted only through the founding gate", "A.30" = "its two machine policies enter only by admission" }
+done_when = [
+  { kind = "task", name = "worktree:add" },
+  { kind = "task", name = "worktree:list" },
+  { kind = "task", name = "worktree:remove" },
+  { kind = "task", name = "worktree:refresh" },
+  { kind = "path", path = "policies/machine/setup/setup_env_test.rego" },
+  { kind = "path", path = "policies/machine/environment/environment_test.rego" },
+  { kind = "proof", test = "tests/test_worktree_base.py::test_a_worktree_is_cut_from_the_named_base_untracked" },
+  { kind = "proof", test = "tests/test_worktree_base.py::test_without_a_base_it_is_cut_from_a_refreshed_origin_develop" },
+  { kind = "proof", test = "tests/test_worktree_env.py::test_setup_runs_without_the_callers_virtual_env" },
+  { kind = "proof", test = "tests/test_worktree_env.py::test_the_policy_refuses_an_inherited_environment" },
+  { kind = "proof", test = "tests/test_worktree_env.py::test_the_policy_allows_a_clean_environment" },
+  { kind = "proof", test = "tests/test_worktree_env.py::test_an_absent_observation_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_env.py::test_only_uvs_selecting_variables_are_removed" },
+  { kind = "proof", test = "tests/test_worktree_refresh.py::test_a_finished_refresh_follows_the_lock" },
+  { kind = "proof", test = "tests/test_worktree_refresh.py::test_a_stopped_refresh_never_touches_the_environment" },
+  { kind = "proof", test = "tests/test_worktree_refresh.py::test_a_lock_that_will_not_install_fails_the_refresh" },
+  { kind = "proof", test = "tests/test_worktree_refresh.py::test_an_unchanged_lock_leaves_the_refresh_succeeding" },
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_an_absent_worktree_with_no_branch_is_already_removed" },
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_an_absent_worktree_whose_branch_remains_has_it_deleted" },
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_an_unmerged_branch_is_never_forced" },
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_a_present_worktree_is_removed_as_before" },
+  { kind = "proof", test = "tests/test_environment_policy.py::test_an_unobserved_sync_is_refused" },
+  { kind = "proof", test = "tests/test_environment_policy.py::test_a_changed_lock_left_uninstalled_is_refused" },
+]
