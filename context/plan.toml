@@ -799,3 +799,17 @@ because = { "A.39" = "levels are declared, so an integration lane can be empty b
 done_when = [
   { kind = "proof", test = "tests/test_gate_lanes.py::test_a_lane_that_may_be_empty_reports_nothing_to_run" },
 ]
+[[steps]]
+id = "A.91"
+title = "A feature branch reaches GitHub only through branch:push: its own ref, never a protected one, after the gate"
+thread = "A"
+depends_on = ["A.90"]
+because = { "A.90" = "the full gate can pass, so a push can require it" }
+done_when = [
+  { kind = "task", name = "branch:push" },
+  { kind = "proof", test = "tests/test_branch_push.py::test_an_absent_request_is_refused_by_the_policy" },
+  { kind = "proof", test = "tests/test_branch_push.py::test_a_detached_head_is_refused" },
+  { kind = "proof", test = "tests/test_branch_push.py::test_a_protected_branch_is_refused" },
+  { kind = "proof", test = "tests/test_branch_push.py::test_a_push_without_the_gate_passed_is_refused" },
+  { kind = "proof", test = "tests/test_branch_push.py::test_the_gate_is_read_from_the_ledger_at_this_head" },
+]
