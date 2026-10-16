@@ -75,4 +75,5 @@ issued = [
   { id = "A.80", first_title = "The machine environment is code: sourced scripts and the mise binary pinned in a verified manifest" },
   { id = "A.81", first_title = "The source read tasks (read, outline, search) are on this branch, ported by spec" },
   { id = "A.82", first_title = "Decisions are recorded through plan:decide: one validated record each, immutable except its state" },
+  { id = "A.83", first_title = "test:red judges a set of named proofs: each red on its behaviour, nothing else failing" },
 ]

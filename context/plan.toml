@@ -243,9 +243,11 @@ thread = "A"
 depends_on = ["A.31"]
 because = { "A.31" = "GREEN reads the same report RED does" }
 done_when = [
+  { kind = "task", name = "test:green" },
   { kind = "proof", test = "tests/test_green_verify.py::test_green_needs_exit_zero_and_a_report_from_this_run" },
   { kind = "proof", test = "tests/test_green_verify.py::test_a_selected_run_without_a_selection_explanation_is_not_green" },
   { kind = "proof", test = "tests/test_green_verify.py::test_zero_evaluated_checks_blocks" },
+  { kind = "proof", test = "tests/test_green_verify.py::test_a_required_proof_that_did_not_pass_is_not_green" },
 ]
 [[steps]]
 id = "A.33"
@@ -710,4 +712,13 @@ done_when = [
   { kind = "task", name = "plan:decide" },
   { kind = "proof", test = "tests/test_plan_decide.py::test_a_decision_is_recorded_accepted_and_traced" },
   { kind = "proof", test = "tests/test_plan_decide.py::test_an_accepted_decision_is_superseded_never_edited" },
+]
+[[steps]]
+id = "A.83"
+title = "test:red judges a set of named proofs: each red on its behaviour, nothing else failing"
+thread = "A"
+depends_on = ["A.31"]
+because = { "A.31" = "it extends the single-proof RED verdict" }
+done_when = [
+  { kind = "proof", test = "tests/test_red_verify.py::test_several_named_proofs_are_red_together" },
 ]
