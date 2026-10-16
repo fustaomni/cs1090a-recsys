@@ -1,0 +1,244 @@
+# contracts/capabilities.toml
+# capabilities/v1 (A.44): every task as a versioned capability. Its effect is not restated here:
+# capabilities:list joins it from contracts/task-effects.toml, the declaration the gateway enforces.
+contract = "capabilities/v1"
+
+[[capabilities]]
+task = "fmt"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "lint"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "types"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "test"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "check"
+version = "1.0.0"
+implementation = "scripts/check_all.py"
+emits = "text"
+
+[[capabilities]]
+task = "check:offline"
+version = "1.0.0"
+implementation = "scripts/check_all.py"
+emits = "text"
+
+[[capabilities]]
+task = "setup"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "commit"
+version = "1.0.0"
+implementation = "scripts/commit.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "status"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "start:check"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "start:here"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "plan:trace"
+version = "1.0.0"
+implementation = "scripts/plan_files.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "plan:status"
+version = "1.0.0"
+implementation = "scripts/plan_status.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "plan:trailers"
+version = "1.0.0"
+implementation = "scripts/plan_trailers.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "plan:matrix"
+version = "1.0.0"
+implementation = "scripts/plan_matrix.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "runs:verify"
+version = "1.0.0"
+implementation = "scripts/run_ledger.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "run"
+version = "1.0.0"
+implementation = "scripts/run_task.py"
+emits = "run-summary/v2"
+
+[[capabilities]]
+task = "plan:step"
+version = "1.0.0"
+implementation = "scripts/plan_step.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "plan:add"
+version = "1.0.0"
+implementation = "scripts/plan_edit.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "plan:amend"
+version = "1.0.0"
+implementation = "scripts/plan_edit.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "plan:record"
+version = "1.0.0"
+implementation = "scripts/plan_edit.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "plan:retract"
+version = "1.0.0"
+implementation = "scripts/plan_edit.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "plan:init"
+version = "1.0.0"
+implementation = "scripts/plan_init.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "keys:provision"
+version = "1.0.0"
+implementation = "scripts/signing.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "branch:push"
+version = "1.0.0"
+implementation = "scripts/branch_push.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "ledger:anchor"
+version = "1.0.0"
+implementation = "scripts/ledger_anchor.py"
+emits = "text"
+
+[[capabilities]]
+task = "safeguards:prove"
+version = "1.0.0"
+implementation = "scripts/safeguards.py"
+emits = "safeguards-trials/v1"
+
+[[capabilities]]
+task = "claims:audit"
+version = "1.0.0"
+implementation = "scripts/claims_audit.py"
+emits = "claims-audit/v1"
+
+[[capabilities]]
+task = "capabilities:list"
+version = "1.0.0"
+implementation = "scripts/capabilities.py"
+emits = "capabilities-listing/v1"
+
+[[capabilities]]
+task = "test:green"
+version = "1.0.0"
+implementation = "scripts/green_verify.py"
+emits = "green-verdict/v1"
+
+[[capabilities]]
+task = "test:red"
+version = "1.0.0"
+implementation = "scripts/red_verify.py"
+emits = "red-verdict/v2"
+
+[[capabilities]]
+task = "source:read"
+version = "1.0.0"
+implementation = "scripts/source_read.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "source:outline"
+version = "1.0.0"
+implementation = "scripts/source_outline.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "source:search"
+version = "1.0.0"
+implementation = "scripts/source_search.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "upstream:checkout"
+version = "1.0.0"
+implementation = "scripts/upstream.py"
+emits = "text"
+
+[[capabilities]]
+task = "provenance:adapt"
+version = "1.0.0"
+implementation = "scripts/provenance_adapt.py"
+emits = "text"
+
+[[capabilities]]
+task = "source:port"
+version = "1.0.0"
+implementation = "scripts/source_port.py"
+emits = "text"
+
+[[capabilities]]
+task = "source:apply"
+version = "1.0.0"
+implementation = "scripts/source_apply.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "deps:add"
+version = "1.0.0"
+implementation = "scripts/deps_add.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "deps:install"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
