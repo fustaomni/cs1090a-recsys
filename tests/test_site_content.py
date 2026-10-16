@@ -56,6 +56,12 @@ def test_every_phase_belongs_to_exactly_one_milestone() -> None:
     assert sorted(placed) == sorted(PHASES)
 
 
+def test_every_model_phase_has_a_family() -> None:
+    data = json.loads((SITE / "src" / "data" / "project.json").read_text(encoding="utf-8"))
+    missing = sorted({model["phase"] for model in data["models"]} - set(data["families"]))
+    assert missing == []
+
+
 def test_the_site_data_carries_every_phase_model_and_technique() -> None:
     data = json.loads((SITE / "src" / "data" / "project.json").read_text(encoding="utf-8"))
     assert [phase["id"] for phase in data["phases"]] == PHASES

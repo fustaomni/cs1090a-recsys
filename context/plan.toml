@@ -891,3 +891,12 @@ because = { "A.27" = "source:apply and machine:trust both gate on the founding p
 done_when = [
   { kind = "proof", test = "tests/test_machine_tasks.py::test_a_founding_refusal_names_each_violation" },
 ]
+[[steps]]
+id = "A.98"
+title = "The site's Railway configuration is infrastructure as code before railway.json is retired"
+thread = "A"
+depends_on = ["A.95"]
+because = { "A.95" = "the site is deployed by railway up with railway.json today" }
+done_when = [
+  { kind = "path", path = "site/.railway/railway.ts" },
+]

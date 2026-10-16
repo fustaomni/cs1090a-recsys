@@ -284,6 +284,106 @@ details ul {
   color: var(--ink);
 }
 
+.ladder {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.ladder > li {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 0.9rem 1.1rem;
+}
+
+.ladder .eyebrow {
+  margin: 0 0 0.5rem;
+}
+
+.rungs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rungs li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  padding: 0.25rem 0;
+}
+
+.rung-id {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.opponent {
+  border: 2px solid var(--accent);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  margin: 2rem 0;
+}
+
+.opponent h3 {
+  margin-top: 0.25rem;
+}
+
+.chips {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chips li {
+  background: var(--accent-soft);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.cards {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+
+.cards li {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 0.9rem 1rem;
+}
+
+.cards .eyebrow {
+  margin: 0;
+}
+
+.cards h4 {
+  margin: 0.3rem 0;
+  font-size: 1.05rem;
+}
+
+.muted {
+  color: var(--muted);
+  margin: 0;
+}
+
 .in-progress {
   color: var(--muted);
   font-style: italic;

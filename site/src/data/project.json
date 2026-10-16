@@ -76,6 +76,15 @@
     { "id": 11, "name": "Gradient boosting", "phase": "9" },
     { "id": 12, "name": "Stacking and blending", "phase": "10" }
   ],
+  "baseline_note": "A well-tuned simple baseline is hard to beat on dense rating data, and an under-tuned one makes the whole comparison an artefact of how the tuning budget was spent. So the bias model gets its own tuned penalties and the same budget as the twelfth model.",
+  "families": {
+    "5": "Linear family",
+    "6": "Regularisation",
+    "7": "Nearest neighbours",
+    "8": "Trees",
+    "9": "Ensembles",
+    "10": "Stacking"
+  },
   "baselines": [
     { "name": "Global mean" },
     { "name": "User mean" },
