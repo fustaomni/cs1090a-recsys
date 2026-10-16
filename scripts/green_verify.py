@@ -19,7 +19,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
-from junit_report import ReportError, load, node_of, outcome_of
+from junit_report import ReportError, filesystem_now, load, node_of, outcome_of
 
 ROOT = Path(__file__).resolve().parent.parent
 REPORTS = ROOT / ".artifacts" / "runs" / "green"
@@ -136,7 +136,7 @@ def main() -> int:
     scope, explanation, required, targets = _arguments(sys.argv[1:])
     REPORTS.mkdir(parents=True, exist_ok=True)
     report = REPORTS / f"{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}-{scope}.xml"
-    started = time.time()
+    started = filesystem_now(REPORTS)
     argv = [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider"]
     ran = subprocess.run([*argv, "--junitxml", str(report), *targets], cwd=ROOT, check=False)
     result = judge(ran.returncode, report, started, scope, explanation, required)

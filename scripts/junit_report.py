@@ -9,6 +9,8 @@ rebuilt from pytest's classname and name; a collection error is a case with no c
 
 from __future__ import annotations
 
+import os
+import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Literal
@@ -27,6 +29,20 @@ class ReportError(Exception):
         super().__init__(detail)
         self.code: ProblemCode = code
         self.detail = detail
+
+
+def filesystem_now(directory: Path) -> float:
+    """The current time as the file system holding directory stamps it (A.88).
+
+    A report's mtime comes from the clock of the file system that holds it, on network storage
+    the server's, not this process's; time.time() drifts from it. A marker written here just
+    before a run gives the run's start in that same clock, so freshness compares like with like.
+    """
+    directory.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(dir=directory) as marker:
+        marker.write(b"start")
+        marker.flush()
+        return os.fstat(marker.fileno()).st_mtime
 
 
 def load(report: Path, started: float) -> list[ET.Element]:
