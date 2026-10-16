@@ -164,8 +164,8 @@ done_when = [
 id = "A.25"
 title = "worktree:add takes an optional base, so stacked work gets its own worktree"
 thread = "A"
-depends_on = ["A.18"]
-because = { "A.18" = "worktree.py and its tests arrive through source:apply specs" }
+depends_on = ["A.29"]
+because = { "A.29" = "worktree.py and its tests are ported by source:port, never by a raw builder" }
 done_when = [
   { kind = "proof", test = "tests/test_worktree_base.py::test_a_worktree_starts_from_a_named_local_branch" },
 ]
@@ -180,7 +180,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.27"
-title = "The founding gate and the re-trust of a checkout are one machine-level task, shipped in the repository"
+title = "The founding gate and the re-trust of a checkout are one machine-level task, and worktree:add calls it"
 thread = "A"
 depends_on = ["A.25"]
 because = { "A.25" = "the work is done in its own worktree, cut by the task" }
@@ -200,8 +200,8 @@ done_when = [
 id = "A.29"
 title = "Spec building is a task: an upstream file or a formatted edit becomes a measured source:apply spec"
 thread = "A"
-depends_on = ["A.28"]
-because = { "A.28" = "a spec built from upstream reads upstream through the recorded task" }
+depends_on = ["A.18"]
+because = { "A.18" = "the task's own files arrive through source:apply specs, written literally" }
 done_when = [
   { kind = "proof", test = "tests/test_source_port.py::test_an_upstream_file_becomes_a_create_spec" },
 ]
