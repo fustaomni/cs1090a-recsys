@@ -722,3 +722,12 @@ because = { "A.31" = "it extends the single-proof RED verdict" }
 done_when = [
   { kind = "proof", test = "tests/test_red_verify.py::test_several_named_proofs_are_red_together" },
 ]
+[[steps]]
+id = "A.84"
+title = "source:search matches in one declared dialect, extended, recorded in its contract"
+thread = "A"
+depends_on = ["A.81"]
+because = { "A.81" = "it changes the ported source:search" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_search.py::test_an_alternation_with_groups_matches_as_extended" },
+]
