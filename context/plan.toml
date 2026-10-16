@@ -322,7 +322,8 @@ thread = "A"
 depends_on = ["A.32"]
 because = { "A.32" = "the gate judges levels from the report" }
 done_when = [
-  { kind = "proof", test = "tests/test_test_levels.py::test_an_unclassified_test_is_refused" },
+  { kind = "path", path = "contracts/test-levels.toml" },
+  { kind = "proof", test = "tests/test_levels.py::test_an_unclassified_test_is_refused" },
 ]
 [[steps]]
 id = "A.40"
