@@ -1,6 +1,27 @@
 --- a/scripts/check_all.py
 +++ b/scripts/check_all.py
-@@ -106,6 +106,12 @@
+@@ -33,7 +33,10 @@
+ from bounded import Exited, TimedOut, run
+ from contract_base import Contract
+ 
+-State = Literal["executed_passed", "executed_failed", "timed_out", "reused"]
++State = Literal["executed_passed", "executed_failed", "timed_out", "reused", "nothing_to_run"]
++
++# pytest's ExitCode.NO_TESTS_COLLECTED: nothing was selected, so nothing ran (A.90).
++NO_TESTS_COLLECTED = 5
+ 
+ 
+ class GateSpec(Contract):
+@@ -43,6 +46,8 @@
+     command: tuple[str, ...] = Field(min_length=1)
+     runs_in_hooks: bool
+     timeout_seconds: float = Field(gt=0)
++    # A LANE MAY DECLARE ITSELF EMPTY (A.90): only then is pytest's exit 5 nothing to run.
++    may_be_empty: bool = False
+ 
+ 
+ class GateRun(Contract):
+@@ -106,6 +111,12 @@
  # runs_in_hooks=False means "CI only": either it needs the network and valid
  # Databricks auth, or it is slow enough that including it would train people to
  # bypass the hook. Both make a gate that belongs in CI, where a bypass is caught.
@@ -13,10 +34,11 @@
  GATES: tuple[GateSpec, ...] = (
      GateSpec(
          name="lint",
-@@ -141,20 +147,6 @@
+@@ -140,20 +151,6 @@
+         command=("uv", "run", "pytest", "-q"),
          runs_in_hooks=True,
          timeout_seconds=900.0,
-     ),
+-    ),
 -    # Policy gets the same treatment as the Python: well-formed and tested, then
 -    # evaluated against the actual repo. Both are offline.
 -    GateSpec(
@@ -30,11 +52,10 @@
 -        command=("uv", "run", "python", "scripts/evaluate_policies.py"),
 -        runs_in_hooks=True,
 -        timeout_seconds=300.0,
--    ),
+     ),
      # FULL HISTORY, NOT THE WORKING TREE. A pre-commit hook only ever sees the
      # incoming change, so anything committed before hooks existed -- or pushed
-     # with --no-verify -- has never been scanned. This repo already leaked an
-@@ -169,129 +161,12 @@
+@@ -169,187 +166,19 @@
      #
      # --redact keeps any finding out of CI logs, where it would become a second
      # leak in the process of reporting the first.
@@ -55,7 +76,7 @@
          command=("betterleaks", "git", "--redact", "--no-banner"),
          runs_in_hooks=True,
          timeout_seconds=300.0,
-     ),
+-    ),
 -    # THE WORKFLOW'S OWN CLAIMS, ENFORCED (D.84). ci.yml pins every action to a commit
 -    # SHA and grants the token contents: read; zizmor sat in the devShell and no gate
 -    # ran it, so nothing stopped an edit from making either claim false. PEDANTIC,
@@ -160,14 +181,15 @@
 -        command=("uv", "run", "python", "scripts/update_fixtures.py", "--check"),
 -        runs_in_hooks=False,
 -        timeout_seconds=600.0,
--    ),
+     ),
      # The integration-marked tests, deselected from the hermetic `test` gate.
      GateSpec(
          name="test (integration)",
-@@ -299,58 +174,6 @@
+         command=("uv", "run", "pytest", "-m", "integration"),
          runs_in_hooks=False,
++        may_be_empty=True,
          timeout_seconds=1200.0,
-     ),
+-    ),
 -    GateSpec(
 -        name="prereqs",
 -        command=("uv", "run", "python", "scripts/check_prereqs.py"),
@@ -219,7 +241,43 @@
 -        command=("uv", "run", "python", "scripts/check_env_parity.py"),
 -        runs_in_hooks=False,
 -        timeout_seconds=300.0,
--    ),
+     ),
  )
+ 
+@@ -368,6 +197,8 @@
+         state: State = "timed_out"
+     elif isinstance(ended, Exited) and ended.code == 0:
+         state = "executed_passed"
++    elif isinstance(ended, Exited) and ended.code == NO_TESTS_COLLECTED and spec.may_be_empty:
++        state = "nothing_to_run"
+     else:
+         state = "executed_failed"
+     return GateRun(
+@@ -399,13 +230,14 @@
+         ran = run_gate(spec)
+         runs.append(ran)
+         late = f" (timed out after {spec.timeout_seconds:g}s)" if ran.state == "timed_out" else ""
+-        print(f"{'PASS' if ran.passed else 'FAIL'}  {spec.name}{late}", flush=True)
++        label = "NONE" if ran.state == "nothing_to_run" else "PASS" if ran.passed else "FAIL"
++        print(f"{label}  {spec.name}{late}", flush=True)
+ 
+     report = _report_path(sys.argv)
+     if report is not None:
+         report.write_text(GateReport(gates=tuple(runs)).model_dump_json(), encoding="utf-8")
+ 
+-    failed = [ran for ran in runs if not ran.passed]
++    failed = [ran for ran in runs if not ran.passed and ran.state != "nothing_to_run"]
+ 
+     if failed:
+         for ran in failed:
+@@ -417,7 +249,9 @@
+         )
+         return 1
+ 
+-    print(f"\nall {len(runs)} gates passed")
++    empty = [ran.name for ran in runs if ran.state == "nothing_to_run"]
++    note = f"; nothing to run in {', '.join(empty)}" if empty else ""
++    print(f"\nall {len(runs) - len(empty)} gates passed{note}")
+     return 0
  
  
