@@ -358,6 +358,10 @@ run = "uv run --no-sync python scripts/ledger_anchor.py"
 description = "Prove every listed safeguard: its proof passes, then fails once its guard is mutated away"
 run = "uv run --no-sync python scripts/safeguards.py"
 
+[tasks."capabilities:list"]
+description = "List every task as a versioned capability with its enforced effect, or refuse on drift"
+run = "uv run --no-sync python scripts/capabilities.py"
+
 [tasks."claims:audit"]
 description = "Audit the claims register: pillars need contract, task, proofs and passing ledger runs"
 run = "uv run --no-sync python scripts/claims_audit.py"
