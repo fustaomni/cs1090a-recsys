@@ -50,6 +50,12 @@ def test_no_site_source_is_ignored() -> None:
     assert ignored == []
 
 
+def test_every_phase_belongs_to_exactly_one_milestone() -> None:
+    data = json.loads((SITE / "src" / "data" / "project.json").read_text(encoding="utf-8"))
+    placed = [phase for milestone in data["milestones"] for phase in milestone["phase_ids"]]
+    assert sorted(placed) == sorted(PHASES)
+
+
 def test_the_site_data_carries_every_phase_model_and_technique() -> None:
     data = json.loads((SITE / "src" / "data" / "project.json").read_text(encoding="utf-8"))
     assert [phase["id"] for phase in data["phases"]] == PHASES

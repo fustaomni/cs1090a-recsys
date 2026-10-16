@@ -1,13 +1,15 @@
 import data from "./data/project.json";
 
 const SECTIONS = [
-  { id: "overview", label: "Overview", ready: true },
-  { id: "scope", label: "Scope", ready: false },
-  { id: "phases", label: "Phases", ready: false },
-  { id: "deploys", label: "Models & techniques", ready: false },
-  { id: "mechanisms", label: "Interactive mechanisms", ready: false },
-  { id: "results", label: "Results", ready: false },
+  { id: "overview", label: "Overview" },
+  { id: "scope", label: "Scope" },
+  { id: "phases", label: "Phases" },
+  { id: "deploys", label: "Models & techniques" },
+  { id: "mechanisms", label: "Interactive mechanisms" },
+  { id: "results", label: "Results" },
 ];
+
+const STATUS_LABEL = { done: "Done", current: "In progress", planned: "Planned" };
 
 function InProgress({ id, label }) {
   return (
@@ -63,6 +65,83 @@ function Overview() {
   );
 }
 
+function Scope() {
+  const { scope } = data;
+  return (
+    <section id="scope" className="section">
+      <h2>Scope, after review</h2>
+      <p className="lede">{scope.principle}</p>
+      <div className="two-col">
+        <div className="panel">
+          <h3>Removed by the reviewer</h3>
+          <dl>
+            {scope.removed.map((entry) => (
+              <div key={entry.item}>
+                <dt>{entry.item}</dt>
+                <dd>{entry.why}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+        <div className="panel">
+          <h3>Retained and reframed</h3>
+          <dl>
+            {scope.retained.map((entry) => (
+              <div key={entry.item}>
+                <dt>{entry.item}</dt>
+                <dd>{entry.form}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Phases() {
+  const byId = Object.fromEntries(data.phases.map((phase) => [phase.id, phase]));
+  const groups = data.milestones.filter((milestone) => milestone.phase_ids.length > 0);
+  const opened = groups[0]?.phase_ids[0];
+  return (
+    <section id="phases" className="section">
+      <h2>The phases</h2>
+      <p className="status-line">
+        <span className="badge current">Status</span> {data.status}
+      </p>
+      {groups.map((milestone) => (
+        <div key={milestone.id} className="milestone-group">
+          <h3>
+            {milestone.id} · {milestone.name} <span className="when">{milestone.due}</span>
+          </h3>
+          <ol className="phase-list">
+            {milestone.phase_ids.map((id) => (
+              <li key={id}>
+                <details open={id === opened}>
+                  <summary>
+                    <span className="phase-id">Phase {id}</span>
+                    <span className="phase-title">{byId[id].title}</span>
+                    <span className={`badge ${milestone.status}`}>
+                      {STATUS_LABEL[milestone.status]}
+                    </span>
+                  </summary>
+                  <ul>
+                    {byId[id].points.map((point) => (
+                      <li key={point}>{point}</li>
+                    ))}
+                  </ul>
+                </details>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+const READY = { overview: Overview, scope: Scope, phases: Phases };
+
 export default function App() {
   return (
     <>
@@ -79,13 +158,14 @@ export default function App() {
         </nav>
       </header>
       <main>
-        {SECTIONS.map((section) =>
-          section.id === "overview" ? (
-            <Overview key={section.id} />
+        {SECTIONS.map((section) => {
+          const Ready = READY[section.id];
+          return Ready ? (
+            <Ready key={section.id} />
           ) : (
             <InProgress key={section.id} id={section.id} label={section.label} />
-          ),
-        )}
+          );
+        })}
       </main>
       <footer className="foot">{data.author} · updated at every milestone</footer>
     </>

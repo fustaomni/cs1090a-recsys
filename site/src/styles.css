@@ -180,6 +180,110 @@ h2 {
   color: var(--accent);
 }
 
+.two-col {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+
+.panel h3 {
+  margin-top: 0.25rem;
+}
+
+dt {
+  font-weight: 600;
+  margin-top: 0.75rem;
+}
+
+dd {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+}
+
+.status-line {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.badge.current {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.badge.done {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+.milestone-group h3 {
+  margin-top: 2rem;
+}
+
+.phase-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 2px solid var(--line);
+}
+
+.phase-list > li {
+  padding-left: 1rem;
+  margin: 0.5rem 0;
+}
+
+details {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.9rem;
+}
+
+summary {
+  cursor: pointer;
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.phase-id {
+  color: var(--accent);
+  font-weight: 700;
+  min-width: 5.5rem;
+}
+
+.phase-title {
+  flex: 1 1 14rem;
+  font-weight: 600;
+}
+
+details ul {
+  margin: 0.6rem 0 0.2rem;
+  color: var(--ink);
+}
+
 .in-progress {
   color: var(--muted);
   font-style: italic;
