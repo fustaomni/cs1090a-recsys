@@ -1,0 +1,161 @@
+{
+  "contract": "site-results/v1",
+  "updated": "2026-10-16",
+  "protocol": "Protocol A: global temporal split, testing on ratings after the 0.9 quantile of timestamps",
+  "primary": {
+    "question": "Does the best model beat the regularised bias baseline on RMSE, compared paired and clustered by user?",
+    "verdicts": [
+      "The best model beats the baseline",
+      "No detectable difference from the baseline",
+      "The baseline is better"
+    ],
+    "status": "pending",
+    "verdict": null
+  },
+  "rows": [
+    {
+      "key": "baseline:global-mean",
+      "name": "Global mean",
+      "kind": "baseline",
+      "milestone": "M3",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "baseline:user-mean",
+      "name": "User mean",
+      "kind": "baseline",
+      "milestone": "M3",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "baseline:film-mean",
+      "name": "Film mean",
+      "kind": "baseline",
+      "milestone": "M3",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "baseline:bias",
+      "name": "Regularised bias model",
+      "kind": "baseline",
+      "milestone": "M3",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "model:1",
+      "name": "Simple linear regression",
+      "kind": "model",
+      "milestone": "M3",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "model:2",
+      "name": "Multi-linear regression",
+      "kind": "model",
+      "milestone": "M3",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "model:3",
+      "name": "Polynomial and interaction terms",
+      "kind": "model",
+      "milestone": "M3",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "model:4",
+      "name": "Ridge regression",
+      "kind": "model",
+      "milestone": "M3",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "model:5",
+      "name": "Lasso regression",
+      "kind": "model",
+      "milestone": "M3",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "model:6",
+      "name": "kNN regression",
+      "kind": "model",
+      "milestone": "M4",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "model:7",
+      "name": "Decision tree regression, with pruning",
+      "kind": "model",
+      "milestone": "M4",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "model:8",
+      "name": "Bagging",
+      "kind": "model",
+      "milestone": "M4",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "model:9",
+      "name": "Random Forest",
+      "kind": "model",
+      "milestone": "M4",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "model:10",
+      "name": "AdaBoost for regression",
+      "kind": "model",
+      "milestone": "M4",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "model:11",
+      "name": "Gradient boosting",
+      "kind": "model",
+      "milestone": "M4",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    },
+    {
+      "key": "model:12",
+      "name": "Stacking and blending",
+      "kind": "model",
+      "milestone": "M4",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
+    }
+  ]
+}

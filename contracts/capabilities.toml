@@ -244,6 +244,12 @@ implementation = "mise.toml"
 emits = "text"
 
 [[capabilities]]
+task = "site:record"
+version = "1.0.0"
+implementation = "scripts/site_record.py"
+emits = "text"
+
+[[capabilities]]
 task = "capabilities:list"
 version = "1.0.0"
 implementation = "scripts/capabilities.py"
