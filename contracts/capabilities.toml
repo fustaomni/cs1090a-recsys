@@ -274,6 +274,12 @@ implementation = "scripts/data_fetch.py"
 emits = "command-outcome/v1"
 
 [[capabilities]]
+task = "model:fit"
+version = "1.0.0"
+implementation = "scripts/model_run.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
 task = "capabilities:list"
 version = "1.0.0"
 implementation = "scripts/capabilities.py"

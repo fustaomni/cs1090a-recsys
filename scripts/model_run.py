@@ -12,13 +12,18 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import sys
+import tomllib
 from pathlib import Path
 from typing import Literal
 
 from pydantic import Field
 
 import spine
+from command_outcome import CommandOutcome
 from contract_base import Contract
+from gitenv import git
+from run_ledger import default_ledger
 
 ROOT = Path(__file__).resolve().parent.parent
 POLICY = ROOT / "policies" / "runs" / "model_run"
@@ -185,3 +190,87 @@ def admit(record: FitRecord, artifact: Path) -> list[str]:
     found = spine.evaluate(record, SUBJECT, POLICY, ENTRYPOINT)
     refusals.extend(rule.code for rule in found.rules if rule.outcome == "fail")
     return sorted(refusals)
+
+
+BASELINE = ROOT / "contracts" / "model-runs" / "baseline.toml"
+
+
+def load(declaration: Path) -> Declaration:
+    """A declaration file, validated once at the boundary.
+
+    Through JSON, not Python: TOML's arrays arrive as lists, which strict validation refuses
+    for a tuple field from Python but accepts from JSON, so every other check stays strict.
+    """
+    with declaration.open("rb") as handle:
+        document = tomllib.load(handle)
+    return Declaration.model_validate_json(json.dumps(document))
+
+
+def run(declaration: Path, ratings: Path, out: Path, head: str) -> tuple[FitRecord, list[str]]:
+    """Fit as declared, write the artifact and its record into out, and judge them.
+
+    The record is written even when the fit is refused: a refusal is evidence too.
+    """
+    declared = load(declaration)
+    out.mkdir(parents=True, exist_ok=True)
+    artifact = out / f"{declared.model}.json"
+    record = fit(declared, ratings, artifact, head)
+    written = out / f"{declared.model}.record.json"
+    written.write_text(record.model_dump_json(indent=2), encoding="utf-8")
+    return record, admit(record, artifact)
+
+
+def fit_from(
+    declaration: Path, ratings: Path, out: Path, head: str, clean: bool
+) -> tuple[FitRecord | None, list[str]]:
+    """Fit only from committed code: a record must name the exact code that produced it."""
+    if not clean:
+        return None, ["ERR_MODEL_TREE_DIRTY"]
+    return run(declaration, ratings, out, head)
+
+
+def tree(root: Path) -> tuple[str, bool]:
+    """HEAD, and whether tracked files are unchanged, through the scrubbed git helper.
+
+    Untracked files are not code here (.artifacts, build output), so they are not counted.
+    """
+    head = git("rev-parse", "HEAD", cwd=root)
+    status = git("status", "--porcelain", "--untracked-files=no", cwd=root)
+    if head.returncode != 0 or status.returncode != 0:
+        raise SystemExit(f"model_run: git could not report the tree: {status.stderr.strip()}")
+    return head.stdout.strip(), status.stdout.strip() == ""
+
+
+def _announce(outcome: str, code: str, message: str, data: dict[str, object]) -> int:
+    envelope = CommandOutcome.model_validate(
+        {
+            "command": "model:fit",
+            "outcome": outcome,
+            "code": code,
+            "message": message,
+            "data": data,
+        }
+    )
+    print(json.dumps(envelope.model_dump(), indent=2))
+    return envelope.exit_code
+
+
+def main() -> int:
+    evidence = default_ledger().parent.parent
+    ratings = evidence / "data" / "ml-1m" / "ratings.dat"
+    out = evidence / "model-runs"
+    data: dict[str, object] = {"declaration": str(BASELINE), "ratings": str(ratings)}
+    if not ratings.exists():
+        return _announce("refused", "data_missing", f"{ratings} is missing: run data:fetch", data)
+    head, clean = tree(ROOT)
+    record, refusals = fit_from(BASELINE, ratings, out, head, clean)
+    if record is not None:
+        data["record"] = record.model_dump(mode="json")
+    if record is None or refusals:
+        return _announce("refused", "fit_refused", ", ".join(refusals), data)
+    message = f"{record.model} fitted on {record.last_row + 1} rows and admitted into {out}"
+    return _announce("success", "fitted", message, data)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
