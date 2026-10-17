@@ -35,9 +35,18 @@ id = "SA.REPLACE_MISSING"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_REPLACE_MISSING"
 path = "policies/runs/source_apply/source_apply.rego"
-anchor = "\tnot operation.exists_before\n"
-mutant = "\tfalse\n"
+anchor = "\toperation.op == \"replace\"\n\tnot operation.exists_before\n"
+mutant = "\toperation.op == \"replace\"\n\tfalse\n"
 proof = "tests/test_source_apply.py::test_replacing_in_a_missing_file_is_refused"
+
+[[safeguards]]
+id = "SA.DELETE_MISSING"
+engine = "source:apply"
+guard = "ERR_SOURCE_APPLY_DELETE_MISSING"
+path = "policies/runs/source_apply/source_apply.rego"
+anchor = "\toperation.op == \"delete\"\n\tnot operation.exists_before\n"
+mutant = "\toperation.op == \"delete\"\n\tfalse\n"
+proof = "tests/test_source_apply.py::test_deleting_a_missing_file_is_refused"
 
 [[safeguards]]
 id = "SA.ANCHOR_COUNT"
