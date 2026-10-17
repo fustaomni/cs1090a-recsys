@@ -11,6 +11,8 @@ const LABS = {
   M5: lazy(() => import("./labs/M5.jsx")),
   M6: lazy(() => import("./labs/M6.jsx")),
   M7: lazy(() => import("./labs/M7.jsx")),
+  M8: lazy(() => import("./labs/M8.jsx")),
+  M9: lazy(() => import("./labs/M9.jsx")),
   T4: lazy(() => import("./labs/T4.jsx")),
 };
 

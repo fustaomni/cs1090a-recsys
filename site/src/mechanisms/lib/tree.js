@@ -47,13 +47,27 @@ function bestSplit(rows, ys, features, minLeaf) {
   return best;
 }
 
-export function grow(rows, features, { minLeaf = 5, maxSplits = 200 } = {}) {
+// Features a node may split on: all of them, or, for a random forest, a fresh random subset of
+// mtry at every node (drawn without replacement).
+function candidates(features, mtry, rng) {
+  if (mtry >= features.length) return features;
+  const pool = features.slice();
+  for (let i = 0; i < mtry; i += 1) {
+    const j = i + Math.floor(rng() * (pool.length - i));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, mtry);
+}
+
+export function grow(rows, features, options = {}) {
+  const { minLeaf = 5, maxSplits = 200, mtry = features.length, rng = null } = options;
   const ys = rows.map((row) => row.rating);
   const nodes = [];
   const make = (indices, depth) => {
     const node = { id: nodes.length, depth, indices, ...summary(indices.map((i) => ys[i])) };
     const subset = indices.map((i) => rows[i]);
-    node.split = bestSplit(subset, indices.map((i) => ys[i]), features, minLeaf);
+    const allowed = candidates(features, mtry, rng);
+    node.split = bestSplit(subset, indices.map((i) => ys[i]), allowed, minLeaf);
     nodes.push(node);
     return node;
   };
@@ -61,9 +75,9 @@ export function grow(rows, features, { minLeaf = 5, maxSplits = 200 } = {}) {
   const frontier = [root];
   let order = 0;
   while (order < maxSplits) {
-    const candidates = frontier.filter((node) => node.split && node.sse - node.split.sse > 1e-12);
-    if (candidates.length === 0) break;
-    const node = candidates.reduce((a, b) => (b.sse - b.split.sse > a.sse - a.split.sse ? b : a));
+    const open = frontier.filter((node) => node.split && node.sse - node.split.sse > 1e-12);
+    if (open.length === 0) break;
+    const node = open.reduce((a, b) => (b.sse - b.split.sse > a.sse - a.split.sse ? b : a));
     frontier.splice(frontier.indexOf(node), 1);
     const { feature, threshold } = node.split;
     node.feature = feature;
