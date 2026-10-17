@@ -49,8 +49,10 @@ function themed(layout, colors) {
     const { xaxis, yaxis, zaxis } = layout.scene;
     result.scene = { ...layout.scene, xaxis: axis(xaxis), yaxis: axis(yaxis), zaxis: axis(zaxis) };
   }
-  if (layout.xaxis) result.xaxis = axis(layout.xaxis);
-  if (layout.yaxis) result.yaxis = axis(layout.yaxis);
+  if (!layout.scene) {
+    result.xaxis = axis(layout.xaxis);
+    result.yaxis = axis(layout.yaxis);
+  }
   return result;
 }
 

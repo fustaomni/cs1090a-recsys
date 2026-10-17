@@ -14,6 +14,8 @@ const LABS = {
   M8: lazy(() => import("./labs/M8.jsx")),
   M9: lazy(() => import("./labs/M9.jsx")),
   T4: lazy(() => import("./labs/T4.jsx")),
+  T7: lazy(() => import("./labs/T7.jsx")),
+  T8: lazy(() => import("./labs/T8.jsx")),
 };
 
 class LabBoundary extends Component {

@@ -172,3 +172,27 @@ export function forestRatings({ seed = 101, n = 240, rho = 0.6 } = {}) {
   }
   return rows;
 }
+
+// Ratings that drift over time: later ratings run higher and lean less on user history, so a
+// model fitted on the past meets a slightly different world. Rows are in time order.
+export function driftRatings({ seed = 111, n = 300 } = {}) {
+  const rng = mulberry32(seed);
+  const spread = Math.sqrt(1 - 0.6 * 0.6);
+  const rows = [];
+  for (let index = 0; index < n; index += 1) {
+    const t = index / n;
+    const user = normal(rng);
+    const film = 0.6 * user + spread * normal(rng);
+    const genre = rng() < 0.3 ? 1 : 0;
+    const noise = normal(rng);
+    const latent =
+      3.2 +
+      1.2 * t +
+      (0.8 - 0.7 * t) * user +
+      0.45 * film +
+      0.4 * genre +
+      0.7 * normal(rng);
+    rows.push({ user, film, genre, noise, rating: toLevel(latent) });
+  }
+  return rows;
+}
