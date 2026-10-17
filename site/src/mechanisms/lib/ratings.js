@@ -148,3 +148,27 @@ export function treeRatings({ seed = 91, n = 360 } = {}) {
   }
   return rows;
 }
+
+// Ratings for ensembles: correlated user and film histories, a binary genre that matters, a
+// continuous column of pure noise, and a corner where both histories are high. Rows are in
+// time order.
+export function forestRatings({ seed = 101, n = 240, rho = 0.6 } = {}) {
+  const rng = mulberry32(seed);
+  const spread = Math.sqrt(1 - rho * rho);
+  const rows = [];
+  for (let index = 0; index < n; index += 1) {
+    const user = normal(rng);
+    const film = rho * user + spread * normal(rng);
+    const genre = rng() < 0.3 ? 1 : 0;
+    const noise = normal(rng);
+    const latent =
+      3.6 +
+      0.55 * user +
+      0.45 * film +
+      0.4 * genre +
+      (user > 0.5 && film > 0.3 ? 0.45 : 0) +
+      0.8 * normal(rng);
+    rows.push({ user, film, genre, noise, rating: toLevel(latent) });
+  }
+  return rows;
+}
