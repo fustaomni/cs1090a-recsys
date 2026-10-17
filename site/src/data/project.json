@@ -1,6 +1,10 @@
 {
   "title": "A recommender that records why it recommended",
-  "group": { "number": 34, "seats": 5, "members": ["Thanh Phong Le"] },
+  "group": {
+    "number": 34,
+    "seats": 5,
+    "members": ["Thanh Phong Le", "Myra Puruganan", "Sandra Palomo"]
+  },
   "status": "Design complete and reviewed. Data work begins with Milestone 2, once groups are assigned on October 19.",
   "contact": "phl690@g.harvard.edu",
   "overview": {

@@ -74,8 +74,8 @@ function Overview() {
           Join the team
         </a>
         <p className="cta-note">
-          Looking for two to four teammates. The design, the split and the evaluation are
-          already done: you own one block of phases end to end.
+          Two seats left. The design, the split and the evaluation are already done: you own
+          one block of phases end to end.
         </p>
       </div>
       <p>{overview.summary}</p>
