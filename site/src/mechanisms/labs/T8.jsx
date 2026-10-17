@@ -14,9 +14,9 @@ import { mulberry32 } from "../lib/random.js";
 import { forestRatings } from "../lib/ratings.js";
 import { impurityImportance } from "../lib/tree.js";
 
-const FEATURES = ["user", "film", "genre", "noise"];
-const LABELS = { user: "user history", film: "film history", genre: "genre", noise: "noise" };
-const PARTNER = { user: "film", film: "user", genre: "user", noise: "user" };
+const FEATURES = ["user", "movie", "genre", "noise"];
+const LABELS = { user: "user history", movie: "movie history", genre: "genre", noise: "noise" };
+const PARTNER = { user: "movie", movie: "user", genre: "user", noise: "user" };
 const TRAIN = 220;
 const SETTINGS = { trees: 30, mtry: 2, minLeaf: 3, seed: 13 };
 const METHODS = ["plain", "conditional", "drop"];
@@ -25,7 +25,7 @@ const METHOD_LABELS = {
   conditional: "Conditional permutation",
   drop: "Drop-column refit",
 };
-const HYPOTHESIS = { user: 0.35, film: 0.3 };
+const HYPOTHESIS = { user: 0.35, movie: 0.3 };
 
 function spread(values) {
   const sorted = values.slice().sort((a, b) => a - b);
@@ -86,7 +86,7 @@ export default function T8() {
       let best = Infinity;
       train.forEach((other, k) => {
         if (k === i) return;
-        best = Math.min(best, Math.hypot(row.user - other.user, row.film - other.film));
+        best = Math.min(best, Math.hypot(row.user - other.user, row.movie - other.movie));
       });
       return best;
     });
@@ -98,15 +98,15 @@ export default function T8() {
     [later, shown, method],
   );
   const outsidePlain = useMemo(
-    () => outsideSupport(train, permuted(later, "user", mulberry32(5)), ["user", "film"], radius),
+    () => outsideSupport(train, permuted(later, "user", mulberry32(5)), ["user", "movie"], radius),
     [train, later, radius],
   );
   const outsideConditional = useMemo(
     () =>
       outsideSupport(
         train,
-        permuted(later, "user", mulberry32(5), "film"),
-        ["user", "film"],
+        permuted(later, "user", mulberry32(5), "movie"),
+        ["user", "movie"],
         radius,
       ),
     [train, later, radius],
@@ -117,7 +117,7 @@ export default function T8() {
       const segments = { x: [], y: [], z: [] };
       later.forEach((row, i) => {
         segments.x.push(row.user, moved[i].user, null);
-        segments.y.push(row.film, moved[i].film, null);
+        segments.y.push(row.movie, moved[i].movie, null);
         segments.z.push(row.rating, predict(moved[i]), null);
       });
       return [
@@ -133,7 +133,7 @@ export default function T8() {
           mode: "markers",
           name: "Later ratings (fixed)",
           x: later.map((row) => row.user),
-          y: later.map((row) => row.film),
+          y: later.map((row) => row.movie),
           z: later.map((row) => row.rating),
           marker: { size: 3.5, color: colors.ink },
         },
@@ -142,7 +142,7 @@ export default function T8() {
           mode: "markers",
           name: `Predictions after shuffling ${LABELS[shown]}`,
           x: moved.map((row) => row.user),
-          y: moved.map((row) => row.film),
+          y: moved.map((row) => row.movie),
           z: moved.map(predict),
           marker: { size: 3.5, color: colors.accent },
         },
@@ -154,7 +154,7 @@ export default function T8() {
     () => ({
       scene: {
         xaxis: { title: { text: "User history" } },
-        yaxis: { title: { text: "Film history" } },
+        yaxis: { title: { text: "Movie history" } },
         zaxis: { title: { text: "Rating" }, range: [1, 5] },
         camera: { eye: { x: 1.6, y: -1.6, z: 0.9 } },
       },
@@ -164,7 +164,7 @@ export default function T8() {
   );
 
   const userShare = shareSummary[method][0];
-  const filmShare = shareSummary[method][1];
+  const movieShare = shareSummary[method][1];
   const covers = (s, value) => s.low <= value && value <= s.high;
 
   return (
@@ -183,7 +183,7 @@ export default function T8() {
         <label className="control">
           <span>Feature to shuffle</span>
           <select value={shown} onChange={(event) => setShown(event.target.value)}>
-            {["user", "film", "genre"].map((f) => (
+            {["user", "movie", "genre"].map((f) => (
               <option key={f} value={f}>
                 {LABELS[f]}
               </option>
@@ -201,7 +201,7 @@ export default function T8() {
           </select>
         </label>
         <Slider
-          label="Correlation of user and film history ρ"
+          label="Correlation of user and movie history ρ"
           value={rho}
           min={0}
           max={0.9}
@@ -263,15 +263,15 @@ export default function T8() {
           </dd>
         </div>
         <div>
-          <dt>The 35% / 30% user-against-film split, tested</dt>
+          <dt>The 35% / 30% user-against-movie split, tested</dt>
           <dd>
             With {METHOD_LABELS[method].toLowerCase()}, user history takes{" "}
             {fixed(userShare.mean * 100, 0)}% ({fixed(userShare.low * 100, 0)} to{" "}
-            {fixed(userShare.high * 100, 0)}) and film history {fixed(filmShare.mean * 100, 0)}% (
-            {fixed(filmShare.low * 100, 0)} to {fixed(filmShare.high * 100, 0)}) of the summed
+            {fixed(userShare.high * 100, 0)}) and movie history {fixed(movieShare.mean * 100, 0)}% (
+            {fixed(movieShare.low * 100, 0)} to {fixed(movieShare.high * 100, 0)}) of the summed
             rises. 35% is {covers(userShare, HYPOTHESIS.user) ? "inside" : "outside"} the user
-            interval and 30% is {covers(filmShare, HYPOTHESIS.film) ? "inside" : "outside"} the
-            film interval.
+            interval and 30% is {covers(movieShare, HYPOTHESIS.movie) ? "inside" : "outside"} the
+            movie interval.
           </dd>
         </div>
       </dl>

@@ -20,12 +20,12 @@ import { curve, oneStandardError, rollingFolds } from "../lib/tuning.js";
 const TRAIN = 300;
 const MIN_LEAF = 5;
 const READABLE = 100;
-const LABELS = { user: "user mean", film: "film mean", genre: "genre (binary)", age: "age band" };
-const RANGES = { user: [2, 5.2], film: [2, 5], genre: [0, 1], age: [0, 6] };
-const AXES = { true: ["user", "film"], false: ["age", "genre"] };
+const LABELS = { user: "user mean", movie: "movie mean", genre: "genre (binary)", age: "age band" };
+const RANGES = { user: [2, 5.2], movie: [2, 5], genre: [0, 1], age: [0, 6] };
+const AXES = { true: ["user", "movie"], false: ["age", "genre"] };
 
 function featuresFor(withMeans) {
-  return withMeans ? ["user", "film", "genre", "age"] : ["age", "genre"];
+  return withMeans ? ["user", "movie", "genre", "age"] : ["age", "genre"];
 }
 
 export default function M7() {
@@ -280,7 +280,7 @@ export default function M7() {
               setPrune(0);
             }}
           />
-          <span>Include the prior user and film means</span>
+          <span>Include the prior user and movie means</span>
         </label>
         {withMeans && (
           <label className="control check">

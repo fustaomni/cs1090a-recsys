@@ -15,8 +15,8 @@ import { mulberry32 } from "../lib/random.js";
 import { forestRatings } from "../lib/ratings.js";
 import { impurityImportance, permutationImportance } from "../lib/tree.js";
 
-const FEATURES = ["user", "film", "genre", "noise"];
-const LABELS = { user: "user history", film: "film history", genre: "genre", noise: "noise" };
+const FEATURES = ["user", "movie", "genre", "noise"];
+const LABELS = { user: "user history", movie: "movie history", genre: "genre", noise: "noise" };
 const TRAIN = 200;
 const TREES = 40;
 const RANGE = [-2.5, 2.5];
@@ -92,7 +92,7 @@ export default function M9() {
     [train, later, queries, fraction, minLeaf],
   );
   const surface = useMemo(
-    () => blockSurface(predict, "user", "film", RANGE, RANGE, 48, FIXED),
+    () => blockSurface(predict, "user", "movie", RANGE, RANGE, 48, FIXED),
     [predict],
   );
   const frequency = splitFrequency(members, FEATURES, 3);
@@ -132,7 +132,7 @@ export default function M9() {
         mode: "markers",
         name: "Training ratings",
         x: train.map((row) => row.user),
-        y: train.map((row) => row.film),
+        y: train.map((row) => row.movie),
         z: train.map((row) => row.rating),
         marker: { size: 2.5, color: colors.muted, opacity: 0.5 },
       },
@@ -165,7 +165,7 @@ export default function M9() {
     () => ({
       scene: {
         xaxis: { title: { text: "User history" } },
-        yaxis: { title: { text: "Film history" } },
+        yaxis: { title: { text: "Movie history" } },
         zaxis: { title: { text: "Predicted rating" }, range: [1, 5] },
         camera: { eye: { x: 1.6, y: -1.6, z: 1.0 } },
       },
@@ -267,7 +267,7 @@ export default function M9() {
         the trend from one feature per split to all four is the point. Impurity importance
         favours continuous features and is computed on training data, so the
         pure-noise column earns a share; permutation importance on later rows gives it almost
-        none. User and film history are correlated, so shuffling one leaves the other to cover
+        none. User and movie history are correlated, so shuffling one leaves the other to cover
         for it: the variable-importance lab goes further. Seeded synthetic data: {train.length}{" "}
         training and {later.length} later ratings on five levels.
       </p>

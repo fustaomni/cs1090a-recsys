@@ -9,7 +9,7 @@ import { mulberry32 } from "../lib/random.js";
 const SCHEMES = {
   row: "Ratings resampled",
   user: "Users resampled",
-  pigeonhole: "Users and films resampled",
+  pigeonhole: "Users and movies resampled",
 };
 const DRAWS = [100, 200, 500, 1000, 2000];
 
@@ -23,7 +23,7 @@ export default function T9() {
   const [draws, setDraws] = useState(1000);
 
   const data = useMemo(
-    () => crossedRatings({ seed: 151, users, films: 40, shared }),
+    () => crossedRatings({ seed: 151, users, movies: 40, shared }),
     [users, shared],
   );
   const runs = useMemo(
@@ -31,7 +31,7 @@ export default function T9() {
       Object.fromEntries(
         Object.keys(SCHEMES).map((scheme) => [
           scheme,
-          replicates(data.rows, scheme, data.users, data.films, 2000, 23).map(
+          replicates(data.rows, scheme, data.users, data.movies, 2000, 23).map(
             (r) => r.difference,
           ),
         ]),
@@ -123,10 +123,10 @@ export default function T9() {
     <article className="lab">
       <h3>Technique · Bootstrap inference</h3>
       <p>
-        Every test rating belongs to one user and one film, and ratings from the same user, or
-        of the same film, share error. Resampling single ratings treats them as independent and
+        Every test rating belongs to one user and one movie, and ratings from the same user, or
+        of the same movie, share error. Resampling single ratings treats them as independent and
         makes intervals too narrow. Resampling whole users fixes the first dependence;
-        resampling users and films independently, Owen's pigeonhole bootstrap, also covers the
+        resampling users and movies independently, Owen's pigeonhole bootstrap, also covers the
         second and is mildly conservative. The statistic is the paired difference in RMSE
         between a baseline and the best model, recomputed on each resample.
       </p>
@@ -167,7 +167,7 @@ export default function T9() {
           <dt>Observed difference</dt>
           <dd>
             ΔRMSE = {fixed(observed)} over {data.rows.length} ratings from {data.users} users and{" "}
-            {data.films} films
+            {data.movies} movies
           </dd>
         </div>
         {Object.keys(SCHEMES).map((scheme) => (
@@ -194,7 +194,7 @@ export default function T9() {
       <p className="muted">
         Percentile endpoints rest on the replicates in the tails, about 2.5% of B at each end,
         so they settle only with B in the thousands; resampling the metric needs no refitting,
-        which makes that cheap. Seeded synthetic test ratings with user and film effects.
+        which makes that cheap. Seeded synthetic test ratings with user and movie effects.
       </p>
     </article>
   );

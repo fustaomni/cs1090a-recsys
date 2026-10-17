@@ -57,12 +57,12 @@ describe("omitted-variable bias", () => {
     return simpleFit(rows.map((row) => row.user), rows.map((row) => row.rating)).b1;
   };
 
-  it("recovers the user effect when film history is uncorrelated", () => {
+  it("recovers the user effect when movie history is uncorrelated", () => {
     expect(slopeAt(0)).toBeCloseTo(TRUTH.user, 1);
   });
 
-  it("absorbs rho times the film effect when film history is correlated", () => {
-    expect(Math.abs(slopeAt(0.6) - (TRUTH.user + TRUTH.film * 0.6))).toBeLessThan(0.03);
+  it("absorbs rho times the movie effect when movie history is correlated", () => {
+    expect(Math.abs(slopeAt(0.6) - (TRUTH.user + TRUTH.movie * 0.6))).toBeLessThan(0.03);
   });
 });
 

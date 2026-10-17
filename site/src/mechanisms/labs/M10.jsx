@@ -7,11 +7,11 @@ import { fixed } from "../lib/format.js";
 import { rmse } from "../lib/metrics.js";
 import { forestRatings } from "../lib/ratings.js";
 
-const FEATURES = ["user", "film"];
+const FEATURES = ["user", "movie"];
 const TRAIN = 200;
 const ROUNDS = 30;
 const RANGE = [-2.5, 2.5];
-const OUTLIER = { user: 1.6, film: 1.4, genre: 0, noise: 0, rating: 1 };
+const OUTLIER = { user: 1.6, movie: 1.4, genre: 0, noise: 0, rating: 1 };
 const LOSSES = ["linear", "square", "exponential"];
 
 export default function M10() {
@@ -40,7 +40,7 @@ export default function M10() {
   const predict = useCallback((row) => fit.predict(row, count), [fit, count]);
 
   const surface = useMemo(
-    () => blockSurface(predict, "user", "film", RANGE, RANGE, 40, {}),
+    () => blockSurface(predict, "user", "movie", RANGE, RANGE, 40, {}),
     [predict],
   );
   const curve = (f) =>
@@ -81,7 +81,7 @@ export default function M10() {
         mode: "markers",
         name: "Training ratings, sized by weight",
         x: train.map((row) => row.user),
-        y: train.map((row) => row.film),
+        y: train.map((row) => row.movie),
         z: train.map((row) => row.rating),
         marker: {
           size: step.weights.map((w) => 2 + Math.min(18, w * train.length * 3)),
@@ -119,7 +119,7 @@ export default function M10() {
     () => ({
       scene: {
         xaxis: { title: { text: "User history" } },
-        yaxis: { title: { text: "Film history" } },
+        yaxis: { title: { text: "Movie history" } },
         zaxis: { title: { text: "Rating" }, range: [1, 5] },
         camera: { eye: { x: 1.6, y: -1.6, z: 1.0 } },
       },

@@ -9,7 +9,7 @@ import { mulberry32, resample } from "../lib/random.js";
 import { ratings } from "../lib/ratings.js";
 import { curve, logGrid, oneStandardError, rollingFolds } from "../lib/tuning.js";
 
-const KEYS = ["user", "film"];
+const KEYS = ["user", "movie"];
 const B = steps(-0.3, 1.0, 41);
 const LAMBDAS = logGrid(100, 0.001, 60);
 const TRAIN = 120;
@@ -148,7 +148,7 @@ export default function M4() {
     () => ({
       scene: {
         xaxis: { title: { text: "b1 (user history)" } },
-        yaxis: { title: { text: "b2 (film history)" } },
+        yaxis: { title: { text: "b2 (movie history)" } },
         zaxis: { title: { text: "Objective" } },
         camera: { eye: { x: 1.5, y: -1.7, z: 1.0 } },
       },
@@ -162,7 +162,7 @@ export default function M4() {
       ...[0, 1].map((k) => ({
         type: "scatter",
         mode: "lines",
-        name: k === 0 ? "b1, user" : "b2, film",
+        name: k === 0 ? "b1, user" : "b2, movie",
         x: LAMBDAS,
         y: path.map((b) => b[k]),
         line: { color: k === 0 ? colors.accent : colors.ink, width: 2.5 },

@@ -62,7 +62,7 @@ export default function M12() {
   const comparison = useMemo(() => {
     const paired = test.map((r) => ({
       user: r.user,
-      film: 0,
+      movie: 0,
       rating: r.rating,
       a: r.base[bestSingle],
       b: fit.predict(r.base),

@@ -94,6 +94,29 @@ def test_the_site_names_members_only_in_the_group_card() -> None:
     assert leaks == []
 
 
+# MovieLens's own genre name keeps the retired word; everywhere else the proposal's word is movie.
+KEPT = ("film-noir",)
+RETIRED = KEPT[0].split("-")[0]
+
+
+def test_the_codebase_says_movie_throughout() -> None:
+    """Every tracked text file uses movie; only the genre name Film-Noir keeps the old word."""
+    listed = git("ls-files", "-z", cwd=ROOT).stdout.split("\0")
+    found: list[str] = []
+    for name in listed:
+        path = ROOT / name
+        if not name or not path.is_file():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8").lower()
+        except UnicodeDecodeError:
+            continue
+        left = text.count(RETIRED) - sum(text.count(term) for term in KEPT)
+        if left:
+            found.append(f"{name}: {left}")
+    assert found == []
+
+
 def test_the_site_data_carries_every_phase_model_and_technique() -> None:
     data = json.loads((SITE / "src" / "data" / "project.json").read_text(encoding="utf-8"))
     assert [phase["id"] for phase in data["phases"]] == PHASES

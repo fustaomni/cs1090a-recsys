@@ -7,7 +7,7 @@ import { randomFolds, rmseOf } from "../lib/importance.js";
 import { mulberry32 } from "../lib/random.js";
 import { driftRatings } from "../lib/ratings.js";
 
-const FEATURES = ["user", "film", "genre", "noise"];
+const FEATURES = ["user", "movie", "genre", "noise"];
 const TRAIN = 240;
 const TREES = 30;
 const SETTINGS = { trees: TREES, mtry: 2, minLeaf: 5 };

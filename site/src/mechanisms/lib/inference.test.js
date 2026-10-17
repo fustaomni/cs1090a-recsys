@@ -11,24 +11,24 @@ import { stackingRatings } from "./ratings.js";
 import { ambiguity, correlation, metaFit, metaObjective } from "./stacking.js";
 
 describe("resampling crossed ratings", () => {
-  const { rows, users, films } = crossedRatings({ users: 40, films: 30 });
+  const { rows, users, movies } = crossedRatings({ users: 40, movies: 30 });
 
   it("gives row, user and pigeonhole weights with the right structure", () => {
     const rng = mulberry32(1);
-    const row = schemeWeights(rows, "row", users, films, rng);
+    const row = schemeWeights(rows, "row", users, movies, rng);
     expect(row.reduce((s, w) => s + w, 0)).toBe(rows.length);
-    const user = schemeWeights(rows, "user", users, films, rng);
+    const user = schemeWeights(rows, "user", users, movies, rng);
     rows.forEach((r, i) => {
       const j = rows.findIndex((other) => other.user === r.user);
       expect(user[i]).toBe(user[j]);
     });
-    const pigeon = schemeWeights(rows, "pigeonhole", users, films, mulberry32(2));
+    const pigeon = schemeWeights(rows, "pigeonhole", users, movies, mulberry32(2));
     const again = mulberry32(2);
     const userCounts = new Array(users).fill(0);
     for (let i = 0; i < users; i += 1) userCounts[Math.floor(again() * users)] += 1;
-    const filmCounts = new Array(films).fill(0);
-    for (let i = 0; i < films; i += 1) filmCounts[Math.floor(again() * films)] += 1;
-    rows.forEach((r, i) => expect(pigeon[i]).toBe(userCounts[r.user] * filmCounts[r.film]));
+    const movieCounts = new Array(movies).fill(0);
+    for (let i = 0; i < movies; i += 1) movieCounts[Math.floor(again() * movies)] += 1;
+    rows.forEach((r, i) => expect(pigeon[i]).toBe(userCounts[r.user] * movieCounts[r.movie]));
   });
 
   it("computes the plain RMSE when every weight is one", () => {
@@ -41,9 +41,9 @@ describe("resampling crossed ratings", () => {
     expect(percentile([0, 10], 0.25)).toBeCloseTo(2.5, 12);
   });
 
-  it("widens the paired interval as users, then users and films, are resampled", () => {
+  it("widens the paired interval as users, then users and movies, are resampled", () => {
     const width = (scheme) => {
-      const values = replicates(rows, scheme, users, films, 400, 7).map((r) => r.difference);
+      const values = replicates(rows, scheme, users, movies, 400, 7).map((r) => r.difference);
       return percentile(values, 0.975) - percentile(values, 0.025);
     };
     expect(width("user")).toBeGreaterThan(width("row"));
@@ -51,7 +51,7 @@ describe("resampling crossed ratings", () => {
   });
 
   it("narrows the paired difference below either model's own interval", () => {
-    const draws = replicates(rows, "user", users, films, 300, 8);
+    const draws = replicates(rows, "user", users, movies, 300, 8);
     const width = (values) => percentile(values, 0.975) - percentile(values, 0.025);
     const paired = width(draws.map((r) => r.difference));
     expect(paired).toBeLessThan(width(draws.map((r) => r.a)));

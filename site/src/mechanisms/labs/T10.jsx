@@ -6,7 +6,7 @@ import { crossedRatings, percentile, replicates } from "../lib/inference.js";
 import { histogram } from "../lib/knn.js";
 
 const CORRELATIONS = [0, 0.2, 0.4, 0.6, 0.8, 0.95];
-const SCHEMES = { user: "users", pigeonhole: "users and films" };
+const SCHEMES = { user: "users", pigeonhole: "users and movies" };
 
 function interval(values) {
   return {
@@ -23,11 +23,11 @@ export default function T10() {
   const [threshold, setThreshold] = useState(0.02);
 
   const data = useMemo(
-    () => crossedRatings({ seed: 171, users: 60, films: 40, shared }),
+    () => crossedRatings({ seed: 171, users: 60, movies: 40, shared }),
     [shared],
   );
   const runs = useMemo(
-    () => replicates(data.rows, scheme, data.users, data.films, draws, 29),
+    () => replicates(data.rows, scheme, data.users, data.movies, draws, 29),
     [data, scheme, draws],
   );
   const a = interval(runs.map((r) => r.a));
@@ -45,8 +45,8 @@ export default function T10() {
   const sweep = useMemo(
     () =>
       CORRELATIONS.map((value) => {
-        const d = crossedRatings({ seed: 171, users: 60, films: 40, shared: value });
-        const r = replicates(d.rows, scheme, d.users, d.films, 300, 31);
+        const d = crossedRatings({ seed: 171, users: 60, movies: 40, shared: value });
+        const r = replicates(d.rows, scheme, d.users, d.movies, 300, 31);
         const width = (values) => percentile(values, 0.975) - percentile(values, 0.025);
         return {
           value,
@@ -280,7 +280,7 @@ export default function T10() {
         baseline row on the results board is exploratory or Holm-corrected. With thousands of
         test users even a tiny difference can exclude zero, which is why the verdict also asks
         whether it clears a difference worth having. Seeded synthetic test ratings for two
-        models with user and film effects.
+        models with user and movie effects.
       </p>
     </article>
   );

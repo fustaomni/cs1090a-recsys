@@ -32,8 +32,8 @@
       "run_id": null
     },
     {
-      "key": "baseline:film-mean",
-      "name": "Film mean",
+      "key": "baseline:movie-mean",
+      "name": "Movie mean",
       "kind": "baseline",
       "milestone": "M3",
       "status": "pending",

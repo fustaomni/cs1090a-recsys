@@ -13,9 +13,9 @@ import { mean } from "../lib/stats.js";
 const W = steps(-0.2, 1.2, 41);
 const RESAMPLES = 40;
 
-// Centred user and film history: with b0 at the mean rating, SSE depends on (w1, w2) alone.
+// Centred user and movie history: with b0 at the mean rating, SSE depends on (w1, w2) alone.
 function centred(rows, ubar, fbar) {
-  return rows.map((row) => [row.user - ubar, row.film - fbar]);
+  return rows.map((row) => [row.user - ubar, row.movie - fbar]);
 }
 
 export default function M2() {
@@ -29,13 +29,13 @@ export default function M2() {
   const ys = useMemo(() => train.map((row) => row.rating), [train]);
   const ybar = useMemo(() => mean(ys), [ys]);
   const ubar = useMemo(() => mean(train.map((row) => row.user)), [train]);
-  const fbar = useMemo(() => mean(train.map((row) => row.film)), [train]);
+  const fbar = useMemo(() => mean(train.map((row) => row.movie)), [train]);
   const xs = useMemo(() => centred(train, ubar, fbar), [train, ubar, fbar]);
   const deviations = useMemo(() => ys.map((y) => y - ybar), [ys, ybar]);
   const { gram, moment } = useMemo(() => normalEquations(xs, deviations), [xs, deviations]);
   const syy = useMemo(() => deviations.reduce((total, d) => total + d * d, 0), [deviations]);
   const terms = useMemo(
-    () => [{ value: (row) => row.user - ubar }, { value: (row) => row.film - fbar }],
+    () => [{ value: (row) => row.user - ubar }, { value: (row) => row.movie - fbar }],
     [ubar, fbar],
   );
   const ols = useMemo(() => fit(train, terms, ys), [train, terms, ys]);
@@ -66,7 +66,7 @@ export default function M2() {
     return Math.sqrt(mean(values.map((v) => (v - centre) ** 2)));
   };
 
-  const predictAt = (a, b) => (row) => ybar + a * (row.user - ubar) + b * (row.film - fbar);
+  const predictAt = (a, b) => (row) => ybar + a * (row.user - ubar) + b * (row.movie - fbar);
   const score = (rows, a, b) =>
     rmse(rows.map(predictAt(a, b)), rows.map((row) => row.rating));
   const left = xs.map(([u, f], index) => deviations[index] - w1 * u - w2 * f);
@@ -124,7 +124,7 @@ export default function M2() {
     () => ({
       scene: {
         xaxis: { title: { text: "w1 (user history)" } },
-        yaxis: { title: { text: "w2 (film history)" } },
+        yaxis: { title: { text: "w2 (movie history)" } },
         zaxis: { title: { text: "Sum of squared residuals" } },
         camera: { eye: { x: 1.5, y: -1.7, z: 1.0 } },
       },
@@ -137,7 +137,7 @@ export default function M2() {
     <article className="lab">
       <h3>Model 2 · Multi-linear regression</h3>
       <p>
-        Two predictors, user and film history, both centred so the intercept is the mean rating.
+        Two predictors, user and movie history, both centred so the intercept is the mean rating.
         The bowl is the sum of squared residuals over the two slopes. As the predictors become
         correlated it stretches into a valley, and the slopes that fit equally well start to
         trade off: refitting on resampled data scatters them along the valley floor.
@@ -145,7 +145,7 @@ export default function M2() {
       <Plot traces={traces} layout={layout} label="SSE bowl over the two slopes" height={480} />
       <div className="controls">
         <Slider label="w1, user" value={w1} min={-0.2} max={1.2} step={0.01} onChange={setW1} />
-        <Slider label="w2, film" value={w2} min={-0.2} max={1.2} step={0.01} onChange={setW2} />
+        <Slider label="w2, movie" value={w2} min={-0.2} max={1.2} step={0.01} onChange={setW2} />
         <Slider
           label="Correlation of the predictors ρ"
           value={rho}

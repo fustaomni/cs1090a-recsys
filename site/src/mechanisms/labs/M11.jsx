@@ -7,7 +7,7 @@ import { fixed } from "../lib/format.js";
 import { outOfRange } from "../lib/metrics.js";
 import { forestRatings } from "../lib/ratings.js";
 
-const FEATURES = ["user", "film"];
+const FEATURES = ["user", "movie"];
 const STAGES = 150;
 const RANGE = [-2.5, 2.5];
 const WORKED = 8;
@@ -70,11 +70,11 @@ export default function M11() {
   const latest = fit.steps[current - 1];
   const predict = useCallback((row) => fit.predict(row, current), [fit, current]);
   const surface = useMemo(
-    () => blockSurface(predict, "user", "film", RANGE, RANGE, 40, {}),
+    () => blockSurface(predict, "user", "movie", RANGE, RANGE, 40, {}),
     [predict],
   );
   const residualSurface = useMemo(
-    () => blockSurface(latest.step, "user", "film", RANGE, RANGE, 40, {}),
+    () => blockSurface(latest.step, "user", "movie", RANGE, RANGE, 40, {}),
     [latest],
   );
   const row = train[worked];
@@ -97,7 +97,7 @@ export default function M11() {
         mode: "markers",
         name: "Training ratings",
         x: train.map((r) => r.user),
-        y: train.map((r) => r.film),
+        y: train.map((r) => r.movie),
         z: train.map((r) => r.rating),
         marker: { size: 2.5, color: colors.muted, opacity: 0.6 },
       },
@@ -119,7 +119,7 @@ export default function M11() {
         mode: "markers",
         name: `Residuals before stage ${current}`,
         x: train.map((r) => r.user),
-        y: train.map((r) => r.film),
+        y: train.map((r) => r.movie),
         z: latest.residuals,
         marker: { size: 2.5, color: colors.accent, opacity: 0.8 },
       },
@@ -166,7 +166,7 @@ export default function M11() {
   const scene = (z) => ({
     scene: {
       xaxis: { title: { text: "User history" } },
-      yaxis: { title: { text: "Film history" } },
+      yaxis: { title: { text: "Movie history" } },
       zaxis: { title: { text: z } },
       camera: { eye: { x: 1.6, y: -1.6, z: 1.0 } },
     },
