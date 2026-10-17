@@ -23,3 +23,13 @@ export function normal(rng) {
 export function resample(rng, n) {
   return Array.from({ length: n }, () => Math.floor(rng() * n));
 }
+
+// Row indices drawn without replacement: a subsample of the given size (partial Fisher-Yates).
+export function subsample(rng, n, size) {
+  const pool = Array.from({ length: n }, (_, index) => index);
+  for (let index = 0; index < size; index += 1) {
+    const pick = index + Math.floor(rng() * (n - index));
+    [pool[index], pool[pick]] = [pool[pick], pool[index]];
+  }
+  return pool.slice(0, size);
+}

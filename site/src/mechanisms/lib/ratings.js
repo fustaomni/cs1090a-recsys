@@ -47,3 +47,20 @@ export function historyRatings({ seed = 21, n = 400 } = {}) {
   }
   return rows;
 }
+
+// Ratings with two correlated predictors that matter and one that does not, so a selection
+// method can be judged on what it keeps and what it drops. Rows are in time order.
+export function selectionRatings({ seed = 41, n = 160, rho = 0.8 } = {}) {
+  const rng = mulberry32(seed);
+  const spread = Math.sqrt(1 - rho * rho);
+  const rows = [];
+  for (let index = 0; index < n; index += 1) {
+    const user = normal(rng);
+    const film = rho * user + spread * normal(rng);
+    const noise = normal(rng);
+    const latent =
+      TRUTH.intercept + TRUTH.user * user + TRUTH.film * film + TRUTH.noise * normal(rng);
+    rows.push({ user, film, noise, rating: toLevel(latent) });
+  }
+  return rows;
+}
