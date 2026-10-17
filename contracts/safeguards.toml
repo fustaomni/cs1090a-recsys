@@ -533,3 +533,30 @@ path = "policies/runs/model_run/model_run.rego"
 anchor = "\trun.data_sha256 != run.declared.data_sha256\n"
 mutant = "\tfalse\n"
 proof = "tests/test_model_provenance.py::test_a_fit_whose_data_fingerprint_differs_from_the_declared_one_is_refused"
+
+[[safeguards]]
+id = "DATA.INPUT_MISSING"
+engine = "data:fetch"
+guard = "ERR_DATA_INPUT_MISSING"
+path = "policies/runs/data_fetch/data_fetch.rego"
+anchor = "\tnot input.data_fetch\n"
+mutant = "\tfalse\n"
+proof = "tests/test_data_fetch.py::test_an_absent_fetch_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "DATA.CHECKSUM_MISMATCH"
+engine = "data:fetch"
+guard = "ERR_DATA_CHECKSUM_MISMATCH"
+path = "policies/runs/data_fetch/data_fetch.rego"
+anchor = "\tfetch.md5_published != fetch.md5_observed\n"
+mutant = "\tfalse\n"
+proof = "tests/test_data_fetch.py::test_an_archive_whose_md5_differs_is_refused_and_nothing_is_extracted"
+
+[[safeguards]]
+id = "DATA.FILES_MISSING"
+engine = "data:fetch"
+guard = "ERR_DATA_FILES_MISSING"
+path = "policies/runs/data_fetch/data_fetch.rego"
+anchor = "\tnot name in present\n"
+mutant = "\tfalse\n"
+proof = "tests/test_data_fetch.py::test_an_archive_missing_a_required_file_is_refused"

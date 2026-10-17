@@ -268,6 +268,12 @@ implementation = "mise.toml"
 emits = "text"
 
 [[capabilities]]
+task = "data:fetch"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "command-outcome/v1"
+
+[[capabilities]]
 task = "capabilities:list"
 version = "1.0.0"
 implementation = "scripts/capabilities.py"
