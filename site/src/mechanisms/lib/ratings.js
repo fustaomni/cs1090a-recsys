@@ -214,3 +214,42 @@ export function stackingRatings({ seed = 161, n = 500, correlation = 0.6 } = {})
   }
   return rows;
 }
+
+// Time-stamped ratings with MovieLens-like front-loading: most users arrive early and rate
+// many movies within days, so equal calendar slices would hold very unequal row counts.
+// Timestamps are whole days, so ties occur, and ratings drift upward slowly over time.
+export function timedRatings({ seed = 181, users = 160, movies = 120 } = {}) {
+  const rng = mulberry32(seed);
+  const movieEffect = Array.from({ length: movies }, () => 0.45 * normal(rng));
+  const rows = [];
+  for (let user = 0; user < users; user += 1) {
+    const effect = 0.5 * normal(rng);
+    const start = Math.floor(1000 * rng() ** 3);
+    const count = 6 + Math.floor(30 * rng() ** 2);
+    for (let k = 0; k < count; k += 1) {
+      const time = Math.min(999, start + Math.floor(-25 * Math.log(1 - rng())));
+      const movie = Math.floor(rng() ** 1.5 * movies);
+      const drift = 0.3 * (time / 1000);
+      const latent = 3.5 + effect + movieEffect[movie] + drift + 0.7 * normal(rng);
+      rows.push({ user, movie, time, rating: toLevel(latent) });
+    }
+  }
+  return rows;
+}
+
+// A known true rating surface over two histories, for the bias-variance lab: smooth, with a
+// ridge and a corner, so complexity helps up to a point. Ratings are the truth plus noise,
+// rounded to five levels; rows are in time order.
+export function trueSurface(row) {
+  const ridge = 0.35 * row.movie * Math.exp(-0.3 * row.movie ** 2);
+  const corner = row.user > 0.6 && row.movie > 0.4 ? 0.5 : 0;
+  return 3.5 + 0.55 * Math.tanh(1.2 * row.user) + ridge + corner;
+}
+
+export function surfaceRatings({ seed = 191, n = 300, noise = 0.7 } = {}) {
+  const rng = mulberry32(seed);
+  return Array.from({ length: n }, () => {
+    const row = { user: 1.6 * normal(rng), movie: 1.6 * normal(rng) };
+    return { ...row, rating: toLevel(trueSurface(row) + noise * normal(rng)) };
+  });
+}
