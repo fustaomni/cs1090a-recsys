@@ -33,7 +33,7 @@
  def test_a_written_python_line_over_100_is_refused(
      tmp_path: Path, capsys: pytest.CaptureFixture[str]
  ) -> None:
-@@ -115,3 +141,21 @@
+@@ -115,3 +141,59 @@
      spec = io.StringIO(_spec(_op("create", "pkg/new.py", content="x = 1\n")))
      assert main(["-"], root=repo, stdin=spec) == 0
      assert (repo / "pkg" / "new.py").read_text(encoding="utf-8") == "x = 1\n"
@@ -55,3 +55,41 @@
 +        assert _github_url(remote) == "https://github.com/o/r"
 +    with pytest.raises(ValueError):
 +        _github_url("https://gitlab.com/o/r")
++
++
++def test_a_delete_removes_only_an_existing_file_inside_the_repository(tmp_path: Path) -> None:
++    """A delete is an operation like any other: judged, applied, and read back as absent."""
++    repo = _repo(tmp_path, {"site/railway.json": "{}"})
++    assert _apply(tmp_path, repo, _op("delete", "site/railway.json")) == 0
++    assert not (repo / "site" / "railway.json").exists()
++
++
++def test_deleting_a_missing_file_is_refused(
++    tmp_path: Path, capsys: pytest.CaptureFixture[str]
++) -> None:
++    repo = _repo(tmp_path, {})
++    assert _apply(tmp_path, repo, _op("delete", "pkg/absent.py")) == 2
++    assert "ERR_SOURCE_APPLY_DELETE_MISSING" in _message(capsys)
++
++
++def test_a_delete_outside_the_repository_is_refused(
++    tmp_path: Path, capsys: pytest.CaptureFixture[str]
++) -> None:
++    repo = _repo(tmp_path, {})
++    outside = tmp_path / "outside.py"
++    outside.write_text("x = 1", encoding="utf-8")
++    assert _apply(tmp_path, repo, _op("delete", "../outside.py")) == 2
++    assert outside.exists()
++    assert "ERR_SOURCE_APPLY_PATH_OUTSIDE" in _message(capsys)
++
++
++def test_a_spec_with_a_refused_delete_writes_nothing(
++    tmp_path: Path, capsys: pytest.CaptureFixture[str]
++) -> None:
++    """All or nothing holds for deletes: a refused delete stops the create beside it."""
++    repo = _repo(tmp_path, {})
++    created = _op("create", "pkg/new.py", content="x = 1")
++    missing = _op("delete", "pkg/absent.py")
++    assert _apply(tmp_path, repo, created, missing) == 2
++    assert not (repo / "pkg" / "new.py").exists()
++    assert "ERR_SOURCE_APPLY_DELETE_MISSING" in _message(capsys)

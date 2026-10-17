@@ -342,15 +342,21 @@ sha256 = "8596f67209845fda0607bda524b7917ab966f84abe1fb8d36cb6f1f7908f3662"
 
 [[adapted]]
 path = "tests/test_source_apply.py"
-reason = "killing proofs for three source:apply guards that had none; A.52"
+reason = "killing proofs for three source:apply guards that had none (A.52); the four delete proofs A.24 is done when (A.24)"
 patch = "contracts/vendor-patches/tests/test_source_apply.py.patch"
-sha256 = "cc3c7dae25bed4981dd852f1c8bbeb0fd741cea1a444283e2d3d78d9a41fae82"
+sha256 = "1e883d33334bd612f87a3c0fac736f75e866a72a3bd310a093f74b6af482680e"
 [[files]]
 path = "scripts/source_apply.py"
 sha256 = "f0e4fd1311a4cb251c19dff76c4378354842fab783274e3bd6dec3fe48fbfa3c"
 [[files]]
 path = "policies/runs/source_apply/source_apply.rego"
 sha256 = "784ab2aad5854721af32074d5405b77d2b5dfe8dee73ae1eefa67ffacd19790a"
+
+[[adapted]]
+path = "policies/runs/source_apply/source_apply.rego"
+reason = "a delete of a file that does not exist is refused as DELETE_MISSING; A.24"
+patch = "contracts/vendor-patches/policies/runs/source_apply/source_apply.rego.patch"
+sha256 = "6dc61b921e6507ae6d14876cec5243655b5f2525bda4bd5830bfcf2a76e421a7"
 [[files]]
 path = "contracts/schemas/contracts/source_apply.ApplySpec.json"
 sha256 = "6faa29b447723c585550198e481ed39e3ce83c7fe35fd57f74edbdfc25989173"
@@ -458,9 +464,9 @@ patch = "contracts/vendor-patches/tests/test_commit_amend.py.patch"
 sha256 = "bb48b746c596b2f55358430c9d9ca3b79b74bfc63ec8ad6333117e8c47e05661"
 [[adapted]]
 path = "scripts/source_apply.py"
-reason = "a staged mise.toml is gated by the founding policy and re-trusted after writing; A.27"
+reason = "a staged mise.toml is gated by the founding policy and re-trusted after writing (A.27); a delete is judged by policy, read back as absent, and a claim names only what exists (A.24)"
 patch = "contracts/vendor-patches/scripts/source_apply.py.patch"
-sha256 = "3669dc93e6922b3ae925492f179d491564c0bf0dccdbd9cd3bbe4303c536ebd8"
+sha256 = "323f2bcc176a761639e1c84a99c5aaa070269e734073d5f7eb7e51efab6308e5"
 [[withdrawn]]
 path = "tests/test_policy_inputs.py"
 sha256 = "20b42d632e5a2534b5767966722b8909157723f5e93e768d3c35c0a66ed4d8f6"

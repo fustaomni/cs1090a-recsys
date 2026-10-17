@@ -159,6 +159,9 @@ depends_on = ["A.18"]
 because = { "A.18" = "removal is one more operation of the engine every mutation goes through" }
 done_when = [
   { kind = "proof", test = "tests/test_source_apply.py::test_a_delete_removes_only_an_existing_file_inside_the_repository" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_deleting_a_missing_file_is_refused" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_delete_outside_the_repository_is_refused" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_spec_with_a_refused_delete_writes_nothing" },
 ]
 [[steps]]
 id = "A.25"
