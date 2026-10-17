@@ -125,3 +125,26 @@ export function wideRatings({ seed = 81, n = 300, planted = false } = {}) {
   }
   return rows;
 }
+
+// Ratings for a tree: prior-only user and film means (continuous), a binary genre that
+// matters, and an ordinal age band, with a threshold effect a tree captures in one split.
+export function treeRatings({ seed = 91, n = 360 } = {}) {
+  const rng = mulberry32(seed);
+  const rows = [];
+  for (let index = 0; index < n; index += 1) {
+    const user = 3.6 + 0.55 * normal(rng);
+    const film = 3.5 + 0.5 * normal(rng);
+    const genre = rng() < 0.3 ? 1 : 0;
+    const age = Math.floor(rng() * 7);
+    const latent =
+      3.6 +
+      0.7 * (user - 3.6) +
+      0.6 * (film - 3.5) +
+      0.45 * genre +
+      (age >= 5 ? 0.3 : 0) +
+      (user > 4 && film > 3.8 ? 0.4 : 0) +
+      0.75 * normal(rng);
+    rows.push({ user, film, genre, age, rating: toLevel(latent) });
+  }
+  return rows;
+}
