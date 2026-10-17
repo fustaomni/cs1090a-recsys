@@ -9,8 +9,8 @@ import { mulberry32, subsample } from "../lib/random.js";
 import { selectionRatings } from "../lib/ratings.js";
 import { curve, logGrid, oneStandardError, rollingFolds } from "../lib/tuning.js";
 
-const KEYS = ["user", "film", "noise"];
-const NAMES = ["user history", "film history", "noise"];
+const KEYS = ["user", "movie", "noise"];
+const NAMES = ["user history", "movie history", "noise"];
 const B = steps(-0.3, 1.0, 41);
 const TRAIN = 160;
 const DRAWS = 100;
@@ -136,7 +136,7 @@ export default function M5() {
     () => ({
       scene: {
         xaxis: { title: { text: "b1 (user history)" } },
-        yaxis: { title: { text: "b2 (film history)" } },
+        yaxis: { title: { text: "b2 (movie history)" } },
         zaxis: { title: { text: "Objective" } },
         camera: { eye: { x: 1.5, y: -1.7, z: 1.0 } },
       },
@@ -246,7 +246,7 @@ export default function M5() {
           format={(value) => `${fixed(top * 10 ** value, 4)} (λ max ${fixed(top, 4)})`}
         />
         <Slider
-          label="Correlation of user and film history ρ"
+          label="Correlation of user and movie history ρ"
           value={rho}
           min={0}
           max={0.95}

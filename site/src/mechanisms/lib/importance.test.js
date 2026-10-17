@@ -21,8 +21,8 @@ describe("shuffling", () => {
   });
 
   it("keeps a conditional shuffle inside each stratum of the given feature", () => {
-    const bins = strata(rows, "film", 5);
-    const mixed = permuted(rows, "user", mulberry32(2), "film", 5);
+    const bins = strata(rows, "movie", 5);
+    const mixed = permuted(rows, "user", mulberry32(2), "movie", 5);
     for (let b = 0; b < 5; b += 1) {
       const before = rows.filter((_, i) => bins[i] === b).map((row) => row.user).sort();
       const after = mixed.filter((_, i) => bins[i] === b).map((row) => row.user).sort();
@@ -52,9 +52,9 @@ describe("importance", () => {
   });
 
   it("flags points far from every training point as outside the support", () => {
-    const train = [{ user: 0, film: 0 }];
-    const probe = [{ user: 0.1, film: 0 }, { user: 3, film: 3 }];
-    expect(outsideSupport(train, probe, ["user", "film"], 1)).toBe(0.5);
+    const train = [{ user: 0, movie: 0 }];
+    const probe = [{ user: 0.1, movie: 0 }, { user: 3, movie: 3 }];
+    expect(outsideSupport(train, probe, ["user", "movie"], 1)).toBe(0.5);
   });
 
   it("partitions rows into random folds", () => {

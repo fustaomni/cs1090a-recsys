@@ -25,7 +25,7 @@ export default function M1() {
   const predictions = xs.map((x) => b0 + b1 * (x - fit.xbar));
   const outside = outOfRange(predictions);
   const fitPredictions = xs.map((x) => fit.b0 + fit.b1 * (x - fit.xbar));
-  const expected = TRUTH.user + TRUTH.film * rho;
+  const expected = TRUTH.user + TRUTH.movie * rho;
 
   const scatter = useCallback(
     (colors) => {
@@ -143,7 +143,7 @@ export default function M1() {
         <Slider label="Intercept b0" value={b0} min={2} max={5} step={0.01} onChange={setB0} />
         <Slider label="Slope b1" value={b1} min={-1} max={2} step={0.01} onChange={setB1} />
         <Slider
-          label="Correlation of user and film history ρ"
+          label="Correlation of user and movie history ρ"
           value={rho}
           min={0}
           max={0.9}
@@ -192,8 +192,8 @@ export default function M1() {
         <div>
           <dt>Omitted-variable bias</dt>
           <dd>
-            The true user effect is {TRUTH.user}; film history, left out, has effect{" "}
-            {TRUTH.film}. The fitted slope {fit.b1.toFixed(3)} absorbs about ρ × {TRUTH.film}:
+            The true user effect is {TRUTH.user}; movie history, left out, has effect{" "}
+            {TRUTH.movie}. The fitted slope {fit.b1.toFixed(3)} absorbs about ρ × {TRUTH.movie}:
             before rounding to levels it would be {expected.toFixed(3)}.
           </dd>
         </div>

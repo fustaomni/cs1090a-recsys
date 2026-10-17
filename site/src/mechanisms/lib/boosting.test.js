@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { adaBoostR2, earlyStopping, gradientBoost, weightedMedian } from "./boosting.js";
 import { forestRatings } from "./ratings.js";
 
-const FEATURES = ["user", "film"];
+const FEATURES = ["user", "movie"];
 const rows = forestRatings({ n: 200 });
 const ys = rows.map((row) => row.rating);
 

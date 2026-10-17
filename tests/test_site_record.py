@@ -10,7 +10,7 @@ from pydantic import ValidationError
 from site_record import ROOT, Estimate, Metrics, load, recorded
 
 TODAY = dt.date(2026, 11, 30)
-BASELINES = ["global-mean", "user-mean", "film-mean", "bias"]
+BASELINES = ["global-mean", "user-mean", "movie-mean", "bias"]
 EXPECTED = [f"baseline:{name}" for name in BASELINES] + [f"model:{n}" for n in range(1, 13)]
 
 

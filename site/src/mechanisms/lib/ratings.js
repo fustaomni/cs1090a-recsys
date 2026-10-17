@@ -1,10 +1,10 @@
 import { mulberry32, normal } from "./random.js";
 
-// Synthetic ratings shaped like MovieLens: standardised user and film history, possibly
+// Synthetic ratings shaped like MovieLens: standardised user and movie history, possibly
 // correlated, and a rating on the five integer levels a user can submit. The true effects
 // are known, so a lab can show what a fit recovers and what it absorbs.
 
-export const TRUTH = { intercept: 3.6, user: 0.5, film: 0.5, noise: 0.8 };
+export const TRUTH = { intercept: 3.6, user: 0.5, movie: 0.5, noise: 0.8 };
 
 export function toLevel(value) {
   return Math.min(5, Math.max(1, Math.round(value)));
@@ -16,15 +16,15 @@ export function ratings({ seed = 7, n = 300, rho = 0, levels = true } = {}) {
   const rows = [];
   for (let index = 0; index < n; index += 1) {
     const user = normal(rng);
-    const film = rho * user + spread * normal(rng);
+    const movie = rho * user + spread * normal(rng);
     const latent =
-      TRUTH.intercept + TRUTH.user * user + TRUTH.film * film + TRUTH.noise * normal(rng);
-    rows.push({ user, film, rating: levels ? toLevel(latent) : latent });
+      TRUTH.intercept + TRUTH.user * user + TRUTH.movie * movie + TRUTH.noise * normal(rng);
+    rows.push({ user, movie, rating: levels ? toLevel(latent) : latent });
   }
   return rows;
 }
 
-// Ratings that depend on a user's mean and on how many films they have rated, with genuine
+// Ratings that depend on a user's mean and on how many movies they have rated, with genuine
 // curvature in the count and an interaction between the two. Count is in hundreds of ratings
 // and always positive, so uncentred count and count squared are nearly collinear.
 export const CURVED = { intercept: 3.6, user: 0.45, count: 0.3, square: -0.1, both: 0.15 };
@@ -56,11 +56,11 @@ export function selectionRatings({ seed = 41, n = 160, rho = 0.8 } = {}) {
   const rows = [];
   for (let index = 0; index < n; index += 1) {
     const user = normal(rng);
-    const film = rho * user + spread * normal(rng);
+    const movie = rho * user + spread * normal(rng);
     const noise = normal(rng);
     const latent =
-      TRUTH.intercept + TRUTH.user * user + TRUTH.film * film + TRUTH.noise * normal(rng);
-    rows.push({ user, film, noise, rating: toLevel(latent) });
+      TRUTH.intercept + TRUTH.user * user + TRUTH.movie * movie + TRUTH.noise * normal(rng);
+    rows.push({ user, movie, noise, rating: toLevel(latent) });
   }
   return rows;
 }
@@ -73,17 +73,17 @@ export function neighbourRatings({ seed = 71, n = 300 } = {}) {
   const rows = [];
   for (let index = 0; index < n; index += 1) {
     const user = normal(rng);
-    const film = normal(rng);
+    const movie = normal(rng);
     const recency = normal(rng);
     const group = Math.floor(rng() * 3);
     const latent =
       TRUTH.intercept +
       0.5 * user +
-      0.4 * film -
-      0.3 * user * film +
+      0.4 * movie -
+      0.3 * user * movie +
       0.2 * (group === 2 ? 1 : 0) +
       0.7 * normal(rng);
-    rows.push({ user, film, recency, group, rating: toLevel(latent) });
+    rows.push({ user, movie, recency, group, rating: toLevel(latent) });
   }
   return rows;
 }
@@ -126,30 +126,30 @@ export function wideRatings({ seed = 81, n = 300, planted = false } = {}) {
   return rows;
 }
 
-// Ratings for a tree: prior-only user and film means (continuous), a binary genre that
+// Ratings for a tree: prior-only user and movie means (continuous), a binary genre that
 // matters, and an ordinal age band, with a threshold effect a tree captures in one split.
 export function treeRatings({ seed = 91, n = 360 } = {}) {
   const rng = mulberry32(seed);
   const rows = [];
   for (let index = 0; index < n; index += 1) {
     const user = 3.6 + 0.55 * normal(rng);
-    const film = 3.5 + 0.5 * normal(rng);
+    const movie = 3.5 + 0.5 * normal(rng);
     const genre = rng() < 0.3 ? 1 : 0;
     const age = Math.floor(rng() * 7);
     const latent =
       3.6 +
       0.7 * (user - 3.6) +
-      0.6 * (film - 3.5) +
+      0.6 * (movie - 3.5) +
       0.45 * genre +
       (age >= 5 ? 0.3 : 0) +
-      (user > 4 && film > 3.8 ? 0.4 : 0) +
+      (user > 4 && movie > 3.8 ? 0.4 : 0) +
       0.75 * normal(rng);
-    rows.push({ user, film, genre, age, rating: toLevel(latent) });
+    rows.push({ user, movie, genre, age, rating: toLevel(latent) });
   }
   return rows;
 }
 
-// Ratings for ensembles: correlated user and film histories, a binary genre that matters, a
+// Ratings for ensembles: correlated user and movie histories, a binary genre that matters, a
 // continuous column of pure noise, and a corner where both histories are high. Rows are in
 // time order.
 export function forestRatings({ seed = 101, n = 240, rho = 0.6 } = {}) {
@@ -158,17 +158,17 @@ export function forestRatings({ seed = 101, n = 240, rho = 0.6 } = {}) {
   const rows = [];
   for (let index = 0; index < n; index += 1) {
     const user = normal(rng);
-    const film = rho * user + spread * normal(rng);
+    const movie = rho * user + spread * normal(rng);
     const genre = rng() < 0.3 ? 1 : 0;
     const noise = normal(rng);
     const latent =
       3.6 +
       0.55 * user +
-      0.45 * film +
+      0.45 * movie +
       0.4 * genre +
-      (user > 0.5 && film > 0.3 ? 0.45 : 0) +
+      (user > 0.5 && movie > 0.3 ? 0.45 : 0) +
       0.8 * normal(rng);
-    rows.push({ user, film, genre, noise, rating: toLevel(latent) });
+    rows.push({ user, movie, genre, noise, rating: toLevel(latent) });
   }
   return rows;
 }
@@ -182,17 +182,17 @@ export function driftRatings({ seed = 111, n = 300 } = {}) {
   for (let index = 0; index < n; index += 1) {
     const t = index / n;
     const user = normal(rng);
-    const film = 0.6 * user + spread * normal(rng);
+    const movie = 0.6 * user + spread * normal(rng);
     const genre = rng() < 0.3 ? 1 : 0;
     const noise = normal(rng);
     const latent =
       3.2 +
       1.2 * t +
       (0.8 - 0.7 * t) * user +
-      0.45 * film +
+      0.45 * movie +
       0.4 * genre +
       0.7 * normal(rng);
-    rows.push({ user, film, genre, noise, rating: toLevel(latent) });
+    rows.push({ user, movie, genre, noise, rating: toLevel(latent) });
   }
   return rows;
 }

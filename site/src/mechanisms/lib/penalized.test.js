@@ -14,7 +14,7 @@ import { ratings, selectionRatings } from "./ratings.js";
 import { curve, logGrid, oneStandardError, rollingFolds } from "./tuning.js";
 
 describe("ridge", () => {
-  const { xs, ys } = prepared(ratings({ n: 200, rho: 0.9 }), ["user", "film"]);
+  const { xs, ys } = prepared(ratings({ n: 200, rho: 0.9 }), ["user", "movie"]);
   const sums = moments(xs, ys);
 
   it("is least squares at lambda = 0 and solves (X'X/n + lambda I) b = X'y/n", () => {
@@ -56,7 +56,7 @@ describe("ridge", () => {
 });
 
 describe("lasso by coordinate descent", () => {
-  const { xs, ys } = prepared(selectionRatings({ n: 300 }), ["user", "film", "noise"]);
+  const { xs, ys } = prepared(selectionRatings({ n: 300 }), ["user", "movie", "noise"]);
   const top = lambdaMax(xs, ys);
 
   it("soft-thresholds: shrinks by lambda and zeroes anything within it", () => {
@@ -100,7 +100,7 @@ describe("selection and tuning", () => {
     const counts = [0, 0, 0];
     for (let draw = 0; draw < 100; draw += 1) {
       const half = subsample(rng, rows.length, rows.length / 2).map((index) => rows[index]);
-      const { xs, ys } = prepared(half, ["user", "film", "noise"]);
+      const { xs, ys } = prepared(half, ["user", "movie", "noise"]);
       lasso(xs, ys, 0.3 * lambdaMax(xs, ys)).coef.forEach((b, j) => {
         if (b !== 0) counts[j] += 1;
       });

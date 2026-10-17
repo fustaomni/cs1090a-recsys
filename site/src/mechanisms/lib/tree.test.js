@@ -12,7 +12,7 @@ import {
   view,
 } from "./tree.js";
 
-const FEATURES = ["user", "film", "genre", "age"];
+const FEATURES = ["user", "movie", "genre", "age"];
 const rows = treeRatings({ n: 300 });
 const ys = rows.map((row) => row.rating);
 const tree = grow(rows, FEATURES, { minLeaf: 5 });
@@ -99,7 +99,7 @@ describe("importance and drawing", () => {
 
   it("draws a surface whose cells are flat between the split thresholds", () => {
     const predict = (row) => (row.user <= 3.6 ? 2 : 4);
-    const surface = stepSurface(predict, "user", "film", [2, 5], [2, 5], [
+    const surface = stepSurface(predict, "user", "movie", [2, 5], [2, 5], [
       { feature: "user", value: 3.6 },
     ], {});
     expect(surface.x).toEqual([2, 3.6, 3.6, 5]);

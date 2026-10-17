@@ -14,7 +14,7 @@ import { rmse } from "../lib/metrics.js";
 import { forestRatings } from "../lib/ratings.js";
 import { stepSurface } from "../lib/tree.js";
 
-const FEATURES = ["user", "film", "genre", "noise"];
+const FEATURES = ["user", "movie", "genre", "noise"];
 const TRAIN = 200;
 const MAX_TREES = 50;
 const RANGE = [-2.5, 2.5];
@@ -26,7 +26,7 @@ const SHOWN = 8;
 export default function M8() {
   const [count, setCount] = useState(1);
   const [draw, setDraw] = useState(1);
-  const [film, setFilm] = useState(0.5);
+  const [movie, setMovie] = useState(0.5);
 
   const rows = useMemo(() => forestRatings({ seed: 101, n: 240 }), []);
   const train = useMemo(() => rows.slice(0, TRAIN), [rows]);
@@ -43,9 +43,9 @@ export default function M8() {
         feature: n.feature,
         value: n.threshold,
       }));
-      return stepSurface(predict, "user", "film", RANGE, RANGE, thresholds, FIXED);
+      return stepSurface(predict, "user", "movie", RANGE, RANGE, thresholds, FIXED);
     }
-    return blockSurface(predict, "user", "film", RANGE, RANGE, 48, FIXED);
+    return blockSurface(predict, "user", "movie", RANGE, RANGE, 48, FIXED);
   }, [members, count, predict]);
 
   const variance = useMemo(
@@ -84,7 +84,7 @@ export default function M8() {
     });
   }, [members, train, later]);
 
-  const sliceRows = SLICE.map((user) => ({ ...FIXED, user, film }));
+  const sliceRows = SLICE.map((user) => ({ ...FIXED, user, movie }));
   const perTree = members.slice(0, count).map((m) => sliceRows.map((row) => m.model.predict(row)));
   const mean = sliceRows.map((_, i) => perTree.reduce((s, t) => s + t[i], 0) / perTree.length);
   const sd = sliceRows.map((_, i) =>
@@ -113,7 +113,7 @@ export default function M8() {
         mode: "markers",
         name: "Training ratings",
         x: train.map((row) => row.user),
-        y: train.map((row) => row.film),
+        y: train.map((row) => row.movie),
         z: train.map((row) => row.rating),
         marker: { size: 2.5, color: colors.muted, opacity: 0.5 },
       },
@@ -215,7 +215,7 @@ export default function M8() {
     () => ({
       scene: {
         xaxis: { title: { text: "User history" } },
-        yaxis: { title: { text: "Film history" } },
+        yaxis: { title: { text: "Movie history" } },
         zaxis: { title: { text: "Predicted rating" }, range: [1, 5] },
         camera: { eye: { x: 1.6, y: -1.6, z: 1.0 } },
       },
@@ -225,7 +225,7 @@ export default function M8() {
   );
   const sliceLayout = useMemo(
     () => ({
-      xaxis: { title: { text: "User history, at the chosen film history" } },
+      xaxis: { title: { text: "User history, at the chosen movie history" } },
       yaxis: { title: { text: "Predicted rating" }, range: [1, 5] },
     }),
     [],
@@ -264,12 +264,12 @@ export default function M8() {
           format={String}
         />
         <Slider
-          label="Film history for the slice"
-          value={film}
+          label="Movie history for the slice"
+          value={movie}
           min={-2}
           max={2}
           step={0.1}
-          onChange={setFilm}
+          onChange={setMovie}
         />
         <button type="button" className="action quiet" onClick={() => setDraw(draw + 1)}>
           New bootstrap seed

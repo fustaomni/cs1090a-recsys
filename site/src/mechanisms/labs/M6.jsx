@@ -18,7 +18,7 @@ import { standardiser } from "../lib/penalized.js";
 import { mulberry32 } from "../lib/random.js";
 import { neighbourRatings } from "../lib/ratings.js";
 
-const KEYS = ["user", "film", "recency"];
+const KEYS = ["user", "movie", "recency"];
 const TRAIN = 240;
 const KS = Array.from({ length: 40 }, (_, index) => index + 1);
 const DIMENSIONS = [1, 2, 3, 5, 10, 20, 50, 100];
@@ -191,7 +191,7 @@ export default function M6() {
     () => ({
       scene: {
         xaxis: { title: { text: "User history" } },
-        yaxis: { title: { text: "Film history" } },
+        yaxis: { title: { text: "Movie history" } },
         zaxis: { title: { text: "Recency" } },
         aspectmode: "cube",
         camera: { eye: { x: 1.5, y: -1.6, z: 0.9 } },

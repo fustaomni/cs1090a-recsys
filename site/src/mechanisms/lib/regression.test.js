@@ -14,15 +14,15 @@ describe("least squares by QR", () => {
   const rows = ratings({ n: 400, rho: 0.6 });
   const ys = rows.map((row) => row.rating);
   const ubar = mean(rows.map((row) => row.user));
-  const fbar = mean(rows.map((row) => row.film));
+  const fbar = mean(rows.map((row) => row.movie));
   const terms = [
     { name: "user", value: (row) => row.user - ubar },
-    { name: "film", value: (row) => row.film - fbar },
+    { name: "movie", value: (row) => row.movie - fbar },
   ];
   const coef = fit(rows, terms, ys);
 
   it("solves the centred normal equations, with the intercept at the mean rating", () => {
-    const centred = rows.map((row) => [row.user - ubar, row.film - fbar]);
+    const centred = rows.map((row) => [row.user - ubar, row.movie - fbar]);
     const { gram, moment } = normalEquations(centred, ys);
     const [w1, w2] = solve2(gram, moment);
     expect(coef[1]).toBeCloseTo(w1, 10);
@@ -56,7 +56,7 @@ describe("collinearity", () => {
     const rows = ratings({ n: 20000, rho: 0.8 });
     const terms = [
       { value: (row) => row.user },
-      { value: (row) => row.film },
+      { value: (row) => row.movie },
     ];
     const [first, second] = vif(rows, terms);
     expect(first).toBeCloseTo(1 / (1 - 0.64), 0);
@@ -68,7 +68,7 @@ describe("collinearity", () => {
       const rows = ratings({ n: 300, rho });
       const ys = rows.map((row) => row.rating);
       const rng = mulberry32(5);
-      const terms = [{ value: (row) => row.user }, { value: (row) => row.film }];
+      const terms = [{ value: (row) => row.user }, { value: (row) => row.movie }];
       const slopes = Array.from({ length: 60 }, () => {
         const picked = resample(rng, rows.length);
         return fit(picked.map((i) => rows[i]), terms, picked.map((i) => ys[i]))[1];

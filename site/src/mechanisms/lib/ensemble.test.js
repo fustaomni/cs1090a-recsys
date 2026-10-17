@@ -10,7 +10,7 @@ import {
 import { forestRatings } from "./ratings.js";
 import { grow, view } from "./tree.js";
 
-const FEATURES = ["user", "film", "genre", "noise"];
+const FEATURES = ["user", "movie", "genre", "noise"];
 const rows = forestRatings({ n: 200 });
 const queries = forestRatings({ seed: 7, n: 30 });
 
@@ -79,7 +79,7 @@ describe("random forests", () => {
 
 describe("drawing an average of trees", () => {
   it("keeps every cell flat with vertical walls between cells", () => {
-    const surface = blockSurface((row) => row.user, "user", "film", [0, 1], [0, 1], 2, {});
+    const surface = blockSurface((row) => row.user, "user", "movie", [0, 1], [0, 1], 2, {});
     expect(surface.x).toEqual([0, 0.5, 0.5, 1]);
     expect(surface.z[0]).toEqual([0.25, 0.25, 0.75, 0.75]);
   });
