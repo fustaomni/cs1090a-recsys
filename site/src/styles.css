@@ -748,6 +748,14 @@ nav a[aria-current="page"] {
   color: var(--ink);
 }
 
+.bars.permutation {
+  margin-top: 1rem;
+}
+
+.bar-fill.quiet {
+  background: var(--muted);
+}
+
 .in-progress {
   color: var(--muted);
   font-style: italic;

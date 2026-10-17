@@ -7,7 +7,7 @@
     { "id": "M4", "kind": "model", "ref": 4, "status": "built" },
     { "id": "M5", "kind": "model", "ref": 5, "status": "built" },
     { "id": "M6", "kind": "model", "ref": 6, "status": "built" },
-    { "id": "M7", "kind": "model", "ref": 7, "status": "building" },
+    { "id": "M7", "kind": "model", "ref": 7, "status": "built" },
     { "id": "M8", "kind": "model", "ref": 8, "status": "building" },
     { "id": "M9", "kind": "model", "ref": 9, "status": "building" },
     { "id": "M10", "kind": "model", "ref": 10, "status": "building" },
