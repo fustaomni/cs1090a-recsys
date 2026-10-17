@@ -411,6 +411,14 @@ run = "cd site && mise exec node@24 -- npx --no-install railway domain"
 description = "Report the Railway project, service and environment site/ is linked to"
 run = "cd site && mise exec node@24 -- npx --no-install railway status"
 
+[tasks."site:config-migrate"]
+description = "Convert railway.json to .railway/railway.ts; a dry run unless given --apply"
+run = "cd site && mise exec node@24 -- npx --no-install railway config migrate"
+
+[tasks."site:config-plan"]
+description = "Show what .railway/railway.ts would change on Railway, changing nothing"
+run = "cd site && mise exec node@24 -- npx --no-install railway config plan"
+
 [tasks."site:record"]
 description = "Turn one measured result into a source-apply spec that updates the site's results"
 raw_args = true
