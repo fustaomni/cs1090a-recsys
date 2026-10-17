@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { fixed } from "./format.js";
 import { steps, surface } from "./grid.js";
 import { clip, outOfRange, rmse } from "./metrics.js";
 import { mulberry32 } from "./random.js";
@@ -76,5 +77,12 @@ describe("errors in and out of range", () => {
   it("samples a surface with rows along y", () => {
     const grid = surface(steps(0, 1, 3), steps(0, 2, 2), (x, y) => x + 10 * y);
     expect(grid).toEqual([[0, 0.5, 1], [20, 20.5, 21]]);
+  });
+});
+
+describe("number formatting", () => {
+  it("never prints a negative zero", () => {
+    expect(fixed(-0.0000004)).toBe("0.000");
+    expect(fixed(-1.23456, 2)).toBe("-1.23");
   });
 });
