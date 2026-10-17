@@ -416,6 +416,10 @@ description = "Turn one measured result into a source-apply spec that updates th
 raw_args = true
 run = "uv run --no-sync python scripts/site_record.py"
 
+[tasks."site:test"]
+description = "Run the mechanism labs' math proofs with Vitest, under the pinned Node"
+run = "cd site && mise exec node@24 -- npx --no-install vitest run"
+
 [tasks."capabilities:list"]
 description = "List every task as a versioned capability with its enforced effect, or refuse on drift"
 run = "uv run --no-sync python scripts/capabilities.py"

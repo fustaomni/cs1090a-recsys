@@ -1,0 +1,27 @@
+{
+  "contract": "site-mechanisms/v1",
+  "labs": [
+    { "id": "M1", "kind": "model", "ref": 1, "status": "built" },
+    { "id": "M2", "kind": "model", "ref": 2, "status": "building" },
+    { "id": "M3", "kind": "model", "ref": 3, "status": "building" },
+    { "id": "M4", "kind": "model", "ref": 4, "status": "building" },
+    { "id": "M5", "kind": "model", "ref": 5, "status": "building" },
+    { "id": "M6", "kind": "model", "ref": 6, "status": "building" },
+    { "id": "M7", "kind": "model", "ref": 7, "status": "building" },
+    { "id": "M8", "kind": "model", "ref": 8, "status": "building" },
+    { "id": "M9", "kind": "model", "ref": 9, "status": "building" },
+    { "id": "M10", "kind": "model", "ref": 10, "status": "building" },
+    { "id": "M11", "kind": "model", "ref": 11, "status": "building" },
+    { "id": "M12", "kind": "model", "ref": 12, "status": "building" },
+    { "id": "T1", "kind": "technique", "ref": 1, "status": "building" },
+    { "id": "T2", "kind": "technique", "ref": 2, "status": "building" },
+    { "id": "T3", "kind": "technique", "ref": 3, "status": "building" },
+    { "id": "T4", "kind": "technique", "ref": 4, "status": "building" },
+    { "id": "T5", "kind": "technique", "ref": 5, "status": "building" },
+    { "id": "T6", "kind": "technique", "ref": 6, "status": "building" },
+    { "id": "T7", "kind": "technique", "ref": 7, "status": "building" },
+    { "id": "T8", "kind": "technique", "ref": 8, "status": "building" },
+    { "id": "T9", "kind": "technique", "ref": 9, "status": "building" },
+    { "id": "T10", "kind": "technique", "ref": 10, "status": "building" }
+  ]
+}

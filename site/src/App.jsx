@@ -1,5 +1,6 @@
 import data from "./data/project.json";
 import results from "./data/results.json";
+import Mechanisms from "./mechanisms/Mechanisms.jsx";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
@@ -279,6 +280,7 @@ const READY = {
   scope: Scope,
   phases: Phases,
   deploys: Deploys,
+  mechanisms: Mechanisms,
   results: Results,
 };
 

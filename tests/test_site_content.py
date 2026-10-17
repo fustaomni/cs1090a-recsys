@@ -62,6 +62,22 @@ def test_every_model_phase_has_a_family() -> None:
     assert missing == []
 
 
+def test_every_mechanism_is_registered_and_each_built_one_has_its_lab() -> None:
+    """Each model and technique has a lab entry, and a built entry has its file and its loader."""
+    data = json.loads((SITE / "src" / "data" / "project.json").read_text(encoding="utf-8"))
+    registry = SITE / "src" / "data" / "mechanisms.json"
+    labs = json.loads(registry.read_text(encoding="utf-8"))["labs"]
+    models = [lab["ref"] for lab in labs if lab["kind"] == "model"]
+    techniques = [lab["ref"] for lab in labs if lab["kind"] == "technique"]
+    assert models == [model["id"] for model in data["models"]]
+    assert techniques == [technique["id"] for technique in data["techniques"]]
+    built = {lab["id"] for lab in labs if lab["status"] == "built"}
+    files = {path.stem for path in (SITE / "src" / "mechanisms" / "labs").glob("*.jsx")}
+    assert built == files
+    loader = (SITE / "src" / "mechanisms" / "Mechanisms.jsx").read_text(encoding="utf-8")
+    assert sorted(lab for lab in built if f'import("./labs/{lab}.jsx")' not in loader) == []
+
+
 def test_the_site_data_carries_every_phase_model_and_technique() -> None:
     data = json.loads((SITE / "src" / "data" / "project.json").read_text(encoding="utf-8"))
     assert [phase["id"] for phase in data["phases"]] == PHASES
