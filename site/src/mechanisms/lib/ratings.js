@@ -64,3 +64,64 @@ export function selectionRatings({ seed = 41, n = 160, rho = 0.8 } = {}) {
   }
   return rows;
 }
+
+// Ratings from three standardised histories and one categorical demographic, with a curved
+// interaction a neighbourhood method can pick up and a linear one cannot. Rows are in time
+// order.
+export function neighbourRatings({ seed = 71, n = 300 } = {}) {
+  const rng = mulberry32(seed);
+  const rows = [];
+  for (let index = 0; index < n; index += 1) {
+    const user = normal(rng);
+    const film = normal(rng);
+    const recency = normal(rng);
+    const group = Math.floor(rng() * 3);
+    const latent =
+      TRUTH.intercept +
+      0.5 * user +
+      0.4 * film -
+      0.3 * user * film +
+      0.2 * (group === 2 ? 1 : 0) +
+      0.7 * normal(rng);
+    rows.push({ user, film, recency, group, rating: toLevel(latent) });
+  }
+  return rows;
+}
+
+// A wide table for PCA: six histories driven by one factor, four by another, a count in large
+// units driven by a third, and, when planted, a signal hidden in the small difference between
+// two near-duplicate columns, a direction PCA ranks last.
+export const WIDE_NAMES = [
+  "drama share",
+  "drama mean",
+  "crime share",
+  "thriller share",
+  "war share",
+  "film-noir share",
+  "comedy share",
+  "comedy mean",
+  "children's share",
+  "animation share",
+  "rating count",
+];
+
+export function wideRatings({ seed = 81, n = 300, planted = false } = {}) {
+  const rng = mulberry32(seed);
+  const rows = [];
+  for (let index = 0; index < n; index += 1) {
+    const first = normal(rng);
+    const second = normal(rng);
+    const third = normal(rng);
+    const own = Array.from({ length: 10 }, () => normal(rng));
+    const features = [
+      ...own.slice(0, 6).map((e) => first + 0.25 * e),
+      ...own.slice(6).map((e) => second + 0.4 * e),
+      20 * third,
+    ];
+    const hidden = planted ? (0.9 * (own[0] - own[1])) / Math.SQRT2 : 0;
+    const latent =
+      TRUTH.intercept + 0.5 * first + 0.35 * second + 0.15 * third + hidden + 0.7 * normal(rng);
+    rows.push({ features, rating: toLevel(latent) });
+  }
+  return rows;
+}

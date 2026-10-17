@@ -28,12 +28,15 @@ export function curve(lambdas, folds, score) {
   });
 }
 
-// The minimum, and the largest lambda whose error is within one standard error of it.
-export function oneStandardError(points) {
+// The minimum, and the simplest setting whose error is within one standard error of it. By
+// default the simplest is the largest penalty; a caller can say what simpler means instead.
+const largerPenalty = (a, b) => a.lambda > b.lambda;
+
+export function oneStandardError(points, simpler = largerPenalty) {
   const best = points.reduce((low, point) => (point.error < low.error ? point : low));
   const ceiling = best.error + best.se;
   const simplest = points
     .filter((point) => point.error <= ceiling)
-    .reduce((top, point) => (point.lambda > top.lambda ? point : top));
+    .reduce((top, point) => (simpler(point, top) ? point : top));
   return { best, simplest };
 }

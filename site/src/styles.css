@@ -739,6 +739,15 @@ nav a[aria-current="page"] {
   background: var(--ink);
 }
 
+.control select {
+  font: inherit;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
 .in-progress {
   color: var(--muted);
   font-style: italic;
