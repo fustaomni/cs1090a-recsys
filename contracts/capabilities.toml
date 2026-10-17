@@ -270,7 +270,7 @@ emits = "text"
 [[capabilities]]
 task = "data:fetch"
 version = "1.0.0"
-implementation = "mise.toml"
+implementation = "scripts/data_fetch.py"
 emits = "command-outcome/v1"
 
 [[capabilities]]
