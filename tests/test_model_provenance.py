@@ -118,3 +118,10 @@ def test_scoring_refuses_a_model_without_a_passing_verdict_bound_to_its_digest(
     assert "ERR_MODEL_FIT_PAST_CUTOFF" in admit(late, artifact)
     artifact.write_bytes(artifact.read_bytes() + b" ")
     assert "ERR_MODEL_ARTIFACT_UNBOUND" in admit(record, artifact)
+
+
+def test_an_absent_record_is_refused_by_the_policy(tmp_path: Path) -> None:
+    _, record, _ = _fitted(tmp_path)
+    found = spine.evaluate(record, "absent", POLICY, ENTRYPOINT)
+    refused = {rule.code for rule in found.rules if rule.outcome == "fail"}
+    assert "ERR_MODEL_INPUT_MISSING" in refused

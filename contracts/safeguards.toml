@@ -488,3 +488,48 @@ path = "policies/machine/environment/environment.rego"
 anchor = "\tnot input.environment_sync.installed\n"
 mutant = "\tfalse\n"
 proof = "tests/test_environment_policy.py::test_a_changed_lock_left_uninstalled_is_refused"
+
+[[safeguards]]
+id = "MODEL.INPUT_MISSING"
+engine = "model_run"
+guard = "ERR_MODEL_INPUT_MISSING"
+path = "policies/runs/model_run/model_run.rego"
+anchor = "\tnot input.model_run\n"
+mutant = "\tfalse\n"
+proof = "tests/test_model_provenance.py::test_an_absent_record_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MODEL.FIT_PAST_CUTOFF"
+engine = "model_run"
+guard = "ERR_MODEL_FIT_PAST_CUTOFF"
+path = "policies/runs/model_run/model_run.rego"
+anchor = "\trun.last_training_time >= run.validation_cutoff_time\n"
+mutant = "\tfalse\n"
+proof = "tests/test_model_provenance.py::test_a_fit_reading_rows_at_or_after_the_validation_cutoff_is_refused"
+
+[[safeguards]]
+id = "MODEL.FEATURE_UNDECLARED"
+engine = "model_run"
+guard = "ERR_MODEL_FEATURE_UNDECLARED"
+path = "policies/runs/model_run/model_run.rego"
+anchor = "\tnot feature.name in declared\n"
+mutant = "\tfalse\n"
+proof = "tests/test_model_provenance.py::test_a_fit_with_an_undeclared_or_non_point_in_time_feature_is_refused"
+
+[[safeguards]]
+id = "MODEL.FEATURE_NOT_POINT_IN_TIME"
+engine = "model_run"
+guard = "ERR_MODEL_FEATURE_NOT_POINT_IN_TIME"
+path = "policies/runs/model_run/model_run.rego"
+anchor = "\tnot feature.point_in_time\n"
+mutant = "\tfalse\n"
+proof = "tests/test_model_provenance.py::test_a_fit_with_an_undeclared_or_non_point_in_time_feature_is_refused"
+
+[[safeguards]]
+id = "MODEL.DATA_UNDECLARED"
+engine = "model_run"
+guard = "ERR_MODEL_DATA_UNDECLARED"
+path = "policies/runs/model_run/model_run.rego"
+anchor = "\trun.data_sha256 != run.declared.data_sha256\n"
+mutant = "\tfalse\n"
+proof = "tests/test_model_provenance.py::test_a_fit_whose_data_fingerprint_differs_from_the_declared_one_is_refused"
