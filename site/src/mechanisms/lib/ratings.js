@@ -196,3 +196,21 @@ export function driftRatings({ seed = 111, n = 300 } = {}) {
   }
   return rows;
 }
+
+// Out-of-fold predictions from two base models for stacking: both track the same underlying
+// rating, the second with a small bias, and their errors share a controllable correlation.
+// Rows are in time order.
+export function stackingRatings({ seed = 161, n = 500, correlation = 0.6 } = {}) {
+  const rng = mulberry32(seed);
+  const own = Math.sqrt(1 - correlation * correlation);
+  const rows = [];
+  for (let index = 0; index < n; index += 1) {
+    const mean = 3.6 + 0.6 * normal(rng);
+    const rating = toLevel(mean + 0.7 * normal(rng));
+    const first = normal(rng);
+    const second = correlation * first + own * normal(rng);
+    const user = Math.floor(rng() * 40);
+    rows.push({ user, rating, base: [mean + 0.45 * first, mean + 0.15 + 0.55 * second] });
+  }
+  return rows;
+}
