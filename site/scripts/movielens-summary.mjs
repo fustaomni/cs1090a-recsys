@@ -3,6 +3,7 @@
 // The files are Latin-1; the movie list's lines that are not valid UTF-8 are counted from the
 // raw bytes before decoding.
 
+import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { summarise } from "../src/mechanisms/lib/movielens.js";
@@ -37,6 +38,13 @@ const summary = summarise({
 const source = {
   dataset: "MovieLens 1M, GroupLens Research (files.grouplens.org/datasets/movielens/ml-1m.zip)",
   files: ["ratings.dat", "movies.dat", "users.dat"],
+  // The SHA-256 of every file read, so a summary names the exact bytes it was computed from.
+  sha256: Object.fromEntries(
+    ["ratings.dat", "movies.dat", "users.dat"].map((name) => [
+      name,
+      createHash("sha256").update(read(name)).digest("hex"),
+    ]),
+  ),
   script: "site/scripts/movielens-summary.mjs",
 };
 const target = new URL("../src/data/movielens.json", import.meta.url);

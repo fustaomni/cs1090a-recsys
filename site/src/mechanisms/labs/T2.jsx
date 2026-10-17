@@ -246,7 +246,7 @@ export default function T2() {
         hyperparameter, tuned on time-ordered folds like any other.
       </p>
       <Provenance
-        data="Window means from movielens.json, to be regenerated from the verified GroupLens download (A.100); the leakage study uses synthetic timedRatings({ seed: 181 })"
+        data="Window means from movielens.json, computed from the verified MovieLens 1M files (ratings.dat SHA-256 506d64ca); the leakage study uses synthetic timedRatings({ seed: 181 })"
         split="Training window before the 0.8 quantile of time"
         method="Smoothed mean S = (n ybar + m mu) / (n + m), naive or prior-only"
       />

@@ -427,6 +427,11 @@ run = "uv run --no-sync python scripts/data_fetch.py"
 description = "Fit the declared baseline from committed code on the verified data, record and admit it"
 run = "uv run --no-sync python scripts/model_run.py"
 
+[tasks."site:movielens"]
+description = "Regenerate site/src/data/movielens.json from a verified MovieLens 1M folder, with digests"
+usage = 'arg "<folder>" help="The ml-1m folder that data:fetch verified and unpacked"'
+run = 'cd site && mise exec node@24 -- node scripts/movielens-summary.mjs "${usage_folder?}"'
+
 [tasks."site:record"]
 description = "Turn one measured result into a source-apply spec that updates the site's results"
 raw_args = true
