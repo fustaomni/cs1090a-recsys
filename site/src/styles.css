@@ -672,6 +672,27 @@ nav a[aria-current="page"] {
   }
 }
 
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.action.quiet {
+  background: transparent;
+  color: var(--accent);
+}
+
+.control.check {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.control.check input {
+  width: auto;
+}
+
 .in-progress {
   color: var(--muted);
   font-style: italic;

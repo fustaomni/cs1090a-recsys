@@ -18,3 +18,8 @@ export function normal(rng) {
   const v = rng();
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
 }
+
+// Row indices drawn with replacement: one bootstrap resample of n rows.
+export function resample(rng, n) {
+  return Array.from({ length: n }, () => Math.floor(rng() * n));
+}

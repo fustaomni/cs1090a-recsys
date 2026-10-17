@@ -5,6 +5,8 @@ import registry from "../data/mechanisms.json";
 // Every model and technique has a lab; each built one is its own chunk, loaded when opened.
 const LABS = {
   M1: lazy(() => import("./labs/M1.jsx")),
+  M2: lazy(() => import("./labs/M2.jsx")),
+  M3: lazy(() => import("./labs/M3.jsx")),
 };
 
 class LabBoundary extends Component {
