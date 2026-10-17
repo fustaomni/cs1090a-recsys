@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { fixed } from "../lib/format.js";
 import { steps, surface } from "../lib/grid.js";
@@ -257,6 +258,11 @@ export default function M12() {
         the weights and the last block scores them. Seeded synthetic predictions: {meta.length}{" "}
         meta-training and {test.length} test ratings.
       </p>
+      <Provenance
+        data="Synthetic out-of-fold predictions, generated in this page: stackingRatings({ seed: 161, n: 500 }); no real ratings"
+        split="Five blocks of 100 in time order: the first has no out-of-fold predictions, blocks two to four train the weights, the fifth scores them"
+        method="Meta-learner: least squares, non-negative least squares or non-negative ridge, with an unpenalised intercept"
+      />
     </article>
   );
 }

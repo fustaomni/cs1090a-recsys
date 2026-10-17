@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { fixed } from "../lib/format.js";
 import { steps, surface } from "../lib/grid.js";
@@ -215,6 +216,11 @@ export default function M2() {
         five levels, with true slopes 0.5 and 0.5. Raise ρ, then press Resample to watch the cloud
         stretch along the valley.
       </p>
+      <Provenance
+        data="Synthetic ratings, generated in this page: training ratings({ seed: 31, n: 300 }), validation ratings({ seed: 32, n: 300 }); no real ratings"
+        split="Training and validation are independent draws"
+        method="Least squares, solved by Householder QR"
+      />
     </article>
   );
 }

@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { fixed } from "../lib/format.js";
 import { outOfRange, rmse } from "../lib/metrics.js";
@@ -364,6 +365,11 @@ export default function M7() {
         on genre and age alone. Seeded synthetic data: {train.length} training and {later.length}{" "}
         later ratings on five levels.
       </p>
+      <Provenance
+        data="Synthetic ratings, generated in this page: treeRatings({ seed: 91, n: 360 }); no real ratings"
+        split="The first 300 rows train; the remaining 60 are the later window"
+        method="Regression tree grown best-first, pruned by cost-complexity"
+      />
     </article>
   );
 }

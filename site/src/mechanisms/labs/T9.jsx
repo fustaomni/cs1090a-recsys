@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { fixed } from "../lib/format.js";
 import { crossedRatings, percentile, replicates } from "../lib/inference.js";
@@ -196,6 +197,10 @@ export default function T9() {
         so they settle only with B in the thousands; resampling the metric needs no refitting,
         which makes that cheap. Seeded synthetic test ratings with user and movie effects.
       </p>
+      <Provenance
+        data="Synthetic test ratings for two models, generated in this page: crossedRatings({ seed: 151, movies: 40 }), users set by the slider; no real ratings"
+        method="Bootstrap resampling of ratings, of users, or of users and movies, recomputing the paired RMSE difference"
+      />
     </article>
   );
 }

@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { fixed } from "../lib/format.js";
 import { steps } from "../lib/grid.js";
@@ -368,6 +369,12 @@ export default function M6() {
         how many PCA components to keep rather than assuming. Seeded synthetic data:{" "}
         {train.length} training and {later.length} later ratings on five levels.
       </p>
+      <Provenance
+        data="Synthetic ratings, generated in this page: neighbourRatings({ seed: 71, n: 300 }); no real ratings"
+        split="The first 240 rows train; the remaining 60 are the later window"
+        preparation="Standardised with the training rows' means and spreads only"
+        method="k nearest neighbours, averaging the neighbours' ratings"
+      />
     </article>
   );
 }

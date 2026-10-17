@@ -117,6 +117,14 @@ def test_the_codebase_says_movie_throughout() -> None:
     assert found == []
 
 
+def test_every_displayed_fitted_parameter_carries_its_provenance() -> None:
+    """A.100: each lab shows where its fitted numbers came from, beside the numbers."""
+    labs = sorted((SITE / "src" / "mechanisms" / "labs").glob("*.jsx"))
+    assert labs, "the site has no labs to check"
+    missing = [lab.name for lab in labs if "<Provenance" not in lab.read_text(encoding="utf-8")]
+    assert missing == []
+
+
 def test_the_site_data_carries_every_phase_model_and_technique() -> None:
     data = json.loads((SITE / "src" / "data" / "project.json").read_text(encoding="utf-8"))
     assert [phase["id"] for phase in data["phases"]] == PHASES

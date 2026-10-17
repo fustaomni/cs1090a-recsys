@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import data from "../../data/movielens.json";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { fixed } from "../lib/format.js";
 import { steps } from "../lib/grid.js";
@@ -167,6 +168,11 @@ export default function T3() {
         on and macro error falls while pooled error rises. Real shares: training window of
         MovieLens 1M, cut at the 0.8 quantile of time.
       </p>
+      <Provenance
+        data="Rating-level shares from movielens.json, to be regenerated from the verified GroupLens download (A.100); the fitted model uses 6000 synthetic ratings drawn from those shares (seeds 11 and 12)"
+        split="Training window before the 0.8 quantile of time"
+        method="Weighted least squares on one signal, optionally weighted by 1 / n_k"
+      />
     </article>
   );
 }

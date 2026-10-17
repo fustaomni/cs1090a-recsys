@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { ensemblePredict, forest } from "../lib/ensemble.js";
 import { fixed } from "../lib/format.js";
@@ -283,6 +284,12 @@ export default function T8() {
         This lab runs on seeded synthetic ratings ({train.length} training, {later.length}{" "}
         later), so its verdict is about them, not about MovieLens.
       </p>
+      <Provenance
+        data="Synthetic ratings, generated in this page: forestRatings({ seed: 121, n: 300 }); no real ratings"
+        split="The first 220 rows train; the remaining 80 are the later window"
+        features="user, movie, genre, noise"
+        method="Random forest with 30 trees, mtry 2, minimum leaf 3, seed 13"
+      />
     </article>
   );
 }

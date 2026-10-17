@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { fixed } from "../lib/format.js";
 import { crossedRatings, percentile, replicates } from "../lib/inference.js";
@@ -282,6 +283,10 @@ export default function T10() {
         whether it clears a difference worth having. Seeded synthetic test ratings for two
         models with user and movie effects.
       </p>
+      <Provenance
+        data="Synthetic test ratings for two models, generated in this page: crossedRatings({ seed: 171, users: 60, movies: 40 }); no real ratings"
+        method="Paired bootstrap of the RMSE difference, resampling users or users and movies"
+      />
     </article>
   );
 }

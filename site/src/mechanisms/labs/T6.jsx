@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import {
   calibrationBins,
@@ -312,6 +313,12 @@ export default function T6() {
         whether to accept the shrinkage by calibration, binned by predicted value. Seeded
         synthetic data: {train.length} training and {valid.length} later ratings on five levels.
       </p>
+      <Provenance
+        data="Synthetic ratings from a known true surface, generated in this page: surfaceRatings({ seed: 191, n: 300 }), seed raised by New sample; no real ratings"
+        split="The first 240 rows train; the remaining 60 are the later window"
+        features="user, movie"
+        method="Regression tree, with tree splits as the complexity"
+      />
     </article>
   );
 }

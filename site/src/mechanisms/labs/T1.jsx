@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import data from "../../data/movielens.json";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import { fixed } from "../lib/format.js";
 
 const SPLITS = { "0.8/0.9": [0.8, 0.9], "0.85/0.95": [0.85, 0.95] };
@@ -341,6 +342,11 @@ export default function T1() {
         Computed from the MovieLens 1M files by site/scripts/movielens-summary.mjs. Changing the
         cutoffs updates every window, count and risk, which is Phase 2's sensitivity analysis.
       </p>
+      <Provenance
+        data="MovieLens 1M aggregates in movielens.json, written by site/scripts/movielens-summary.mjs; to be regenerated from the GroupLens download verified by its published MD5 (A.100)"
+        split="Cutoffs at quantiles of time: 0.8 or 0.85 for validation, 0.9 or 0.95 for test"
+        method="Counts and summaries only; rating values come from the training window"
+      />
     </article>
   );
 }
