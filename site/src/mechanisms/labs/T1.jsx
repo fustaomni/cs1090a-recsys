@@ -343,7 +343,7 @@ export default function T1() {
         cutoffs updates every window, count and risk, which is Phase 2's sensitivity analysis.
       </p>
       <Provenance
-        data="MovieLens 1M aggregates in movielens.json, written by site/scripts/movielens-summary.mjs; to be regenerated from the GroupLens download verified by its published MD5 (A.100)"
+        data="MovieLens 1M aggregates in movielens.json, computed by site/scripts/movielens-summary.mjs from the files data:fetch verified against the MD5 GroupLens publishes (ratings.dat SHA-256 506d64ca)"
         split="Cutoffs at quantiles of time: 0.8 or 0.85 for validation, 0.9 or 0.95 for test"
         method="Counts and summaries only; rating values come from the training window"
       />

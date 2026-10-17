@@ -169,7 +169,7 @@ export default function T3() {
         MovieLens 1M, cut at the 0.8 quantile of time.
       </p>
       <Provenance
-        data="Rating-level shares from movielens.json, to be regenerated from the verified GroupLens download (A.100); the fitted model uses 6000 synthetic ratings drawn from those shares (seeds 11 and 12)"
+        data="Rating-level shares from movielens.json, computed from the verified MovieLens 1M files (ratings.dat SHA-256 506d64ca); the fitted model uses 6000 synthetic ratings drawn from those shares (seeds 11 and 12)"
         split="Training window before the 0.8 quantile of time"
         method="Weighted least squares on one signal, optionally weighted by 1 / n_k"
       />

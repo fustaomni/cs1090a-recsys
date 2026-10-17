@@ -125,6 +125,16 @@ def test_every_displayed_fitted_parameter_carries_its_provenance() -> None:
     assert missing == []
 
 
+def test_the_movielens_summary_is_computed_from_the_verified_ratings() -> None:
+    """A.100: the site's real numbers come from the bytes the baseline model is pinned to."""
+    baseline = (SITE.parent / "contracts" / "model-runs" / "baseline.toml").read_text("utf-8")
+    pinned = next(
+        line.split('"')[1] for line in baseline.splitlines() if line.startswith("data_sha256 = ")
+    )
+    summary = (SITE / "src" / "data" / "movielens.json").read_text("utf-8")
+    assert f'"ratings.dat":"{pinned}"' in summary
+
+
 def test_the_site_data_carries_every_phase_model_and_technique() -> None:
     data = json.loads((SITE / "src" / "data" / "project.json").read_text(encoding="utf-8"))
     assert [phase["id"] for phase in data["phases"]] == PHASES
