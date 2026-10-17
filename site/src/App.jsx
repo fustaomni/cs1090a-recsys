@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import data from "./data/project.json";
 import results from "./data/results.json";
 import Mechanisms from "./mechanisms/Mechanisms.jsx";
@@ -13,12 +14,50 @@ const SECTIONS = [
 
 const STATUS_LABEL = { done: "Done", current: "In progress", planned: "Planned" };
 
-function InProgress({ id, label }) {
+const JOIN = `mailto:${data.contact}?subject=${encodeURIComponent(
+  "Joining the MovieLens recommender project",
+)}`;
+
+// One page per section, chosen by the URL hash, so each link shows only its own content
+// and #overview, #scope and the rest stay shareable.
+function currentPage() {
+  const id = window.location.hash.slice(1);
+  return SECTIONS.some((section) => section.id === id) ? id : "overview";
+}
+
+function useHashPage() {
+  const [page, setPage] = useState(currentPage);
+  useEffect(() => {
+    const change = () => {
+      setPage(currentPage());
+      window.scrollTo(0, 0);
+    };
+    window.addEventListener("hashchange", change);
+    return () => window.removeEventListener("hashchange", change);
+  }, []);
+  return page;
+}
+
+function GroupCard() {
+  const { group } = data;
+  const seats = Array.from({ length: group.seats }, (_, index) => group.members[index]);
   return (
-    <section id={id} className="section">
-      <h2>{label}</h2>
-      <p className="in-progress">Building in progress…</p>
-    </section>
+    <aside className="group-card" aria-label={`Project Group #${group.number}`}>
+      <p className="group-number">Project Group #{group.number}</p>
+      <p className="group-title">{data.title}</p>
+      <p className="group-label">Group members:</p>
+      <ol>
+        {seats.map((member, index) =>
+          member ? (
+            <li key={member}>{member}</li>
+          ) : (
+            <li key={`open-${index}`} className="open">
+              <a href={JOIN}>Open seat · join us</a>
+            </li>
+          ),
+        )}
+      </ol>
+    </aside>
   );
 }
 
@@ -26,9 +65,19 @@ function Overview() {
   const { overview, milestones, join } = data;
   return (
     <section id="overview" className="section">
+      <GroupCard />
       <p className="eyebrow">MovieLens 1M · offline · leakage-safe</p>
       <h1>{data.title}</h1>
       <p className="lede">{overview.question}</p>
+      <div className="hero-cta">
+        <a className="cta" href={JOIN}>
+          Join the team
+        </a>
+        <p className="cta-note">
+          Looking for two to four teammates. The design, the split and the evaluation are
+          already done: you own one block of phases end to end.
+        </p>
+      </div>
       <p>{overview.summary}</p>
       <ul className="stats">
         {overview.stats.map((stat) => (
@@ -59,9 +108,9 @@ function Overview() {
             </li>
           ))}
         </ul>
-        <p>
-          Contact <a href={`mailto:${data.contact}`}>{data.author}</a>.
-        </p>
+        <a className="cta" href={JOIN}>
+          Email the group to join
+        </a>
       </div>
     </section>
   );
@@ -285,6 +334,8 @@ const READY = {
 };
 
 export default function App() {
+  const page = useHashPage();
+  const Page = READY[page];
   return (
     <>
       <header className="bar">
@@ -293,23 +344,25 @@ export default function App() {
         </a>
         <nav>
           {SECTIONS.map((section) => (
-            <a key={section.id} href={`#${section.id}`}>
+            <a
+              key={section.id}
+              href={`#${section.id}`}
+              aria-current={section.id === page ? "page" : undefined}
+            >
               {section.label}
             </a>
           ))}
         </nav>
+        <a className="cta small" href={JOIN}>
+          Join the team
+        </a>
       </header>
       <main>
-        {SECTIONS.map((section) => {
-          const Ready = READY[section.id];
-          return Ready ? (
-            <Ready key={section.id} />
-          ) : (
-            <InProgress key={section.id} id={section.id} label={section.label} />
-          );
-        })}
+        <Page />
       </main>
-      <footer className="foot">{data.author} · updated at every milestone</footer>
+      <footer className="foot">
+        Project Group #{data.group.number} · updated at every milestone
+      </footer>
     </>
   );
 }
