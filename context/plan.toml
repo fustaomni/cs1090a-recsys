@@ -900,3 +900,35 @@ because = { "A.95" = "the site is deployed by railway up with railway.json today
 done_when = [
   { kind = "path", path = "site/.railway/railway.ts" },
 ]
+[[steps]]
+id = "A.99"
+title = "Interactive mechanism labs: one computed lab per model and technique, on the project site"
+thread = "A"
+depends_on = ["A.95"]
+because = { "A.95" = "the labs render inside the deployed project site" }
+done_when = [
+  { kind = "task", name = "site:test" },
+  { kind = "proof", test = "tests/test_site_content.py::test_every_mechanism_is_registered_and_each_built_one_has_its_lab" },
+  { kind = "path", path = "site/src/mechanisms/labs/M1.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/M2.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/M3.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/M4.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/M5.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/M6.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/M7.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/M8.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/M9.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/M10.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/M11.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/M12.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/T1.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/T2.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/T3.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/T4.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/T5.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/T6.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/T7.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/T8.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/T9.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/T10.jsx" },
+]

@@ -90,4 +90,5 @@ issued = [
   { id = "A.96", first_title = "Pinned upstream checkouts live in the clone's shared evidence root, and a missing one is refused" },
   { id = "A.97", first_title = "A founding refusal names every violation, never only that the file was refused" },
   { id = "A.98", first_title = "The site's Railway configuration is infrastructure as code before railway.json is retired" },
+  { id = "A.99", first_title = "Interactive mechanism labs: one computed lab per model and technique, on the project site" },
 ]
