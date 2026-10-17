@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { fixed } from "../lib/format.js";
 import { euclidean, nearest, relativeContrast } from "../lib/knn.js";
@@ -318,6 +319,12 @@ export default function T4() {
         fold. Seeded synthetic data:{" "}
         {train.length} training and {later.length} later ratings on five levels.
       </p>
+      <Provenance
+        data="Synthetic ratings, generated in this page: wideRatings({ seed: 81, n: 300 }); no real ratings"
+        split="The first 240 rows train; the remaining 60 are the later window"
+        preparation="Optional standardisation, fitted on the training rows only"
+        method="PCA by Jacobi eigendecomposition, then k nearest neighbours or regression on the components"
+      />
     </article>
   );
 }

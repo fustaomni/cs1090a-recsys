@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { ensemblePredict, forest, outOfBag } from "../lib/ensemble.js";
 import { fixed } from "../lib/format.js";
@@ -224,6 +225,12 @@ export default function T7() {
         gap. That is why the gap is decomposed rather than read as proof of leakage. Seeded
         synthetic data: {train.length} training and {later.length} later ratings on five levels.
       </p>
+      <Provenance
+        data="Synthetic ratings that drift over time, generated in this page: driftRatings({ seed: 111, n: 300 }); no real ratings"
+        split="The first 240 rows train; the remaining 60 are the later window"
+        features="user, movie, genre, noise"
+        method="Random forest, scored out of bag against later-window error"
+      />
     </article>
   );
 }

@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { adaBoostR2 } from "../lib/boosting.js";
 import { blockSurface } from "../lib/ensemble.js";
@@ -254,6 +255,12 @@ export default function M10() {
         it. The weighted median keeps the outlier's pull on the final prediction limited. Seeded
         synthetic data: {clean.length} training and {later.length} later ratings on five levels.
       </p>
+      <Provenance
+        data="Synthetic ratings, generated in this page: forestRatings({ seed: 131, n: 260 }); no real ratings"
+        split="The first 200 rows train; the remaining 60 are the later window"
+        features="user, movie"
+        method="AdaBoost.R2 on shallow trees, weighted median, boosting seed 7"
+      />
     </article>
   );
 }

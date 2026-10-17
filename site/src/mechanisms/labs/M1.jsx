@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { steps, surface } from "../lib/grid.js";
 import { clip, outOfRange, rmse } from "../lib/metrics.js";
@@ -203,6 +204,10 @@ export default function M1() {
         levels flattens the slope a little, which is why the fit sits near, not on, the value
         before rounding.
       </p>
+      <Provenance
+        data="Synthetic ratings, generated in this page: ratings({ seed: 11, n: 300 }); no real ratings"
+        method="Ordinary least squares, closed form"
+      />
     </article>
   );
 }

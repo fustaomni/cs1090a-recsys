@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { fixed } from "../lib/format.js";
 import { randomFolds } from "../lib/importance.js";
@@ -254,6 +255,11 @@ export default function T5() {
         leak that Phase 2's Protocol C measures. Seeded synthetic ratings, {rows.length} in all,
         with T_val and T_test at the 0.8 and 0.9 quantiles of time.
       </p>
+      <Provenance
+        data="Synthetic time-stamped ratings, generated in this page: timedRatings({ seed: 181 }); no real ratings"
+        split="T_val and T_test at the 0.8 and 0.9 quantiles of time; folds in equal-count blocks before T_val"
+        method="Shrunk user and movie offsets, refitted on each fold's training rows"
+      />
     </article>
   );
 }

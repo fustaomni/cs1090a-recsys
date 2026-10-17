@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { earlyStopping, gradientBoost } from "../lib/boosting.js";
 import { blockSurface } from "../lib/ensemble.js";
@@ -312,6 +313,12 @@ export default function M11() {
         data: {train.length} training, {valid.length} validation and {test.length} test ratings
         on five levels.
       </p>
+      <Provenance
+        data="Synthetic ratings, generated in this page: forestRatings({ seed: 141, n: 300 }); no real ratings"
+        split="200 training rows, then 50 validation and 50 test rows in time order"
+        features="user, movie"
+        method="Gradient boosting with shrinkage, stopped early on the validation window, seed 3"
+      />
     </article>
   );
 }

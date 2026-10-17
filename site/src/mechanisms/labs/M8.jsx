@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import {
   blockSurface,
@@ -319,6 +320,12 @@ export default function M8() {
         compare it with. Seeded synthetic data: {train.length} training and {later.length} later
         ratings on five levels.
       </p>
+      <Provenance
+        data="Synthetic ratings, generated in this page: forestRatings({ seed: 101, n: 240 }), query rows forestRatings({ seed: 9, n: 20 }); no real ratings"
+        split="The first 200 rows train; the remaining 40 are the later window"
+        features="user, movie, genre, noise"
+        method="Bagged regression trees on bootstrap resamples"
+      />
     </article>
   );
 }

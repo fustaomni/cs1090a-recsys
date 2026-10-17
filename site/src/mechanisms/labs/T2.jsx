@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import data from "../../data/movielens.json";
 import Plot from "../Plot.jsx";
+import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { correlation, encodings, smoothed } from "../lib/encoding.js";
 import { fixed } from "../lib/format.js";
@@ -244,6 +245,11 @@ export default function T2() {
         conclusions concern ratings users chose to submit. The prior weight m is a
         hyperparameter, tuned on time-ordered folds like any other.
       </p>
+      <Provenance
+        data="Window means from movielens.json, to be regenerated from the verified GroupLens download (A.100); the leakage study uses synthetic timedRatings({ seed: 181 })"
+        split="Training window before the 0.8 quantile of time"
+        method="Smoothed mean S = (n ybar + m mu) / (n + m), naive or prior-only"
+      />
     </article>
   );
 }
