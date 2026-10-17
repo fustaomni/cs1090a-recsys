@@ -86,4 +86,5 @@ issued = [
   { id = "A.91", first_title = "A feature branch reaches GitHub only through branch:push: its own ref, never a protected one, after the gate" },
   { id = "A.92", first_title = "A proof expectation holds only when a recorded green verdict names it, never because the test exists" },
   { id = "A.93", first_title = "A worktree is cut from a named base, set up without the caller's environment, and trusted by task" },
+  { id = "A.101", first_title = "sync returns to develop, brings every long-lived branch current, and removes only what is safe" },
 ]

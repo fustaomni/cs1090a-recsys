@@ -861,3 +861,19 @@ done_when = [
   { kind = "proof", test = "tests/test_environment_policy.py::test_an_unobserved_sync_is_refused" },
   { kind = "proof", test = "tests/test_environment_policy.py::test_a_changed_lock_left_uninstalled_is_refused" },
 ]
+[[steps]]
+id = "A.101"
+title = "sync returns to develop, brings every long-lived branch current, and removes only what is safe"
+thread = "A"
+depends_on = ["A.19", "A.93"]
+because = { "A.19" = "pr merges a branch and then names sync as the next operation", "A.93" = "env_sync arrived with worktree setup, and sync follows the lock through it" }
+done_when = [
+  { kind = "proof", test = "tests/test_sync_branches.py::test_an_update_is_never_forced" },
+  { kind = "proof", test = "tests/test_sync_branches.py::test_a_branch_held_by_a_dirty_worktree_is_reported_not_touched" },
+  { kind = "proof", test = "tests/test_sync_branches.py::test_the_policy_refuses_a_long_lived_branch_left_behind" },
+  { kind = "proof", test = "tests/test_repo_state.py::test_a_branch_held_by_a_worktree_is_not_deletable" },
+  { kind = "proof", test = "tests/test_repo_state.py::test_an_unmerged_branch_is_not_deletable" },
+  { kind = "proof", test = "tests/test_repo_state.py::test_blocked_branches_are_reported_not_dropped" },
+  { kind = "proof", test = "tests/test_sync_environment.py::test_a_failed_install_is_refused_by_policy" },
+  { kind = "task", name = "sync" },
+]
