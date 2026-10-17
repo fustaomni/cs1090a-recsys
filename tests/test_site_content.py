@@ -78,6 +78,22 @@ def test_every_mechanism_is_registered_and_each_built_one_has_its_lab() -> None:
     assert sorted(lab for lab in built if f'import("./labs/{lab}.jsx")' not in loader) == []
 
 
+def test_the_site_names_members_only_in_the_group_card() -> None:
+    """A group project: a person's name appears only in the group's member list."""
+    data = json.loads((SITE / "src" / "data" / "project.json").read_text(encoding="utf-8"))
+    members = data["group"]["members"]
+    rest = json.dumps({key: value for key, value in data.items() if key != "group"})
+    leaks = [name for name in members if name in rest]
+    leaks += [
+        f"{path.relative_to(ROOT)}: {name}"
+        for path in _sources()
+        if path.name != "project.json"
+        for name in members
+        if name in path.read_text(encoding="utf-8")
+    ]
+    assert leaks == []
+
+
 def test_the_site_data_carries_every_phase_model_and_technique() -> None:
     data = json.loads((SITE / "src" / "data" / "project.json").read_text(encoding="utf-8"))
     assert [phase["id"] for phase in data["phases"]] == PHASES
