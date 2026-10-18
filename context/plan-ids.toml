@@ -90,4 +90,5 @@ issued = [
   { id = "A.102", first_title = "gh is pinned in the founding data and mise.toml, locked by tools:lock, its provenance verified" },
   { id = "A.103", first_title = "A tool reaches this machine only through tools:install: mise's auto-install is off, pinned with the rest" },
   { id = "A.104", first_title = "A claim about this machine runs in this machine's gates, never on CI's runner" },
+  { id = "A.105", first_title = "develop requires the quality gate from GitHub Actions, kept as a ruleset in code, so a running gate reads BLOCKED" },
 ]
