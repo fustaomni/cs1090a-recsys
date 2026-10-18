@@ -394,7 +394,7 @@ sha256 = "bcbcf81b839c521bd70c27eb0a560d2bc9c5c9ce9992d786e7bb317e2826674d"
 path = "contracts/task-effects.toml"
 reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification; check:ci, recsys's own, is read-only as check:offline is (A.104)"
 patch = "contracts/vendor-patches/contracts/task-effects.toml.patch"
-sha256 = "508f0519a98210750ccc13b61a4acffecc40bdec0398f36a90dda5f26191f9f7"
+sha256 = "7f89c02a25b2dd97a1074031a2bb18f3e869b53ec5d10217f8495c58f0689828"
 
 [[adapted]]
 path = "tests/test_run_gateway.py"
@@ -423,9 +423,9 @@ patch = "contracts/vendor-patches/tests/test_signing.py.patch"
 sha256 = "e79583063db873058c6af6a2e3129fbee985d965f177bc249940cf2f0bb0b62d"
 [[adapted]]
 path = "scripts/check_all.py"
-reason = "a lane that may be empty reports nothing to run instead of failing (A.90); the workflows gate returns with the workflow audit (A.23); claims about the developer machine are a hooks lane declared out of CI (A.104); exemptions, suppressions and problems return with their audits (A.108)"
+reason = "a lane that may be empty reports nothing to run instead of failing (A.90); the workflows gate returns with the workflow audit (A.23); claims about the developer machine are a hooks lane declared out of CI (A.104); exemptions, suppressions and problems return with their audits (A.108); repo hygiene, assertions, evidence and models return with their audits (A.107)"
 patch = "contracts/vendor-patches/scripts/check_all.py.patch"
-sha256 = "fa266ace2d00a1d47a5239f4c98bd32664d9f9b6eec6b4d9705a1ffdaa75222e"
+sha256 = "8a96e99e694d2bb0508ed2858df0a848e3a4449bea8b05d69ef3dd9977da60f7"
 [[adapted]]
 path = "scripts/commit.py"
 reason = "the root commit names its branch (A.5); nothing staged is refused and git reasons kept (A.12)"
@@ -658,9 +658,9 @@ sha256 = "f4e1a57ca255e37c01c54b25f12b486313b60ad6b276cf7520ccb6ab3337056a"
 
 [[adapted]]
 path = "contracts/publish-expectations.toml"
-reason = "publication expects exactly this repository's hook gates; nine of the twelve cscie103 gates the founding withdrew are absent, not skipped (A.19), exemptions, suppressions and problems having returned (A.108); test (machine) among them, so this machine's claims are proven before every publication (A.104)"
+reason = "publication expects exactly this repository's hook gates; five of the twelve cscie103 gates the founding withdrew are absent, not skipped (A.19), exemptions, suppressions and problems having returned (A.108), and repo hygiene, assertions, evidence and models (A.107); test (machine) among them, so this machine's claims are proven before every publication (A.104)"
 patch = "contracts/vendor-patches/contracts/publish-expectations.toml.patch"
-sha256 = "c4be70acf7e96cee5943ca43ddff4cacc17b5dc43208f8a1a9aa9a5c8507e390"
+sha256 = "29f06d09c97e8508f6ef58357c99d1b2d8cf22b17eed0f89f5e24f30f37784c8"
 
 [[files]]
 path = "contracts/exemptions.toml"
@@ -794,4 +794,58 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 path = "contracts/problems.toml"
 reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "af11561e1e95633223fbe6878930fac0b074bcd4a974b45501ba397fcb88c5eb"
+sha256 = "62c47b7ef340db029cb3bf58a1bc9fde680251d614e7e6fe3ed3820d8020d798"
+
+[[files]]
+path = "scripts/check_repo_hygiene.py"
+sha256 = "d8cf8d90db440560bfaa3ff37e8746cdbad09bb57e60057d18dc8c4a12d6ff37"
+
+[[files]]
+path = "scripts/assertion_audit.py"
+sha256 = "bd8be24e62099a77880570203388e5753f9c6a3e59bbd39d8aace84a4dc28ae5"
+
+[[files]]
+path = "scripts/evidence_audit.py"
+sha256 = "2dbc8ff201cd7242806c88aeadcc0c2a50e23c78020d8afd2c9d1d7d207d336c"
+
+[[files]]
+path = "scripts/model_audit.py"
+sha256 = "13de734be7f49168081d824f5d6fa670e28b1c5528a393e6e88312f4985b9132"
+
+[[files]]
+path = "policies/runs/assertions/assertions.rego"
+sha256 = "aa05840ed3831659be26c6582c980f16dc403410d63bb84e9c2d7936a8ce1414"
+
+[[files]]
+path = "policies/runs/evidence/evidence.rego"
+sha256 = "dd5f3e5b2cbff6fc69e845b4808c3a37b61c624a581e55948c37670478873f6d"
+
+[[files]]
+path = "policies/runs/models/models.rego"
+sha256 = "52e2271f5eee2c2b730978f5f953cf56067359bc5f96013308e8a2f424ed5833"
+
+[[files]]
+path = "tests/test_repo_hygiene.py"
+sha256 = "e50c3021b295d9b36d30a8cd052e80e88e9746d35e9bbc04621f9eb961ccc34a"
+
+[[files]]
+path = "tests/test_assertion_audit.py"
+sha256 = "1abe0b04f12b3dd134e5cd1eb83fc98d0285efc47773c38e6780e1588e8b269c"
+
+[[files]]
+path = "tests/test_evidence_audit.py"
+sha256 = "abed900d58eff260d2fd47ddbfbccafed7dc924725c3d4f44f6cd6087f3812f5"
+
+[[files]]
+path = "tests/test_model_audit.py"
+sha256 = "82177c9508604a3e07bbc8fcdfcd7b9b12dfc4611b27a91710a76b716c4db556"
+
+[[files]]
+path = "contracts/model-baseline.toml"
+sha256 = "224ac3d443553f449463428500501bd173b4c6eabb421e964cf8d8f1d1b5f2e4"
+
+[[adapted]]
+path = "contracts/model-baseline.toml"
+reason = "cscie103's ratchet had shrunk to nothing at the pin; this repository's begins at A.107 with its own eleven direct BaseModel subclasses, in claims_audit, green_verify, red_verify and safeguards, each migrated to Contract or Reading by a later step (A.107)"
+patch = "contracts/vendor-patches/contracts/model-baseline.toml.patch"
+sha256 = "f3c824c961c8b3cfe8e3140442179cb03cf1a2023ae00eb65a064472c7667e08"

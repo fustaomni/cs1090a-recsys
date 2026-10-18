@@ -13,6 +13,7 @@ from pathlib import Path
 import pytest
 
 import provenance_adapt
+from nonvacuous import nonempty
 
 UPSTREAM = "def answer() -> int:\n    return 41\n"
 LOCAL = "def answer() -> int:\n    return 42\n"
@@ -69,7 +70,7 @@ def test_an_adaptation_recorded_twice_is_consolidated_into_one(tmp_path: Path) -
     record.write_text(record.read_text(encoding="utf-8") + "\n" + blocks, encoding="utf-8")
     text = record.read_text(encoding="utf-8")
     spec = tomllib.loads(provenance_adapt.plan(root, upstream, "scripts/answer.py", "why"))
-    for op in spec["operations"]:
+    for op in nonempty(spec["operations"]):
         if op["path"] == "contracts/provenance.toml":
             assert text.count(op["anchor"]) == 1
             text = text.replace(op["anchor"], op["replacement"])

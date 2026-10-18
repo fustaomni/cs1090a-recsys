@@ -344,3 +344,21 @@ task = "problems:register"
 version = "1.0.0"
 implementation = "scripts/problem_codes.py"
 emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "audit:assertions"
+version = "1.0.0"
+implementation = "scripts/assertion_audit.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "audit:evidence"
+version = "1.0.0"
+implementation = "scripts/evidence_audit.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "audit:models"
+version = "1.0.0"
+implementation = "scripts/model_audit.py"
+emits = "command-outcome/v1"

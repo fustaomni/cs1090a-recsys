@@ -445,6 +445,105 @@ mutant = "\tsome found in input.problems.prose\n\tfalse\n"
 proof = "tests/test_problem_codes.py::test_a_branch_on_message_text_fails_the_audit"
 
 [[safeguards]]
+id = "MODELS.INPUT_MISSING"
+engine = "audit:models"
+guard = "ERR_MODELS_INPUT_MISSING"
+path = "policies/runs/models/models.rego"
+anchor = "\tnot input.models\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_an_unobserved_model_inventory_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MODELS.NOTHING_SCANNED"
+engine = "audit:models"
+guard = "ERR_MODELS_NOTHING_SCANNED"
+path = "policies/runs/models/models.rego"
+anchor = "\tinput.models.files_scanned == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_a_model_audit_that_scanned_nothing_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MODELS.UNBASELINED"
+engine = "audit:models"
+guard = "ERR_MODELS_UNBASELINED"
+path = "policies/runs/models/models.rego"
+anchor = "\tfinding.kind == \"unbaselined\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_an_unbaselined_model_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MODELS.STALE"
+engine = "audit:models"
+guard = "ERR_MODELS_STALE"
+path = "policies/runs/models/models.rego"
+anchor = "\tfinding.kind == \"stale\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_a_stale_baseline_entry_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "ASSERTION.INPUT_MISSING"
+engine = "audit:assertions"
+guard = "ERR_ASSERTION_INPUT_MISSING"
+path = "policies/runs/assertions/assertions.rego"
+anchor = "\tnot input.assertions\n"
+mutant = "\tfalse\n"
+proof = "tests/test_assertion_audit.py::test_an_absent_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "ASSERTION.NOTHING_SCANNED"
+engine = "audit:assertions"
+guard = "ERR_ASSERTION_NOTHING_SCANNED"
+path = "policies/runs/assertions/assertions.rego"
+anchor = "\tinput.assertions.files_scanned == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_assertion_audit.py::test_an_audit_that_scanned_nothing_is_refused"
+
+[[safeguards]]
+id = "ASSERTION.VACUOUS"
+engine = "audit:assertions"
+guard = "ERR_ASSERTION_VACUOUS"
+path = "policies/runs/assertions/assertions.rego"
+anchor = "\tsome finding in input.assertions.findings\n"
+mutant = "\tsome finding in input.assertions.findings\n\tfalse\n"
+proof = "tests/test_assertion_audit.py::test_an_unpinned_all_is_refused"
+
+[[safeguards]]
+id = "EVIDENCE.INPUT_MISSING"
+engine = "audit:evidence"
+guard = "ERR_EVIDENCE_INPUT_MISSING"
+path = "policies/runs/evidence/evidence.rego"
+anchor = "\tnot input.evidence\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_an_unobserved_evidence_inventory_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "EVIDENCE.NONE_FOUND"
+engine = "audit:evidence"
+guard = "ERR_EVIDENCE_NONE_FOUND"
+path = "policies/runs/evidence/evidence.rego"
+anchor = "\tcount(input.evidence.contracts) == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_an_evidence_audit_that_found_no_contract_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "EVIDENCE.CONCLUSION"
+engine = "audit:evidence"
+guard = "ERR_EVIDENCE_CONCLUSION"
+path = "policies/runs/evidence/evidence.rego"
+anchor = "\tfinding.kind == \"conclusion\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_evidence_audit.py::test_the_audit_refuses_a_conclusion_through_its_policy"
+
+[[safeguards]]
+id = "EVIDENCE.UNRESOLVED"
+engine = "audit:evidence"
+guard = "ERR_EVIDENCE_UNRESOLVED"
+path = "policies/runs/evidence/evidence.rego"
+anchor = "\tfinding.kind == \"unresolved\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_an_unresolved_evidence_argument_is_refused_by_the_policy"
+
+[[safeguards]]
 id = "SA.ANCHOR_COUNT"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_ANCHOR_COUNT"

@@ -5,9 +5,12 @@
 
 contract = "task-effects/v1"
 read_only = [
+    "audit:assertions",
+    "audit:evidence",
     "audit:exemptions",
     "audit:suppressions",
     "audit:problems",
+    "audit:models",
     "audit:workflows",
     "check",
     "check:ci",
