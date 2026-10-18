@@ -65,6 +65,26 @@ jobs:
       - name: install dependencies
         run: mise run deps:install
 
+      # RUNS AS ITS OWN STEP, NOT AS PART OF `check`.
+      #
+      # It needs network and gh auth, and a local commit cannot weaken a
+      # server-side ruleset -- so coupling every commit to both would block
+      # offline work for no benefit.
+      #
+      # NOT a scheduled workflow either, which was the obvious design and is
+      # wrong: GitHub disables scheduled workflows after 60 days without
+      # repository activity, and a successful scheduled run does not itself count
+      # as activity. A security check that silently stops is worse than none,
+      # because it manufactures confidence. Tying it to CI removes the cron
+      # dependency entirely.
+      #
+      # Verifies the ruleset's CONTENTS, not its existence: one edited to require
+      # nothing is the failure mode that looks like success.
+      - name: verify branch protection
+        run: mise run check:ruleset
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       # ONE COMMAND. ci.yml deliberately restates NOTHING about what is checked:
       # adding a gate to `check` extends local runs, the git hooks and this
       # workflow at once. CI runs every gate but those declaring themselves claims

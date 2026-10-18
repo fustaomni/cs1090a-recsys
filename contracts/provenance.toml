@@ -584,9 +584,9 @@ sha256 = "22c10f70b698536b6fc10465c989a31a2fbeeeeab6cdbba5b6200f0d63cee225"
 
 [[adapted]]
 path = ".github/workflows/ci.yml"
-reason = "recsys has no Nix or Databricks: tools come from mise.toml's lock through mise-action, check:ruleset is not ported, and the gate needs no workspace credentials (A.20); it runs check:ci, the gate without claims about the developer machine (A.104)"
+reason = "recsys has no Nix or Databricks: tools come from mise.toml's lock through mise-action, and the gate needs no workspace credentials (A.20); it runs check:ci, the gate without claims about the developer machine (A.104); verify branch protection returns with check:ruleset (A.105)"
 patch = "contracts/vendor-patches/.github/workflows/ci.yml.patch"
-sha256 = "24ca64e4bbce8e59b175b2e2f8e774adbd4b5125a5d2cc5eca03c26a22b4f9b3"
+sha256 = "b5a62bcaa59648e5b9996de4b12b93ba792c2df9098dc627a722351d78a24b7d"
 
 [[files]]
 path = "contracts/expected-checks.toml"
