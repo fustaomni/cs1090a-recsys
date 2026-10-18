@@ -380,3 +380,15 @@ task = "repo:state"
 version = "1.0.0"
 implementation = "scripts/repo_report.py"
 emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "repo:history"
+version = "1.0.0"
+implementation = "scripts/repo_history.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "source:restore"
+version = "1.0.0"
+implementation = "scripts/source_restore.py"
+emits = "command-outcome/v1"

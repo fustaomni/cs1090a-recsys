@@ -643,6 +643,24 @@ mutant = "\tfalse\n"
 proof = "tests/test_branches_policy.py::test_a_long_lived_branch_diverged_is_refused_by_the_policy"
 
 [[safeguards]]
+id = "RESTORE.NO_PATHS"
+engine = "source:restore"
+guard = "ERR_RESTORE_NO_PATHS"
+path = "policies/source/restore/restore.rego"
+anchor = "\tinput.restore_plan.paths == []\n"
+mutant = "\tfalse\n"
+proof = "tests/test_source_restore.py::test_naming_no_path_is_refused"
+
+[[safeguards]]
+id = "RESTORE.UNTRACKED"
+engine = "source:restore"
+guard = "ERR_RESTORE_UNTRACKED"
+path = "policies/source/restore/restore.rego"
+anchor = "\tnot state.in_head\n"
+mutant = "\tfalse\n"
+proof = "tests/test_source_restore.py::test_an_untracked_path_is_refused"
+
+[[safeguards]]
 id = "SA.ANCHOR_COUNT"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_ANCHOR_COUNT"

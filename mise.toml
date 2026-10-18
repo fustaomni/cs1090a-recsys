@@ -472,6 +472,19 @@ description = "Install exactly the tools mise.lock records, refusing any it does
 # --locked: a tool missing from the lock fails instead of resolving a version from the network.
 run = "mise install --locked"
 
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.118).
+[tasks."source:restore"]
+description = "Discard changes to tracked paths, back to HEAD; a dry run unless --yes, refusing untracked paths"
+# NEVER DROPS A NEW FILE: a path HEAD has never seen is refused. raw_args passes --yes.
+raw_args = true
+run = "uv run --no-sync python scripts/source_restore.py"
+
+[tasks."repo:history"]
+description = "Read commit history as data: subject, authored time, trailers and files, newest first"
+# NUL- AND CONTROL-BYTE-SEPARATED, as git's own %(trailers) options allow: nothing can break the parse.
+raw_args = true
+run = "uv run --no-sync python scripts/repo_history.py"
+
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.101).
 [tasks.sync]
 description = "Return to develop, pull, and remove branches that are safe to remove"
