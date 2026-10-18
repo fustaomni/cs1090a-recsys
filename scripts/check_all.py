@@ -114,7 +114,7 @@ class GateReport(Contract):
 # WITHDRAWN IN THE PORT (recsys founding F7, plan A.3): cscie103's registry named gates whose
 # script, task or tool recsys does not have, so the pre-push gate failed closed on gates that
 # could never run. Each returns with its script or tool; until then it is named, not skipped.
-# Hooks: policy, policy decisions, repo hygiene, workflows,
+# Hooks: policy, policy decisions, repo hygiene,
 # assertions, evidence, models, exemptions, suppressions, problems, mutation anchors,
 # schemas, nix contract. CI-only: pii, fixtures, prereqs, env-parity, nix flake.
 GATES: tuple[GateSpec, ...] = (
@@ -169,6 +169,18 @@ GATES: tuple[GateSpec, ...] = (
     GateSpec(
         name="secrets (history)",
         command=("betterleaks", "git", "--redact", "--no-banner"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    # THE WORKFLOW'S OWN CLAIMS, ENFORCED (D.84). ci.yml pins every action to a commit
+    # SHA and grants the token contents: read; zizmor sat in the devShell and no gate
+    # ran it, so nothing stopped an edit from making either claim false. PEDANTIC,
+    # OBSERVED: the default persona suppressed a write-all probe ("3 suppressed"),
+    # pedantic flagged it, and this repository's workflows are clean under it.
+    # Offline and sub-second, so the hooks run it too.
+    GateSpec(
+        name="workflows",
+        command=("uv", "run", "python", "scripts/workflow_audit.py"),
         runs_in_hooks=True,
         timeout_seconds=300.0,
     ),

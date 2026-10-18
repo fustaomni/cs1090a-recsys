@@ -394,7 +394,7 @@ sha256 = "bcbcf81b839c521bd70c27eb0a560d2bc9c5c9ce9992d786e7bb317e2826674d"
 path = "contracts/task-effects.toml"
 reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification"
 patch = "contracts/vendor-patches/contracts/task-effects.toml.patch"
-sha256 = "9c274e7818bb18726f895c4c7cf98f29739742a1af62c2dae551ed1104e0bc90"
+sha256 = "13abddd4b3523f1671d3c8a33c1d444d317776ae8190c9d283fe4e35f1a01c67"
 
 [[adapted]]
 path = "tests/test_run_gateway.py"
@@ -429,9 +429,9 @@ patch = "contracts/vendor-patches/tests/test_signing.py.patch"
 sha256 = "e79583063db873058c6af6a2e3129fbee985d965f177bc249940cf2f0bb0b62d"
 [[adapted]]
 path = "scripts/check_all.py"
-reason = "a lane that may be empty reports nothing to run instead of failing; A.90"
+reason = "a lane that may be empty reports nothing to run instead of failing (A.90); the workflows gate returns with the workflow audit (A.23)"
 patch = "contracts/vendor-patches/scripts/check_all.py.patch"
-sha256 = "571f44a4b2af09bfbc5c46a1baddcf781e32c8ad984d3fcf6df01c57079a3154"
+sha256 = "689aeb26207fe594a0c2219690b209dbb937abd223b24fb519defe9ffd0ab6db"
 [[adapted]]
 path = "scripts/commit.py"
 reason = "the root commit names its branch (A.5); nothing staged is refused and git reasons kept (A.12)"
@@ -449,9 +449,9 @@ patch = "contracts/vendor-patches/.gitignore.patch"
 sha256 = "6989ece4fd552419385c146173d68e66debeb42b96ea1ba827f4e43eb58c92e1"
 [[adapted]]
 path = "lefthook.yml"
-reason = "pre-commit omits cscie103's audit:workflows until recsys has a workflow to audit"
+reason = "the header is rewritten for recsys; pre-commit runs audit:workflows again, restored with the workflow audit (A.23)"
 patch = "contracts/vendor-patches/lefthook.yml.patch"
-sha256 = "acb4c0aaddb4c80cf4c30ab69af99a4dc0f5622b72b1a18f5734cecd7bb829a7"
+sha256 = "6170e339ffbc747f0c0d11765a5c831846b48089bc617aafd33f6839cb9d2501"
 [[adapted]]
 path = "tests/test_commit_execution.py"
 reason = "FakeGit reports the stage; A.12's proofs that nothing staged never commits"
@@ -567,3 +567,49 @@ sha256 = "7a7c2b8900df46055d005cd78d67e4da1637cba0ddea2de0b6e56fdfda844f4d"
 [[files]]
 path = "tests/test_worktree_remove.py"
 sha256 = "446e49bce584d01a264e808c500b11e6d5a0df18f76c63d9b7bf8e43604636e8"
+
+[[files]]
+path = "scripts/workflow_audit.py"
+sha256 = "dba230fd19753f8f72d59b3128f48cd5fb86f813eabae647fa4884e77bf22772"
+
+[[files]]
+path = "policies/runs/workflows/workflows.rego"
+sha256 = "b9e251b989fae22fe1048ace24c4eb08f28e76ecf95ba8c01a9626423d51771a"
+
+[[files]]
+path = "contracts/workflow-permissions.toml"
+sha256 = "d6e534a4091cefa206708ec9981a06c2d40ea066aaa78c562b1a920815cabfd8"
+
+[[files]]
+path = "tests/test_workflow_audit.py"
+sha256 = "349d0a4ae598c942a04a50b5ad77b4b2067373f836c122cf4d44d0e741fe369b"
+
+[[files]]
+path = ".github/workflows/ci.yml"
+sha256 = "22c10f70b698536b6fc10465c989a31a2fbeeeeab6cdbba5b6200f0d63cee225"
+
+[[adapted]]
+path = ".github/workflows/ci.yml"
+reason = "recsys has no Nix or Databricks: tools come from mise.toml's lock through mise-action, check:ruleset is not ported, and the gate needs no workspace credentials (A.20)"
+patch = "contracts/vendor-patches/.github/workflows/ci.yml.patch"
+sha256 = "fa6ad81adcee91dd8ae05c84734b56b3213a61a3dce819af50eb440501163001"
+
+[[files]]
+path = "contracts/expected-checks.toml"
+sha256 = "e8d953eb0f91078955bed803caa9910d9e7c5442caf6dfda74278849a343e5df"
+
+[[adapted]]
+path = "contracts/expected-checks.toml"
+reason = "only the quality gate this repository's own CI runs is expected, until pr sees another app's check register here (A.20)"
+patch = "contracts/vendor-patches/contracts/expected-checks.toml.patch"
+sha256 = "c199669f7b02582883a026919a7a459a9173f53864bf80a727921efce39a9208"
+
+[[files]]
+path = "tests/test_workflow_governance.py"
+sha256 = "c8386a6e5cce26eef4d09d7e1c0640bfc80eec8abb7436e62a630ced3f028f96"
+
+[[adapted]]
+path = "tests/test_workflow_governance.py"
+reason = "killing proofs for the two runs.workflows guards that had none: zizmor not completing its audit, and a workflow declaring no permissions (A.23)"
+patch = "contracts/vendor-patches/tests/test_workflow_governance.py.patch"
+sha256 = "2854cbb1fa9d13d81c112954387d685a8760f75ddf0887bb424a728cb2f7031f"

@@ -1,6 +1,6 @@
 --- a/contracts/task-effects.toml
 +++ b/contracts/task-effects.toml
-@@ -5,49 +5,15 @@
+@@ -5,49 +5,16 @@
  
  contract = "task-effects/v1"
  read_only = [
@@ -49,6 +49,7 @@
 -  "types",
 -  "worktree:conflicts",
 -  "worktree:list",
++    "audit:workflows",
 +    "check",
 +    "check:offline",
 +    "lint",

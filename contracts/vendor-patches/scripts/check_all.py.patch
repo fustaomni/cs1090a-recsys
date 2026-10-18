@@ -28,7 +28,7 @@
 +# WITHDRAWN IN THE PORT (recsys founding F7, plan A.3): cscie103's registry named gates whose
 +# script, task or tool recsys does not have, so the pre-push gate failed closed on gates that
 +# could never run. Each returns with its script or tool; until then it is named, not skipped.
-+# Hooks: policy, policy decisions, repo hygiene, workflows,
++# Hooks: policy, policy decisions, repo hygiene,
 +# assertions, evidence, models, exemptions, suppressions, problems, mutation anchors,
 +# schemas, nix contract. CI-only: pii, fixtures, prereqs, env-parity, nix flake.
  GATES: tuple[GateSpec, ...] = (
@@ -55,7 +55,7 @@
      ),
      # FULL HISTORY, NOT THE WORKING TREE. A pre-commit hook only ever sees the
      # incoming change, so anything committed before hooks existed -- or pushed
-@@ -169,187 +166,19 @@
+@@ -169,18 +166,6 @@
      #
      # --redact keeps any finding out of CI logs, where it would become a second
      # leak in the process of reporting the first.
@@ -74,21 +74,10 @@
      GateSpec(
          name="secrets (history)",
          command=("betterleaks", "git", "--redact", "--no-banner"),
+@@ -199,157 +184,13 @@
          runs_in_hooks=True,
          timeout_seconds=300.0,
--    ),
--    # THE WORKFLOW'S OWN CLAIMS, ENFORCED (D.84). ci.yml pins every action to a commit
--    # SHA and grants the token contents: read; zizmor sat in the devShell and no gate
--    # ran it, so nothing stopped an edit from making either claim false. PEDANTIC,
--    # OBSERVED: the default persona suppressed a write-all probe ("3 suppressed"),
--    # pedantic flagged it, and this repository's workflows are clean under it.
--    # Offline and sub-second, so the hooks run it too.
--    GateSpec(
--        name="workflows",
--        command=("uv", "run", "python", "scripts/workflow_audit.py"),
--        runs_in_hooks=True,
--        timeout_seconds=300.0,
--    ),
+     ),
 -    GateSpec(
 -        name="assertions",
 -        command=("uv", "run", "python", "scripts/assertion_audit.py"),
@@ -181,7 +170,7 @@
 -        command=("uv", "run", "python", "scripts/update_fixtures.py", "--check"),
 -        runs_in_hooks=False,
 -        timeout_seconds=600.0,
-     ),
+-    ),
      # The integration-marked tests, deselected from the hermetic `test` gate.
      GateSpec(
          name="test (integration)",
@@ -244,7 +233,7 @@
      ),
  )
  
-@@ -368,6 +197,8 @@
+@@ -368,6 +209,8 @@
          state: State = "timed_out"
      elif isinstance(ended, Exited) and ended.code == 0:
          state = "executed_passed"
@@ -253,7 +242,7 @@
      else:
          state = "executed_failed"
      return GateRun(
-@@ -399,13 +230,14 @@
+@@ -399,13 +242,14 @@
          ran = run_gate(spec)
          runs.append(ran)
          late = f" (timed out after {spec.timeout_seconds:g}s)" if ran.state == "timed_out" else ""
@@ -270,7 +259,7 @@
  
      if failed:
          for ran in failed:
-@@ -417,7 +249,9 @@
+@@ -417,7 +261,9 @@
          )
          return 1
  
