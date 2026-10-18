@@ -392,3 +392,9 @@ task = "source:restore"
 version = "1.0.0"
 implementation = "scripts/source_restore.py"
 emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "upstream:copies"
+version = "1.0.0"
+implementation = "scripts/upstream_copies.py"
+emits = "text"

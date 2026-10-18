@@ -59,6 +59,20 @@ def tree(
     return tuple(sorted(path for path in listed.stdout.split("\0") if path))
 
 
+def blobs(source: str, commit: str, root: Path = EVIDENCE) -> dict[str, str]:
+    """Every file's blob id at commit, the checkout verified first, from trees alone (A.114)."""
+    target = checkout(source, commit, root)
+    listed = git("ls-tree", "-r", "-z", commit, cwd=target)
+    if listed.returncode != 0:
+        raise SystemExit(f"cannot list {commit} in {target}: {listed.stderr.strip()}")
+    found: dict[str, str] = {}
+    for record in listed.stdout.split("\0"):
+        if record:
+            meta, _, path = record.partition("\t")
+            found[path] = meta.split()[2]
+    return found
+
+
 def main() -> int:
     match sys.argv[1:]:
         case [source, commit]:

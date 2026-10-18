@@ -472,6 +472,13 @@ description = "Install exactly the tools mise.lock records, refusing any it does
 # --locked: a tool missing from the lock fails instead of resolving a version from the network.
 run = "mise install --locked"
 
+# This repository's own (plan A.114): cscie103 has no copy verifier; the shape follows
+# upstream:checkout, and the checkout is named so it runs against one whose tasks predate it.
+[tasks."upstream:copies"]
+description = "Remove a checkout's untracked copies of an upstream only where they match its pinned tree"
+raw_args = true
+run = "uv run --no-sync python scripts/upstream_copies.py"
+
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.118).
 [tasks."source:restore"]
 description = "Discard changes to tracked paths, back to HEAD; a dry run unless --yes, refusing untracked paths"
