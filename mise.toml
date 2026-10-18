@@ -451,6 +451,19 @@ description = "Open a PR and block until it is merged"
 # something upstream never resolves, teaching the person nothing.
 run = "uv run --no-sync python scripts/pr.py"
 
+# recsys (plan A.26): the founding locked and installed tools by hand, and neither run left a
+# record. Both are tasks, so each runs through the gateway and is recorded like any other.
+[tasks."tools:lock"]
+description = "Lock every [tools] pin for linux-x64, keeping versions already locked; installs nothing"
+# mise lock writes the lockfile without installing, and keeps a locked version unless --bump is
+# given, which this task never passes. linux-x64 is the one platform mise.lock records.
+run = "mise lock --platform linux-x64"
+
+[tasks."tools:install"]
+description = "Install exactly the tools mise.lock records, refusing any it does not"
+# --locked: a tool missing from the lock fails instead of resolving a version from the network.
+run = "mise install --locked"
+
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.20).
 [tasks."deps:add"]
 description = "Add a dependency with uv and its lock, refusing any change to packages already locked"
