@@ -511,7 +511,7 @@
  severity = "error"
  
  [[problems]]
-@@ -36,196 +516,6 @@
+@@ -36,23 +516,78 @@
  severity = "error"
  
  [[problems]]
@@ -532,27 +532,85 @@
 -[[problems]]
 -code = "ERR_AUTH_STALE_DESIRED"
 -title = "A declared profile is never removed"
--severity = "error"
--
--[[problems]]
--code = "ERR_BRANCH_AHEAD"
--title = "No long-lived branch is ahead"
--severity = "error"
--
--[[problems]]
--code = "ERR_BRANCH_BEHIND"
--title = "No long-lived branch is behind"
--severity = "error"
--
--[[problems]]
--code = "ERR_BRANCH_DIVERGED"
--title = "No long-lived branch has diverged"
--severity = "error"
--
--[[problems]]
--code = "ERR_BRANCH_UNOBSERVED"
--title = "The checkout's branches must be observed"
--severity = "error"
++code = "ERR_EVIDENCE_CONCLUSION"
++title = "Evidence holds observations, never a conclusion"
++severity = "error"
++
++[[problems]]
++code = "ERR_EVIDENCE_INPUT_MISSING"
++title = "The evidence inventory is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_EVIDENCE_NONE_FOUND"
++title = "An audit that found no evidence contract proves nothing"
++severity = "error"
++
++[[problems]]
++code = "ERR_EVIDENCE_UNRESOLVED"
++title = "Every evaluate() argument resolves to its evidence contract"
++severity = "error"
++
++[[problems]]
++code = "ERR_MODELS_INPUT_MISSING"
++title = "The model inventory is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_MODELS_NOTHING_SCANNED"
++title = "An audit that scanned no file proves nothing"
++severity = "error"
++
++[[problems]]
++code = "ERR_MODELS_STALE"
++title = "The baseline lists only what is still true, so it can only shrink"
++severity = "error"
++
++[[problems]]
++code = "ERR_MODELS_UNBASELINED"
++title = "A new model derives from Contract or Reading, never BaseModel"
++severity = "error"
++
++[[problems]]
++code = "ERR_MUTATION_ANCHOR_NOT_ONCE"
++title = "Every mutant's anchor is found exactly once"
++severity = "error"
++
++[[problems]]
++code = "ERR_MUTATION_BASELINE_FAILED"
++title = "Every killer passes before any mutant is applied"
++severity = "error"
++
++[[problems]]
++code = "ERR_MUTATION_INPUT_MISSING"
++title = "The mutation evidence is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_MUTATION_KILLER_UNJUDGED"
++title = "Every killer's result could be judged"
++severity = "error"
++
++[[problems]]
++code = "ERR_MUTATION_SURVIVED_ITS_KILLER"
++title = "Every named killer kills its mutant"
++severity = "error"
++
++[[problems]]
++code = "ERR_MUTATION_TREE_TOUCHED"
++title = "The tree under test is never mutated in place"
++severity = "error"
++
++[[problems]]
++code = "ERR_MUTATION_TREE_UNLISTED"
++title = "The tree under test could be listed"
+ severity = "error"
+ 
+ [[problems]]
+@@ -74,1163 +609,3 @@
+ code = "ERR_BRANCH_UNOBSERVED"
+ title = "The checkout's branches must be observed"
+ severity = "error"
 -
 -[[problems]]
 -code = "ERR_BUNDLE_CATALOG_DECLARED"
@@ -705,13 +763,26 @@
 -severity = "error"
 -
 -[[problems]]
- code = "ERR_EVIDENCE_CONCLUSION"
- title = "Evidence holds observations, never a conclusion"
- severity = "error"
-@@ -246,261 +536,6 @@
- severity = "error"
- 
- [[problems]]
+-code = "ERR_EVIDENCE_CONCLUSION"
+-title = "Evidence holds observations, never a conclusion"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_EVIDENCE_INPUT_MISSING"
+-title = "The evidence inventory is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_EVIDENCE_NONE_FOUND"
+-title = "An audit that found no evidence contract proves nothing"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_EVIDENCE_UNRESOLVED"
+-title = "Every evaluate() argument resolves to its evidence contract"
+-severity = "error"
+-
+-[[problems]]
 -code = "ERR_EXEMPTION_EXPIRED"
 -title = "An exemption has not expired"
 -severity = "error"
@@ -967,13 +1038,59 @@
 -severity = "error"
 -
 -[[problems]]
- code = "ERR_MODELS_INPUT_MISSING"
- title = "The model inventory is supplied, never assumed"
- severity = "error"
-@@ -554,683 +589,3 @@
- code = "ERR_MUTATION_TREE_UNLISTED"
- title = "The tree under test could be listed"
- severity = "error"
+-code = "ERR_MODELS_INPUT_MISSING"
+-title = "The model inventory is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MODELS_NOTHING_SCANNED"
+-title = "An audit that scanned no file proves nothing"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MODELS_STALE"
+-title = "The baseline lists only what is still true, so it can only shrink"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MODELS_UNBASELINED"
+-title = "A new model derives from Contract or Reading, never BaseModel"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_ANCHOR_NOT_ONCE"
+-title = "Every mutant's anchor is found exactly once"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_BASELINE_FAILED"
+-title = "Every killer passes before any mutant is applied"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_INPUT_MISSING"
+-title = "The mutation evidence is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_KILLER_UNJUDGED"
+-title = "Every killer's result could be judged"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_SURVIVED_ITS_KILLER"
+-title = "Every named killer kills its mutant"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_TREE_TOUCHED"
+-title = "The tree under test is never mutated in place"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_TREE_UNLISTED"
+-title = "The tree under test could be listed"
+-severity = "error"
 -
 -[[problems]]
 -code = "ERR_MYPY_FILES_UNDECLARED"
