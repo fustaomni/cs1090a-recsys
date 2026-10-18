@@ -988,3 +988,21 @@ because = { "A.20" = "the gates join the registry check runs" }
 done_when = [
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.113"
+title = "cscie103's tree at the pinned commit is read as data, from the blobless checkout's own trees"
+thread = "A"
+depends_on = ["A.28"]
+because = { "A.28" = "upstream:checkout already holds every commit and tree at the pin; a listing reads trees, never blobs" }
+done_when = [
+  { kind = "task", name = "upstream:checkout" },
+]
+[[steps]]
+id = "A.114"
+title = "The main checkout's uncommitted copy of cscie103 is accounted for: each file verified against the pin or removed, by recorded operations"
+thread = "A"
+depends_on = ["A.113"]
+because = { "A.113" = "a file is verified only against cscie103's tree at the pin, never against a local copy" }
+done_when = [
+  { kind = "task", name = "status" },
+]
