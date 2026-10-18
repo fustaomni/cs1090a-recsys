@@ -8,7 +8,7 @@ observation, the readings, opa's verdict and the exit code are all real.
 from __future__ import annotations
 
 import json
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 
 import pytest
 
@@ -128,7 +128,7 @@ def _changed(**fields: object) -> str:
     return json.dumps(ruleset)
 
 
-def _rules(kind: str, parameters: dict[str, object] | None) -> list[dict[str, object]]:
+def _rules(kind: str, parameters: Mapping[str, object] | None) -> list[dict[str, object]]:
     """recsys: the passing rules with one rule's parameters replaced, or that rule removed."""
     rules: list[dict[str, object]] = json.loads(_ruleset())["rules"]
     kept = [rule for rule in rules if rule["type"] != kind]
