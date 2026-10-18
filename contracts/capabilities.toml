@@ -308,3 +308,15 @@ task = "tools:install"
 version = "1.0.0"
 implementation = "mise.toml"
 emits = "text"
+
+[[capabilities]]
+task = "check:ruleset"
+version = "1.0.0"
+implementation = "scripts/check_ruleset.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "repo:configure"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"

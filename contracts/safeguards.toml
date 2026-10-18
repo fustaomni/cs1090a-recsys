@@ -247,6 +247,114 @@ mutant = "\tfalse\n"
 proof = "tests/test_exemptions.py::test_an_exemption_for_a_missing_path_fails"
 
 [[safeguards]]
+id = "RULESET.INPUT_MISSING"
+engine = "check:ruleset"
+guard = "ERR_RULESET_INPUT_MISSING"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tnot state.contract\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_an_unobserved_state_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "RULESET.MISSING"
+engine = "check:ruleset"
+guard = "ERR_RULESET_MISSING"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tnot state.found\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_missing_ruleset_is_refused"
+
+[[safeguards]]
+id = "RULESET.NOT_ACTIVE"
+engine = "check:ruleset"
+guard = "ERR_RULESET_NOT_ACTIVE"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tstate.enforcement != \"active\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_ruleset_in_evaluate_mode_is_refused"
+
+[[safeguards]]
+id = "RULESET.RULE_MISSING"
+engine = "check:ruleset"
+guard = "ERR_RULESET_RULE_MISSING"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tnot kind in state.rule_types\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_missing_protecting_rule_is_refused"
+
+[[safeguards]]
+id = "RULESET.REF_UNPROTECTED"
+engine = "check:ruleset"
+guard = "ERR_RULESET_REF_UNPROTECTED"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tnot ref in state.refs\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_main_left_unprotected_is_refused"
+
+[[safeguards]]
+id = "RULESET.CHECK_NOT_REQUIRED"
+engine = "check:ruleset"
+guard = "ERR_RULESET_CHECK_NOT_REQUIRED"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tcount([check | some check in state.required_checks; check.context == required_check]) == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_another_required_check_is_refused"
+
+[[safeguards]]
+id = "RULESET.CHECK_UNPINNED"
+engine = "check:ruleset"
+guard = "ERR_RULESET_CHECK_UNPINNED"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tcheck.integration_id != pinned_app\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_check_required_by_name_only_is_refused"
+
+[[safeguards]]
+id = "RULESET.NOT_STRICT"
+engine = "check:ruleset"
+guard = "ERR_RULESET_NOT_STRICT"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tnot state.strict\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_ruleset_that_is_not_strict_is_refused"
+
+[[safeguards]]
+id = "RULESET.BYPASS_PRESENT"
+engine = "check:ruleset"
+guard = "ERR_RULESET_BYPASS_PRESENT"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tstate.bypass_actor_count > 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_bypass_actor_is_refused"
+
+[[safeguards]]
+id = "RULESET.BYPASS_UNOBSERVED"
+engine = "check:ruleset"
+guard = "ERR_RULESET_BYPASS_UNOBSERVED"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tis_null(state.bypass_actor_count)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_an_unreadable_bypass_count_is_refused"
+
+[[safeguards]]
+id = "RULESET.MERGE_METHODS"
+engine = "check:ruleset"
+guard = "ERR_RULESET_MERGE_METHODS"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tstate.merge_methods != [\"merge\"]\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_squash_merge_method_is_refused"
+
+[[safeguards]]
+id = "RULESET.PRODUCER_MISMATCH"
+engine = "check:ruleset"
+guard = "ERR_RULESET_PRODUCER_MISMATCH"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tstate.producer_app_id != pinned_app\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_gate_from_another_app_is_refused"
+
+[[safeguards]]
 id = "SA.ANCHOR_COUNT"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_ANCHOR_COUNT"

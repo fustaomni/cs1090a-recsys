@@ -9,6 +9,7 @@ read_only = [
     "check",
     "check:ci",
     "check:offline",
+    "check:ruleset",
     "lint",
     "plan:step",
     "plan:trace",

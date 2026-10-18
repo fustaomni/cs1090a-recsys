@@ -472,6 +472,72 @@ description = "Install exactly the tools mise.lock records, refusing any it does
 # --locked: a tool missing from the lock fails instead of resolving a version from the network.
 run = "mise install --locked"
 
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.105).
+[tasks."check:ruleset"]
+description = "Judge the server's ruleset: the gate required, pinned to its app, strict, unbypassable"
+# Checks the ruleset's CONTENTS, not its existence: one edited to require
+# nothing is the failure mode that looks like success.
+#
+# NOT a dependency of `check` -- that runs on every commit and this needs
+# network plus gh auth, and a local commit cannot weaken a server-side ruleset.
+# Not a scheduled workflow either: GitHub disables those after 60 days of
+# repository inactivity, and a check that silently stops is worse than none.
+run = "uv run --no-sync python scripts/check_ruleset.py"
+
+# --- Repository configuration -------------------------------------------------
+
+[tasks."repo:configure"]
+description = "Apply repository settings and branch ruleset (idempotent)"
+# REPOSITORY SETTINGS ARE INFRASTRUCTURE. Clicked in a web UI they are invisible
+# to the repo, unreviewable and unreproducible. Found the hard way: `mise run
+# pr` failed with "Auto merge is not allowed for this repository" AFTER pushing
+# and creating the PR.
+#
+# TWO HALVES, AND THE SECOND MAKES THE FIRST MEAN ANYTHING:
+#   settings  allow auto-merge, merge commits only, delete branch on merge
+#   ruleset   protect develop and main, and REQUIRE the quality gate
+#
+# Without a REQUIRED status check, auto-merge has nothing to wait for and fires
+# immediately -- worse than no auto-merge, because it looks like a gate.
+#
+# MERGE COMMITS ONLY: GitFlow depends on merge topology, and squashing would
+# collapse commits whose reasoning is the most valuable thing here.
+#
+# required_approving_review_count IS 0 because this is a solo repository.
+# Requiring a review nobody can give would block every merge; the gate is CI.
+run = '''
+set -euo pipefail
+
+gh api -X PATCH "repos/{owner}/{repo}" \
+  -F allow_auto_merge=true \
+  -F allow_merge_commit=true \
+  -F allow_squash_merge=false \
+  -F allow_rebase_merge=false \
+  -F delete_branch_on_merge=true \
+  > /dev/null
+echo "settings applied"
+
+name="develop-and-main-protection"
+existing="$(gh api "repos/{owner}/{repo}/rulesets" --jq \
+  ".[] | select(.name == \"$name\") | .id" || true)"
+
+if [ -n "$existing" ]; then
+  gh api -X PUT "repos/{owner}/{repo}/rulesets/$existing" \
+    --input contracts/ruleset-develop-and-main.json > /dev/null
+  echo "ruleset updated (id $existing)"
+else
+  gh api -X POST "repos/{owner}/{repo}/rulesets" \
+    --input contracts/ruleset-develop-and-main.json > /dev/null
+  echo "ruleset created"
+fi
+
+echo "--- readback ---"
+gh api "repos/{owner}/{repo}" \
+  --jq '{auto_merge:.allow_auto_merge, merge_commit:.allow_merge_commit, squash:.allow_squash_merge, rebase:.allow_rebase_merge, delete_on_merge:.delete_branch_on_merge}'
+gh api "repos/{owner}/{repo}/rulesets" \
+  --jq '.[] | {id, name, enforcement}'
+'''
+
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.20).
 [tasks."deps:add"]
 description = "Add a dependency with uv and its lock, refusing any change to packages already locked"

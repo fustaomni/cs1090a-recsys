@@ -1,0 +1,77 @@
+--- a/tests/test_check_ruleset.py
++++ b/tests/test_check_ruleset.py
+@@ -12,7 +12,8 @@
+ 
+ import pytest
+ 
+-from check_ruleset import LISTING, PRODUCER, main
++import spine
++from check_ruleset import ENTRYPOINT, LISTING, POLICY, PRODUCER, main, observe
+ 
+ Answers = dict[str, str | None]
+ 
+@@ -118,3 +119,64 @@
+     """An unverifiable protection is not a verified one: halt, never pass."""
+     assert main(gh=_gh(_answers({LISTING: None}))) == 1
+     assert _reason(capsys) == "UNEVALUABLE"
++
++
++def _changed(**fields: object) -> str:
++    """recsys: the passing ruleset with top-level fields replaced."""
++    ruleset = json.loads(_ruleset())
++    ruleset.update(fields)
++    return json.dumps(ruleset)
++
++
++def _rules(kind: str, parameters: dict[str, object] | None) -> list[dict[str, object]]:
++    """recsys: the passing rules with one rule's parameters replaced, or that rule removed."""
++    rules: list[dict[str, object]] = json.loads(_ruleset())["rules"]
++    kept = [rule for rule in rules if rule["type"] != kind]
++    return kept if parameters is None else [*kept, {"type": kind, "parameters": parameters}]
++
++
++def _refusal(capsys: pytest.CaptureFixture[str], ruleset: str) -> str:
++    assert main(gh=_gh(_answers({f"{LISTING}/7": ruleset}))) == 2
++    return _reason(capsys)
++
++
++def test_an_unobserved_state_is_refused_by_the_policy() -> None:
++    """recsys: evidence under another subject leaves the policy nothing to judge."""
++    state = observe(_gh(_answers()))
++    verdict = spine.evaluate(state, "not_ruleset_state", POLICY, ENTRYPOINT)
++    codes = {rule.code for rule in verdict.rules if rule.outcome == "fail"}
++    assert "ERR_RULESET_INPUT_MISSING" in codes, verdict
++
++
++def test_a_ruleset_in_evaluate_mode_is_refused(capsys: pytest.CaptureFixture[str]) -> None:
++    """recsys: an evaluate-mode ruleset reports and permits, so nothing is enforced."""
++    assert _refusal(capsys, _changed(enforcement="evaluate")) == "ERR_RULESET_NOT_ACTIVE"
++
++
++def test_a_missing_protecting_rule_is_refused(capsys: pytest.CaptureFixture[str]) -> None:
++    """recsys: without the deletion rule, a protected branch can be deleted."""
++    ruleset = _changed(rules=_rules("deletion", None))
++    assert _refusal(capsys, ruleset) == "ERR_RULESET_RULE_MISSING"
++
++
++def test_main_left_unprotected_is_refused(capsys: pytest.CaptureFixture[str]) -> None:
++    """recsys: a ruleset covering develop alone leaves the release branch open."""
++    conditions = {"ref_name": {"include": ["refs/heads/develop"]}}
++    assert _refusal(capsys, _changed(conditions=conditions)) == "ERR_RULESET_REF_UNPROTECTED"
++
++
++def test_another_required_check_is_refused(capsys: pytest.CaptureFixture[str]) -> None:
++    """recsys: requiring some check is not requiring the quality gate."""
++    parameters = {
++        "strict_required_status_checks_policy": True,
++        "required_status_checks": [{"context": "lint", "integration_id": 15368}],
++    }
++    ruleset = _changed(rules=_rules("required_status_checks", parameters))
++    assert _refusal(capsys, ruleset) == "ERR_RULESET_CHECK_NOT_REQUIRED"
++
++
++def test_a_squash_merge_method_is_refused(capsys: pytest.CaptureFixture[str]) -> None:
++    """recsys: squash collapses the history GitFlow's merge topology keeps."""
++    parameters = {"allowed_merge_methods": ["merge", "squash"]}
++    ruleset = _changed(rules=_rules("pull_request", parameters))
++    assert _refusal(capsys, ruleset) == "ERR_RULESET_MERGE_METHODS"

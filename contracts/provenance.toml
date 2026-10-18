@@ -394,7 +394,7 @@ sha256 = "bcbcf81b839c521bd70c27eb0a560d2bc9c5c9ce9992d786e7bb317e2826674d"
 path = "contracts/task-effects.toml"
 reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification; check:ci, recsys's own, is read-only as check:offline is (A.104)"
 patch = "contracts/vendor-patches/contracts/task-effects.toml.patch"
-sha256 = "7b13f48561758e186cdfbe0fd2eaf9571e5e1a960cf8dce43c4b97dc8ddc7084"
+sha256 = "b2be15f21f8d355cc8ef881c6a012f87f3adde98e11f5020736a175aec901938"
 
 [[adapted]]
 path = "tests/test_run_gateway.py"
@@ -733,3 +733,25 @@ sha256 = "52b5e27d68b99d727c477831e32333ecd53223f7880015a092ca75e13ceb33a8"
 [[files]]
 path = "tests/test_exemptions.py"
 sha256 = "9faa7ce23589ea825168ad56b7dc21ba9fea6d77926c73f499c56b4b3eaf6412"
+
+[[files]]
+path = "scripts/check_ruleset.py"
+sha256 = "4464950c2e76a388813f0113942f1b121bc5cab89ce7608458b01df44dd0e55c"
+
+[[files]]
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+sha256 = "982e1e3f6e373b14fdc78d5fcf0e7dd6201f4cddedee6fe322220444d51d5dc2"
+
+[[files]]
+path = "contracts/ruleset-develop-and-main.json"
+sha256 = "b15fee39f837f675d8e7894150072df56b806da1f933d8090a4b1c90e4dcaf57"
+
+[[files]]
+path = "tests/test_check_ruleset.py"
+sha256 = "8e874937a9782b29a21296fdec0f68e55b640bd27b0a583aa8d409fad06b148f"
+
+[[adapted]]
+path = "tests/test_check_ruleset.py"
+reason = "killing proofs for the six runs.check_ruleset guards that had none: an unobserved state, evaluate mode, a missing rule, main unprotected, another check required, and squash allowed (A.105)"
+patch = "contracts/vendor-patches/tests/test_check_ruleset.py.patch"
+sha256 = "67ff50458948ec6aa3f1560f79030eb2d6333cc34c4770d603005befb47d26f4"
