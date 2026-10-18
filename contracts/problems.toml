@@ -619,3 +619,13 @@ severity = "error"
 code = "ERR_RESTORE_UNTRACKED"
 title = "Only paths HEAD knows are restored"
 severity = "error"
+
+[[problems]]
+code = "ERR_COPIES_INPUT_MISSING"
+title = "The copy inventory is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_COPIES_UNVERIFIED"
+title = "Every untracked copy matches the pinned tree"
+severity = "error"

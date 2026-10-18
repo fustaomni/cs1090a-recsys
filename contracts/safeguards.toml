@@ -661,6 +661,24 @@ mutant = "\tfalse\n"
 proof = "tests/test_source_restore.py::test_an_untracked_path_is_refused"
 
 [[safeguards]]
+id = "COPIES.INPUT_MISSING"
+engine = "upstream:copies"
+guard = "ERR_COPIES_INPUT_MISSING"
+path = "policies/runs/upstream_copies/upstream_copies.rego"
+anchor = "\tnot input.upstream_copies\n"
+mutant = "\tfalse\n"
+proof = "tests/test_upstream_copies.py::test_an_absent_inventory_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "COPIES.UNVERIFIED"
+engine = "upstream:copies"
+guard = "ERR_COPIES_UNVERIFIED"
+path = "policies/runs/upstream_copies/upstream_copies.rego"
+anchor = "\tcopy.local_blob != copy.upstream_blob\n"
+mutant = "\tfalse\n"
+proof = "tests/test_upstream_copies.py::test_only_the_copy_matching_the_pin_is_verified"
+
+[[safeguards]]
 id = "SA.ANCHOR_COUNT"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_ANCHOR_COUNT"
