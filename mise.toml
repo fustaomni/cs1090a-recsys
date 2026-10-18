@@ -343,3 +343,350 @@ minimum_release_age = "2026-10-08T00:00:00Z"
 
 [env]
 UV_CACHE_DIR = "{{config_root}}/.cache/uv"
+
+# --- Ported from cscie103-data-engineering at 58af9d3 (plan A.13) --------------
+# Task tables copied with their own comments. Withdrawn, with their scripts: Databricks
+# (auth, bundle, export, prereqs, env parity, fixtures, identity bootstrap, integration
+# tests) and Nix. release is adapted: it promotes and tags, with no job export.
+
+[tasks."check:policy"]
+description = "Format, check, lint and unit-test every Rego policy"
+# --fail-on-empty is not optional: `opa test` SUCCEEDS when zero tests run, so a
+# renamed package or mistyped path would report green while testing nothing --
+# the silent-pass failure this repo removes everywhere else.
+run = '''
+set -euo pipefail
+opa fmt --fail --diff policies/
+opa check --strict policies/
+regal lint policies/
+opa test policies/ --fail-on-empty
+'''
+
+[tasks."check:policy-decisions"]
+description = "Evaluate this repo's own tasks against the policies"
+# THE SPLIT THAT IS KEPT, BECAUSE IT IS A DIFFERENCE IN KIND:
+#   check:policy            are the policies well-formed and tested?
+#   check:policy-decisions  does the CODEBASE satisfy them?
+#
+# A policy suite can be immaculate and enforce nothing. Only evaluating real
+# input proves the repo obeys its own rules.
+run = "uv run --no-sync python scripts/evaluate_policies.py"
+
+[tasks."deps:install"]
+description = "Install exactly what uv.lock pins, refusing a lock that no longer resolves"
+# --locked, NOT --frozen: --frozen installs a stale lock without complaint and
+# lets a later `uv run` fail for it under another step's name. --locked never
+# rewrites uv.lock, so starting this task cannot dirty the lockfile (D.9).
+run = "uv sync --locked"
+
+[tasks."check:ruleset"]
+description = "Judge the server's ruleset: the gate required, pinned to its app, strict, unbypassable"
+# Checks the ruleset's CONTENTS, not its existence: one edited to require
+# nothing is the failure mode that looks like success.
+#
+# NOT a dependency of `check` -- that runs on every commit and this needs
+# network plus gh auth, and a local commit cannot weaken a server-side ruleset.
+# Not a scheduled workflow either: GitHub disables those after 60 days of
+# repository inactivity, and a check that silently stops is worse than none.
+run = "uv run --no-sync python scripts/check_ruleset.py"
+
+[tasks.pr]
+description = "Open a PR and block until it is merged"
+# BLOCKS, HAVING ORIGINALLY NOT. The first version enabled auto-merge and
+# returned with state BLOCKED, moving the cost to the person -- who watched the
+# Actions tab and confirmed the merge by hand on twelve pull requests.
+#
+# Three phases, because waiting for checks to APPEAR and waiting for them to
+# FINISH are different problems. Each is bounded: an unbounded wait hangs when
+# something upstream never resolves, teaching the person nothing.
+run = "uv run --no-sync python scripts/pr.py"
+
+[tasks."pr-status"]
+description = "Show merge state and checks for the current branch's PR"
+run = "gh pr view --json number,title,mergeable,mergeStateStatus,autoMergeRequest,statusCheckRollup --jq '{pr:.number,title,mergeable,state:.mergeStateStatus,auto:(.autoMergeRequest != null),checks:[.statusCheckRollup[]|{name,conclusion}]}'"
+
+[tasks.sync]
+description = "Return to develop, pull, and remove branches that are safe to remove"
+# STATE-DRIVEN, NOT A PIPELINE. This piped `git for-each-ref` through awk and
+# deleted whatever reported [gone]. It worked until a worktree held one of those
+# branches: git refused -- correctly -- and the task ABORTED after the pull had
+# succeeded, leaving the sync half done.
+#
+# Cleanup had no model of what it was cleaning. scripts/repo_state.py answers
+# protection, merge status and worktree ownership at once, and reports what it
+# did NOT remove and why.
+run = "uv run --no-sync python scripts/sync.py"
+
+[tasks."repo:state"]
+description = "Observe every worktree and long-lived branch as typed evidence, and record the run"
+# EVIDENCE AS DATA: repository-state/v1, verdicts as booleans, never console prose.
+run = "uv run --no-sync python scripts/repo_report.py"
+
+[tasks."pr:logs"]
+description = "Read the current branch's latest failed CI run as typed data, and record the run"
+# EVIDENCE AS DATA: ci-failure/v2, the failed steps and their lines, and every step
+# or job that ended other than in success (a cancelled step; a job no runner took).
+run = "uv run --no-sync python scripts/pr_logs.py"
+
+[tasks."ci:rerun"]
+description = "Re-run this branch's failed CI run once, only while Actions is steadily healthy"
+# A DECISION, NOT A RETRY LOOP: refused unless GitHub's Actions component reads
+# operational three times in a row and the run is this branch's head (D.83).
+run = "uv run --no-sync python scripts/ci_rerun.py"
+
+[tasks."pr:checks"]
+description = "Re-request an app's check suite on this PR's head when a declared check never ran"
+# THE CHECK THAT NEVER REGISTERED (D.217): GitGuardian posted nothing on PR #157. Decided by
+# runs.pr_checks, only suites awaiting a run, and done only when the check is seen on the head.
+run = "uv run --no-sync python scripts/pr_checks.py"
+
+[tasks."tasks:list"]
+description = "List every task mise will run, with its description and source, as data"
+# MISE'S OWN INVENTORY, validated: the audit reads what exists, not a recollection.
+run = "uv run --no-sync python scripts/tasks_list.py"
+
+[tasks."deps:add"]
+description = "Add a dependency with uv and its lock, refusing any change to packages already locked"
+# AN ADDITION ONLY ADDS: a stale lock, or any locked package changed or removed, is
+# refused and both files restored. raw_args passes --group <name> through untouched.
+raw_args = true
+run = "uv run --no-sync python scripts/deps_add.py"
+
+[tasks."source:restore"]
+description = "Discard changes to tracked paths, back to HEAD; a dry run unless --yes, refusing untracked paths"
+# NEVER DROPS A NEW FILE: a path HEAD has never seen is refused. raw_args passes --yes.
+raw_args = true
+run = "uv run --no-sync python scripts/source_restore.py"
+
+[tasks."source:units"]
+description = "Read named functions and classes from a Python file by syntax tree, with their line ranges"
+# EXACTLY AS WRITTEN, whatever the formatter made of it: an edit anchors on real text.
+raw_args = true
+run = "uv run --no-sync python scripts/source_units.py"
+
+[tasks."source:read"]
+description = "Read a file's lines, numbered, as data; refusing a missing file or a range past its end"
+raw_args = true
+run = "uv run --no-sync python scripts/source_read.py"
+
+[tasks."source:search"]
+description = "Search tracked source for a pattern, its matches as path, line and text records"
+# git grep -n -z: NUL-separated, so a path with a colon is unambiguous; tracked files only.
+raw_args = true
+run = "uv run --no-sync python scripts/source_search.py"
+
+[tasks."source:apply"]
+description = "Create and edit source from a declarative spec, judged by policy, all or nothing"
+# THE ONLY WAY SOURCE CHANGES (D.25): a source-apply/v1 spec, or - for stdin. No
+# edit logic is written at execution time; runs.source_apply judges every operation.
+run = "uv run --no-sync python scripts/source_apply.py"
+
+[tasks."repo:history"]
+description = "Read commit history as data: subject, authored time, trailers and files, newest first"
+# NUL- AND CONTROL-BYTE-SEPARATED, as git's own %(trailers) options allow: nothing can break the parse.
+raw_args = true
+run = "uv run --no-sync python scripts/repo_history.py"
+
+[tasks."source:structure"]
+description = "Describe a TOML or JSON file's top-level structure, or a Pydantic model's JSON schema, as data"
+raw_args = true
+run = "uv run --no-sync python scripts/source_structure.py"
+
+[tasks."repo:configure"]
+description = "Apply repository settings and branch ruleset (idempotent)"
+# REPOSITORY SETTINGS ARE INFRASTRUCTURE. Clicked in a web UI they are invisible
+# to the repo, unreviewable and unreproducible. Found the hard way: `mise run
+# pr` failed with "Auto merge is not allowed for this repository" AFTER pushing
+# and creating the PR.
+#
+# TWO HALVES, AND THE SECOND MAKES THE FIRST MEAN ANYTHING:
+#   settings  allow auto-merge, merge commits only, delete branch on merge
+#   ruleset   protect develop and main, and REQUIRE the quality gate
+#
+# Without a REQUIRED status check, auto-merge has nothing to wait for and fires
+# immediately -- worse than no auto-merge, because it looks like a gate.
+#
+# MERGE COMMITS ONLY: GitFlow depends on merge topology, and squashing would
+# collapse commits whose reasoning is the most valuable thing here.
+#
+# required_approving_review_count IS 0 because this is a solo repository.
+# Requiring a review nobody can give would block every merge; the gate is CI.
+run = '''
+set -euo pipefail
+
+gh api -X PATCH "repos/{owner}/{repo}" \
+  -F allow_auto_merge=true \
+  -F allow_merge_commit=true \
+  -F allow_squash_merge=false \
+  -F allow_rebase_merge=false \
+  -F delete_branch_on_merge=true \
+  > /dev/null
+echo "settings applied"
+
+name="develop-and-main-protection"
+existing="$(gh api "repos/{owner}/{repo}/rulesets" --jq \
+  ".[] | select(.name == \"$name\") | .id" || true)"
+
+if [ -n "$existing" ]; then
+  gh api -X PUT "repos/{owner}/{repo}/rulesets/$existing" \
+    --input contracts/ruleset-develop-and-main.json > /dev/null
+  echo "ruleset updated (id $existing)"
+else
+  gh api -X POST "repos/{owner}/{repo}/rulesets" \
+    --input contracts/ruleset-develop-and-main.json > /dev/null
+  echo "ruleset created"
+fi
+
+echo "--- readback ---"
+gh api "repos/{owner}/{repo}" \
+  --jq '{auto_merge:.allow_auto_merge, merge_commit:.allow_merge_commit, squash:.allow_squash_merge, rebase:.allow_rebase_merge, delete_on_merge:.delete_branch_on_merge}'
+gh api "repos/{owner}/{repo}/rulesets" \
+  --jq '.[] | {id, name, enforcement}'
+'''
+
+[tasks."worktree:add"]
+description = "Create a sibling worktree on a new feature branch, with setup run"
+# Creates <repo>-<slug> beside the main clone, then runs `mise run setup` inside
+# it. Without that a fresh worktree has no .venv and no hooks, so the gate
+# cannot run and a commit is refused.
+usage = '''
+arg "<slug>" help="Short kebab-case description, e.g. workstation-as-code"
+'''
+run = 'uv run --no-sync python scripts/worktree.py add "${usage_slug?}"'
+
+[tasks."worktree:list"]
+description = "List worktrees, their branches, and any locked or prunable flags"
+run = "uv run --no-sync python scripts/worktree.py list"
+
+[tasks."worktree:remove"]
+description = "Remove a worktree and delete its branch, refusing to force either"
+# `git worktree remove` refuses on modified or untracked files and `git branch
+# -d` refuses unmerged work. Neither is forced: the first prevents losing an
+# uncommitted change, the second doubles as proof the merge happened.
+usage = '''
+arg "<slug>" help="The slug used with worktree:add"
+'''
+run = 'uv run --no-sync python scripts/worktree.py remove "${usage_slug?}"'
+
+[tasks."worktree:refresh"]
+description = "Rebase a worktree's branch onto current origin/develop"
+# A worktree cut days ago is built on a develop that no longer exists.
+#
+# REFUSES ON A DIRTY TREE rather than using --autostash. git's own manual warns
+# that "the final stash application after a successful rebase might result in
+# non-trivial conflicts", and rebase.autoStash defaults to false for that
+# reason. Autostash hides work in a stash nobody created.
+usage = '''
+arg "<slug>" help="The slug used with worktree:add"
+'''
+run = 'uv run --no-sync python scripts/worktree.py refresh "${usage_slug?}"'
+
+[tasks."worktree:conflicts"]
+description = "Read a worktree's rebase conflicts as data: each block's sides and context"
+# D.30: what a stopped refresh left, as data, so a resolution is never guessed.
+run = "uv run --no-sync python scripts/rebase_state.py conflicts"
+
+[tasks."worktree:continue"]
+description = "Continue a worktree's resolved rebase, refused while any marker remains"
+# D.31: continue-plan/v1 judged by runs.worktree_continue before anything is staged.
+run = "uv run --no-sync python scripts/rebase_state.py continue"
+
+[tasks.release]
+description = "Promote develop to main through pr, and tag it"
+# A RELEASE IS ONE OPERATION, NOT A SEQUENCE SOMEONE REMEMBERS.
+#
+# main advanced once with no release performed -- no export, no tag, no
+# submission -- because someone clicked GitHub's "Compare & pull request"
+# banner. The ruleset allowed it correctly: a PR and a green gate, both
+# satisfied. Nothing said WHEN main may advance, so that rule lived in commit
+# prose and enforced nothing.
+#
+# THE EXPORT IS OF THE RUN, NOT THE NOTEBOOK. The bundle deploys the notebook as
+# SOURCE; the outputs belong to the run. Exporting the workspace file would give
+# the file the job READ -- empty cells that look like a valid submission.
+usage = '''
+arg "<tag>" help="Release tag naming a milestone and a version, e.g. milestone-01-v1"
+'''
+run = 'uv run --no-sync python scripts/release.py "${usage_tag?}"'
+
+[tasks."audit:layers"]
+description = "Fail if a module lacks a layer its role needs and no planned step owns it"
+run = "uv run --no-sync python scripts/layer_audit.py"
+
+[tasks."audit:capabilities"]
+description = "Classify every task; refuse any off the governance spine, owned or not"
+# M36 (D.89): a capability is a contract, a policy, an enforcement point and a proof. A script
+# task follows its module's layer verdict; any task off the spine is refused, owned or not (M37).
+run = "uv run --no-sync python scripts/capability_audit.py"
+
+[tasks."audit:workflows"]
+description = "Refuse any zizmor finding or suppression, and any workflow grant the allow-list omits"
+# M38 (D.95): zizmor cannot judge job-level grants in general and honours inline ignores, so a
+# closed allow-list decides every grant. Runs on every commit, on push, and in CI's required gate.
+run = "uv run --no-sync python scripts/workflow_audit.py"
+
+[tasks."audit:assertions"]
+description = "Refuse any test assertion over a collection it has not proven non-empty"
+# M40 (D.107): all() and not any() over nothing are True, and a loop over nothing asserts nothing.
+# Each such claim must range over a non-empty literal or nonempty(...). Runs in check and in CI.
+run = "uv run --no-sync python scripts/assertion_audit.py"
+
+[tasks."audit:evidence"]
+description = "Refuse any evidence contract holding a conclusion, and any evaluate() argument unresolved"
+# D.142, C17: evidence is what was observed; what policy decides is recorded apart from it.
+run = "uv run --no-sync python scripts/evidence_audit.py"
+
+[tasks."audit:models"]
+description = "Refuse any model deriving from BaseModel directly unless the shrinking baseline lists it"
+# D.147: every model derives from Contract or Reading; the baseline may only shrink (M61).
+run = "uv run --no-sync python scripts/model_audit.py"
+
+[tasks."audit:schemas"]
+description = "Refuse a versioned contract whose committed schema is missing, stale, or broken unversioned"
+# D.147: runs.schemas judges; a change that can break a reader needs a new identifier.
+run = "uv run --no-sync python scripts/schema_audit.py"
+
+[tasks."audit:exemptions"]
+description = "Refuse an expired exemption, or one naming a path that no longer exists"
+# D.174, R55.4: contracts/exemptions.toml is the only place an exemption exists, and each lapses.
+run = "uv run --no-sync python scripts/exemptions.py"
+
+[tasks."audit:suppressions"]
+description = "Refuse an inline suppression that no live exemption registers"
+# D.219, R55.4: a suppression is a permission, kept as data in contracts/exemptions.toml.
+run = "uv run --no-sync python scripts/suppression_audit.py"
+
+[tasks."audit:problems"]
+description = "Refuse an unregistered, undeclared or repurposed problem code, and any branch on prose"
+# D.177, R60: one registry of stable problem codes, read both ways and against origin/develop.
+run = "uv run --no-sync python scripts/problem_codes.py"
+
+[tasks."problems:register"]
+description = "Register every declared problem code not yet in contracts/problems.toml"
+# D.177: appends only; an entry once registered is never rewritten.
+run = "uv run --no-sync python scripts/problem_codes.py --register"
+
+[tasks."schemas:snapshot"]
+description = "Commit every versioned contract's schema, refusing a break under the same identifiers"
+run = "uv run --no-sync python scripts/schema_audit.py --write"
+
+[tasks."keys:rotate"]
+description = "Retire the active signing key and publish a fresh one; the retired key verifies its past"
+# D.161: one active key at a time, and history verifies under the key active when it was sealed.
+run = "uv run --no-sync python scripts/signing.py rotate"
+
+[tasks."keys:revoke"]
+description = "Revoke a published signing key: it signs nothing again, and its later seals fail"
+usage = 'arg "<keyid>" help="The keyid to revoke, from contracts/signing-keys.toml"'
+run = 'uv run --no-sync python scripts/signing.py revoke "${usage_keyid?}"'
+
+[tasks."source:outline"]
+description = "Outline a Python file's definitions from its syntax tree, inside the repository"
+# D.113, M52: structure comes from the syntax tree -- nested, async, decorated, multi-line -- and
+# the read is judged by runs.source_outline before anything is shown.
+run = "uv run --no-sync python scripts/source_outline.py"
+
+[tasks."mutation:check"]
+description = "Fail unless every named killer kills its mutant, one killer at a time"
+usage = "arg \"<spec>\" help=\"TOML spec: [[steps]] and one [trace]\""
+run = 'uv run --no-sync python scripts/mutation_check.py "${usage_spec?}"'
