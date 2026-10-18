@@ -1,6 +1,6 @@
 --- a/contracts/publish-expectations.toml
 +++ b/contracts/publish-expectations.toml
-@@ -9,18 +9,6 @@
+@@ -9,18 +9,7 @@
    "types (darwin)",
    "types (linux)",
    "test",
@@ -18,4 +18,5 @@
 -  "mutation anchors",
 -  "schemas",
 -  "nix contract",
++  "test (machine)",
  ]

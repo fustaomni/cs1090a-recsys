@@ -40,6 +40,12 @@ implementation = "scripts/check_all.py"
 emits = "text"
 
 [[capabilities]]
+task = "check:ci"
+version = "1.0.0"
+implementation = "scripts/check_all.py"
+emits = "text"
+
+[[capabilities]]
 task = "setup"
 version = "1.0.0"
 implementation = "mise.toml"

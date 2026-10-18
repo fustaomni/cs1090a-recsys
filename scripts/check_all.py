@@ -48,6 +48,8 @@ class GateSpec(Contract):
     timeout_seconds: float = Field(gt=0)
     # A LANE MAY DECLARE ITSELF EMPTY (A.90): only then is pytest's exit 5 nothing to run.
     may_be_empty: bool = False
+    # A CLAIM ABOUT THE DEVELOPER MACHINE (A.104) is declared out of CI: the runner is not it.
+    runs_in_ci: bool = True
 
 
 class GateRun(Contract):
@@ -192,12 +194,24 @@ GATES: tuple[GateSpec, ...] = (
         may_be_empty=True,
         timeout_seconds=1200.0,
     ),
+    # CLAIMS ABOUT THIS MACHINE (A.104): A.8's proofs that its mise state and new files are
+    # owner-only. The hooks and the snapshot before every publication run them here; CI's
+    # runner is not this machine, so the gate is declared out of CI, never detected there.
+    GateSpec(
+        name="test (machine)",
+        command=("uv", "run", "pytest", "-m", "machine"),
+        runs_in_hooks=True,
+        runs_in_ci=False,
+        timeout_seconds=300.0,
+    ),
 )
 
 
-def selected(specs: tuple[GateSpec, ...], *, hooks: bool) -> tuple[GateSpec, ...]:
-    """The gates to run: all of them, or in the hooks only those that run there (R2)."""
-    return tuple(spec for spec in specs if spec.runs_in_hooks or not hooks)
+def selected(specs: tuple[GateSpec, ...], *, hooks: bool, ci: bool = False) -> tuple[GateSpec, ...]:
+    """The gates to run: all, the hooks' own, or on CI all but claims about this machine (R2)."""
+    return tuple(
+        spec for spec in specs if (spec.runs_in_hooks or not hooks) and (spec.runs_in_ci or not ci)
+    )
 
 
 def run_gate(spec: GateSpec) -> GateRun:
@@ -230,7 +244,11 @@ def _report_path(argv: list[str]) -> Path | None:
 
 def main() -> int:
     offline = "--offline" in sys.argv
-    gates = selected(GATES, hooks=offline)
+    on_ci = "--ci" in sys.argv
+    gates = selected(GATES, hooks=offline, ci=on_ci)
+    if on_ci:
+        omitted = ", ".join(spec.name for spec in GATES if not spec.runs_in_ci)
+        print(f"not run on CI, by declaration: {omitted}", flush=True)
 
     if offline:
         skipped = [spec.name for spec in GATES if not spec.runs_in_hooks]

@@ -392,9 +392,9 @@ sha256 = "bcbcf81b839c521bd70c27eb0a560d2bc9c5c9ce9992d786e7bb317e2826674d"
 
 [[adapted]]
 path = "contracts/task-effects.toml"
-reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification"
+reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification; check:ci, recsys's own, is read-only as check:offline is (A.104)"
 patch = "contracts/vendor-patches/contracts/task-effects.toml.patch"
-sha256 = "13abddd4b3523f1671d3c8a33c1d444d317776ae8190c9d283fe4e35f1a01c67"
+sha256 = "7b13f48561758e186cdfbe0fd2eaf9571e5e1a960cf8dce43c4b97dc8ddc7084"
 
 [[adapted]]
 path = "tests/test_run_gateway.py"
@@ -423,9 +423,9 @@ patch = "contracts/vendor-patches/tests/test_signing.py.patch"
 sha256 = "e79583063db873058c6af6a2e3129fbee985d965f177bc249940cf2f0bb0b62d"
 [[adapted]]
 path = "scripts/check_all.py"
-reason = "a lane that may be empty reports nothing to run instead of failing (A.90); the workflows gate returns with the workflow audit (A.23)"
+reason = "a lane that may be empty reports nothing to run instead of failing (A.90); the workflows gate returns with the workflow audit (A.23); claims about the developer machine are a hooks lane declared out of CI (A.104)"
 patch = "contracts/vendor-patches/scripts/check_all.py.patch"
-sha256 = "689aeb26207fe594a0c2219690b209dbb937abd223b24fb519defe9ffd0ab6db"
+sha256 = "3b0053658b42d169451e1ba8637decd1a2644fc9d85acafb90e95fe2588f0a35"
 [[adapted]]
 path = "scripts/commit.py"
 reason = "the root commit names its branch (A.5); nothing staged is refused and git reasons kept (A.12)"
@@ -584,9 +584,9 @@ sha256 = "22c10f70b698536b6fc10465c989a31a2fbeeeeab6cdbba5b6200f0d63cee225"
 
 [[adapted]]
 path = ".github/workflows/ci.yml"
-reason = "recsys has no Nix or Databricks: tools come from mise.toml's lock through mise-action, check:ruleset is not ported, and the gate needs no workspace credentials (A.20)"
+reason = "recsys has no Nix or Databricks: tools come from mise.toml's lock through mise-action, check:ruleset is not ported, and the gate needs no workspace credentials (A.20); it runs check:ci, the gate without claims about the developer machine (A.104)"
 patch = "contracts/vendor-patches/.github/workflows/ci.yml.patch"
-sha256 = "fa6ad81adcee91dd8ae05c84734b56b3213a61a3dce819af50eb440501163001"
+sha256 = "24ca64e4bbce8e59b175b2e2f8e774adbd4b5125a5d2cc5eca03c26a22b4f9b3"
 
 [[files]]
 path = "contracts/expected-checks.toml"
@@ -658,9 +658,9 @@ sha256 = "f4e1a57ca255e37c01c54b25f12b486313b60ad6b276cf7520ccb6ab3337056a"
 
 [[adapted]]
 path = "contracts/publish-expectations.toml"
-reason = "publication expects exactly this repository's hook gates; the twelve cscie103 gates the founding withdrew are absent, not skipped (A.19)"
+reason = "publication expects exactly this repository's hook gates; the twelve cscie103 gates the founding withdrew are absent, not skipped (A.19); test (machine) among them, so this machine's claims are proven before every publication (A.104)"
 patch = "contracts/vendor-patches/contracts/publish-expectations.toml.patch"
-sha256 = "d790fed589cf53e2c6c89b74357f3fe466f4109064df26351e661b1a9a3370f0"
+sha256 = "9285c9a6a19040db12f20e9549159cfced12e736aab897f2c181271b20bdf950"
 
 [[files]]
 path = "contracts/exemptions.toml"

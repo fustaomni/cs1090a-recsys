@@ -12,16 +12,18 @@
  
  
  class GateSpec(Contract):
-@@ -43,6 +46,8 @@
+@@ -43,6 +46,10 @@
      command: tuple[str, ...] = Field(min_length=1)
      runs_in_hooks: bool
      timeout_seconds: float = Field(gt=0)
 +    # A LANE MAY DECLARE ITSELF EMPTY (A.90): only then is pytest's exit 5 nothing to run.
 +    may_be_empty: bool = False
++    # A CLAIM ABOUT THE DEVELOPER MACHINE (A.104) is declared out of CI: the runner is not it.
++    runs_in_ci: bool = True
  
  
  class GateRun(Contract):
-@@ -106,6 +111,12 @@
+@@ -106,6 +113,12 @@
  # runs_in_hooks=False means "CI only": either it needs the network and valid
  # Databricks auth, or it is slow enough that including it would train people to
  # bypass the hook. Both make a gate that belongs in CI, where a bypass is caught.
@@ -34,7 +36,7 @@
  GATES: tuple[GateSpec, ...] = (
      GateSpec(
          name="lint",
-@@ -140,20 +151,6 @@
+@@ -140,20 +153,6 @@
          command=("uv", "run", "pytest", "-q"),
          runs_in_hooks=True,
          timeout_seconds=900.0,
@@ -55,7 +57,7 @@
      ),
      # FULL HISTORY, NOT THE WORKING TREE. A pre-commit hook only ever sees the
      # incoming change, so anything committed before hooks existed -- or pushed
-@@ -169,18 +166,6 @@
+@@ -169,18 +168,6 @@
      #
      # --redact keeps any finding out of CI logs, where it would become a second
      # leak in the process of reporting the first.
@@ -74,7 +76,7 @@
      GateSpec(
          name="secrets (history)",
          command=("betterleaks", "git", "--redact", "--no-banner"),
-@@ -199,157 +184,13 @@
+@@ -199,164 +186,32 @@
          runs_in_hooks=True,
          timeout_seconds=300.0,
      ),
@@ -178,7 +180,7 @@
          runs_in_hooks=False,
 +        may_be_empty=True,
          timeout_seconds=1200.0,
--    ),
+     ),
 -    GateSpec(
 -        name="prereqs",
 -        command=("uv", "run", "python", "scripts/check_prereqs.py"),
@@ -229,11 +231,31 @@
 -        name="env-parity",
 -        command=("uv", "run", "python", "scripts/check_env_parity.py"),
 -        runs_in_hooks=False,
--        timeout_seconds=300.0,
++    # CLAIMS ABOUT THIS MACHINE (A.104): A.8's proofs that its mise state and new files are
++    # owner-only. The hooks and the snapshot before every publication run them here; CI's
++    # runner is not this machine, so the gate is declared out of CI, never detected there.
++    GateSpec(
++        name="test (machine)",
++        command=("uv", "run", "pytest", "-m", "machine"),
++        runs_in_hooks=True,
++        runs_in_ci=False,
+         timeout_seconds=300.0,
      ),
  )
  
-@@ -368,6 +209,8 @@
+ 
+-def selected(specs: tuple[GateSpec, ...], *, hooks: bool) -> tuple[GateSpec, ...]:
+-    """The gates to run: all of them, or in the hooks only those that run there (R2)."""
+-    return tuple(spec for spec in specs if spec.runs_in_hooks or not hooks)
++def selected(specs: tuple[GateSpec, ...], *, hooks: bool, ci: bool = False) -> tuple[GateSpec, ...]:
++    """The gates to run: all, the hooks' own, or on CI all but claims about this machine (R2)."""
++    return tuple(
++        spec for spec in specs if (spec.runs_in_hooks or not hooks) and (spec.runs_in_ci or not ci)
++    )
+ 
+ 
+ def run_gate(spec: GateSpec) -> GateRun:
+@@ -368,6 +223,8 @@
          state: State = "timed_out"
      elif isinstance(ended, Exited) and ended.code == 0:
          state = "executed_passed"
@@ -242,7 +264,20 @@
      else:
          state = "executed_failed"
      return GateRun(
-@@ -399,13 +242,14 @@
+@@ -387,7 +244,11 @@
+ 
+ def main() -> int:
+     offline = "--offline" in sys.argv
+-    gates = selected(GATES, hooks=offline)
++    on_ci = "--ci" in sys.argv
++    gates = selected(GATES, hooks=offline, ci=on_ci)
++    if on_ci:
++        omitted = ", ".join(spec.name for spec in GATES if not spec.runs_in_ci)
++        print(f"not run on CI, by declaration: {omitted}", flush=True)
+ 
+     if offline:
+         skipped = [spec.name for spec in GATES if not spec.runs_in_hooks]
+@@ -399,13 +260,14 @@
          ran = run_gate(spec)
          runs.append(ran)
          late = f" (timed out after {spec.timeout_seconds:g}s)" if ran.state == "timed_out" else ""
@@ -259,7 +294,7 @@
  
      if failed:
          for ran in failed:
-@@ -417,7 +261,9 @@
+@@ -417,7 +279,9 @@
          )
          return 1
  
