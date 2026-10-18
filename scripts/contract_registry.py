@@ -6,6 +6,10 @@ a class's CONTRACT_ID, where it has one, must be its own contract. A decision is
 spine's Decision: every field or parameter named decision must be annotated with it, imported from
 spine, never a same-named class from elsewhere. Both are read by parsing scripts/, never by
 matching text, so a name alone can neither satisfy nor evade them.
+
+A POLICY'S OWN ANSWER IS LISTED, NEVER INFERRED (A.19). merge.readiness decides wait, merge or
+refuse, and pr.Readiness carries it under the policy's name. An exception names one path, class
+and field, and one that matches nothing is stale, so none outlives the code it excused.
 """
 
 from __future__ import annotations
@@ -18,6 +22,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 HOME = "spine"
 Source = tuple[str, str]
+EXCEPTIONS: dict[str, str] = {
+    "scripts/pr.py::Readiness.decision": "merge.readiness's own decision: wait, merge or refuse",
+}
 
 
 def sources(root: Path = ROOT) -> list[Source]:
@@ -95,12 +102,25 @@ def _is_decision(annotation: ast.expr | None, names: set[str]) -> bool:
     return False
 
 
-def decision_findings(modules: Iterable[Source]) -> list[str]:
-    """Every field or parameter named decision whose annotation is not decision/v1."""
+def _owners(module: ast.Module) -> dict[int, str]:
+    """Each annotated field's class, by node identity, so an exception names exactly one field."""
+    return {
+        id(stmt): node.name
+        for node in ast.walk(module)
+        if isinstance(node, ast.ClassDef)
+        for stmt in node.body
+        if isinstance(stmt, ast.AnnAssign)
+    }
+
+
+def _scan(modules: Iterable[Source]) -> tuple[list[str], set[str]]:
+    """The unlisted decisions that are not decision/v1, and the listed exceptions that matched."""
     found: list[str] = []
+    used: set[str] = set()
     for path, text in modules:
         module = ast.parse(text)
         names = _decision_names(module, path)
+        owners = _owners(module)
         for node in ast.walk(module):
             annotation: ast.expr | None
             if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
@@ -109,6 +129,21 @@ def decision_findings(modules: Iterable[Source]) -> list[str]:
                 carrier, annotation = node.arg == "decision", node.annotation
             else:
                 continue
-            if carrier and not _is_decision(annotation, names):
+            if not carrier or _is_decision(annotation, names):
+                continue
+            listed = f"{path}::{owners.get(id(node), '')}.decision"
+            if listed in EXCEPTIONS:
+                used.add(listed)
+            else:
                 found.append(f"{path}:{node.lineno}: decision is not decision/v1")
-    return found
+    return found, used
+
+
+def decision_findings(modules: Iterable[Source]) -> list[str]:
+    """Every field or parameter named decision not annotated decision/v1, unless listed."""
+    return _scan(modules)[0]
+
+
+def stale_exceptions(modules: Iterable[Source]) -> list[str]:
+    """Every listed exception that matches no field: none outlives the code it excused."""
+    return sorted(set(EXCEPTIONS) - _scan(modules)[1])

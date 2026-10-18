@@ -284,3 +284,9 @@ task = "audit:workflows"
 version = "1.0.0"
 implementation = "scripts/workflow_audit.py"
 emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "pr"
+version = "1.0.0"
+implementation = "scripts/pr.py"
+emits = "command-outcome/v1"

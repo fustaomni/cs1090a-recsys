@@ -439,6 +439,18 @@ description = "Refuse any zizmor finding or suppression, and any workflow grant 
 # closed allow-list decides every grant. Runs on every commit, on push, and in CI's required gate.
 run = "uv run --no-sync python scripts/workflow_audit.py"
 
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.19).
+[tasks.pr]
+description = "Open a PR and block until it is merged"
+# BLOCKS, HAVING ORIGINALLY NOT. The first version enabled auto-merge and
+# returned with state BLOCKED, moving the cost to the person -- who watched the
+# Actions tab and confirmed the merge by hand on twelve pull requests.
+#
+# Three phases, because waiting for checks to APPEAR and waiting for them to
+# FINISH are different problems. Each is bounded: an unbounded wait hangs when
+# something upstream never resolves, teaching the person nothing.
+run = "uv run --no-sync python scripts/pr.py"
+
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.20).
 [tasks."deps:add"]
 description = "Add a dependency with uv and its lock, refusing any change to packages already locked"

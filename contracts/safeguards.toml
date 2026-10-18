@@ -121,6 +121,132 @@ mutant = "\tfalse\n"
 proof = "tests/test_workflow_governance.py::test_an_allowed_id_token_without_its_environment_is_refused"
 
 [[safeguards]]
+id = "MERGE.CHECK_FAILED"
+engine = "pr"
+guard = "ERR_MERGE_CHECK_FAILED"
+path = "policies/merge/readiness/readiness.rego"
+anchor = "\tsome name in failed\n"
+mutant = "\tsome name in failed\n\tfalse\n"
+proof = "tests/test_merge_readiness.py::test_a_failed_check_refuses_naming_it"
+
+[[safeguards]]
+id = "MERGE.CONFLICTING"
+engine = "pr"
+guard = "ERR_MERGE_CONFLICTING"
+path = "policies/merge/readiness/readiness.rego"
+anchor = "\tinput.pull_request.merge_state == \"DIRTY\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_merge_readiness.py::test_a_conflicting_pr_refuses"
+
+[[safeguards]]
+id = "MERGE.BEHIND"
+engine = "pr"
+guard = "ERR_MERGE_BEHIND"
+path = "policies/merge/readiness/readiness.rego"
+anchor = "\tinput.pull_request.merge_state == \"BEHIND\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_merge_readiness.py::test_a_pr_behind_its_base_refuses"
+
+[[safeguards]]
+id = "MERGE.DRAFT"
+engine = "pr"
+guard = "ERR_MERGE_DRAFT"
+path = "policies/merge/readiness/readiness.rego"
+anchor = "\tinput.pull_request.merge_state == \"DRAFT\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_merge_readiness.py::test_a_draft_pr_refuses"
+
+[[safeguards]]
+id = "MERGE.UNSTABLE"
+engine = "pr"
+guard = "ERR_MERGE_UNSTABLE"
+path = "policies/merge/readiness/readiness.rego"
+anchor = "\tinput.pull_request.merge_state == \"UNSTABLE\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_merge_readiness.py::test_an_unstable_pr_refuses"
+
+[[safeguards]]
+id = "MERGE.EXPECTATIONS_MISSING"
+engine = "pr"
+guard = "ERR_MERGE_EXPECTATIONS_MISSING"
+path = "policies/merge/readiness/readiness.rego"
+anchor = "\tnot input.expected_checks\n"
+mutant = "\tfalse\n"
+proof = "tests/test_merge_readiness.py::test_a_pull_request_judged_without_expectations_is_refused"
+
+[[safeguards]]
+id = "PUBLISH.INPUT_MISSING"
+engine = "pr"
+guard = "ERR_PUBLICATION_INPUT_MISSING"
+path = "policies/runs/publish/publish.rego"
+anchor = "\tnot input.publish\n"
+mutant = "\tfalse\n"
+proof = "tests/test_publish_policy.py::test_an_absent_publication_record_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "PUBLISH.NOTHING_EXPECTED"
+engine = "pr"
+guard = "ERR_PUBLICATION_NOTHING_EXPECTED"
+path = "policies/runs/publish/publish.rego"
+anchor = "\tcount(input.publish.expected) == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_publish_policy.py::test_nothing_declared_is_refused"
+
+[[safeguards]]
+id = "PUBLISH.GATE_UNOBSERVED"
+engine = "pr"
+guard = "ERR_PUBLICATION_GATE_UNOBSERVED"
+path = "policies/runs/publish/publish.rego"
+anchor = "\tnot name in _ran\n"
+mutant = "\tfalse\n"
+proof = "tests/test_publish_policy.py::test_a_missing_declared_gate_is_unknown"
+
+[[safeguards]]
+id = "PUBLISH.GATE_FAILED"
+engine = "pr"
+guard = "ERR_PUBLICATION_GATE_FAILED"
+path = "policies/runs/publish/publish.rego"
+anchor = "\tsome name in input.publish.failed_tests\n"
+mutant = "\tsome name in input.publish.failed_tests\n\tfalse\n"
+proof = "tests/test_publish_policy.py::test_a_failed_gate_is_refused_by_its_own_rule"
+
+[[safeguards]]
+id = "PUBLISH.PASSED_SET_MISMATCH"
+engine = "pr"
+guard = "ERR_PUBLICATION_PASSED_SET_MISMATCH"
+path = "policies/runs/publish/publish.rego"
+anchor = "\t_passed != _expected\n"
+mutant = "\tfalse\n"
+proof = "tests/test_publish_policy.py::test_the_passed_set_must_equal_the_declared_gates"
+
+[[safeguards]]
+id = "EXEMPTION.INPUT_MISSING"
+engine = "pr"
+guard = "ERR_EXEMPTION_INPUT_MISSING"
+path = "policies/runs/exemptions/exemptions.rego"
+anchor = "\tnot input.exemptions\n"
+mutant = "\tfalse\n"
+proof = "tests/test_exemptions.py::test_an_absent_inventory_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "EXEMPTION.EXPIRED"
+engine = "pr"
+guard = "ERR_EXEMPTION_EXPIRED"
+path = "policies/runs/exemptions/exemptions.rego"
+anchor = "\texemption.expires < input.exemptions.today\n"
+mutant = "\tfalse\n"
+proof = "tests/test_exemptions.py::test_an_expired_exemption_fails"
+
+[[safeguards]]
+id = "EXEMPTION.PATH_MISSING"
+engine = "pr"
+guard = "ERR_EXEMPTION_PATH_MISSING"
+path = "policies/runs/exemptions/exemptions.rego"
+anchor = "\tnot exemption.path_exists\n"
+mutant = "\tfalse\n"
+proof = "tests/test_exemptions.py::test_an_exemption_for_a_missing_path_fails"
+
+[[safeguards]]
 id = "SA.ANCHOR_COUNT"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_ANCHOR_COUNT"

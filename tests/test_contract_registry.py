@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from contract_registry import ROOT, contract_findings, decision_findings, sources
+from contract_registry import ROOT, contract_findings, decision_findings, sources, stale_exceptions
 
 ONE = 'class A(Contract):\n    contract: Literal["probe/v1"] = "probe/v1"\n'
 TWO = 'class B(Contract):\n    contract: Literal["probe/v1"] = "probe/v1"\n'
@@ -29,3 +29,20 @@ def test_only_decision_v1_may_carry_a_decision() -> None:
         "r.py:5: decision is not decision/v1"
     ]
     assert decision_findings(sources(ROOT)) == []
+
+
+LISTED = 'class Readiness(Contract):\n    decision: Literal["wait", "merge", "refuse"]\n'
+
+
+def test_a_listed_decision_passes_only_where_it_is_listed() -> None:
+    """A.19: merge.readiness's answer passes in pr.Readiness, and nowhere else."""
+    assert decision_findings([("scripts/pr.py", LISTED)]) == []
+    assert decision_findings([("scripts/other.py", LISTED)]) == [
+        "scripts/other.py:2: decision is not decision/v1"
+    ]
+
+
+def test_an_exception_that_matches_nothing_is_stale() -> None:
+    """A.19: an exception whose field is gone is reported, so none outlives its code."""
+    assert stale_exceptions([("scripts/pr.py", PROPER)]) == ["scripts/pr.py::Readiness.decision"]
+    assert stale_exceptions(sources(ROOT)) == []

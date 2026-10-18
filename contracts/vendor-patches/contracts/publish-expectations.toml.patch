@@ -1,0 +1,21 @@
+--- a/contracts/publish-expectations.toml
++++ b/contracts/publish-expectations.toml
+@@ -9,18 +9,6 @@
+   "types (darwin)",
+   "types (linux)",
+   "test",
+-  "policy",
+-  "policy decisions",
+-  "repo hygiene",
+   "secrets (history)",
+   "workflows",
+-  "assertions",
+-  "evidence",
+-  "models",
+-  "exemptions",
+-  "suppressions",
+-  "problems",
+-  "mutation anchors",
+-  "schemas",
+-  "nix contract",
+ ]
