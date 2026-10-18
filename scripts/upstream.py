@@ -6,6 +6,10 @@ repository is cloned blobless into .artifacts/upstream/<name>-<sha12>, where evi
 git does not look, checked out detached at that commit, and HEAD is verified to equal it. A
 commit the repository does not hold is refused by name. Nothing in this repository changes, and
 every Git call goes through gitenv's scrubbed environment.
+
+ITS TREE IS LISTED AT THE SAME COMMIT (A.113). Given pathspecs, the checkout is verified exactly
+as above, then every path under them in the tree at the commit, never HEAD, is listed from tree
+objects alone, which the blobless clone already holds, so no blob is fetched.
 """
 
 from __future__ import annotations
@@ -19,7 +23,7 @@ from gitenv import git
 ROOT = Path(__file__).resolve().parent.parent
 EVIDENCE = ROOT / ".artifacts" / "upstream"
 FULL_SHA = re.compile(r"[0-9a-f]{40}")
-USAGE = "usage: upstream.py <repository-url-or-path> <full-commit-sha>"
+USAGE = "usage: upstream.py <repository-url-or-path> <full-commit-sha> [pathspec...]"
 
 
 def checkout(source: str, commit: str, root: Path = EVIDENCE) -> Path:
@@ -44,10 +48,24 @@ def checkout(source: str, commit: str, root: Path = EVIDENCE) -> Path:
     return target
 
 
+def tree(
+    source: str, commit: str, pathspecs: tuple[str, ...], root: Path = EVIDENCE
+) -> tuple[str, ...]:
+    """Every path under pathspecs at commit, the checkout verified first, from trees alone."""
+    target = checkout(source, commit, root)
+    listed = git("ls-tree", "-r", "-z", "--name-only", commit, "--", *pathspecs, cwd=target)
+    if listed.returncode != 0:
+        raise SystemExit(f"cannot list {commit} in {target}: {listed.stderr.strip()}")
+    return tuple(sorted(path for path in listed.stdout.split("\0") if path))
+
+
 def main() -> int:
     match sys.argv[1:]:
         case [source, commit]:
             print(checkout(source, commit))
+            return 0
+        case [source, commit, *pathspecs]:
+            print("\n".join(tree(source, commit, tuple(pathspecs))))
             return 0
         case other:
             raise SystemExit(f"{USAGE}  (got {other})")

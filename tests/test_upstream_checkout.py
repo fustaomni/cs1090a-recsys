@@ -53,3 +53,37 @@ def test_a_commit_not_in_the_repository_is_refused(tmp_path: Path) -> None:
     repo, _, _ = _repository(tmp_path)
     with pytest.raises(SystemExit, match=re.escape("is not in")):
         upstream.checkout(str(repo), "0" * 40, tmp_path / "upstream")
+
+
+def _tree_repository(tmp_path: Path) -> tuple[Path, str]:
+    """A.113: two policies and a script at the pinned commit, a third policy added after it."""
+    repo = tmp_path / "tree-origin"
+    repo.mkdir()
+
+    def git(*args: str) -> str:
+        done = subprocess.run(["git", *args], cwd=repo, capture_output=True, text=True, check=True)
+        return done.stdout.strip()
+
+    git("init", "--quiet", "--initial-branch=main")
+    git("config", "user.email", "probe@example.invalid")
+    git("config", "user.name", "probe")
+    git("config", "commit.gpgsign", "false")
+    for name in ("policies/plan/plan.rego", "policies/plan/plan_test.rego", "scripts/x.py"):
+        (repo / name).parent.mkdir(parents=True, exist_ok=True)
+        (repo / name).write_text("x\n", encoding="utf-8")
+    git("add", ".")
+    git("commit", "--quiet", "-m", "pinned")
+    pinned = git("rev-parse", "HEAD")
+    (repo / "policies" / "late").mkdir()
+    (repo / "policies" / "late" / "late.rego").write_text("x\n", encoding="utf-8")
+    git("add", ".")
+    git("commit", "--quiet", "-m", "after the pin")
+    return repo, pinned
+
+
+def test_the_tree_at_a_pinned_commit_is_listed_from_its_trees(tmp_path: Path) -> None:
+    """A.113: every path under a pathspec at the pin, and nothing the repository added after it."""
+    assert hasattr(upstream, "tree"), "upstream:checkout cannot list a tree yet"
+    repo, pinned = _tree_repository(tmp_path)
+    listed = upstream.tree(str(repo), pinned, ("policies",), tmp_path / "upstream")
+    assert listed == ("policies/plan/plan.rego", "policies/plan/plan_test.rego"), listed
