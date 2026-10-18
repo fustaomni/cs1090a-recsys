@@ -877,3 +877,12 @@ done_when = [
   { kind = "proof", test = "tests/test_sync_environment.py::test_a_failed_install_is_refused_by_policy" },
   { kind = "task", name = "sync" },
 ]
+[[steps]]
+id = "A.102"
+title = "gh is pinned in the founding data and mise.toml, locked by tools:lock, its provenance verified"
+thread = "A"
+depends_on = ["A.26", "A.19"]
+because = { "A.26" = "the lock entry is written by a recorded tools:lock task, never a raw mise lock", "A.19" = "pr calls gh for every pull request operation, so pr cannot run without it" }
+done_when = [
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_gh_is_pinned_and_its_provenance_verified" },
+]
