@@ -87,4 +87,5 @@ issued = [
   { id = "A.92", first_title = "A proof expectation holds only when a recorded green verdict names it, never because the test exists" },
   { id = "A.93", first_title = "A worktree is cut from a named base, set up without the caller's environment, and trusted by task" },
   { id = "A.101", first_title = "sync returns to develop, brings every long-lived branch current, and removes only what is safe" },
+  { id = "A.102", first_title = "gh is pinned in the founding data and mise.toml, locked by tools:lock, its provenance verified" },
 ]
