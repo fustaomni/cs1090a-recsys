@@ -1,0 +1,18 @@
+--- a/tests/test_mutation_check.py
++++ b/tests/test_mutation_check.py
+@@ -149,15 +149,6 @@
+     assert evidence.tree_untouched, evidence
+ 
+ 
+-def test_a_run_policy_is_not_queried_by_the_repository_gate() -> None:
+-    """A run's evidence comes from its own task; the repository payload has none of it."""
+-    from evaluate_policies import entrypoints
+-
+-    queried = entrypoints()
+-    assert "data.runs.mutation.deny" not in queried, queried
+-    assert "data.layers.deny" in queried, queried
+-
+-
+ def _make_read_only(target: Path) -> None:
+     """Read-only, and proven so: root can still write a 0o444 file (D.76).
+ 

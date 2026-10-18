@@ -394,7 +394,7 @@ sha256 = "bcbcf81b839c521bd70c27eb0a560d2bc9c5c9ce9992d786e7bb317e2826674d"
 path = "contracts/task-effects.toml"
 reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification; check:ci, recsys's own, is read-only as check:offline is (A.104)"
 patch = "contracts/vendor-patches/contracts/task-effects.toml.patch"
-sha256 = "7f89c02a25b2dd97a1074031a2bb18f3e869b53ec5d10217f8495c58f0689828"
+sha256 = "cb56178d49ab8bb5dc66b98580ca21df5ec0b06fa9f223f5401fdb371faacdee"
 
 [[adapted]]
 path = "tests/test_run_gateway.py"
@@ -794,7 +794,7 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 path = "contracts/problems.toml"
 reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "62c47b7ef340db029cb3bf58a1bc9fde680251d614e7e6fe3ed3820d8020d798"
+sha256 = "6c923e89fa2221556f3275c934b35c56f1bf764abbebc564d68698fd47118e5e"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
@@ -849,3 +849,21 @@ path = "contracts/model-baseline.toml"
 reason = "cscie103's ratchet had shrunk to nothing at the pin; this repository's begins at A.107 with its own eleven direct BaseModel subclasses, in claims_audit, green_verify, red_verify and safeguards, each migrated to Contract or Reading by a later step (A.107)"
 patch = "contracts/vendor-patches/contracts/model-baseline.toml.patch"
 sha256 = "f3c824c961c8b3cfe8e3140442179cb03cf1a2023ae00eb65a064472c7667e08"
+
+[[files]]
+path = "scripts/mutation_check.py"
+sha256 = "a9dde504c0e1f2aa3630c496438f0c4f630f0f42acb7a10aac39992b0a7e605c"
+
+[[files]]
+path = "policies/runs/mutation/mutation.rego"
+sha256 = "0123c29273e4911d73a9070879f5f87e764eb75078eec574c1e981f757cc6816"
+
+[[files]]
+path = "tests/test_mutation_check.py"
+sha256 = "27cb0ab5840c1114a417a300a0c9063069df778483ef203b88a973a7b5d137eb"
+
+[[adapted]]
+path = "tests/test_mutation_check.py"
+reason = "test_a_run_policy_is_not_queried_by_the_repository_gate is removed: it imports evaluate_policies, the repository gate A.106 ports, and returns with it (A.116)"
+patch = "contracts/vendor-patches/tests/test_mutation_check.py.patch"
+sha256 = "764494a34a82163d5a6086eef643d65b58d6eede2561b6bddf6e1e08c61c78c7"

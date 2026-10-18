@@ -17,6 +17,7 @@ read_only = [
     "check:offline",
     "check:ruleset",
     "lint",
+    "mutation:check",
     "plan:step",
     "plan:trace",
     "plan:trailers",

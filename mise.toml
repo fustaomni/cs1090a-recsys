@@ -472,6 +472,14 @@ description = "Install exactly the tools mise.lock records, refusing any it does
 # --locked: a tool missing from the lock fails instead of resolving a version from the network.
 run = "mise install --locked"
 
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.116).
+# The <spec> help names the mutation spec, as cscie103 corrected it after the pin (D.225); at the
+# pin it carried plan:add's text, "[[steps]] and one [trace]".
+[tasks."mutation:check"]
+description = "Fail unless every named killer kills its mutant, one killer at a time"
+usage = 'arg "<spec>" help="TOML spec: [[mutants]], each with id, file, before, after and killers"'
+run = 'uv run --no-sync python scripts/mutation_check.py "${usage_spec?}"'
+
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.107).
 [tasks."audit:assertions"]
 description = "Refuse any test assertion over a collection it has not proven non-empty"

@@ -362,3 +362,9 @@ task = "audit:models"
 version = "1.0.0"
 implementation = "scripts/model_audit.py"
 emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "mutation:check"
+version = "1.0.0"
+implementation = "scripts/mutation_check.py"
+emits = "text"
