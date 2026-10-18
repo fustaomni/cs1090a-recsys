@@ -423,7 +423,7 @@ description = "Search tracked source for a pattern, returning each match as data
 run = "uv run --no-sync python scripts/source_search.py"
 
 [tasks."upstream:checkout"]
-description = "Check out another repository at a pinned 40-character commit, blobless, under .artifacts/upstream"
+description = "Check out another repository at a pinned 40-character commit, blobless, under .artifacts/upstream, or list its tree at that commit"
 run = "uv run --no-sync python scripts/upstream.py"
 
 [tasks."provenance:adapt"]
