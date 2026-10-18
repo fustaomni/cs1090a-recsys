@@ -290,3 +290,15 @@ task = "pr"
 version = "1.0.0"
 implementation = "scripts/pr.py"
 emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "tools:lock"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "tools:install"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
