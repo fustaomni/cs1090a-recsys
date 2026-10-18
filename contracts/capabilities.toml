@@ -368,3 +368,15 @@ task = "mutation:check"
 version = "1.0.0"
 implementation = "scripts/mutation_check.py"
 emits = "text"
+
+[[capabilities]]
+task = "sync"
+version = "1.0.0"
+implementation = "scripts/sync.py"
+emits = "text"
+
+[[capabilities]]
+task = "repo:state"
+version = "1.0.0"
+implementation = "scripts/repo_report.py"
+emits = "command-outcome/v1"

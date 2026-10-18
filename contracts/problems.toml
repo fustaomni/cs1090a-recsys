@@ -589,3 +589,23 @@ severity = "error"
 code = "ERR_MUTATION_TREE_UNLISTED"
 title = "The tree under test could be listed"
 severity = "error"
+
+[[problems]]
+code = "ERR_BRANCH_AHEAD"
+title = "No long-lived branch is ahead"
+severity = "error"
+
+[[problems]]
+code = "ERR_BRANCH_BEHIND"
+title = "No long-lived branch is behind"
+severity = "error"
+
+[[problems]]
+code = "ERR_BRANCH_DIVERGED"
+title = "No long-lived branch has diverged"
+severity = "error"
+
+[[problems]]
+code = "ERR_BRANCH_UNOBSERVED"
+title = "The checkout's branches must be observed"
+severity = "error"

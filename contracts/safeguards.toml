@@ -607,6 +607,42 @@ mutant = "\tfalse\n"
 proof = "tests/test_mutation_policy.py::test_a_touched_tree_is_refused_by_the_policy"
 
 [[safeguards]]
+id = "BRANCH.UNOBSERVED"
+engine = "sync"
+guard = "ERR_BRANCH_UNOBSERVED"
+path = "policies/machine/branches/branches.rego"
+anchor = "\tnot observed\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_policy.py::test_an_unobserved_state_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "BRANCH.BEHIND"
+engine = "sync"
+guard = "ERR_BRANCH_BEHIND"
+path = "policies/machine/branches/branches.rego"
+anchor = "\tbranch.position == \"behind\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_policy.py::test_a_long_lived_branch_behind_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "BRANCH.AHEAD"
+engine = "sync"
+guard = "ERR_BRANCH_AHEAD"
+path = "policies/machine/branches/branches.rego"
+anchor = "\tbranch.position == \"ahead\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_policy.py::test_a_long_lived_branch_ahead_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "BRANCH.DIVERGED"
+engine = "sync"
+guard = "ERR_BRANCH_DIVERGED"
+path = "policies/machine/branches/branches.rego"
+anchor = "\tbranch.position == \"diverged\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_policy.py::test_a_long_lived_branch_diverged_is_refused_by_the_policy"
+
+[[safeguards]]
 id = "SA.ANCHOR_COUNT"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_ANCHOR_COUNT"
