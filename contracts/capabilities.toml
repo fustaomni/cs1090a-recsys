@@ -398,3 +398,15 @@ task = "upstream:copies"
 version = "1.0.0"
 implementation = "scripts/upstream_copies.py"
 emits = "text"
+
+[[capabilities]]
+task = "worktree:conflicts"
+version = "1.0.0"
+implementation = "scripts/rebase_state.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "worktree:continue"
+version = "1.0.0"
+implementation = "scripts/rebase_state.py"
+emits = "command-outcome/v1"
