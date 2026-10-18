@@ -609,3 +609,13 @@ severity = "error"
 code = "ERR_BRANCH_UNOBSERVED"
 title = "The checkout's branches must be observed"
 severity = "error"
+
+[[problems]]
+code = "ERR_RESTORE_NO_PATHS"
+title = "At least one path is named"
+severity = "error"
+
+[[problems]]
+code = "ERR_RESTORE_UNTRACKED"
+title = "Only paths HEAD knows are restored"
+severity = "error"

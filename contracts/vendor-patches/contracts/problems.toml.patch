@@ -607,12 +607,10 @@
  severity = "error"
  
  [[problems]]
-@@ -74,1163 +609,3 @@
- code = "ERR_BRANCH_UNOBSERVED"
- title = "The checkout's branches must be observed"
+@@ -76,731 +611,6 @@
  severity = "error"
--
--[[problems]]
+ 
+ [[problems]]
 -code = "ERR_BUNDLE_CATALOG_DECLARED"
 -title = "Catalogs are a prerequisite, not a bundle resource"
 -severity = "error"
@@ -1338,14 +1336,13 @@
 -severity = "error"
 -
 -[[problems]]
--code = "ERR_RESTORE_NO_PATHS"
--title = "At least one path is named"
--severity = "error"
--
--[[problems]]
--code = "ERR_RESTORE_UNTRACKED"
--title = "Only paths HEAD knows are restored"
--severity = "error"
+ code = "ERR_RESTORE_NO_PATHS"
+ title = "At least one path is named"
+ severity = "error"
+@@ -809,428 +619,3 @@
+ code = "ERR_RESTORE_UNTRACKED"
+ title = "Only paths HEAD knows are restored"
+ severity = "error"
 -
 -[[problems]]
 -code = "ERR_RUFF_CACHED"

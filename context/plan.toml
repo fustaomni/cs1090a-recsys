@@ -1058,3 +1058,19 @@ done_when = [
   { kind = "proof", test = "tests/test_guard_harness.py::test_one_harness_proves_every_guard" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.118"
+title = "cscie103's repo:history and source:restore return: history read as data, and tracked changes discarded only by a judged plan"
+thread = "A"
+depends_on = ["A.101"]
+because = { "A.101" = "the main checkout must be clean before sync can run in it, and accounting for it needs history read and changes restored" }
+done_when = [
+  { kind = "proof", test = "tests/test_repo_history.py::test_commits_come_back_with_subjects_trailers_and_files" },
+  { kind = "proof", test = "tests/test_repo_history.py::test_a_merge_lists_the_files_it_brought_in" },
+  { kind = "proof", test = "tests/test_source_restore.py::test_an_untracked_path_is_refused" },
+  { kind = "proof", test = "tests/test_source_restore.py::test_a_dry_run_changes_nothing" },
+  { kind = "proof", test = "tests/test_source_restore.py::test_a_changed_file_is_restored_with_yes" },
+  { kind = "task", name = "repo:history" },
+  { kind = "task", name = "source:restore" },
+  { kind = "task", name = "check" },
+]

@@ -394,7 +394,7 @@ sha256 = "bcbcf81b839c521bd70c27eb0a560d2bc9c5c9ce9992d786e7bb317e2826674d"
 path = "contracts/task-effects.toml"
 reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification; check:ci, recsys's own, is read-only as check:offline is (A.104)"
 patch = "contracts/vendor-patches/contracts/task-effects.toml.patch"
-sha256 = "e67498a8b927c03dc09071dad08e613351fa3b77add30e59e9e79a4196667e61"
+sha256 = "cf5dd9f9d8acd0ee8702bd23f84e6ccbdc79a0cc89246c898c4e383e2736e587"
 
 [[adapted]]
 path = "tests/test_run_gateway.py"
@@ -794,7 +794,7 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 path = "contracts/problems.toml"
 reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "f30edeb5fc25cd650fefff8d2bdc9185432258c7a41a5fa3a4d53a76301beb7e"
+sha256 = "d04a76b95fbe356ddb4cfc4476b5f4cdfc1a25a50c5630e6ca258d768719f2b6"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
@@ -899,3 +899,23 @@ sha256 = "7102a6b8d97bb19b947f095b531805f755231e2a1bece497e08b3a53baac4067"
 [[files]]
 path = "tests/test_sync_environment.py"
 sha256 = "b4acc2fcce36ac4321b7ae2b8b0d3b94391b1b9f3745896f5d3ab31cdc8580a3"
+
+[[files]]
+path = "scripts/repo_history.py"
+sha256 = "65d7c05962af709e9e45397fe2af652782d5979050706eb74f273ea0c5859307"
+
+[[files]]
+path = "scripts/source_restore.py"
+sha256 = "d74601d71bb95cb9c4883da5248756bb9c5d37d230e326f38aebdd9aa0184842"
+
+[[files]]
+path = "policies/source/restore/restore.rego"
+sha256 = "ec08509c6e28631f78531217ebc16edb9bbddd17eec5bfb974c98bd7fc16fea2"
+
+[[files]]
+path = "tests/test_repo_history.py"
+sha256 = "ba8bacf20bf8e188cdc905908acf4093c96e8151aa3fc2b753118ae6d96cc0c1"
+
+[[files]]
+path = "tests/test_source_restore.py"
+sha256 = "7e0f8a890a93ea1b3dca777c9e96133e4edbcc010232eb8eb9278c7388a264bd"
