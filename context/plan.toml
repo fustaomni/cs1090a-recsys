@@ -1023,3 +1023,14 @@ done_when = [
   { kind = "proof", test = "tests/test_upstream_copies.py::test_no_unverified_upstream_copy_remains" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.115"
+title = "The eleven direct BaseModel subclasses migrate to Contract or Reading, and the model baseline shrinks to nothing, as cscie103's did"
+thread = "A"
+depends_on = ["A.107"]
+because = { "A.107" = "the ratchet that holds them begins there, listing exactly these eleven" }
+done_when = [
+  { kind = "proof", test = "tests/test_audit_policies.py::test_the_model_baseline_is_empty" },
+  { kind = "task", name = "audit:models" },
+  { kind = "task", name = "check" },
+]
