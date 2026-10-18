@@ -101,4 +101,6 @@ issued = [
   { id = "A.113", first_title = "cscie103's tree at the pinned commit is read as data, from the blobless checkout's own trees" },
   { id = "A.114", first_title = "The main checkout's uncommitted copy of cscie103 is accounted for: each file verified against the pin or removed, by recorded operations" },
   { id = "A.115", first_title = "The eleven direct BaseModel subclasses migrate to Contract or Reading, and the model baseline shrinks to nothing, as cscie103's did" },
+  { id = "A.116", first_title = "cscie103's mutation harness returns: mutation:check, its runs.mutation policy, its proofs and its task" },
+  { id = "A.117", first_title = "One harness proves every guard: safeguards:prove, which cscie103 does not have, is reconciled with mutation:check" },
 ]
