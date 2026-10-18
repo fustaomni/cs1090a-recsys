@@ -278,3 +278,9 @@ task = "deps:install"
 version = "1.0.0"
 implementation = "mise.toml"
 emits = "text"
+
+[[capabilities]]
+task = "audit:workflows"
+version = "1.0.0"
+implementation = "scripts/workflow_audit.py"
+emits = "command-outcome/v1"

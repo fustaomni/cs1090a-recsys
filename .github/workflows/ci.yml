@@ -1,0 +1,73 @@
+name: CI
+
+# WHY push AND pull_request, WHICH LOOKS REDUNDANT
+# pull_request checks the MERGE RESULT -- your branch merged into the base --
+# which is what actually ships. push checks the branch as written. They can
+# disagree when the base moves under you, and only the merge result matters for
+# the merge decision.
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+# LEAST PRIVILEGE AT THE WORKFLOW LEVEL. The default token is far broader than a
+# gate needs. This workflow reads code and nothing else; it publishes nothing,
+# comments on nothing, and writes no packages.
+permissions:
+  contents: read
+
+concurrency:
+  # Supersede in-flight runs on the same ref. A superseded run is checking code
+  # nobody will merge.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    # NAMED because this string is what GitHub shows when selecting required
+    # status checks for branch protection, and what pr waits for by name
+    # (contracts/expected-checks.toml).
+    name: quality gate
+    runs-on: ubuntu-latest
+    env:
+      # NO `uv run` MAY INSTALL ANYTHING. Every dependency arrives through the
+      # explicit install step below, so a missing or misplaced install fails
+      # loudly at the first Python call instead of one step working by accident.
+      UV_NO_SYNC: "1"
+    steps:
+      # PINNED TO A COMMIT SHA, NOT A TAG. A tag is mutable -- the owner can
+      # repoint v5 at any commit, so the workflow would run whatever code sits
+      # behind that tag today. A compromised action runs on the runner with this
+      # job's token and the repository's code.
+      #
+      # The comment carries the version so the pin stays readable; the SHA is
+      # what actually executes.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          # FULL HISTORY IS REQUIRED, NOT A PREFERENCE. The secret scan walks
+          # every commit, and against a shallow clone it would report clean while
+          # checking almost nothing.
+          fetch-depth: 0
+          # Nothing here pushes or tags, so the token has no use after checkout
+          # and is not left in .git/config for a later step to read.
+          persist-credentials: false
+
+      # mise PROVIDES THE TOOLCHAIN. recsys has no Nix: its tools are pinned in
+      # mise.toml's [tools] block and locked in mise.lock, and with that lock
+      # present the action runs `mise install --locked`, so CI installs exactly
+      # what every machine here runs.
+      - uses: jdx/mise-action@5228313ee0372e111a38da051671ca30fc5a96db # v3
+
+      # DEPENDENCIES ARE INSTALLED HERE, EXPLICITLY, BEFORE ANY STEP RUNS THIS
+      # REPOSITORY'S PYTHON. --locked, not --frozen: a stale uv.lock fails here,
+      # naming the lock, instead of surfacing later under some unrelated gate.
+      - name: install dependencies
+        run: mise run deps:install
+
+      # ONE COMMAND. ci.yml deliberately restates NOTHING about what is checked:
+      # adding a gate to `check` extends local runs, the git hooks and this
+      # workflow at once. CI runs the full gate where the pre-push hook runs
+      # check:offline, so a --no-verify bypass is caught here.
+      - name: mise run check
+        run: mise run check

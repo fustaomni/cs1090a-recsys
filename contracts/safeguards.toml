@@ -49,6 +49,78 @@ mutant = "\toperation.op == \"delete\"\n\tfalse\n"
 proof = "tests/test_source_apply.py::test_deleting_a_missing_file_is_refused"
 
 [[safeguards]]
+id = "WORKFLOW.INPUT_MISSING"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_INPUT_MISSING"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tnot input.workflows\n"
+mutant = "\tfalse\n"
+proof = "tests/test_workflow_governance.py::test_an_absent_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "WORKFLOW.ZIZMOR_UNAVAILABLE"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_ZIZMOR_UNAVAILABLE"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tnot input.workflows.zizmor_ok\n"
+mutant = "\tfalse\n"
+proof = "tests/test_workflow_governance.py::test_an_audit_zizmor_did_not_complete_is_refused"
+
+[[safeguards]]
+id = "WORKFLOW.ZIZMOR_FINDING"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_ZIZMOR_FINDING"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tsome finding in input.workflows.findings\n"
+mutant = "\tsome finding in input.workflows.findings\n\tfalse\n"
+proof = "tests/test_workflow_audit.py::test_an_action_pinned_by_tag_is_refused"
+
+[[safeguards]]
+id = "WORKFLOW.SUPPRESSION_PRESENT"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_SUPPRESSION_PRESENT"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tsome suppression in input.workflows.suppressions\n"
+mutant = "\tsome suppression in input.workflows.suppressions\n\tfalse\n"
+proof = "tests/test_workflow_governance.py::test_an_inline_zizmor_ignore_is_refused"
+
+[[safeguards]]
+id = "WORKFLOW.DEFAULT_PERMISSIONS"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_DEFAULT_PERMISSIONS"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tnot workflow.declares_permissions\n"
+mutant = "\tfalse\n"
+proof = "tests/test_workflow_governance.py::test_a_workflow_declaring_no_permissions_is_refused"
+
+[[safeguards]]
+id = "WORKFLOW.WRITE_ALL"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_WRITE_ALL"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tgrant.scope == \"*\"\n"
+mutant = "\tgrant.scope == \"*\"\n\tfalse\n"
+proof = "tests/test_workflow_audit.py::test_a_write_all_token_is_refused"
+
+[[safeguards]]
+id = "WORKFLOW.PERMISSION_UNLISTED"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_PERMISSION_UNLISTED"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tnot _listed(grant)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_workflow_governance.py::test_a_job_level_id_token_not_in_the_allow_list_is_refused"
+
+[[safeguards]]
+id = "WORKFLOW.ID_TOKEN_WITHOUT_ENVIRONMENT"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_ID_TOKEN_WITHOUT_ENVIRONMENT"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tgrant.environment == null\n"
+mutant = "\tfalse\n"
+proof = "tests/test_workflow_governance.py::test_an_allowed_id_token_without_its_environment_is_refused"
+
+[[safeguards]]
 id = "SA.ANCHOR_COUNT"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_ANCHOR_COUNT"

@@ -432,6 +432,13 @@ description = "Create and edit source from a declarative spec, judged by policy,
 # edit logic is written at execution time; runs.source_apply judges every operation.
 run = "uv run --no-sync python scripts/source_apply.py"
 
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.23).
+[tasks."audit:workflows"]
+description = "Refuse any zizmor finding or suppression, and any workflow grant the allow-list omits"
+# M38 (D.95): zizmor cannot judge job-level grants in general and honours inline ignores, so a
+# closed allow-list decides every grant. Runs on every commit, on push, and in CI's required gate.
+run = "uv run --no-sync python scripts/workflow_audit.py"
+
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.20).
 [tasks."deps:add"]
 description = "Add a dependency with uv and its lock, refusing any change to packages already locked"
