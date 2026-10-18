@@ -934,6 +934,12 @@ thread = "A"
 depends_on = ["A.20"]
 because = { "A.20" = "the gates join the registry check runs" }
 done_when = [
+  { kind = "proof", test = "tests/test_repo_hygiene.py::test_a_zero_byte_root_file_is_flagged" },
+  { kind = "proof", test = "tests/test_repo_hygiene.py::test_a_root_file_with_no_extension_is_flagged" },
+  { kind = "proof", test = "tests/test_assertion_audit.py::test_the_repository_has_no_vacuous_assertion" },
+  { kind = "proof", test = "tests/test_evidence_audit.py::test_this_repository_holds_observations_only" },
+  { kind = "proof", test = "tests/test_evidence_audit.py::test_this_repository_passes_its_own_audit" },
+  { kind = "proof", test = "tests/test_model_audit.py::test_this_repository_matches_its_baseline" },
   { kind = "task", name = "audit:assertions" },
   { kind = "task", name = "audit:evidence" },
   { kind = "task", name = "audit:models" },
