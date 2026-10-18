@@ -1,0 +1,18 @@
+--- a/contracts/model-baseline.toml
++++ b/contracts/model-baseline.toml
+@@ -6,4 +6,15 @@
+ 
+ contract = "model-baseline/v1"
+ direct = [
++  "scripts/claims_audit.py::AuditReport",
++  "scripts/claims_audit.py::Claim",
++  "scripts/claims_audit.py::ClaimsRegister",
++  "scripts/claims_audit.py::Finding",
++  "scripts/claims_audit.py::Pillar",
++  "scripts/green_verify.py::GreenVerdict",
++  "scripts/red_verify.py::RedVerdict",
++  "scripts/safeguards.py::Safeguard",
++  "scripts/safeguards.py::SafeguardsRegister",
++  "scripts/safeguards.py::Trial",
++  "scripts/safeguards.py::TrialReport",
+ ]

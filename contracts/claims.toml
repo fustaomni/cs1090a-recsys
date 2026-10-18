@@ -1,0 +1,204 @@
+# contracts/claims.toml
+# claims-register/v1 (A.36). Pillars are credited only with a contract, a task, proofs and the
+# run ids of passing runs of that task in the hash-chained ledger; claims keep their verdict and
+# the critique findings that decide them. claims:audit checks every entry.
+contract = "claims-register/v1"
+
+[[pillars]]
+name = "a RED is a verdict from the runner's report"
+contract = "scripts/red_verify.py"
+task = "test:red"
+proofs = ["tests/test_red_verify.py::test_a_red_needs_exit_code_one_and_a_report_from_this_run"]
+runs = ["3d04b1be5389479cb745e5d14e5eca36"]
+
+[[pillars]]
+name = "GREEN is a verdict from the runner's report, with its scope"
+contract = "scripts/green_verify.py"
+task = "test:green"
+proofs = ["tests/test_green_verify.py::test_green_needs_exit_zero_and_a_report_from_this_run"]
+runs = ["e9871da8beb24a44a926a75dcb964592"]
+
+[[pillars]]
+name = "another repository is read at its pinned commit"
+contract = "scripts/upstream.py"
+task = "upstream:checkout"
+proofs = ["tests/test_upstream_checkout.py::test_another_repository_is_checked_out_at_a_pinned_commit"]
+runs = ["ead7108eef99402a8d4ff5942244d655"]
+
+[[claims]]
+id = "C11.1"
+source = "C11"
+claim = "state-driven orchestration: plans as data, explicit source-apply/v1 contracts"
+verdict = "partly_held"
+decided_by = ["C8", "C11"]
+contradicted_by = ["C3", "C6"]
+
+[[claims]]
+id = "C11.2"
+source = "C11"
+claim = "outside-in TDD that fails for the correct reason"
+verdict = "refuted"
+decided_by = ["C2"]
+contradicted_by = ["C2"]
+
+[[claims]]
+id = "C11.3"
+source = "C11"
+claim = "fail-closed: aborts without leaving the repository in an ambiguous state"
+verdict = "refuted"
+decided_by = ["C9", "C15"]
+contradicted_by = ["C9", "C15"]
+
+[[claims]]
+id = "C21.1"
+source = "C21"
+claim = "source-apply/v1 turns shell writes into declared transitions judged before writing"
+verdict = "partly_held"
+decided_by = ["C21"]
+
+[[claims]]
+id = "C21.2"
+source = "C21"
+claim = "the shared log and msg() bridge shell output to evidence as data"
+verdict = "refuted"
+decided_by = ["C3", "C6", "C11"]
+contradicted_by = ["C3", "C6", "C11"]
+
+[[claims]]
+id = "C21.3"
+source = "C21"
+claim = "the RED phase prevents false passes by asserting a missing module"
+verdict = "refuted"
+decided_by = ["C2"]
+contradicted_by = ["C2"]
+
+[[claims]]
+id = "C21.4"
+source = "C21"
+claim = "policy files that exist and are readable enforce policy as code before execution"
+verdict = "refuted"
+decided_by = ["C1", "C12"]
+contradicted_by = ["C1", "C12"]
+
+[[claims]]
+id = "C22.1"
+source = "C22"
+claim = "declare to instantiate is fully declarative"
+verdict = "partly_held"
+decided_by = ["C22"]
+contradicted_by = ["C5", "C10", "C15"]
+
+[[claims]]
+id = "C22.2"
+source = "C22"
+claim = "constrain to decide fails closed"
+verdict = "refuted"
+decided_by = ["C1", "C12", "C15"]
+contradicted_by = ["C1", "C12", "C15"]
+
+[[claims]]
+id = "C22.3"
+source = "C22"
+claim = "produce to observe is partial, its output text in a shared log"
+verdict = "agreed"
+decided_by = ["C3", "C6", "C22"]
+
+[[claims]]
+id = "C22.4"
+source = "C22"
+claim = "promise to prove is a strict outside-in TDD proof chain"
+verdict = "refuted"
+decided_by = ["C2", "C17"]
+contradicted_by = ["C2", "C17"]
+
+[[claims]]
+id = "C22.5"
+source = "C22"
+claim = "instrument to operate has strict shell flags and centralised logging"
+verdict = "partly_held"
+decided_by = ["C22"]
+contradicted_by = ["C6", "C15"]
+
+[[claims]]
+id = "C30.1"
+source = "C30"
+claim = "an expected ModuleNotFoundError is a valid RED assertion"
+verdict = "refuted"
+decided_by = ["C2", "C30"]
+contradicted_by = ["C2"]
+
+[[claims]]
+id = "C31.1"
+source = "C31"
+claim = "a TDD verdict expecting ModuleNotFoundError proves the red phase"
+verdict = "refuted"
+decided_by = ["C2", "C30", "C31"]
+contradicted_by = ["C2", "C30"]
+
+[[claims]]
+id = "C33.1"
+source = "C33"
+claim = "environment configuration lives strictly in the versioned mise.toml"
+verdict = "partly_held"
+decided_by = ["C32", "C33"]
+contradicted_by = ["C33"]
+
+[[claims]]
+id = "C33.2"
+source = "C33"
+claim = "a TDD evaluator asserts baseline passing and the new test failing on its exception"
+verdict = "agreed"
+decided_by = ["C33"]
+
+[[claims]]
+id = "C33.3"
+source = "C33"
+claim = "task definitions are queried by key, never by line number"
+verdict = "agreed"
+decided_by = ["C31", "C33"]
+
+[[claims]]
+id = "C33.4"
+source = "C33"
+claim = "an append-only ledger records commits, digests and exit codes per step"
+verdict = "agreed"
+decided_by = ["C33"]
+
+[[claims]]
+id = "C33.5"
+source = "C33"
+claim = "structured telemetry on stdout, human diagnostics apart"
+verdict = "agreed"
+decided_by = ["C33"]
+
+[[claims]]
+id = "C34.1"
+source = "C34"
+claim = "a structural red on a missing module is a valid TDD stage"
+verdict = "refuted"
+decided_by = ["C2", "C30"]
+contradicted_by = ["C2", "C30"]
+
+[[claims]]
+id = "C34.2"
+source = "C34"
+claim = "a failure reason matched as a substring of the output decides the red"
+verdict = "refuted"
+decided_by = ["C2"]
+contradicted_by = ["C2"]
+
+[[claims]]
+id = "C34.3"
+source = "C34"
+claim = "task definitions read from mise.toml with tomllib"
+verdict = "refuted"
+decided_by = ["C31"]
+contradicted_by = ["C31"]
+
+[[claims]]
+id = "C34.4"
+source = "C34"
+claim = "policy discovery accepting any present subset of files"
+verdict = "refuted"
+decided_by = ["C1", "C12"]
+contradicted_by = ["C1", "C12"]

@@ -1,0 +1,48 @@
+--- a/tests/test_worktree_env.py
++++ b/tests/test_worktree_env.py
+@@ -20,6 +20,7 @@
+ import pytest
+ from pydantic import JsonValue
+ 
++import machine_trust
+ import worktree
+ from nonvacuous import nonempty
+ 
+@@ -32,14 +33,23 @@
+ ) -> None:
+     monkeypatch.setenv("VIRTUAL_ENV", "/elsewhere/.venv")
+     monkeypatch.setenv("UV_PROJECT_ENVIRONMENT", "/elsewhere/env")
+-    monkeypatch.setattr(worktree, "_git", lambda *args, **kwargs: "")
++
++    def git(*args: str, **kwargs: object) -> str:
++        if args[:2] == ("worktree", "add"):
++            (tmp_path / "probe").mkdir()
++            (tmp_path / "probe" / "mise.toml").write_text("[tasks]\n", encoding="utf-8")
++        return ""
++
++    monkeypatch.setattr(worktree, "_git", git)
+     monkeypatch.setattr(worktree, "sibling_path", lambda slug: tmp_path / slug)
++    monkeypatch.setattr(machine_trust, "EVENTS", tmp_path / "trust-events.tsv")
+     given: dict[str, object] = {}
+ 
+     def run(command: list[str], **kwargs: object) -> object:
+         if command[:1] == ["mise"]:
+             given[" ".join(command)] = kwargs.get("env")
+-            return subprocess.CompletedProcess(command, 0, "", "")
++            allowed = "true" if "eval" in command else ""
++            return subprocess.CompletedProcess(command, 0, allowed, "")
+         stdin = kwargs.get("input")
+         return _REAL_RUN(
+             command,
+@@ -51,7 +61,10 @@
+ 
+     monkeypatch.setattr(subprocess, "run", run)
+     assert worktree.cmd_add("probe") == 0
+-    assert set(given) == {"mise trust", "mise run setup"}
++    trusted = f"mise trust {(tmp_path / 'probe' / 'mise.toml').resolve()}"
++    assert len(given) == 3, given
++    assert any(command.startswith("mise exec opa@") for command in given), given
++    assert trusted in given and "mise run setup" in given, given
+     for command, env in nonempty(given.items()):
+         assert isinstance(env, dict), f"{command} inherited the caller's whole environment"
+         assert not set(SELECTING) & set(env), f"{command} received {set(SELECTING) & set(env)}"

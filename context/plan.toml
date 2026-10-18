@@ -98,3 +98,963 @@ thread = "A"
 done_when = [
   { kind = "proof", test = "tests/test_commit_execution.py::test_nothing_staged_is_refused_before_git_commits" },
 ]
+[[steps]]
+id = "A.18"
+title = "Every repository mutation is a source:apply spec, never a shell heredoc writing files"
+thread = "A"
+done_when = [
+  { kind = "proof", test = "tests/test_source_apply.py::test_the_claim_names_the_repository_parsed_from_origin" },
+  { kind = "task", name = "source:apply" },
+]
+[[steps]]
+id = "A.19"
+title = "A branch reaches develop only through the pr task: pushed with a lease, merged on GitHub's verdict"
+thread = "A"
+depends_on = ["A.18", "A.20"]
+because = { "A.18" = "pr and its modules arrive through source:apply specs", "A.20" = "pr merges only on a check that reported; the quality gate is that check" }
+done_when = [
+  { kind = "proof", test = "tests/test_pr_push_failure.py::test_a_test_cannot_reach_the_real_publication" },
+]
+[[steps]]
+id = "A.20"
+title = "Every pull request runs the quality gate in CI, the one check pr waits for before it merges"
+thread = "A"
+depends_on = ["A.18", "A.22", "A.23"]
+because = { "A.18" = "the workflow and its expected-checks contract arrive through source:apply specs", "A.22" = "the audit runs the pinned zizmor", "A.23" = "the workflow passes the audit before it runs" }
+done_when = [
+  { kind = "proof", test = "tests/test_workflow_audit.py::test_the_repositorys_workflows_pass_the_audit" },
+]
+[[steps]]
+id = "A.21"
+title = "A dependency enters only through deps:add, and the environment is exactly the lock through deps:install"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "deps:add and deps:install arrive through source:apply specs" }
+done_when = [
+  { kind = "proof", test = "tests/test_deps_add.py::test_a_package_is_added_with_its_lock" },
+]
+[[steps]]
+id = "A.22"
+title = "zizmor 1.30.1 is pinned, its provenance verified and locked, through the founding gate"
+thread = "A"
+depends_on = ["A.21"]
+because = { "A.21" = "the workflow audit's yaml dependency arrives through deps:add first" }
+done_when = [
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_zizmor_is_pinned_and_its_provenance_verified" },
+]
+[[steps]]
+id = "A.23"
+title = "The workflow audit arrives: every workflow passes zizmor and the permission allow-list"
+thread = "A"
+depends_on = ["A.22"]
+because = { "A.22" = "the audit runs the pinned zizmor" }
+done_when = [
+  { kind = "proof", test = "tests/test_workflow_audit.py::test_an_action_pinned_by_tag_is_refused" },
+]
+[[steps]]
+id = "A.24"
+title = "A file is removed only through a source:apply spec, judged like every other write"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "removal is one more operation of the engine every mutation goes through" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_delete_removes_only_an_existing_file_inside_the_repository" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_deleting_a_missing_file_is_refused" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_delete_outside_the_repository_is_refused" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_spec_with_a_refused_delete_writes_nothing" },
+]
+[[steps]]
+id = "A.25"
+title = "worktree:add takes an optional base, so stacked work gets its own worktree"
+thread = "A"
+depends_on = ["A.29", "A.30", "A.31", "A.35", "A.64"]
+because = { "A.29" = "worktree.py is planned by source:port", "A.30" = "its two machine policies arrive only through admission", "A.31" = "its red is a behavioural verdict", "A.35" = "it arrives through source:port-and-verify", "A.64" = "its Git calls go through one interface" }
+done_when = [
+  { kind = "proof", test = "tests/integration/test_worktree_base_git.py::test_a_child_worktree_contains_its_unmerged_parents_commits_without_fetch" },
+]
+[[steps]]
+id = "A.26"
+title = "tools:lock and tools:install are tasks, recorded like every other operation"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "the tasks arrive through source:apply specs on this branch" }
+done_when = [
+  { kind = "proof", test = "tests/test_task_coverage.py::test_every_toolchain_operation_is_a_task" },
+]
+[[steps]]
+id = "A.27"
+title = "The founding gate and the re-trust of a checkout are one machine-level task, and worktree:add calls it"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "the machine task ships through source:apply specs on this branch" }
+done_when = [
+  { kind = "proof", test = "tests/test_machine_tasks.py::test_the_trust_task_gates_before_it_trusts" },
+  { kind = "proof", test = "tests/test_machine_tasks.py::test_a_linked_worktree_is_not_trusted_by_inheritance_under_paranoid" },
+]
+[[steps]]
+id = "A.28"
+title = "Another repository is read at a pinned commit by recorded tasks"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "the read tasks arrive through source:apply specs on this branch" }
+done_when = [
+  { kind = "task", name = "upstream:checkout" },
+  { kind = "proof", test = "tests/test_upstream_checkout.py::test_another_repository_is_checked_out_at_a_pinned_commit" },
+  { kind = "proof", test = "tests/test_upstream_checkout.py::test_an_abbreviated_commit_is_refused" },
+  { kind = "proof", test = "tests/test_upstream_checkout.py::test_a_commit_not_in_the_repository_is_refused" },
+]
+[[steps]]
+id = "A.29"
+title = "Spec building is a task: an upstream file or a formatted edit becomes a measured source:apply spec"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "the task's own files arrive through source:apply specs, written literally" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_port.py::test_an_upstream_file_becomes_a_create_spec" },
+  { kind = "proof", test = "tests/test_source_port.py::test_a_plan_is_saved_under_artifacts_for_apply_to_read" },
+]
+[[steps]]
+id = "A.30"
+title = "A policy set is admitted only by its manifest: files, digests, roots, strict check and tests"
+thread = "A"
+depends_on = ["A.18", "A.60"]
+because = { "A.18" = "the manifest and its gate arrive through source:apply specs", "A.60" = "only a verified not_found is absence when listing a set" }
+done_when = [
+  { kind = "proof", test = "tests/test_policy_admission.py::test_a_policy_set_missing_its_test_file_is_refused" },
+  { kind = "proof", test = "tests/test_policy_admission.py::test_a_file_outside_the_manifest_is_refused" },
+  { kind = "proof", test = "tests/test_policy_admission.py::test_a_policy_whose_tests_fail_is_not_admitted" },
+  { kind = "proof", test = "tests/test_policy_admission.py::test_one_domain_present_and_one_missing_is_refused" },
+]
+[[steps]]
+id = "A.31"
+title = "A RED is a verdict from the JUnit report: the named node, a behavioural failure, nothing else failing"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "the verifier arrives through source:apply specs" }
+done_when = [
+  { kind = "task", name = "test:red" },
+  { kind = "proof", test = "tests/test_red_verify.py::test_a_red_needs_exit_code_one_and_a_report_from_this_run" },
+  { kind = "proof", test = "tests/test_red_verify.py::test_a_collection_error_or_an_unrelated_failure_is_refused" },
+  { kind = "proof", test = "tests/test_red_verify.py::test_an_import_red_never_satisfies_red_verified" },
+  { kind = "proof", test = "tests/test_red_verify.py::test_a_missing_named_proof_is_refused_not_skipped" },
+  { kind = "proof", test = "tests/test_red_verify.py::test_a_malformed_report_is_refused_not_raised" },
+]
+[[steps]]
+id = "A.32"
+title = "GREEN is a verdict from the runner's report with its scope, and no step reads done without it"
+thread = "A"
+depends_on = ["A.31"]
+because = { "A.31" = "GREEN reads the same report RED does" }
+done_when = [
+  { kind = "task", name = "test:green" },
+  { kind = "proof", test = "tests/test_green_verify.py::test_green_needs_exit_zero_and_a_report_from_this_run" },
+  { kind = "proof", test = "tests/test_green_verify.py::test_a_selected_run_without_a_selection_explanation_is_not_green" },
+  { kind = "proof", test = "tests/test_green_verify.py::test_zero_evaluated_checks_blocks" },
+  { kind = "proof", test = "tests/test_green_verify.py::test_a_required_proof_that_did_not_pass_is_not_green" },
+]
+[[steps]]
+id = "A.33"
+title = "A ported task is read by name, applied by spec, validated, declared and run once with a passing record"
+thread = "A"
+depends_on = ["A.29", "A.61"]
+because = { "A.29" = "the task block is planned by source:port", "A.61" = "definitions are read by name, never by line number" }
+done_when = [
+  { kind = "proof", test = "tests/test_task_port.py::test_a_task_block_is_ported_by_a_spec" },
+  { kind = "proof", test = "tests/test_task_port.py::test_a_ported_task_must_be_declared_and_run_once_with_a_passing_record" },
+  { kind = "proof", test = "tests/test_task_port.py::test_a_ported_task_failing_mise_tasks_validate_is_refused" },
+]
+[[steps]]
+id = "A.34"
+title = "The shell gate: shellcheck pinned, errexit required, no swallowed status, no discarded stderr, no unquoted expansion"
+thread = "A"
+depends_on = ["A.18", "A.22"]
+because = { "A.18" = "the gate arrives through source:apply specs", "A.22" = "shellcheck is pinned the way zizmor was" }
+done_when = [
+  { kind = "proof", test = "tests/test_shell_discipline.py::test_an_uncommented_or_true_is_refused" },
+  { kind = "proof", test = "tests/test_shell_discipline.py::test_a_script_without_errexit_is_refused" },
+  { kind = "proof", test = "tests/test_shell_discipline.py::test_discarding_standard_error_is_refused" },
+  { kind = "proof", test = "tests/test_shell_discipline.py::test_an_unquoted_expansion_is_refused" },
+]
+[[steps]]
+id = "A.35"
+title = "source:port-and-verify: one request, one sealed plan, one typed result, completion only on a postcondition verdict"
+thread = "A"
+depends_on = ["A.30", "A.32", "A.33", "A.42", "A.45", "A.46", "A.47", "A.48", "A.55", "A.62", "A.66", "A.72", "A.73", "A.74"]
+because = { "A.30" = "policy domains arrive only through admission", "A.32" = "completion requires a GREEN verdict", "A.33" = "tasks arrive applied and proven", "A.42" = "the postcondition compares state snapshots", "A.45" = "it runs the closed state machine", "A.46" = "it persists and resumes", "A.47" = "it holds the worktree lock", "A.48" = "its intent is authorised", "A.55" = "its writes are transactional", "A.62" = "its source is pinned", "A.66" = "its acceptance criteria exist first", "A.72" = "it starts from preflight evidence", "A.73" = "it executes a sealed plan", "A.74" = "it returns port-result/v1" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_port_and_verify.py::test_one_request_yields_one_typed_result" },
+  { kind = "proof", test = "tests/test_feature_port.py::test_an_arrival_without_a_passing_postcondition_verdict_is_rejected" },
+  { kind = "proof", test = "tests/test_feature_port.py::test_the_task_writes_exactly_one_json_document_to_stdout" },
+]
+[[steps]]
+id = "A.36"
+title = "Pillars and assessment claims are credited only with contract, task, proof and run evidence"
+thread = "A"
+depends_on = ["A.32"]
+because = { "A.32" = "run evidence includes verdicts" }
+done_when = [
+  { kind = "task", name = "claims:audit" },
+  { kind = "proof", test = "tests/test_pillar_register.py::test_a_pillar_without_run_evidence_is_refused" },
+  { kind = "proof", test = "tests/test_pillar_register.py::test_a_credit_contradicting_a_recorded_finding_is_refuted" },
+]
+[[steps]]
+id = "A.37"
+title = "Workflows are declared task graphs, validated before they run"
+thread = "A"
+depends_on = ["A.35"]
+because = { "A.35" = "the first workflow is the port" }
+done_when = [
+  { kind = "proof", test = "tests/test_task_graph.py::test_a_workflow_with_an_undeclared_edge_is_refused" },
+]
+[[steps]]
+id = "A.38"
+title = "A mutation is authorised against a sealed plan: open step, plan id, base commit, per-path verdicts, frozen proofs"
+thread = "A"
+depends_on = ["A.30", "A.31", "A.45", "A.73"]
+because = { "A.30" = "verdicts come from admitted policy", "A.31" = "proofs freeze at RED", "A.45" = "the freeze is a guarded transition", "A.73" = "authorisation names a plan id" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_spec_without_an_open_plan_step_is_refused" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_spec_whose_base_commit_moved_is_refused_as_stale" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_one_denied_path_refuses_the_whole_plan_with_its_per_path_verdict" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_plan_touching_a_frozen_proof_after_red_is_denied" },
+]
+[[steps]]
+id = "A.39"
+title = "Every test declares its level; an unclassified test is refused"
+thread = "A"
+depends_on = ["A.32"]
+because = { "A.32" = "the gate judges levels from the report" }
+done_when = [
+  { kind = "path", path = "contracts/test-levels.toml" },
+  { kind = "proof", test = "tests/test_levels.py::test_an_unclassified_test_is_refused" },
+]
+[[steps]]
+id = "A.40"
+title = "Every policy's enforcement is proven by a recorded run in which it denied"
+thread = "A"
+depends_on = ["A.30", "A.36"]
+because = { "A.30" = "only admitted policies are enforced", "A.36" = "the proof is run evidence in the register" }
+done_when = [
+  { kind = "proof", test = "tests/test_policy_enforcement.py::test_a_policy_never_seen_denying_is_refused" },
+]
+[[steps]]
+id = "A.41"
+title = "Every operation's evidence is its own atomic, hash-chained run record with both streams"
+thread = "A"
+depends_on = ["A.32"]
+because = { "A.32" = "a run record carries its verdict" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_chain.py::test_an_edited_or_reordered_run_record_breaks_the_chain" },
+  { kind = "proof", test = "tests/test_run_evidence.py::test_two_concurrent_runs_never_share_an_evidence_path" },
+  { kind = "proof", test = "tests/test_run_evidence.py::test_both_streams_are_retained_with_their_digests" },
+]
+[[steps]]
+id = "A.42"
+title = "Repository state is snapshotted before and after; a change outside the declared paths rejects"
+thread = "A"
+depends_on = ["A.41", "A.72"]
+because = { "A.41" = "snapshots are run evidence", "A.72" = "the first snapshot is preflight" }
+done_when = [
+  { kind = "proof", test = "tests/test_state_snapshot.py::test_a_change_outside_the_declared_paths_between_preflight_and_postcondition_rejects" },
+]
+[[steps]]
+id = "A.43"
+title = "Artifacts carry digest-bound in-toto statements, tools are verified at run time, the port ends with a verification summary"
+thread = "A"
+depends_on = ["A.41"]
+because = { "A.41" = "statements are built from run evidence" }
+done_when = [
+  { kind = "proof", test = "tests/test_build_provenance.py::test_a_subject_whose_bytes_changed_fails_verification" },
+  { kind = "proof", test = "tests/test_build_provenance.py::test_the_port_attestation_names_policy_digest_plan_id_and_verdicts" },
+  { kind = "proof", test = "tests/test_tool_integrity.py::test_a_tool_whose_digest_differs_from_the_lock_refuses_the_run" },
+]
+[[steps]]
+id = "A.44"
+title = "Every task is a discoverable, versioned capability contract"
+thread = "A"
+depends_on = ["A.36"]
+because = { "A.36" = "the register credits capabilities by contract" }
+done_when = [
+  { kind = "task", name = "capabilities:list" },
+  { kind = "path", path = "contracts/capabilities.toml" },
+  { kind = "proof", test = "tests/test_capabilities.py::test_every_task_is_a_registered_capability" },
+  { kind = "proof", test = "tests/test_capabilities.py::test_a_mislabelled_or_missing_capability_is_refused" },
+]
+[[steps]]
+id = "A.45"
+title = "The port's phases, transitions and guards are a closed state machine over strict contracts"
+thread = "A"
+depends_on = ["A.32", "A.41", "A.66"]
+because = { "A.32" = "guards read verdicts", "A.41" = "transitions are evidence", "A.66" = "acceptance criteria come first" }
+done_when = [
+  { kind = "proof", test = "tests/test_feature_port_contracts.py::test_an_undeclared_transition_is_refused" },
+  { kind = "proof", test = "tests/test_feature_port_contracts.py::test_code_ported_never_reaches_green_without_a_validated_verdict" },
+  { kind = "proof", test = "tests/test_feature_port_contracts.py::test_indeterminate_evidence_enters_reconciliation_required" },
+  { kind = "proof", test = "tests/test_feature_port_contracts.py::test_a_malformed_sha256_is_refused" },
+]
+[[steps]]
+id = "A.46"
+title = "Each transition is persisted before the next; a port resumes; one operation id per request and plan"
+thread = "A"
+depends_on = ["A.45", "A.66", "A.73"]
+because = { "A.45" = "it persists the machine's transitions", "A.66" = "acceptance criteria come first", "A.73" = "the operation id includes the plan id" }
+done_when = [
+  { kind = "proof", test = "tests/test_feature_port_state.py::test_a_run_resumes_from_its_last_persisted_transition" },
+  { kind = "proof", test = "tests/test_feature_port_state.py::test_the_same_key_with_a_different_spec_is_refused" },
+  { kind = "proof", test = "tests/test_feature_port_state.py::test_reapplying_a_satisfied_plan_is_a_recorded_no_op" },
+]
+[[steps]]
+id = "A.47"
+title = "Bounded retries for idempotent phases only; one port per worktree under a fenced lock"
+thread = "A"
+depends_on = ["A.46", "A.66"]
+because = { "A.46" = "attempts are persisted", "A.66" = "acceptance criteria come first" }
+done_when = [
+  { kind = "proof", test = "tests/test_feature_port_retry.py::test_a_non_idempotent_phase_is_never_retried" },
+  { kind = "proof", test = "tests/test_feature_port_retry.py::test_a_second_port_in_the_same_worktree_waits_for_the_lock" },
+]
+[[steps]]
+id = "A.48"
+title = "The port's intent is authorised and every verdict carries the policy digest it was judged under"
+thread = "A"
+depends_on = ["A.30", "A.38", "A.45", "A.66"]
+because = { "A.30" = "the policy digest is an admitted set's", "A.38" = "authorisation binds the plan", "A.45" = "attestation is a guarded phase", "A.66" = "acceptance criteria come first" }
+done_when = [
+  { kind = "proof", test = "tests/test_feature_port_authority.py::test_an_intent_without_an_open_plan_step_is_rejected" },
+  { kind = "proof", test = "tests/test_feature_port_authority.py::test_a_verdict_without_its_policy_digest_is_not_attested" },
+]
+[[steps]]
+id = "A.49"
+title = "run:show reads validated fields from run records and receipts, never from text"
+thread = "A"
+depends_on = ["A.41", "A.44", "A.53"]
+because = { "A.41" = "it reads run records", "A.44" = "fields come from capability contracts", "A.53" = "it reads receipts" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_show.py::test_a_field_is_read_from_the_validated_record_not_from_text" },
+]
+[[steps]]
+id = "A.51"
+title = "Completion is ratified from reconstructed state, at full scope, with causality proven"
+thread = "A"
+depends_on = ["A.31", "A.32", "A.41", "A.42", "A.45"]
+because = { "A.31" = "causality needs a behavioural red again", "A.32" = "scope comes from the green verdict", "A.41" = "state is rebuilt from run records", "A.42" = "and from snapshots", "A.45" = "COMPLETED is a guarded transition" }
+done_when = [
+  { kind = "proof", test = "tests/test_completion_ratification.py::test_a_proposer_reported_success_is_never_ratified" },
+  { kind = "proof", test = "tests/test_completion_ratification.py::test_a_change_to_shared_code_needs_a_full_suite_green" },
+  { kind = "proof", test = "tests/test_completion_ratification.py::test_a_proof_still_green_after_reverting_the_change_is_not_ratified" },
+]
+[[steps]]
+id = "A.52"
+title = "The existing engines' safeguards are listed as data and each is proven by a killing test"
+thread = "A"
+depends_on = ["A.36"]
+because = { "A.36" = "safeguards feed the claims register" }
+done_when = [
+  { kind = "task", name = "safeguards:prove" },
+  { kind = "proof", test = "tests/test_safeguards.py::test_a_listed_safeguard_without_a_killing_proof_is_refused" },
+  { kind = "proof", test = "tests/test_safeguards.py::test_ignored_files_are_never_copied" },
+]
+[[steps]]
+id = "A.53"
+title = "source:apply emits a receipt: plan id, base commit, per-file digests before and after, resulting tree digest"
+thread = "A"
+depends_on = ["A.38", "A.41", "A.73"]
+because = { "A.38" = "the receipt names its authorisation", "A.41" = "it is run evidence", "A.73" = "it names the plan id" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_apply.py::test_an_apply_records_every_files_digest_before_and_after" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_failed_apply_keeps_a_failure_receipt" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_the_receipt_records_the_resulting_tree_digest" },
+]
+[[steps]]
+id = "A.54"
+title = "The gateway writes exactly one JSON document per run to stdout"
+thread = "A"
+depends_on = ["A.41"]
+because = { "A.41" = "the document nests the run record" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_task.py::test_a_run_writes_exactly_one_json_document_to_stdout" },
+  { kind = "proof", test = "tests/test_run_task.py::test_ok_is_true_only_when_the_exit_code_is_zero" },
+]
+[[steps]]
+id = "A.55"
+title = "source:apply is transactional: pre-images checked, journaled, all-or-restored, post-images verified"
+thread = "A"
+depends_on = ["A.47", "A.53", "A.66", "A.73"]
+because = { "A.47" = "it runs under the worktree lock", "A.53" = "its outcome lands in the receipt", "A.66" = "acceptance criteria come first", "A.73" = "pre-images and post-images come from the sealed plan" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_later_operation_failure_leaves_every_file_untouched" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_preimage_mismatch_writes_nothing" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_recovery_completes_or_restores_from_the_journal" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_apply_with_a_mismatched_plan_id_is_refused" },
+]
+[[steps]]
+id = "A.56"
+title = "Produced artifacts are validated against their schemas before commit"
+thread = "A"
+depends_on = ["A.45", "A.55"]
+because = { "A.45" = "schemas are the strict contracts", "A.55" = "validation runs inside the transaction" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_apply.py::test_an_applied_contract_that_fails_its_schema_rolls_back" },
+]
+[[steps]]
+id = "A.57"
+title = "A resumable feature-port skill yields one typed operation at a time"
+thread = "A"
+depends_on = ["A.35", "A.46", "A.51"]
+because = { "A.35" = "it drives the port", "A.46" = "it resumes from persisted state", "A.51" = "it completes only by ratification" }
+done_when = [
+  { kind = "proof", test = "tests/test_feature_port_skill.py::test_the_skill_yields_one_typed_operation_and_resumes_from_its_result" },
+]
+[[steps]]
+id = "A.58"
+title = "Each run emits OpenTelemetry GenAI-shaped events, chained with its record"
+thread = "A"
+depends_on = ["A.41", "A.54"]
+because = { "A.41" = "events chain with the run record", "A.54" = "stdout stays one document" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_events.py::test_a_run_emits_one_typed_event_per_link_of_the_chain" },
+  { kind = "proof", test = "tests/test_run_events.py::test_task_calls_are_execute_tool_spans_under_one_invoke_workflow_trace" },
+]
+[[steps]]
+id = "A.59"
+title = "Evidence is a signed, queryable fact graph"
+thread = "A"
+depends_on = ["A.43", "A.53", "A.58"]
+because = { "A.43" = "facts are signed statements", "A.53" = "receipts are facts", "A.58" = "events are facts" }
+done_when = [
+  { kind = "proof", test = "tests/test_facts_query.py::test_a_files_change_resolves_to_the_verdict_that_allowed_it" },
+]
+[[steps]]
+id = "A.60"
+title = "A lookup returns a closed outcome; only a verified not_found is absence"
+thread = "A"
+depends_on = ["A.41", "A.81"]
+because = { "A.41" = "outcomes are run evidence", "A.81" = "it extends source:read on this branch" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_read.py::test_a_missing_file_is_not_found" },
+  { kind = "proof", test = "tests/test_source_read.py::test_an_unreadable_file_is_access_denied_not_absent" },
+]
+[[steps]]
+id = "A.61"
+title = "Task definitions are read by name or prefix from mise's resolved JSON, in safe mode for other repositories"
+thread = "A"
+depends_on = ["A.41"]
+because = { "A.41" = "reads are recorded" }
+done_when = [
+  { kind = "proof", test = "tests/test_task_info.py::test_a_task_is_read_by_name_as_its_structured_definition" },
+  { kind = "proof", test = "tests/test_task_info.py::test_another_repositorys_tasks_are_read_in_safe_mode" },
+]
+[[steps]]
+id = "A.62"
+title = "Port plans are pinned to an approved source commit with per-file digests"
+thread = "A"
+depends_on = ["A.28", "A.29", "A.66"]
+because = { "A.28" = "the source is read at a pinned commit", "A.29" = "it extends source:port", "A.66" = "acceptance criteria come first" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_port.py::test_a_plan_records_its_source_commit_and_digests" },
+  { kind = "proof", test = "tests/test_source_port.py::test_porting_from_an_uncommitted_checkout_is_refused" },
+]
+[[steps]]
+id = "A.63"
+title = "Every task has a deadline; timeout and cancellation are recorded outcomes with closed failure categories"
+thread = "A"
+depends_on = ["A.45", "A.46", "A.55", "A.66"]
+because = { "A.45" = "failure categories are closed", "A.46" = "a cancelled port resumes", "A.55" = "staged writes are restored", "A.66" = "acceptance criteria come first" }
+done_when = [
+  { kind = "proof", test = "tests/test_task_deadline.py::test_a_timed_out_task_records_timed_out_and_restores_staged_writes" },
+  { kind = "proof", test = "tests/test_task_deadline.py::test_every_failure_carries_a_closed_category" },
+]
+[[steps]]
+id = "A.64"
+title = "Every Git call goes through one injectable interface"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "the interface arrives through source:apply specs" }
+done_when = [
+  { kind = "proof", test = "tests/test_git_interface.py::test_every_git_call_goes_through_gitenv" },
+  { kind = "proof", test = "tests/test_git_interface.py::test_an_unfaked_subprocess_fails_the_test" },
+]
+[[steps]]
+id = "A.65"
+title = "Every declared expectation has its runtime record type and producer"
+thread = "A"
+depends_on = ["A.36"]
+because = { "A.36" = "the pairs live in the register" }
+done_when = [
+  { kind = "path", path = "contracts/expectations.toml" },
+  { kind = "proof", test = "tests/test_expectation_records.py::test_every_expectation_the_plan_uses_has_a_record_and_producer" },
+  { kind = "proof", test = "tests/test_expectation_records.py::test_an_expectation_without_a_record_type_is_refused" },
+]
+[[steps]]
+id = "A.66"
+title = "The feature-port acceptance suite is written and verified red before the orchestration"
+thread = "A"
+depends_on = ["A.31", "A.39"]
+because = { "A.31" = "its red is verified by the RED verifier", "A.39" = "its tests are acceptance level" }
+done_when = [
+  { kind = "path", path = "tests/acceptance/test_feature_port_acceptance.py" },
+]
+[[steps]]
+id = "A.67"
+title = "The orchestrator core is a function over a gateway-backed task runner, tested with fakes"
+thread = "A"
+depends_on = ["A.39", "A.45", "A.71"]
+because = { "A.39" = "its tests are unit level", "A.45" = "it drives the state machine", "A.71" = "it imports registered contracts only" }
+done_when = [
+  { kind = "proof", test = "tests/test_port_orchestrator.py::test_the_core_runs_against_a_fake_runner_and_returns_a_typed_result" },
+  { kind = "proof", test = "tests/test_port_orchestrator.py::test_output_with_a_trailing_summary_line_is_refused_not_misread" },
+  { kind = "proof", test = "tests/test_port_orchestrator.py::test_an_injected_failure_at_each_phase_persists_its_evidence_and_halts" },
+]
+[[steps]]
+id = "A.68"
+title = "Policies are re-evaluated after every apply and continuously, with a policy-state attestation"
+thread = "A"
+depends_on = ["A.30", "A.55"]
+because = { "A.30" = "only admitted sets are evaluated", "A.55" = "a violation rolls the apply back" }
+done_when = [
+  { kind = "proof", test = "tests/test_policy_continuous.py::test_an_apply_whose_result_violates_an_admitted_policy_rolls_back" },
+  { kind = "proof", test = "tests/test_policy_continuous.py::test_policy_watch_refuses_drift_from_the_accepted_hash" },
+]
+[[steps]]
+id = "A.69"
+title = "No hand mutation reaches history: every staged path is accounted for by a receipt"
+thread = "A"
+depends_on = ["A.41", "A.53"]
+because = { "A.41" = "run records account for task writes", "A.53" = "receipts account for applies" }
+done_when = [
+  { kind = "proof", test = "tests/test_commit_receipts.py::test_a_staged_path_without_a_receipt_is_refused" },
+]
+[[steps]]
+id = "A.71"
+title = "One contract per concept: a second model for a registered contract is refused"
+thread = "A"
+depends_on = ["A.44"]
+because = { "A.44" = "contracts are registered as capabilities" }
+done_when = [
+  { kind = "proof", test = "tests/test_contract_registry.py::test_a_second_model_with_a_registered_contract_id_is_refused" },
+  { kind = "proof", test = "tests/test_contract_registry.py::test_only_decision_v1_may_carry_a_decision" },
+]
+[[steps]]
+id = "A.72"
+title = "Preflight evidence: repository identity, expected HEAD, ignored inventory, hidden flags"
+thread = "A"
+depends_on = ["A.41", "A.45"]
+because = { "A.41" = "preflight is run evidence", "A.45" = "it gates PREFLIGHT_VALIDATED" }
+done_when = [
+  { kind = "proof", test = "tests/test_preflight.py::test_a_worktree_of_another_repository_is_blocked" },
+  { kind = "proof", test = "tests/test_preflight.py::test_an_unexpected_head_is_blocked" },
+  { kind = "proof", test = "tests/test_preflight.py::test_an_unexpected_ignored_file_is_blocked" },
+]
+[[steps]]
+id = "A.73"
+title = "A sealed, signed port-plan/v1 with source and destination digests"
+thread = "A"
+depends_on = ["A.43", "A.62", "A.71"]
+because = { "A.43" = "the plan is a signed statement", "A.62" = "it carries the pinned source", "A.71" = "it embeds source-apply/v1 without redefining it" }
+done_when = [
+  { kind = "proof", test = "tests/test_port_plan.py::test_the_plan_id_changes_with_any_field_including_head" },
+  { kind = "proof", test = "tests/test_port_plan.py::test_an_unsigned_plan_is_refused" },
+  { kind = "proof", test = "tests/test_port_plan.py::test_a_plan_signed_by_an_unlisted_key_is_refused" },
+]
+[[steps]]
+id = "A.74"
+title = "port-result/v1: identities, revisions, plan id, policy digest, per-rule verdicts and a decision/v1"
+thread = "A"
+depends_on = ["A.45", "A.73"]
+because = { "A.45" = "state comes from the machine", "A.73" = "it names the executed plan" }
+done_when = [
+  { kind = "proof", test = "tests/test_port_result.py::test_a_result_missing_identities_revisions_or_digests_is_invalid" },
+]
+[[steps]]
+id = "A.77"
+title = "Every executed spec is stored and named in the commit that lands it"
+thread = "A"
+depends_on = ["A.53", "A.69"]
+because = { "A.53" = "the receipt names the spec", "A.69" = "the commit task checks receipts" }
+done_when = [
+  { kind = "proof", test = "tests/test_commit_receipts.py::test_a_commit_carries_an_applied_spec_trailer_per_executed_spec" },
+]
+[[steps]]
+id = "A.78"
+title = "A port manifest resolves required and optional paths into a sealed plan and a lock"
+thread = "A"
+depends_on = ["A.60", "A.62", "A.73"]
+because = { "A.60" = "resolution uses closed lookup outcomes", "A.62" = "the source is pinned", "A.73" = "it emits a sealed plan" }
+done_when = [
+  { kind = "proof", test = "tests/test_port_manifest.py::test_a_missing_required_path_refuses" },
+  { kind = "proof", test = "tests/test_port_manifest.py::test_locked_resolution_reproduces_or_refuses" },
+]
+[[steps]]
+id = "A.79"
+title = "Authored sources are standalone files, statically checked in the apply's staging tree"
+thread = "A"
+depends_on = ["A.55", "A.56", "A.71"]
+because = { "A.55" = "checks run inside the transaction", "A.56" = "beside schema validation", "A.71" = "content_file extends source-apply/v1 in place" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_candidate_failing_ruff_or_mypy_rolls_back" },
+  { kind = "proof", test = "tests/test_source_apply.py::test_a_content_file_whose_digest_differs_is_refused" },
+]
+[[steps]]
+id = "A.80"
+title = "The machine environment is code: sourced scripts and the mise binary pinned in a verified manifest"
+thread = "A"
+depends_on = ["A.27"]
+because = { "A.27" = "the manifest is written by the machine-level task" }
+done_when = [
+  { kind = "proof", test = "tests/test_machine_manifest.py::test_a_sourced_script_with_a_changed_digest_refuses_the_run" },
+  { kind = "proof", test = "tests/test_machine_manifest.py::test_a_mise_inside_an_advisory_range_refuses_the_run" },
+  { kind = "proof", test = "tests/test_machine_manifest.py::test_the_jupyterlab_settings_seed_is_pinned" },
+]
+[[steps]]
+id = "A.81"
+title = "The source read tasks (read, outline, search) are on this branch, ported by spec"
+thread = "A"
+depends_on = ["A.28", "A.29"]
+because = { "A.28" = "the read tasks are ported from cscie103 at its pinned commit, never from an uncommitted checkout", "A.29" = "they are planned by source:port" }
+done_when = [
+  { kind = "task", name = "source:read" },
+  { kind = "proof", test = "tests/test_source_read.py::test_a_range_past_the_end_is_refused" },
+]
+[[steps]]
+id = "A.82"
+title = "Decisions are recorded through plan:decide: one validated record each, immutable except its state"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "the verb arrives through source:apply specs" }
+done_when = [
+  { kind = "task", name = "plan:decide" },
+  { kind = "proof", test = "tests/test_plan_decide.py::test_a_decision_is_recorded_accepted_and_traced" },
+  { kind = "proof", test = "tests/test_plan_decide.py::test_an_accepted_decision_is_superseded_never_edited" },
+]
+[[steps]]
+id = "A.83"
+title = "test:red judges a set of named proofs: each red on its behaviour, nothing else failing"
+thread = "A"
+depends_on = ["A.31"]
+because = { "A.31" = "it extends the single-proof RED verdict" }
+done_when = [
+  { kind = "proof", test = "tests/test_red_verify.py::test_several_named_proofs_are_red_together" },
+]
+[[steps]]
+id = "A.84"
+title = "source:search matches in one declared dialect, extended, recorded in its contract"
+thread = "A"
+depends_on = ["A.81", "A.85"]
+because = { "A.81" = "it changes the ported source:search", "A.85" = "the change is recorded as an adaptation by provenance:adapt" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_search.py::test_an_alternation_with_groups_matches_as_extended" },
+]
+[[steps]]
+id = "A.85"
+title = "A change to a ported file is planned as its recorded, reversible patch by provenance:adapt"
+thread = "A"
+depends_on = ["A.29", "A.81"]
+because = { "A.29" = "it follows source:port: a saved spec, applied as reviewed", "A.81" = "its first use adapts the ported source:search" }
+done_when = [
+  { kind = "task", name = "provenance:adapt" },
+  { kind = "proof", test = "tests/test_provenance_adapt.py::test_an_adaptation_is_planned_as_a_reversible_patch" },
+  { kind = "proof", test = "tests/test_provenance_adapt.py::test_an_upstream_copy_that_differs_from_the_record_is_refused" },
+  { kind = "proof", test = "tests/test_provenance_adapt.py::test_an_adaptation_recorded_twice_is_consolidated_into_one" },
+  { kind = "proof", test = "tests/test_provenance_record.py::test_no_path_is_recorded_twice" },
+]
+[[steps]]
+id = "A.86"
+title = "The run ledger's guards join the safeguards register, each killed by its proof"
+thread = "A"
+depends_on = ["A.52"]
+because = { "A.52" = "the register and its trial exist" }
+done_when = [
+  { kind = "task", name = "safeguards:prove" },
+  { kind = "proof", test = "tests/test_ledger_policy.py::test_a_broken_chain_is_refused_by_the_policy" },
+]
+[[steps]]
+id = "A.87"
+title = "Cutting the ledger's newest records is detected by a signed checkpoint of its length and head"
+thread = "A"
+depends_on = ["A.86"]
+because = { "A.86" = "the ledger's existing guards are proven first" }
+done_when = [
+  { kind = "task", name = "ledger:anchor" },
+  { kind = "proof", test = "tests/test_ledger_policy.py::test_a_truncated_ledger_is_refused" },
+  { kind = "proof", test = "tests/test_ledger_policy.py::test_a_refilled_tail_is_refused" },
+  { kind = "proof", test = "tests/test_ledger_anchor.py::test_an_anchor_never_moves_past_a_broken_one" },
+]
+[[steps]]
+id = "A.88"
+title = "A report's freshness is judged in its own file system's clock, and a run without one says why"
+thread = "A"
+depends_on = ["A.52"]
+because = { "A.52" = "the trial runner is one of the three readers of a run's report" }
+done_when = [
+  { kind = "proof", test = "tests/test_junit_report.py::test_freshness_is_judged_in_the_report_directorys_own_clock" },
+]
+[[steps]]
+id = "A.89"
+title = "Every closed code under policies is a registered safeguard whose mutant its proof kills"
+thread = "A"
+depends_on = ["A.86"]
+because = { "A.86" = "the register holds source:apply's and the ledger's guards; the rest follow" }
+done_when = [
+  { kind = "task", name = "safeguards:prove" },
+  { kind = "proof", test = "tests/test_safeguard_coverage.py::test_every_closed_code_is_a_registered_safeguard" },
+]
+[[steps]]
+id = "A.90"
+title = "A gate lane that may be empty reports nothing to run; every other lane still fails on it"
+thread = "A"
+depends_on = ["A.39"]
+because = { "A.39" = "levels are declared, so an integration lane can be empty by declaration" }
+done_when = [
+  { kind = "proof", test = "tests/test_gate_lanes.py::test_a_lane_that_may_be_empty_reports_nothing_to_run" },
+]
+[[steps]]
+id = "A.91"
+title = "A feature branch reaches GitHub only through branch:push: its own ref, never a protected one, after the gate"
+thread = "A"
+depends_on = ["A.90"]
+because = { "A.90" = "the full gate can pass, so a push can require it" }
+done_when = [
+  { kind = "task", name = "branch:push" },
+  { kind = "proof", test = "tests/test_branch_push.py::test_an_absent_request_is_refused_by_the_policy" },
+  { kind = "proof", test = "tests/test_branch_push.py::test_a_detached_head_is_refused" },
+  { kind = "proof", test = "tests/test_branch_push.py::test_a_protected_branch_is_refused" },
+  { kind = "proof", test = "tests/test_branch_push.py::test_a_push_without_the_gate_passed_is_refused" },
+  { kind = "proof", test = "tests/test_branch_push.py::test_the_gate_is_read_from_the_ledger_at_this_head" },
+]
+[[steps]]
+id = "A.92"
+title = "A proof expectation holds only when a recorded green verdict names it, never because the test exists"
+thread = "A"
+depends_on = ["A.65"]
+because = { "A.65" = "the proof kind's runtime record, green-verdict/v1 by test:green, is registered" }
+done_when = [
+  { kind = "proof", test = "tests/test_plan_status.py::test_a_defined_but_never_green_proof_is_not_done" },
+]
+[[steps]]
+id = "A.93"
+title = "A worktree is cut from a named base, set up without the caller's environment, and trusted by task"
+thread = "A"
+depends_on = ["A.27", "A.30"]
+because = { "A.27" = "its mise.toml is trusted only through the founding gate", "A.30" = "its two machine policies enter only by admission" }
+done_when = [
+  { kind = "task", name = "worktree:add" },
+  { kind = "task", name = "worktree:list" },
+  { kind = "task", name = "worktree:remove" },
+  { kind = "task", name = "worktree:refresh" },
+  { kind = "path", path = "policies/machine/setup/setup_env_test.rego" },
+  { kind = "path", path = "policies/machine/environment/environment_test.rego" },
+  { kind = "proof", test = "tests/test_worktree_base.py::test_a_worktree_is_cut_from_the_named_base_untracked" },
+  { kind = "proof", test = "tests/test_worktree_base.py::test_without_a_base_it_is_cut_from_a_refreshed_origin_develop" },
+  { kind = "proof", test = "tests/test_worktree_env.py::test_setup_runs_without_the_callers_virtual_env" },
+  { kind = "proof", test = "tests/test_worktree_env.py::test_the_policy_refuses_an_inherited_environment" },
+  { kind = "proof", test = "tests/test_worktree_env.py::test_the_policy_allows_a_clean_environment" },
+  { kind = "proof", test = "tests/test_worktree_env.py::test_an_absent_observation_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_env.py::test_only_uvs_selecting_variables_are_removed" },
+  { kind = "proof", test = "tests/test_worktree_refresh.py::test_a_finished_refresh_follows_the_lock" },
+  { kind = "proof", test = "tests/test_worktree_refresh.py::test_a_stopped_refresh_never_touches_the_environment" },
+  { kind = "proof", test = "tests/test_worktree_refresh.py::test_a_lock_that_will_not_install_fails_the_refresh" },
+  { kind = "proof", test = "tests/test_worktree_refresh.py::test_an_unchanged_lock_leaves_the_refresh_succeeding" },
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_an_absent_worktree_with_no_branch_is_already_removed" },
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_an_absent_worktree_whose_branch_remains_has_it_deleted" },
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_an_unmerged_branch_is_never_forced" },
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_a_present_worktree_is_removed_as_before" },
+  { kind = "proof", test = "tests/test_environment_policy.py::test_an_unobserved_sync_is_refused" },
+  { kind = "proof", test = "tests/test_environment_policy.py::test_a_changed_lock_left_uninstalled_is_refused" },
+]
+[[steps]]
+id = "A.101"
+title = "sync returns to develop, brings every long-lived branch current, and removes only what is safe"
+thread = "A"
+depends_on = ["A.19", "A.93"]
+because = { "A.19" = "pr merges a branch and then names sync as the next operation", "A.93" = "env_sync arrived with worktree setup, and sync follows the lock through it" }
+done_when = [
+  { kind = "proof", test = "tests/test_sync_branches.py::test_an_update_is_never_forced" },
+  { kind = "proof", test = "tests/test_sync_branches.py::test_a_branch_held_by_a_dirty_worktree_is_reported_not_touched" },
+  { kind = "proof", test = "tests/test_sync_branches.py::test_the_policy_refuses_a_long_lived_branch_left_behind" },
+  { kind = "proof", test = "tests/test_repo_state.py::test_a_branch_held_by_a_worktree_is_not_deletable" },
+  { kind = "proof", test = "tests/test_repo_state.py::test_an_unmerged_branch_is_not_deletable" },
+  { kind = "proof", test = "tests/test_repo_state.py::test_blocked_branches_are_reported_not_dropped" },
+  { kind = "proof", test = "tests/test_sync_environment.py::test_a_failed_install_is_refused_by_policy" },
+  { kind = "task", name = "sync" },
+]
+[[steps]]
+id = "A.102"
+title = "gh is pinned in the founding data and mise.toml, locked by tools:lock, its provenance verified"
+thread = "A"
+depends_on = ["A.26", "A.19"]
+because = { "A.26" = "the lock entry is written by a recorded tools:lock task, never a raw mise lock", "A.19" = "pr calls gh for every pull request operation, so pr cannot run without it" }
+done_when = [
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_gh_is_pinned_and_its_provenance_verified" },
+]
+[[steps]]
+id = "A.103"
+title = "A tool reaches this machine only through tools:install: mise's auto-install is off, pinned with the rest"
+thread = "A"
+depends_on = ["A.26", "A.102"]
+because = { "A.26" = "tools:install is the one sanctioned install", "A.102" = "pinning gh showed mise installing a tool by itself" }
+done_when = [
+  { kind = "proof", test = "tests/test_task_coverage.py::test_a_tool_arrives_only_through_tools_install" },
+]
+[[steps]]
+id = "A.104"
+title = "A claim about this machine runs in this machine's gates, never on CI's runner"
+thread = "A"
+depends_on = ["A.39", "A.20"]
+because = { "A.39" = "a test's lane is declared by the directory it lives in", "A.20" = "CI's quality gate runs check, which ran A.8's claims about this machine on GitHub's runner" }
+done_when = [
+  { kind = "proof", test = "tests/test_machine_lane.py::test_a_machine_claim_runs_here_and_never_on_ci" },
+]
+[[steps]]
+id = "A.105"
+title = "develop and main require the quality gate pinned, strict and unbypassable: repo:configure applies it, check:ruleset verifies it"
+thread = "A"
+depends_on = ["A.19", "A.20"]
+because = { "A.19" = "merge.readiness waits on BLOCKED and refuses UNSTABLE, which holds only while a ruleset requires the gate", "A.20" = "quality gate is the check CI reports, and the one the ruleset must require, pinned to the app that produces it" }
+done_when = [
+  { kind = "proof", test = "tests/test_check_ruleset.py::test_a_pinned_strict_unbypassable_ruleset_passes" },
+  { kind = "proof", test = "tests/test_check_ruleset.py::test_a_check_required_by_name_only_is_refused" },
+  { kind = "task", name = "check:ruleset" },
+  { kind = "task", name = "repo:configure" },
+]
+[[steps]]
+id = "A.106"
+title = "The policy gates return from cscie103: check:policy and policy decisions"
+thread = "A"
+depends_on = ["A.20", "A.19"]
+because = { "A.20" = "the gates join the registry check runs", "A.19" = "the policies they format, test and evaluate are already ported" }
+done_when = [
+  { kind = "task", name = "check:policy" },
+  { kind = "task", name = "check:policy-decisions" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.107"
+title = "The source audit gates return from cscie103: repo hygiene, assertions, evidence and models"
+thread = "A"
+depends_on = ["A.20"]
+because = { "A.20" = "the gates join the registry check runs" }
+done_when = [
+  { kind = "proof", test = "tests/test_repo_hygiene.py::test_a_zero_byte_root_file_is_flagged" },
+  { kind = "proof", test = "tests/test_repo_hygiene.py::test_a_root_file_with_no_extension_is_flagged" },
+  { kind = "proof", test = "tests/test_assertion_audit.py::test_the_repository_has_no_vacuous_assertion" },
+  { kind = "proof", test = "tests/test_evidence_audit.py::test_this_repository_holds_observations_only" },
+  { kind = "proof", test = "tests/test_evidence_audit.py::test_this_repository_passes_its_own_audit" },
+  { kind = "proof", test = "tests/test_model_audit.py::test_this_repository_matches_its_baseline" },
+  { kind = "task", name = "audit:assertions" },
+  { kind = "task", name = "audit:evidence" },
+  { kind = "task", name = "audit:models" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.108"
+title = "The permission gates return from cscie103: exemptions, suppressions and problems"
+thread = "A"
+depends_on = ["A.20"]
+because = { "A.20" = "the gates join the registry check runs" }
+done_when = [
+  { kind = "proof", test = "tests/test_problem_codes.py::test_registry_and_emitters_agree_both_ways" },
+  { kind = "proof", test = "tests/test_problem_codes.py::test_every_entry_has_the_rfc_9457_members" },
+  { kind = "proof", test = "tests/test_suppression_audit.py::test_the_committed_tree_has_no_unregistered_suppression" },
+  { kind = "task", name = "audit:exemptions" },
+  { kind = "task", name = "audit:suppressions" },
+  { kind = "task", name = "audit:problems" },
+  { kind = "task", name = "problems:register" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.109"
+title = "The contract gates return from cscie103: mutation anchors and schemas"
+thread = "A"
+depends_on = ["A.20", "A.116"]
+because = { "A.20" = "the gates join the registry check runs", "A.116" = "mutation_anchors loads specs and counts anchors with mutation_check's own models, so the gate needs its harness" }
+done_when = [
+  { kind = "task", name = "audit:schemas" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.110"
+title = "This machine is judged as cscie103 judges its own, by a machine contract gate, replacing A.104's invented lane"
+thread = "A"
+depends_on = ["A.20", "A.104"]
+because = { "A.20" = "the gate joins the registry check runs", "A.104" = "its runs_in_ci field, check:ci task and machine test level have no cscie103 counterpart and are replaced" }
+done_when = [
+  { kind = "task", name = "nix:contract" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.111"
+title = "The pii gate returns from cscie103"
+thread = "A"
+depends_on = ["A.20"]
+because = { "A.20" = "the gate joins the registry check runs" }
+done_when = [
+  { kind = "task", name = "check:pii" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.112"
+title = "fixtures, prereqs, env-parity and nix flake: each ported from cscie103, or recorded as a grounded deviation"
+thread = "A"
+depends_on = ["A.20"]
+because = { "A.20" = "the gates join the registry check runs" }
+done_when = [
+  { kind = "task", name = "check:fixtures" },
+  { kind = "task", name = "check:prereqs" },
+  { kind = "task", name = "check:env-parity" },
+  { kind = "task", name = "nix:flake-check" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.113"
+title = "cscie103's tree at the pinned commit is read as data, from the blobless checkout's own trees"
+thread = "A"
+depends_on = ["A.28"]
+because = { "A.28" = "upstream:checkout already holds every commit and tree at the pin; a listing reads trees, never blobs" }
+done_when = [
+  { kind = "task", name = "upstream:checkout" },
+]
+[[steps]]
+id = "A.114"
+title = "The main checkout's uncommitted copy of cscie103 is accounted for: each file verified against the pin or removed, by recorded operations"
+thread = "A"
+depends_on = ["A.113"]
+because = { "A.113" = "a file is verified only against cscie103's tree at the pin, never against a local copy" }
+done_when = [
+  { kind = "proof", test = "tests/test_upstream_copies.py::test_no_unverified_upstream_copy_remains" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.115"
+title = "The eleven direct BaseModel subclasses migrate to Contract or Reading, and the model baseline shrinks to nothing, as cscie103's did"
+thread = "A"
+depends_on = ["A.107"]
+because = { "A.107" = "the ratchet that holds them begins there, listing exactly these eleven" }
+done_when = [
+  { kind = "proof", test = "tests/test_audit_policies.py::test_the_model_baseline_is_empty" },
+  { kind = "task", name = "audit:models" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.116"
+title = "cscie103's mutation harness returns: mutation:check, its runs.mutation policy, its proofs and its task"
+thread = "A"
+depends_on = ["A.28"]
+because = { "A.28" = "the harness is ported from cscie103 at its pinned commit" }
+done_when = [
+  { kind = "proof", test = "tests/test_mutation_check.py::test_a_mutant_its_named_killer_misses_is_refused_even_if_another_test_kills_it" },
+  { kind = "proof", test = "tests/test_mutation_check.py::test_a_failing_baseline_halts_instead_of_counting_every_mutant_killed" },
+  { kind = "proof", test = "tests/test_mutation_check.py::test_a_mutant_killed_by_its_named_test_passes" },
+  { kind = "proof", test = "tests/test_mutation_check.py::test_the_tree_is_never_mutated_in_place" },
+  { kind = "task", name = "mutation:check" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.117"
+title = "One harness proves every guard: safeguards:prove, which cscie103 does not have, is reconciled with mutation:check"
+thread = "A"
+depends_on = ["A.116"]
+because = { "A.116" = "the reconciliation needs both harnesses present" }
+done_when = [
+  { kind = "proof", test = "tests/test_guard_harness.py::test_one_harness_proves_every_guard" },
+  { kind = "task", name = "check" },
+]

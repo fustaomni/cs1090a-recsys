@@ -1,0 +1,208 @@
+--- a/scripts/source_apply.py
++++ b/scripts/source_apply.py
+@@ -9,7 +9,7 @@
+     contract = "source-apply/v1"
+ 
+     [[operations]]
+-    op = "replace"            # or "create", with content
++    op = "replace"            # or "create" with content, or "delete" with only the path
+     path = "scripts/x.py"     # inside the repository, never under .git
+     anchor = "..."            # found expected_count times (default 1)
+     replacement = "..."
+@@ -30,7 +30,8 @@
+ from claim import claim, decision_predicate_type, seal, store
+ from command_outcome import announce
+ from contract_base import Contract, from_document
+-from project_identity import load as load_identity
++from gitenv import git as _git
++from machine_trust import founding_allows, trust
+ from spine import decide, enforce, evaluate, halted, reasons, refusal_code, schema_verdict
+ 
+ ROOT = Path(__file__).resolve().parent.parent
+@@ -61,11 +62,18 @@
+     expected_count: int = Field(default=1, ge=1)
+ 
+ 
++class Delete(_Strict):
++    """A file removed: judged by policy like any edit, and read back as absent."""
++
++    op: Literal["delete"]
++    path: str = Field(min_length=1)
++
++
+ class ApplySpec(_Strict):
+     """source-apply/v1: the operations, applied in order, all or nothing."""
+ 
+     contract: Literal["source-apply/v1"]
+-    operations: tuple[Create | Replace, ...] = Field(min_length=1)
++    operations: tuple[Create | Replace | Delete, ...] = Field(min_length=1)
+ 
+ 
+ class ObservedOperation(_Strict):
+@@ -120,10 +128,10 @@
+     return operation.content if isinstance(operation, Create) else operation.replacement
+ 
+ 
+-def observe(spec: ApplySpec, root: Path) -> tuple[ApplyRequest, dict[Path, str]]:
++def observe(spec: ApplySpec, root: Path) -> tuple[ApplyRequest, dict[Path, str | None]]:
+     """Every operation run in memory, in order: the request to judge, and the files to write."""
+     base = root.resolve()
+-    staged: dict[Path, str] = {}
++    staged: dict[Path, str | None] = {}
+     observed: list[ObservedOperation] = []
+     for operation in spec.operations:
+         target = (base / operation.path).resolve()
+@@ -132,12 +140,19 @@
+             and target.is_relative_to(base)
+             and target.relative_to(base).parts[0] != ".git"
+         )
+-        current = staged.get(target)
+-        if current is None and inside and target.is_file():
++        # A STAGED PATH IS JUDGED BY ITS STAGED STATE, a pending delete (None) included, so each
++        # operation sees the ones before it; only a path not yet staged is read from disk.
++        current: str | None = None
++        if target in staged:
++            current = staged[target]
++        elif inside and target.is_file():
+             current = target.read_text(encoding="utf-8")
+         count: int | None = None
+         expected: int | None = None
+-        if isinstance(operation, Create):
++        after: str | None
++        if isinstance(operation, Delete):
++            after = None
++        elif isinstance(operation, Create):
+             after = operation.content
+         else:
+             count = 0 if current is None else current.count(operation.anchor)
+@@ -145,7 +160,8 @@
+             text = current or ""
+             replaced = text.replace(operation.anchor, operation.replacement)
+             after = replaced if count == expected else text
+-        written = _written(operation).splitlines() if target.suffix == ".py" else []
++        lines = [] if isinstance(operation, Delete) else _written(operation).splitlines()
++        written = lines if target.suffix == ".py" else []
+         observed.append(
+             ObservedOperation(
+                 op=operation.op,
+@@ -166,16 +182,29 @@
+             toml_parses=_toml_parses(text) if target.suffix == ".toml" else None,
+         )
+         for target, text in staged.items()
++        if text is not None
+     )
+     return ApplyRequest(operations=tuple(observed), files=files), staged
+ 
+ 
+-def _write(staged: dict[Path, str]) -> list[str]:
+-    """Write every staged file, then read each back: the paths whose bytes differ."""
++def _on_disk(target: Path) -> str | None:
++    """A file's text as it now stands, or None when no file is there."""
++    return target.read_text(encoding="utf-8") if target.is_file() else None
++
++
++def _write(staged: dict[Path, str | None]) -> list[str]:
++    """Write or delete every staged file, then read each back: the paths whose state differs.
++
++    A DELETE NEVER PASSES missing_ok. The policy proved the file existed, so a file that vanished
++    before the write is drift, and its FileNotFoundError (an OSError) halts the apply.
++    """
+     for target, text in staged.items():
++        if text is None:
++            target.unlink()
++            continue
+         target.parent.mkdir(parents=True, exist_ok=True)
+         target.write_text(text, encoding="utf-8")
+-    return [str(t) for t, text in staged.items() if t.read_text(encoding="utf-8") != text]
++    return [str(t) for t, text in staged.items() if _on_disk(t) != text]
+ 
+ 
+ def _spec_text(args: list[str], stdin: TextIO) -> tuple[str | None, str | None]:
+@@ -187,6 +216,29 @@
+         return Path(args[0]).read_text(encoding="utf-8"), None
+     except OSError as error:
+         return None, f"{args[0]}: {error.strerror}"
++
++
++def _github_url(remote: str) -> str:
++    """The repository's https URL, parsed from an origin URL in any GitHub form (A.13).
++
++    recsys declares no project identity: git's origin already names the repository, so it is
++    parsed and rebuilt here in the one form a claim records, whatever transport is configured.
++    """
++    url = remote.strip().removesuffix(".git")
++    for prefix in ("git@github.com:", "ssh://git@github.com/", "https://github.com/"):
++        if url.startswith(prefix):
++            parts = url[len(prefix) :].split("/")
++            if len(parts) == 2 and all(parts):
++                return "https://github.com/" + "/".join(parts)
++    raise ValueError(f"origin is not a GitHub repository: {remote.strip()!r}")
++
++
++def _origin_repository(root: Path) -> str:
++    """The repository this checkout's origin names, read once at the boundary."""
++    done = _git("remote", "get-url", "origin", cwd=root)
++    if done.returncode != 0:
++        raise ValueError("no origin remote: " + done.stderr.strip())
++    return _github_url(done.stdout)
+ 
+ 
+ def main(
+@@ -211,9 +263,17 @@
+     if decision.action != "proceed":
+         code = refusal_code(decision, "spec_refused")
+         return enforce(announce(COMMAND, decision, code, reasons(found), observed))
++    # mise.toml IS GATED BEFORE IT IS WRITTEN (A.27): under paranoid a write untrusts it, and an
++    # untrusted mise.toml runs no task, so the founding policy judges the staged text first.
++    config = root.resolve() / "mise.toml"
++    staged_config = staged.get(config)
++    if config in staged and (staged_config is None or not founding_allows(staged_config)):
++        reason = "the founding policy refuses the mise.toml this spec would write"
++        stopped = halted(SUBJECT, ENTRYPOINT, POLICY, reason)
++        return enforce(announce(COMMAND, stopped, "founding_refused", reason, observed))
+     # IDENTITY IS READ NOW, NEVER AT IMPORT: a claim names the repository running this.
+     try:
+-        repository = load_identity(ROOT).repository
++        repository = _origin_repository(ROOT)
+         # LOADED BEFORE ANYTHING IS WRITTEN (D.109): a corrupt key stops the apply, not a claim.
+         from signing import load_signer
+ 
+@@ -230,22 +290,36 @@
+         reason = f"bytes on disk differ from the spec: {', '.join(differing)}"
+         stopped = halted(SUBJECT, ENTRYPOINT, POLICY, reason)
+         return enforce(announce(COMMAND, stopped, "apply_unverified", reason, observed))
++    if staged_config is not None and not trust(root, staged_config).trusted:
++        reason = "mise.toml was written but could not be re-trusted"
++        stopped = halted(SUBJECT, ENTRYPOINT, POLICY, reason)
++        return enforce(announce(COMMAND, stopped, "mise_untrusted", reason, observed))
+     base = root.resolve()
+     written = [
+         {"path": str(target.relative_to(base)), "sha256": _digest(text)}
+         for target, text in staged.items()
++        if text is not None
+     ]
++    deleted = [str(target.relative_to(base)) for target, text in staged.items() if text is None]
+     # EVERY APPLIED SPEC ENDS IN A CLAIM (D.85): its subjects are the files it wrote.
+     # SIGNED BY THE KEY THIS REPOSITORY PUBLISHES (D.109), or honestly unsigned where none is
+     # published; verify() never reads an unsigned claim as signed.
+-    paths = [str(target.relative_to(base)) for target in staged]
++    # SUBJECTS ARE WHAT EXISTS. An in-toto subject is an artifact named by the digest of its
++    # contents, and a deleted file has none; its removal is attested by the verdict over the
++    # observed operations, which the claim's predicate already seals.
++    paths = [entry["path"] for entry in written]
+     statement = claim(
+         found, decision, COMMAND, base, paths, predicate_type=decision_predicate_type(repository)
+     )
+     sealed = seal(statement, signer)
+     stored = store(sealed, base / ATTESTATIONS, f"{SUBJECT}-{decision.verdict_digest[:12]}")
+     message = f"applied {len(spec.operations)} operation(s) to {len(staged)} file(s)"
+-    applied = {**observed, "written": written, "claim": str(stored.relative_to(base))}
++    applied = {
++        **observed,
++        "written": written,
++        "deleted": deleted,
++        "claim": str(stored.relative_to(base)),
++    }
+     return enforce(announce(COMMAND, decision, "applied", message, applied))
+ 
+ 
