@@ -10,302 +10,2688 @@ commit = "58af9d32a9972d6abb5a18acd94ee1235843da66"
 path = ".gitignore"
 sha256 = "18c65f38dff8c434673c8b19e70fb3af8df8f36bece1b8a73ab79f4f53f8343c"
 
+
+
+
+
 [[files]]
 path = ".python-version"
 sha256 = "fa682ae9d943f5c8076e68335c9ba3ab4d063ad035c07ac6928653dd4ac50af7"
+
+
+
+
 
 [[files]]
 path = "contracts/task-effects.toml"
 sha256 = "0791ae99b4674e01f8f5dc5438480285055f2e8041989f594331aa46745953d1"
 
+
+
+
+
 [[files]]
 path = "lefthook.yml"
 sha256 = "df0de18423153805a452266f86524d3021dcc3a154dd42582ea3839f88a9845b"
+
+
+
+
 
 [[files]]
 path = "policies/plan/matrix.rego"
 sha256 = "2f95a7376112d604df958a74ded6449069e4bfe0fcca17d75aab87715aab9455"
 
+
+
+
+
 [[files]]
 path = "policies/plan/status.rego"
 sha256 = "172b696fa95ceae920d9bac79c946a4d9c59e43fe188cd51cc8126bb5d13f2ca"
+
+
+
+
 
 [[files]]
 path = "policies/plan/status_test.rego"
 sha256 = "305c1f65cc9d29d33276d016a20e5cdc2c91a73394498c6a6c48a0b8a74341f1"
 
+
+
+
+
 [[files]]
 path = "policies/plan/trailers.rego"
 sha256 = "ab4604edd6b7402879eb4770c3832cd78d8d9ff739c8d4f0c97a7caa4741e050"
+
+
+
+
 
 [[files]]
 path = "policies/runs/ledger/ledger.rego"
 sha256 = "1bc0b991736265df060b99a8bda427378ba607c5a196232110b0236a74cfd0bf"
 
+
+
+
+
 [[files]]
 path = "policies/runs/run_request/run_request.rego"
 sha256 = "967f464795c7428611e99db93b816eb0e6a330b84e1c7ca6227ad098f46d7e1b"
+
+
+
+
 
 [[files]]
 path = "policies/runs/signing_keys/signing_keys.rego"
 sha256 = "c9c7c6490c104c9fe7ead43bce52829bfb39b8f5f85b6b57206bccf4a9cbd188"
 
+
+
+
+
 [[files]]
 path = "scripts/bounded.py"
 sha256 = "c5faa16fe5ed7298761cd5a1365c5bb77194e60b747c3f5ec8c0979ed9fe0ffa"
+
+
+
+
 
 [[files]]
 path = "scripts/check_all.py"
 sha256 = "17a6b37733e722dfe2d0312aff84c2671c70413cdb0327511ae74a28730df1c0"
 
+
+
+
+
 [[files]]
 path = "scripts/command_outcome.py"
 sha256 = "73810477413f2e1009473cc6e95e61065d424d442729bac3dc7b6d243a45c298"
+
+
+
+
 
 [[files]]
 path = "scripts/commit.py"
 sha256 = "9b4544a964617b124c980a39f7e4b96303398c63fd8e3b42edea0e7eecf1c5a3"
 
+
+
+
+
 [[files]]
 path = "scripts/contract_base.py"
 sha256 = "afbefc00e786600d0707a69940f0678fb649ae0a9ce5689ee6e70a3c972bdd4a"
+
+
+
+
 
 [[files]]
 path = "scripts/environment.py"
 sha256 = "66118456c15421dfc1b6341bb6e0f2b45931d78fc7c0f25c24cb6dbdd6b90432"
 
+
+
+
+
 [[files]]
 path = "scripts/gitenv.py"
 sha256 = "7c9c3e77a41bcba164ce41e68d95d7a13abae54b9f4f32ad7971d38ba7b93d60"
+
+
+
+
 
 [[files]]
 path = "scripts/library_errors.py"
 sha256 = "4de9dd3db04e2449adfd4900e27be93620dd8198b742e2295b47d078dcf73d42"
 
+
+
+
+
 [[files]]
 path = "scripts/nix_remediation.py"
 sha256 = "67d2222fae3c85ced4d642ae15b36ab8efb3629161e8bf0f27dc3304880c9704"
+
+
+
+
 
 [[files]]
 path = "scripts/opa.py"
 sha256 = "35de7db337fc9e191c6bc6f6fc2b5b660e075bede2ec5caab5e3f36a22a57aa2"
 
+
+
+
+
 [[files]]
 path = "scripts/plan_edit.py"
 sha256 = "b52e795a1ba2e6aaff5bc3834325f9e82d7ec693b04f6c4fdbca2ad81a4be4ea"
+
+
+
+
 
 [[files]]
 path = "scripts/plan_files.py"
 sha256 = "49c44f79b88b3da117fe3074025a5928e6dffeb24e5002ccf0f9ecde737633bc"
 
+
+
+
+
 [[files]]
 path = "scripts/plan_matrix.py"
 sha256 = "bbe1e4855b0f3c6e5cfb62dfcad6211e556e9bb99bc95ef0272f5590afe3587f"
+
+
+
+
 
 [[files]]
 path = "scripts/plan_models.py"
 sha256 = "a53f91653995ee5f2764f56fb26b857e415dd60a10d6c7d25d33aa608fcf280d"
 
+
+
+
+
 [[files]]
 path = "scripts/plan_render.py"
 sha256 = "31131d946ecc767a6f0509e85d561165e1cedea9b336b744c63683126ecee37f"
+
+
+
+
 
 [[files]]
 path = "scripts/plan_status.py"
 sha256 = "9356e475eb3cb9ac4ac3c6042e9d4bd4c9afeb6632819130ce22f3ba0a735d5a"
 
+
+
+
+
 [[files]]
 path = "scripts/plan_step.py"
 sha256 = "6233e34ee00cebc086b3371946c2a07533bb222062d627a3180495442368dae2"
+
+
+
+
 
 [[files]]
 path = "scripts/plan_trailers.py"
 sha256 = "432d60725191c7e7405e2aad31692e3234b117fbfbcf9bf84a23d119426f8bfe"
 
+
+
+
+
 [[files]]
 path = "scripts/pr_logs.py"
 sha256 = "0de1e58d66f20e243d62406adf787856488819e978393876c4fe450bcb31b7a9"
+
+
+
+
 
 [[files]]
 path = "scripts/run_ledger.py"
 sha256 = "51f6b9a7dafff415bd3b0a5088a23814749cb722303259bf6c36f9bda3b36ab3"
 
+
+
+
+
 [[files]]
 path = "scripts/run_task.py"
 sha256 = "d61b5303a5ff3c00a79398b6574018a03b94f56b335d473c921d1bb314c637c1"
+
+
+
+
 
 [[files]]
 path = "scripts/signing.py"
 sha256 = "b10e61c90cc03b210a6b83a2256c36b0b3fda324fded41ab90563154eca562ae"
 
+
+
+
+
 [[files]]
 path = "scripts/spine.py"
 sha256 = "a6e8be55d549416ec912cdfb741ac1e4c733c2ba379b7df2b30717b950334b08"
+
+
+
+
 
 [[files]]
 path = "tests/conftest.py"
 sha256 = "64760fae5b9a815d95581995c7a14c363e2b59eccc9db4f2287bdff38f21efe8"
 
+
+
+
+
 [[files]]
 path = "tests/test_bounded.py"
 sha256 = "d37ee19d3c03d1132e9a69bc0e0b95f2545d2d1fc4282643b828ae2bfd08b04d"
+
+
+
+
 
 [[files]]
 path = "tests/test_command_outcome.py"
 sha256 = "414e78b8d79547b9734b90f67f3a88c8e06d40fb4b97bc947a1aa769db62f2ce"
 
+
+
+
+
 [[files]]
 path = "tests/test_commit.py"
 sha256 = "eca6f9041907216078a730d8865ca4fe6799728fe00880214ceb1db8926ac77e"
+
+
+
+
 
 [[files]]
 path = "tests/test_commit_amend.py"
 sha256 = "49e5282dd2c6c72b4ec7ba5b0a2dd94b4cfe42bc7b6cf97598d1e112bbe3b762"
 
+
+
+
+
 [[files]]
 path = "tests/test_commit_deletions.py"
 sha256 = "e64c649206c5a6d8b602a58245589a8b2ecc626a8fc6f4f46a2b68f1476b141d"
+
+
+
+
 
 [[files]]
 path = "tests/test_commit_execution.py"
 sha256 = "93ee6b277eb098f759584390f0aaee67b5d3c149d53e4da2ae3e3b85068f68b8"
 
+
+
+
+
 [[files]]
 path = "tests/test_commit_task.py"
 sha256 = "8ba71c4a521f0a0c71ae6777ccc4bdd4370c4f85eafeb6550dab34adf2404d72"
+
+
+
+
 
 [[files]]
 path = "tests/test_duplicate_execution.py"
 sha256 = "80bb3423ff1847a09b85209797a9fbf82aaa334a7be2b8f9d15cd7710d6b58ee"
 
+
+
+
+
 [[files]]
 path = "tests/test_environment.py"
 sha256 = "87b6ebaeaa9f70e7fa5299060c956a8e0015d365046bdeea3252922a8a3610eb"
+
+
+
+
 
 [[files]]
 path = "tests/test_gate_spec.py"
 sha256 = "c39bd7ad89e26a7ce645a2a2e3782cc5f8509209c3c4b377a94dcebf878a837d"
 
+
+
+
+
 [[files]]
 path = "tests/test_git_subprocesses.py"
 sha256 = "9d6aa3da78bff62db448b8b9a0d5fb5db138d58f44b936a11a9bdfba2715294e"
+
+
+
+
 
 [[files]]
 path = "tests/test_key_lifecycle.py"
 sha256 = "d77cb56b1cf748e2183afc6dad9f83af6a946b01fde09ed82d981b7421cb2ed1"
 
+
+
+
+
 [[files]]
 path = "tests/test_last_resort.py"
 sha256 = "da0c8f90103715c62ee893b4a0130796207d07fcbfb2c00a100fdc48000eeb66"
+
+
+
+
 
 [[files]]
 path = "tests/test_ledger_lock.py"
 sha256 = "ce1014929cdaeb3ea13acd6cf05593172770062370845c564ddf51c9e3515756"
 
+
+
+
+
 [[files]]
 path = "tests/test_ledger_signing.py"
 sha256 = "89b5021eaa74a22ca2f0d77d14a2f2478244541ca3cef052bd07a547f0e68b70"
+
+
+
+
 
 [[files]]
 path = "tests/test_plan_files.py"
 sha256 = "40794b5c0b1158df5eaef55d2313ae1094d8f1ea46d80cd465c45323c786e372"
 
+
+
+
+
 [[files]]
 path = "tests/test_plan_matrix.py"
 sha256 = "d24463a17b7eda0ca5462389978671912ffbc462f50f94459d0a1e65bf5aee6f"
+
+
+
+
 
 [[files]]
 path = "tests/test_plan_models.py"
 sha256 = "88e2f32e6784e2ebab9d33a0da0bc00879bbe961482733904e9148eb96ffb827"
 
+
+
+
+
 [[files]]
 path = "tests/test_plan_render.py"
 sha256 = "793130bb6c1fc9ebac4c1ffcba427dca89d688d6975a622fe2a199c3cdf24b98"
+
+
+
+
 
 [[files]]
 path = "tests/test_plan_status.py"
 sha256 = "7da9087715bd8d0b564899a8336e076b91121960548e6e1f1210b64e1ac63075"
 
+
+
+
+
 [[files]]
 path = "tests/test_plan_step.py"
 sha256 = "bb0fdd7b9ef885d58957c98b9ba008dec8fd58429b72c63480ae9499a597a7ce"
+
+
+
+
 
 [[files]]
 path = "tests/test_plan_trailers.py"
 sha256 = "b3afdcbfc3538417a976989000494a33db6d384f35bd6fd091d3af100494b278"
 
+
+
+
+
 [[files]]
 path = "tests/test_pr_logs.py"
 sha256 = "9e2306e1a5c73d2c5fba402a2012bfc6aa330d1bff14615f835d3ea4e9bc76f0"
+
+
+
+
 
 [[files]]
 path = "tests/test_run_gateway.py"
 sha256 = "e66a4b2948b49c4527298c0161d345469392ad1a98a2dc6e256acfa099ad54a0"
 
+
+
+
+
 [[files]]
 path = "tests/test_run_ledger.py"
 sha256 = "cb0a1948bc9168bd03fc124c164b8322d6d0abcee120e06727e334e2410cee3b"
+
+
+
+
 
 [[files]]
 path = "tests/test_run_task.py"
 sha256 = "213a6b6eb22a5dc840c9f32c2c241cf078e7988f787915a7b85cc78daa4bfcda"
 
+
+
+
+
 [[files]]
 path = "tests/test_signing.py"
 sha256 = "46640d0dededd0d09704d7ef337f68a5e891c4fe3188b95e277dd53ab35e831f"
+
+
+
+
 
 [[files]]
 path = "tests/test_spine.py"
 sha256 = "be051e772dd61ea7e46cffbe9373c937d7de49dd82bcad747706b6d42d5d32e6"
 
+
+
+
+
 [[files]]
 path = "tests/test_strict_gateway.py"
 sha256 = "8bdb5507381b42a81537b84e913591f8dac5d540f8f38cc1995bf5d409b23bbb"
+
+
+
+
 
 [[files]]
 path = "scripts/plan_init.py"
 sha256 = "908464426624a45e1637324e17df08a30d60e3a7ec51c500bab40ebf38a9fea1"
 
+
+
+
+
 [[files]]
 path = "tests/test_plan_init.py"
 sha256 = "77152a36e97242c9c30c3a0490511ce53b00fdc32dbc0fdce81e466d72271d2a"
+
+
+
+
 [[files]]
 path = "scripts/git_isolation.py"
 sha256 = "5930b0d4b5c50b0e53b177aa34d9fe1110418dd942af5a901005fb8c1a45573a"
+
+
+
+
 [[files]]
 path = "scripts/nonvacuous.py"
 sha256 = "3b1317b2d1fed6fd585e6d784fcfc6dad506c0454eb820c6dffe97ec33496d6a"
+
+
+
+
 [[files]]
 path = "scripts/claim.py"
 sha256 = "0383ee9f1fd69e67b6e74fda41c3436a66f776a3ebd6f2935a9f4f73dae0b459"
+
+
+
+
 [[files]]
 path = "scripts/git_spawn_audit.py"
 sha256 = "383be68a9e49a8b7d08f798f0489ad4773f41dc9d16affc43d0df02d7149dce6"
+
+
+
+
 [[files]]
 path = "policies/machine/testing/git_env.rego"
 sha256 = "b4c054896713468f755379bf40780ce2c51d96698b5f10aa8f17dc6d621e5870"
+
+
+
+
 [[files]]
 path = "policies/runs/git_spawns/git_spawns.rego"
 sha256 = "9a28ddc311ad371befc7193fbec40ba415bed6f9a65da25e63cb1cf428f74b4e"
 
+
+
+
+
 [[files]]
 path = "tests/fixtures/plan/context/plan.toml"
 sha256 = "0c49e7110bc37dd89ec6b0ecd111224c6dd7f02b22b0547a250ab95246e1067d"
+
+
+
+
 [[files]]
 path = "tests/fixtures/plan/context/plan-trace.toml"
 sha256 = "45ae652a873a87da924f56dbd166d316adc850001ead290b6ba877c0c4d24e36"
+
+
+
+
 [[files]]
 path = "tests/fixtures/plan/context/plan-ids.toml"
 sha256 = "8ddbed3f0829ed43950842405a5afe6383b6ea386d28a883cad65f2e6269c8ca"
+
+
+
+
 [[files]]
 path = "tests/acceptance/acceptance_sandbox.py"
 sha256 = "59415037ecec2129ec97eeac955a5d101b32f5427f3ed4d1ee46810411e08236"
+
+
+
+
 [[files]]
 path = "tests/acceptance/test_sandbox.py"
 sha256 = "c536c981746031ea681718de90a42c7bf3cc7a411ed734d4ab31dfc154069937"
+
+
+
+
 [[files]]
 path = "tests/test_secret_scanning.py"
 sha256 = "dcde6cb0310e50c3e7d5f0dd9da91d9b74a14f12fe54ff16cd78bd241eee815f"
+
+
+
+
+[[files]]
+path = "contracts/capability-remediation.toml"
+sha256 = "9c332aa9129d5bd2babb46c540797ae27800f2d9c07b676e999592515d374c23"
+
+
+
+
+[[files]]
+path = "contracts/exemptions.toml"
+sha256 = "51ebe69320ef6b6f3f4db802c08afc79218127ed702cdf9cded91c927b105731"
+
+
+
+
+[[files]]
+path = "contracts/expected-checks.toml"
+sha256 = "e8d953eb0f91078955bed803caa9910d9e7c5442caf6dfda74278849a343e5df"
+
+
+
+
+[[files]]
+path = "contracts/layer-remediation.toml"
+sha256 = "0b8e7dcd7889618c1e86a5bed9a11ac0ab081870dc89a5b65654e2355cd8bd46"
+
+
+
+
+[[files]]
+path = "contracts/ledger-waivers.toml"
+sha256 = "e233ca403dfbc08f18159e936683234dda07c0735311f20c061c749a95d6c9db"
+
+
+
+
+[[files]]
+path = "contracts/model-baseline.toml"
+sha256 = "224ac3d443553f449463428500501bd173b4c6eabb421e964cf8d8f1d1b5f2e4"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d101.toml"
+sha256 = "7cbf2b1c671dbad37e98c33c7868269960a84c42cc05b35cedad48a4359a8f6e"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d102.toml"
+sha256 = "c6ea64e6b4e39ebcbf51f9c613e91046302010b82e4d667f279e47093a8a2d22"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d103.toml"
+sha256 = "e3fa71ad5e35d737b0c740e6f6d86c63a92fa082f62fa4b9ced2fcd9220a8e22"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d104.toml"
+sha256 = "745f594dcb91f4416132687be54e10e63b05f33b733878a9f7438db057baef6d"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d105.toml"
+sha256 = "439a8f357edbac06420ecb4bb5a89eb3eecd2b60cbf4af0f843d4dbdb670488b"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d106.toml"
+sha256 = "f99764a89ae771921ab98bd1bf535fe8a6048d83a2ce216ade76e6924b842332"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d107.toml"
+sha256 = "d75f471a388465652356cccdac9a103b670399d99ee8f524e07613b170129ead"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d108.toml"
+sha256 = "5e92d41e1e99f1673405350fd9fef74952694e9c295ad358e441416ae48d467a"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d109.toml"
+sha256 = "1c6b98a6d1d19f8af4bdbc3162bb7957e0eec6fcd595489253f67182b6f13008"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d110.toml"
+sha256 = "46e151e6942e38e3a144fe1ea213e414c4df8e14e73c0f0bd0670ad3f5aac0b2"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d111.toml"
+sha256 = "902986ec233d8beb76afb4f2c1b1dcf197e374290c621a47540a02b29f9c7b11"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d112.toml"
+sha256 = "49364edb64b98fda6b3fc292ea12602e36ddc96c5f2821109c2f986e58b275a0"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d113.toml"
+sha256 = "04031f6656e5e28232feb311fe4f851f61eac28d1399635c63663ccd6c93f47e"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d114.toml"
+sha256 = "dd06282aa3840654e80b06b1cecbae4aedb89eaa5e6cf1202428420a0a49dba0"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d131.toml"
+sha256 = "11041e4a04e2be20e058306e981337274166b4cf29406259ecc9faef7c76b678"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d142.toml"
+sha256 = "1df783dd0c611f1b6f4911911c8f1925ed43391dd7e7a257439642f5099dd20c"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d147-ratchet.toml"
+sha256 = "026315d2f0e1a516a03aa728bde0272b95f0c35b58295eba54bf7fd1825552c2"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d147.toml"
+sha256 = "68d667d1140ac0cdd365551164ffd8c58ca6b3c238a0054b714b0e5004a314be"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d149-lock.toml"
+sha256 = "ccf93709b5c138757d715916bbbd4e2a2db6888f76a3552a7c567d3a4d3358b2"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d149.toml"
+sha256 = "dec2af7a6e98c00a740eebc20d39e3f67a2730b23330e0e9b435e1c2a3979a72"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d153.toml"
+sha256 = "8f1a2fa6be4a8c8d0a57fab2df72a87a522257f03e736e4f8651124d76df2dc5"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d161.toml"
+sha256 = "3f52a773084eafbacf8f6e7dce1296de0285caa79101193ace47bb3f5652a547"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d165.toml"
+sha256 = "6229b832558557c1745b417b96f35bfd4d829be73a884bea8470fc3911468c05"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d168.toml"
+sha256 = "373afdf6622e2475ab2cab6c6fd04ba10431bb4693af95cdc1782da2c2ae4357"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d169.toml"
+sha256 = "3c8bbfd206e655601ec05948bda5fc5c2b0fb704179e1a5c6f83dd217f05f8e2"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d170.toml"
+sha256 = "11425184528764e3a1ee6523f6be8f723091c94bbbd66cda1f139607b95d7990"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d171.toml"
+sha256 = "1c3cb58de5a14a936f391e35b55e891d52210d8d34001fceccc4098dd1fc404b"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d172.toml"
+sha256 = "82df664e1f7e7b02c101685b379f21501d4b31876153b633bba460ada6186219"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d173.toml"
+sha256 = "b7b404914ac32c4c9ae606ab85deb7139ee41b4ee0cd0914983dea1e589f7948"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d174.toml"
+sha256 = "87df834d9a42c97a561c4d61b18742ee851c5b6714197f0425c747a540c5278f"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d175.toml"
+sha256 = "0ffd27310eb36db1b2c9ad7c4510814e3c18f837f0810d25807667464e6af077"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d176.toml"
+sha256 = "c94ceff6aa26375ae0cb831cf865d14fcbe5f8b087d388ec5f5834832467f1d6"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d177.toml"
+sha256 = "9e2a69d73a395e16fd39f69de5699e3a1c48b2b48f8684dd8a40e64ae88cef0a"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d178.toml"
+sha256 = "59805ba094a5f97f29a9b68bb513f5594bf13fabe77b12858e36253faa1c7346"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d179.toml"
+sha256 = "5a28ee78778be9f6838c8b5b2394ed02c6609ba1e2c07bf0d6491d355272565c"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d180.toml"
+sha256 = "a565609da6c048b3c5b536023da7809c3817d9339b5afa4867d634437fcfb054"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d217.toml"
+sha256 = "e17a08cf0fa465d9899a56781a4c5a227468784fa7b728a67daad38c612c0c67"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d218.toml"
+sha256 = "26d36db1bc5bc9202d10f4a74a32864eb709edb9f7da5594cb528f7f33f340c8"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d219.toml"
+sha256 = "fd92e54caa3f9808cb7df00b0a7537a44d321d7cc20da53d5efc1d2c18471847"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d222.toml"
+sha256 = "207641f1b7c317deffe57ba2a2cd6861dbfa28377201388abf0fcc88402a2cef"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d25.toml"
+sha256 = "cfdd53e29b00358eaf01098869d61ce9266653358653043a72b2891ecebd6965"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d31.toml"
+sha256 = "e762f6fd163d89fea85d4d8c2192fe715fc56ce6b024e3d6281f7ac61af8f0ad"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d39.toml"
+sha256 = "ea6a4db71a7306625161c60f60ebc6dd1b3aec064d6009549ff02dbabb960541"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d67.toml"
+sha256 = "4578740d1754c95f36719255981043c443a1db491f12a07827a1359154f16f51"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d68.toml"
+sha256 = "f65b6143204b1d7679d10db9012a227577d1da2ef9731a3a4ad286535635d571"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d75.toml"
+sha256 = "b08dedcf23f1017deffaab469fdfd85b14b2d296183efcaadc115484f2114c80"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d76.toml"
+sha256 = "19408044964d4b672c68fd1a85dba01ae4654405f4d224df4937d732aee793e1"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d77.toml"
+sha256 = "e69f7c4f777059a8b86837052b6b7a42712026c739e9e627dd971bb8b2be1728"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d78.toml"
+sha256 = "3cff67b7d78ea99a3eacd854a1f65a90e06dcb7d7b74921ad92cb18e14fc2c19"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d79.toml"
+sha256 = "4a48affacd78cb681b31f3ecb500a3df5d7be2a31f52b61ece017971efcef9c6"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d80.toml"
+sha256 = "c5fa195afc65e838aae57e8fc7f02c37ee7e1d42028e299a39dd7d46b6353ee9"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d81.toml"
+sha256 = "8c63523b6f201919e810318833bce4841ff02909612fca550e72445d6add5a1f"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d82.toml"
+sha256 = "00a71f5fa0a34ea2e93e9fc142e3053ea044358b8c71dcef9edc8e6cef322fc0"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d83.toml"
+sha256 = "80967c625d07203a271a98298defa3d90a8b763ae8e5fbd4fcfa7e3d1ff51d50"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d84.toml"
+sha256 = "9297ae004bddc80d7e6badb496c7eb7a561b5d049bb1188c9aa7543a99884e89"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d85.toml"
+sha256 = "ff2de62ef6a6abc9365af704628c7b1ae2ce13f32986c35bc9fe9f0f31ec1852"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d86.toml"
+sha256 = "0e7f10fc226795f834de9635167e09730dddde5cbdadd0a4a1b8f4935be893cf"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d87.toml"
+sha256 = "5fd4c2262d085c1faa65684a51046fce0faf3db2d4079e88e2393b93f3797abe"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d89.toml"
+sha256 = "975465682dd4c55048ad460dd9ed24e11c934e1a3280b6d0549045be954e49dd"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d95.toml"
+sha256 = "10cb270133c47ed5e78093eec03af8130b16043b291bdc6d7c9fad3c058a4012"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d96.toml"
+sha256 = "29da48b6c06cc86dd4096126ff9fd9724e44c3606df0ce244a56ec892a3de86a"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d97.toml"
+sha256 = "e5a4f690ea5c657386bd64d3f06e3194f5a332b62908cf77fa665782bbc5f398"
+
+
+
+
+[[files]]
+path = "contracts/mutations/d98.toml"
+sha256 = "d0de3507422fa8297feea2c8f8a4ebfb51894d338f6f1ccd4493726aff142b1b"
+
+
+
+
+[[files]]
+path = "contracts/problems.toml"
+sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
+
+
+
+
+[[files]]
+path = "contracts/publish-expectations.toml"
+sha256 = "f4e1a57ca255e37c01c54b25f12b486313b60ad6b276cf7520ccb6ab3337056a"
+
+
+
+
+[[files]]
+path = "contracts/ruleset-develop-and-main.json"
+sha256 = "b15fee39f837f675d8e7894150072df56b806da1f933d8090a4b1c90e4dcaf57"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/any_models.AnyInventory.json"
+sha256 = "e83a8c45b255131343c17ab76ed4063867b9d79a65e20e00ff1cf6e03bde88a9"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/assertion_audit.AssertionInventory.json"
+sha256 = "55025ddc40d40e4fc442313777ecd50b20d6173785c2c5ce88033d9fe7df64b1"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/bounded.BoundedResult.json"
+sha256 = "0139f9c12939d1f650a4f3399ec7daf216ed8dbc142ae3b84e9e009e7af14c5e"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/capability_audit.CapabilityInventory.json"
+sha256 = "5e402ce990948f75a17b36786fba3e23f6823156d2c6b05809e1d0342dc90ed9"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/check_all.GateReport.json"
+sha256 = "147087dc151d26644db160893324fae2bce360cf017771bb4f5db101cfac0bf9"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/check_ruleset.RulesetState.json"
+sha256 = "4ad885e818adf5d55091ca01f39de4626421430b51f511e66f8fdc3f32371442"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/command_outcome.CommandOutcome.json"
+sha256 = "2c7c7892d4155628722f2ea2df570478fe74e8bf55d5d4269cfd6d89e6e04cbd"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/deps_add.DepsChange.json"
+sha256 = "73dbed77bfee4919c1be1c5199c0cc8ca6f6139ed4311120812d7b35fd72a92d"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/env_sync.EnvironmentSync.json"
+sha256 = "afd3cbd968eb559a33d4d33b8f25524c86c548a2f4222847330d8de8e19541ad"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/evidence_audit.EvidenceInventory.json"
+sha256 = "1d6ffd9fcda22647d3cfbe8ba9f413d05c4be123fd789d0e7555808ffb09fa75"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/exemptions._Registry.json"
+sha256 = "bae42261c30ab8a80b89388d192e2866e72469e42caa34cb151feaf04a9ab403"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/git_isolation.GitIsolation.json"
+sha256 = "4dda984f3fcd2f847b02df8a341dec9d08cf57ef92ff68d00706030b0b386707"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/git_spawn_audit.GitSpawnInventory.json"
+sha256 = "64991eb3ce5e4c3877c92db70a2e7ccb7088cd78ef778612048732d2a6ad5b64"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/hooks.Hooks.json"
+sha256 = "5fb21f32d7804bcbe2cc5418b222100da7c50fc627697c4909df324faf26b054"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/invocations.Invocations.json"
+sha256 = "93cc3970b22c9e553dd0a67d91722ebd1494957ad10653f68c076abd465e1976"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/layer_audit.LayerAuditEvidence.json"
+sha256 = "ea393c23a6a91184e4dff03d9368f956e183d639c9aef51d873cd4c0aba6c609"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/model_audit.ModelInventory.json"
+sha256 = "3021f8b981d2d00f5b61759072fd28614593c491016f35fb78dc1da5c387ed61"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/model_audit._Baseline.json"
+sha256 = "ea28943179fd4c2c05b2917e0ef4fcae828555d39f237bbbcf19347280742ade"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/mutation_check.MutationEvidence.json"
+sha256 = "4caa11bd95ec07227755c720a7cec3889a5fa1b4b45ead72118e66543a7a72f2"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/named_tasks.NamedTasks.json"
+sha256 = "603a80c4ca623b0ec9f757b74adb660bd764f380d2a2f1404f39d87b4884a9a7"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/parse_inventory.ParseInventory.json"
+sha256 = "945820ca53c0d4c504a77ff20f6d6faf7cbd4699db2f22c32365162b5999f72c"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/plan_models.BranchCommits.json"
+sha256 = "7af63e4cb03b22e18c93c9ce26602a2a88fa409f28f7882648f22c4124d31761"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/plan_models.IdLedger.json"
+sha256 = "79d1e1ec4e181921c0b6b435b679416e0c467f87498ca9f3eaf9e44cf7db0b12"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/plan_models.PlanFacts.json"
+sha256 = "12f858686fdd8f123e8a1520ca13f58fd8ce6b8dc966402f263549f53e15fb88"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/plan_models.PlanStatus.json"
+sha256 = "ceee47d57e69fa8e1168d969fb550fd8adcc62989f66723490a66b9e632144ec"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/plan_models.PlanTrace.json"
+sha256 = "38a3e3f444f04008209a176e75f1db98216a59f3eb4c757d1294b7611e507cbb"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/plan_models.ProjectPlan.json"
+sha256 = "c26da0b349e35d54756311645ca51937e3ee214868b92d36ea7e1b8336a6870f"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/plan_models.RequirementMatrix.json"
+sha256 = "68675f0fdb915d2ca3671326efe5c0df307b088f0690698b81a6127b81efe98a"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/plan_step.PlanStepView.json"
+sha256 = "e320d73e9bb3a4bee84acda1fb52ba5b41bdd7298c66174dace60db55b4d2536"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/pr_logs.CiFailure.json"
+sha256 = "43cbcc1246724ab7161d4e3c841c8da4e405244e5b0562a2e29f1af0195719d8"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/problem_codes.Registry.json"
+sha256 = "f8f2acb536b068d3fda41a7fe2e9b8f126cd3a895531f1e388bcb1873a1edae1"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/publish_policy.Expectations.json"
+sha256 = "0efa3090023c87692d35119ea19cbd6475459f338440b0797702d27c8e9ea702"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/publish_policy.PublishEvidence.json"
+sha256 = "acc559f5f3267faa78b841185e85ebd113c3069f676c781f13f115230acefaed"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/rebase_state.ConflictReport.json"
+sha256 = "4a94fc2075428f44ed838603ad7293c3ab532af609ba00d8a3c8aa3f8cb63511"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/rebase_state.ContinuePlan.json"
+sha256 = "6fb07af67701e92deb0e218605d7b211fb17a9cdb9cc5a4c3972d89c5fdcc28e"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/repo_history.RepoHistory.json"
+sha256 = "9ff08db79c305c32bc8315e5395b13ae7e600e5161932bcf5cf8f7f24e45789f"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/repo_report.RepositoryReport.json"
+sha256 = "4012641a7b3c0900bcdff90cd2cdea6972360b85650ce44ffe5a982e8dfc4cd9"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/run_ledger.LedgerReport.json"
+sha256 = "5370dcb2c99ccd607757b18f0a952b02058e62dc50be4cb96a43b04948997b06"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/run_ledger.RunRecord.json"
+sha256 = "0c55ccd4799d23194893e59a26d6d6235dc09e7130237ea267ac8e0c49d5c963"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/run_ledger._Waivers.json"
+sha256 = "47562b6d1a9a04782f3934168ddbcb0da38a4d061c2af41806c8b9d9ccc333a0"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/run_task.RunRequest.json"
+sha256 = "14b43c48257880b29fbf8f3887b96e33d7f9d6894606eea02615addf7db3eb55"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/run_task.RunSummary.json"
+sha256 = "616f68ec3fc3693db54ceede22215a81ada2f0d91cce559a71075793adced214"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/run_task.TaskRun.json"
+sha256 = "fbcac30a9240c42b3974ff5e61e919f8a02bbd89a682326433d254fc320d0684"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/run_task._Effects.json"
+sha256 = "e63e4adf7e09b219242de8a658b42a90c0f3694526bc173900156da631dde4a8"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/schema_audit.SchemaInventory.json"
+sha256 = "92fe137607907df68a19770e1e885c81e012a97f1ccb455935c752d0f3032c42"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/setup_env.SetupEnvironment.json"
+sha256 = "2828569def2d68d1979c52f024d3a8275a3ba38f0220e5cbe9b8bfc588fab32d"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/signing.KeyState.json"
+sha256 = "639d1cd777be9585d379ecc8bfcb84db6a24ae5eb07b45c1099c1c7976e75081"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/source_apply.ApplySpec.json"
+sha256 = "6faa29b447723c585550198e481ed39e3ce83c7fe35fd57f74edbdfc25989173"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/source_outline.OutlineEvidence.json"
+sha256 = "9afa90b7e18f309dc2894ec88fd35f04b27a4f601a86c501f8e4351177b426f2"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/source_outline.SourceOutline.json"
+sha256 = "604a95cac34d391ec22aae941f08ec642a9d34b6d2da9aadc42276823a14dd16"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/source_read.SourceLines.json"
+sha256 = "1f358b210ca5048c4a1814c675907b5cd5f1bf20e6524ffd8f052aaa622cf745"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/source_restore.RestorePlan.json"
+sha256 = "7bd3fc7365aeabdc5561937917246d4293e6067d2413eca492a520125736fa8c"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/source_search.SourceMatches.json"
+sha256 = "02ce98844a6f4a8ebc097ae971c3a5754cbffd8a0a470e1076b7845144fd2191"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/source_structure.StructureReport.json"
+sha256 = "720646042d6efb6225b09f6832d08c830ff3222ca4469f0a7f7d0c30aab4ba04"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/source_units.UnitsReport.json"
+sha256 = "e0af919831c76c31ebbdf3941b11e0dbf8c79436124c5d8b3a1d546ec17a6347"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/spine.Decision.json"
+sha256 = "782cc9c4003d43fb671c3bbceb5dfe00bd8fee5ce86d539eba0a811aa4fba642"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/spine.Verdict.json"
+sha256 = "d32a921b699656fe4eae44d447ab5272d9fd6e7375d6acd924739707af57e1af"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/task_commands.TaskInput.json"
+sha256 = "f0575a1cad28580d3238a93aa4b342bc6d696c19ddfea95beaaebc458711d111"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/tasks_list.TaskInventory.json"
+sha256 = "695758ece5c57df81c3c58cff85c3aa503fb1677acb994367c6991a1701708bb"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/type_check.TypeCheck.json"
+sha256 = "366c613faa1c5767aa5088d15f428ff4ecb88fbe2399201676576ea17600b2eb"
+
+
+
+
+[[files]]
+path = "contracts/schemas/contracts/workflow_audit.WorkflowInventory.json"
+sha256 = "e387f580457207eee6b97fc8212d70e7e0cee5f397bc960dcfd228576160f833"
+
+
+
+
+[[files]]
+path = "contracts/workflow-permissions.toml"
+sha256 = "d6e534a4091cefa206708ec9981a06c2d40ea066aaa78c562b1a920815cabfd8"
+
+
+
+
+[[files]]
+path = "policies/deps/add/add.rego"
+sha256 = "aad209ebdfbd7681e93fea58e595fb1abe7e152d4651d9e1d0ca37395507a8a6"
+
+
+
+
+[[files]]
+path = "policies/hooks/hooks.rego"
+sha256 = "f93573d3ccda6c07ebdb8bf9108d79177121b2208cb64ddee0e3c25a986b2b8a"
+
+
+
+
+[[files]]
+path = "policies/hooks/hooks_test.rego"
+sha256 = "b8178c15309501e9dca1eb5dab9c21b4111d13830e0904f9fb03484b25e921f7"
+
+
+
+
+[[files]]
+path = "policies/layers/layers.rego"
+sha256 = "d02806e6818ea733a7483b533246e9b15f0d5bf4c369fb2bc37b700c07ec81a4"
+
+
+
+
+[[files]]
+path = "policies/lint/ruff.rego"
+sha256 = "4e5de0ee8d9e06f7188f2e4be26cec10807214205038d07d33765fd64df0f69f"
+
+
+
+
+[[files]]
+path = "policies/lint/ruff_test.rego"
+sha256 = "63e90ba3877ce8a4562e661c14d724ec7b88a8428023638b655a5eb180e5ea63"
+
+
+
+
+[[files]]
+path = "policies/machine/branches/branches.rego"
+sha256 = "90811a6ea275038694cb5009cac0e24b2edfd1ebb7d1b1d825bbdba0dd4003a5"
+
+
+
+
+[[files]]
+path = "policies/machine/environment/environment.rego"
+sha256 = "6977d460116c31242f5663b06231f9a7e33edc6e0d593e6b2d8124c787ad1769"
+
+
+
+
+[[files]]
+path = "policies/machine/setup/setup_env.rego"
+sha256 = "7d5bf19e4e73b058475aea97009020aa007540045584b0c17667d04a23cd6236"
+
+
+
+
+[[files]]
+path = "policies/merge/merge.rego"
+sha256 = "f24ed71a2ecebb5c803cf129377d867ed6e3def02d22343ed3b0e555ecf3afca"
+
+
+
+
+[[files]]
+path = "policies/merge/merge_test.rego"
+sha256 = "a9cefb7c918541811bb467f8a7e7b4dfbc6921d3555610ca2e08e9bf0470e99d"
+
+
+
+
+[[files]]
+path = "policies/merge/readiness/readiness.rego"
+sha256 = "cf54985ed2bbcf1b61f34743913abb89d51bdeeb1cddde2c2f12200bdd1602c6"
+
+
+
+
+[[files]]
+path = "policies/parsing/raw.rego"
+sha256 = "a94cce32740fda576cb43ba2abf422b76702429ed14f9c97b27f0f8458d42693"
+
+
+
+
+[[files]]
+path = "policies/parsing/raw_test.rego"
+sha256 = "48a94b04b5f5d66a481d6d00f76222dcebe69cac1b8dc53b40de2a4281e0b81f"
+
+
+
+
+[[files]]
+path = "policies/release/release.rego"
+sha256 = "a442ab1580b978fdf96e54ee866fc43952a727a9e95533c6c42d118e75fef0b6"
+
+
+
+
+[[files]]
+path = "policies/runs/assertions/assertions.rego"
+sha256 = "aa05840ed3831659be26c6582c980f16dc403410d63bb84e9c2d7936a8ce1414"
+
+
+
+
+[[files]]
+path = "policies/runs/capabilities/capabilities.rego"
+sha256 = "c231966db1d56c4595d8e0439c8e6cbeb040823e3c36a08c87f621d2ff9bf119"
+
+
+
+
+[[files]]
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+sha256 = "982e1e3f6e373b14fdc78d5fcf0e7dd6201f4cddedee6fe322220444d51d5dc2"
+
+
+
+
+[[files]]
+path = "policies/runs/ci_rerun/ci_rerun.rego"
+sha256 = "7b712b71824cea3ab0e26af08f7d9dbdeb3d6a068a2c4b88090b2f424e6de7f6"
+
+
+
+
+[[files]]
+path = "policies/runs/evidence/evidence.rego"
+sha256 = "dd5f3e5b2cbff6fc69e845b4808c3a37b61c624a581e55948c37670478873f6d"
+
+
+
+
+[[files]]
+path = "policies/runs/exemptions/exemptions.rego"
+sha256 = "013c9f119a3b813ddd8582b6f755f2ad5a9c08d30943487e561a6ac9bc85e932"
+
+
+
+
+[[files]]
+path = "policies/runs/models/models.rego"
+sha256 = "52e2271f5eee2c2b730978f5f953cf56067359bc5f96013308e8a2f424ed5833"
+
+
+
+
+[[files]]
+path = "policies/runs/mutation/mutation.rego"
+sha256 = "0123c29273e4911d73a9070879f5f87e764eb75078eec574c1e981f757cc6816"
+
+
+
+
+[[files]]
+path = "policies/runs/mutation_anchors/mutation_anchors.rego"
+sha256 = "5913459d179fd7fad83b96b30d36330affeba6f339bfbc566b9c92d43f4a66ef"
+
+
+
+
+[[files]]
+path = "policies/runs/pr_checks/pr_checks.rego"
+sha256 = "001b7a280dc13e9018dcc0fa647a4aebe0669e909c4de9efb16889a534bb4f77"
+
+
+
+
+[[files]]
+path = "policies/runs/problems/problems.rego"
+sha256 = "d42336710e9373deaa9aa68ff10f1377bfc8a50510a576b221663ccd0a87bb85"
+
+
+
+
+[[files]]
+path = "policies/runs/publish/publish.rego"
+sha256 = "6059f2d18cd7f6ed9a1615b808e3fd6b8f6099af4dae66ffa980b5da17b1c68d"
+
+
+
+
+[[files]]
+path = "policies/runs/schemas/schemas.rego"
+sha256 = "a0c6bae5cad709dbe810407fbcce94c920c9e398b25e6a59e6bf9eb30a50672d"
+
+
+
+
+[[files]]
+path = "policies/runs/source_apply/source_apply.rego"
+sha256 = "784ab2aad5854721af32074d5405b77d2b5dfe8dee73ae1eefa67ffacd19790a"
+
+
+
+
+[[files]]
+path = "policies/runs/source_outline/source_outline.rego"
+sha256 = "4bc7f84074629a854a9135116690479d997ac61187c4134813a19bd7af5b15e4"
+
+
+
+
+[[files]]
+path = "policies/runs/suppressions/suppressions.rego"
+sha256 = "d8503d3c765347ba14e957b3f76ea53ddc233cacb43aacfba40a85323232c121"
+
+
+
+
+[[files]]
+path = "policies/runs/template/discard/discard.rego"
+sha256 = "6c19414eefde9aac895bfdd2f55e299b9b95ff7a1c8d13aefd59f4871cbc0a75"
+
+
+
+
+[[files]]
+path = "policies/runs/template/identity/identity.rego"
+sha256 = "133caa2a2b8074579f506f77e27b126f55ee6df12e11c4b198475f913620fbba"
+
+
+
+
+[[files]]
+path = "policies/runs/template/init/init.rego"
+sha256 = "61159fd2f38ccdb24f3f75b87c57d5a32bb7b7bef4c36936b2570b8e1f3fa8f3"
+
+
+
+
+[[files]]
+path = "policies/runs/template/new/new.rego"
+sha256 = "77ec29221b7a2544d211cfff06b85e408e886b031d60634d80a4221c9aad3c7f"
+
+
+
+
+[[files]]
+path = "policies/runs/template/publish/publish.rego"
+sha256 = "001ebc732764bbdd7aa18508acc5c4cc4026384228baa1d519c7d5dbad25df8c"
+
+
+
+
+[[files]]
+path = "policies/runs/workflows/workflows.rego"
+sha256 = "b9e251b989fae22fe1048ace24c4eb08f28e76ecf95ba8c01a9626423d51771a"
+
+
+
+
+[[files]]
+path = "policies/runs/worktree_continue/worktree_continue.rego"
+sha256 = "010d8347fddbdfb1696ea2ba2339f621e49a9e136f701cbce5de0a2f7bc4cdfc"
+
+
+
+
+[[files]]
+path = "policies/runtime/runtime.rego"
+sha256 = "bf7315f2c6e28fb6d1a5af97ccaf3da7e14779120f2448023ea0d9abff9b27d5"
+
+
+
+
+[[files]]
+path = "policies/runtime/runtime_test.rego"
+sha256 = "19b63b0504199c163d7a54774a7cdef159211bac528136c0acb4210ce02e2609"
+
+
+
+
+[[files]]
+path = "policies/source/restore/restore.rego"
+sha256 = "ec08509c6e28631f78531217ebc16edb9bbddd17eec5bfb974c98bd7fc16fea2"
+
+
+
+
+[[files]]
+path = "policies/tasks/named/named.rego"
+sha256 = "bd4a59c11c3843eca920de39223cedce908023b886d7c0f31d9aeb5072a209fe"
+
+
+
+
+[[files]]
+path = "policies/tasks/tasks.rego"
+sha256 = "c864f7bd2f70c8f800b1816aabc5bec04ae076df8c973d066fe6b61d6bf5d164"
+
+
+
+
+[[files]]
+path = "policies/tasks/tasks_test.rego"
+sha256 = "5fdd106acb6de744c4de73a967257bb2607c0cb0b00c94aab9a8d5b5dc4e8eb3"
+
+
+
+
+[[files]]
+path = "policies/typing/any.rego"
+sha256 = "640bf29aad23f5490b3cf1a9f19b9c04d7342e592dfd5dace44cdf9d2d79d50c"
+
+
+
+
+[[files]]
+path = "policies/typing/any_test.rego"
+sha256 = "8aec221f6f141f7bf343ad6786028785c42bdba60a9816c862585656245cbfd8"
+
+
+
+
+[[files]]
+path = "policies/typing/mypy.rego"
+sha256 = "bc51fea9671f1c3adbfc903633b9d66d4fbd32567c3713a6adac3355e1da46ed"
+
+
+
+
+[[files]]
+path = "policies/typing/mypy_test.rego"
+sha256 = "192a42eeaeda1b3944afda1b7e8028b798f5f62daa1b8fd27c9664c9b0f31e8f"
+
+
+
+
+[[files]]
+path = "scripts/any_inventory.py"
+sha256 = "eae2f2b222690972fa0a89970f2b69a660841b621351434f2e7024102777bfb0"
+
+
+
+
+[[files]]
+path = "scripts/any_models.py"
+sha256 = "f7c985dde99230d2abc2da8672df7094b3dbaeb2c8559e862d7030111a22e3ef"
+
+
+
+
+[[files]]
+path = "scripts/assertion_audit.py"
+sha256 = "bd8be24e62099a77880570203388e5753f9c6a3e59bbd39d8aace84a4dc28ae5"
+
+
+
+
+[[files]]
+path = "scripts/capability_audit.py"
+sha256 = "db0053211a744390146b04b47bd11a7ec2ed1cf4876c5e2d4bb484c34a7ea3f7"
+
+
+
+
+[[files]]
+path = "scripts/check_ruleset.py"
+sha256 = "4464950c2e76a388813f0113942f1b121bc5cab89ce7608458b01df44dd0e55c"
+
+
+
+
+[[files]]
+path = "scripts/ci_rerun.py"
+sha256 = "faa91e77757b2269e5d408ae812858a5004ab12f87cc54188b39bbbf88fe3b38"
+
+
+
+
+[[files]]
+path = "scripts/deps_add.py"
+sha256 = "2f0f07322d1d39e66740135ae2fd843e94a3734e3931fcf856ed50b38a24597f"
+
+
+
+
+[[files]]
+path = "scripts/env_sync.py"
+sha256 = "a7733ce329b4c6c787cdc97bbec065ba57120cf9373b46e3f7aa256ce5b9b6c1"
+
+
+
+
+[[files]]
+path = "scripts/evaluate_policies.py"
+sha256 = "f99da90c1da89cccdd42520828af93c3c4db81f0b6064a4e41da712904e94af8"
+
+
+
+
+[[files]]
+path = "scripts/evidence_audit.py"
+sha256 = "2dbc8ff201cd7242806c88aeadcc0c2a50e23c78020d8afd2c9d1d7d207d336c"
+
+
+
+
+[[files]]
+path = "scripts/exemptions.py"
+sha256 = "8adcff74b0568ed81129ff285daaa8e163d836f4a15def71599a3e0516f57596"
+
+
+
+
+[[files]]
+path = "scripts/git_observe.py"
+sha256 = "00fa52f9d8e0a8afb1b0b050e46fc402cc430d7122d928737513f9c00a579cba"
+
+
+
+
+[[files]]
+path = "scripts/hooks.py"
+sha256 = "ebb616d1692ba5c70729aebeb2e00ccfb736707e0901e05d3a431e399b23ac4d"
+
+
+
+
+[[files]]
+path = "scripts/invocations.py"
+sha256 = "4c2c13463c7a0897c6a1f7f8d1ab6dc91366ac2f57ea1dd1bcc66a004d6bf92a"
+
+
+
+
+[[files]]
+path = "scripts/layer_audit.py"
+sha256 = "ad4df06a857936739431c69031e6437e42567aa9fd42155d064d2334aed3750b"
+
+
+
+
+[[files]]
+path = "scripts/model_audit.py"
+sha256 = "13de734be7f49168081d824f5d6fa670e28b1c5528a393e6e88312f4985b9132"
+
+
+
+
+[[files]]
+path = "scripts/mutation_anchors.py"
+sha256 = "cfc1b53c137ae000884d6de3d3f77a1295f807733e146f9797a18964722c2f29"
+
+
+
+
+[[files]]
+path = "scripts/mutation_check.py"
+sha256 = "a9dde504c0e1f2aa3630c496438f0c4f630f0f42acb7a10aac39992b0a7e605c"
+
+
+
+
+[[files]]
+path = "scripts/named_tasks.py"
+sha256 = "86df368e689e1c488b68d983e2a7204811bf52b527e705b5e6271efca4976204"
+
+
+
+
+[[files]]
+path = "scripts/parse_inventory.py"
+sha256 = "5f5c023e6390cad0ca7e08530b22003f944ade2166eded032e9b8be6ef663001"
+
+
+
+
+[[files]]
+path = "scripts/pr.py"
+sha256 = "cf3aca92233688c323867340b5dba36f8fc3917990ef62cb0da586c919890f5f"
+
+
+
+
+[[files]]
+path = "scripts/pr_checks.py"
+sha256 = "5ada8093d5d28b350607057ac952eeadfe3bbbe3d5d3f04fca9a6c48563ec180"
+
+
+
+
+[[files]]
+path = "scripts/problem_codes.py"
+sha256 = "b93307f2dcda25f0d32bd0ec824fb4733a2a0b4e1bbc9754ec74abb2265c586e"
+
+
+
+
+[[files]]
+path = "scripts/publish_lock.py"
+sha256 = "683f7a081c5cd4f400e3fb6aa690bd0036ae116a939e154506d6b6d638436b39"
+
+
+
+
+[[files]]
+path = "scripts/publish_policy.py"
+sha256 = "77a76df3b380003022457e82d94867fc8985a9cbc420f17ce3b9408b2da88d76"
+
+
+
+
+[[files]]
+path = "scripts/publish_push.py"
+sha256 = "031c2c50a60fd2bf6cff3529cce5b9c75d732326e0f3e8a4772fe2dd4809ddb5"
+
+
+
+
+[[files]]
+path = "scripts/publish_states.py"
+sha256 = "52ab206c621bd2aaa9e8e4c2b8e2254f2527daef346715ba959d6718095f9738"
+
+
+
+
+[[files]]
+path = "scripts/rebase_state.py"
+sha256 = "0171d0cebace533becb7f8c922a9b98ba76b2f3ef27c9a6c9f32f9778b9cc615"
+
+
+
+
+[[files]]
+path = "scripts/release.py"
+sha256 = "7137766740ae3d903375d8752b034bf6fdae555bff7aeb6a70b22356b78409f8"
+
+
+
+
+[[files]]
+path = "scripts/repo_history.py"
+sha256 = "65d7c05962af709e9e45397fe2af652782d5979050706eb74f273ea0c5859307"
+
+
+
+
+[[files]]
+path = "scripts/repo_report.py"
+sha256 = "8809e4a245c12c8827b27ab91d891ffa6420840d0bab167a821d819a9e180832"
+
+
+
+
+[[files]]
+path = "scripts/repo_state.py"
+sha256 = "a10930278c6e4bf6b89e190e5b60057eaae793dfbdc2aa4eaa964adcd5d771f1"
+
+
+
+
+[[files]]
+path = "scripts/schema_audit.py"
+sha256 = "96b264c1e10363116bf73052d23ed45c5cd43528404b7ef51e0510b2cd7f043f"
+
+
+
+
+[[files]]
+path = "scripts/setup_env.py"
+sha256 = "9291f866c294d350d98f94ed29450e2ac3facc2f1343f8216afc70cc3eb01f4d"
+
+
+
+
+[[files]]
+path = "scripts/snapshot_gate.py"
+sha256 = "097665e69c5b56f5a41abc597a040193d8b56f7cb9fc6f910cd355e02f32a783"
+
+
+
+
+[[files]]
+path = "scripts/source_apply.py"
+sha256 = "f0e4fd1311a4cb251c19dff76c4378354842fab783274e3bd6dec3fe48fbfa3c"
+
+
+
+
+[[files]]
+path = "scripts/source_outline.py"
+sha256 = "bd0b55a11f694e8dde9acc52fd31ce466884de2d069e557ece70c21fb568d0a0"
+
+
+
+
+[[files]]
+path = "scripts/source_read.py"
+sha256 = "9105497945136c55cf05572a72f6d761ddc866d3407a7b9a534a8acf3e1b579a"
+
+
+
+
+[[files]]
+path = "scripts/source_restore.py"
+sha256 = "d74601d71bb95cb9c4883da5248756bb9c5d37d230e326f38aebdd9aa0184842"
+
+
+
+
+[[files]]
+path = "scripts/source_search.py"
+sha256 = "b23f7eff57e4af910a3d1975466481802aef82bf637ecf64016057122700e2e3"
+
+
+
+
+[[files]]
+path = "scripts/source_structure.py"
+sha256 = "f3022139eab4e20e7722d08dffcde483fc05fb87628e761dc9b3dc553893118a"
+
+
+
+
+[[files]]
+path = "scripts/source_units.py"
+sha256 = "d8317d2aefcc27054fd5342d15b79a0aae22064ae2980f166e95b3f44ecec57e"
+
+
+
+
+[[files]]
+path = "scripts/suppression_audit.py"
+sha256 = "cdc96b2a1313cb4e78d0ce2cc38abdd2c535121afad4faa2057423db7ec4208c"
+
+
+
+
+[[files]]
+path = "scripts/sync.py"
+sha256 = "eab028694420f9dc536717b8f8f34b77b3fc0d033f6230c23b10c405df311333"
+
+
+
+
+[[files]]
+path = "scripts/task_commands.py"
+sha256 = "8583132d2dd1c3ef55d96f7fdb4e0e5e3487432fdd791a7dbae91e2b113c9abd"
+
+
+
+
+[[files]]
+path = "scripts/tasks_list.py"
+sha256 = "4da3ce7503be4c69c799b6ec644cef345d66b4494382599b734a3e6f666f9915"
+
+
+
+
+[[files]]
+path = "scripts/type_check.py"
+sha256 = "f97ab50ec09bcb4e4018894bd37469900ebe4511de83abd3c07dec3994986ee0"
+
+
+
+
+[[files]]
+path = "scripts/workflow_audit.py"
+sha256 = "dba230fd19753f8f72d59b3128f48cd5fb86f813eabae647fa4884e77bf22772"
+
+
+
+
+[[files]]
+path = "scripts/worktree.py"
+sha256 = "fa7e99480e9c10832ce0c93b9a74fd82d741846bf1c94a8ce2a4544e6e5e005d"
+
+
+
+
+[[files]]
+path = "tests/test_acceptance_purity.py"
+sha256 = "ef780d7b1b691c64521738bc92cfca5f8a4a98e8a998c9e8bd0ba89115817154"
+
+
+
+
+[[files]]
+path = "tests/test_any_ban.py"
+sha256 = "8dc0517315f29080f54e0bf2e60d0ecb75794e01b6406272ac46c20f0fc85e9b"
+
+
+
+
+[[files]]
+path = "tests/test_assertion_audit.py"
+sha256 = "1abe0b04f12b3dd134e5cd1eb83fc98d0285efc47773c38e6780e1588e8b269c"
+
+
+
+
+[[files]]
+path = "tests/test_capability_audit.py"
+sha256 = "a8f0b56dbc92b8626ff59cac3b5d5a258b148b5be11d394bc1f90439f6572c43"
+
+
+
+
+[[files]]
+path = "tests/test_check_ruleset.py"
+sha256 = "8e874937a9782b29a21296fdec0f68e55b640bd27b0a583aa8d409fad06b148f"
+
+
+
+
+[[files]]
+path = "tests/test_ci_rerun.py"
+sha256 = "e0949f07d7a90c006a03dd5ff44b01a070af067d9cef53270e9ac0a176d248ff"
+
+
+
+
+[[files]]
+path = "tests/test_deps_add.py"
+sha256 = "6b7cc9ceb3f2db6035414d7a7538a7faab2430d0461f66c8f965c2b6a11af7f0"
+
+
+
+
+[[files]]
+path = "tests/test_evidence_audit.py"
+sha256 = "abed900d58eff260d2fd47ddbfbccafed7dc924725c3d4f44f6cd6087f3812f5"
+
+
+
+
+[[files]]
+path = "tests/test_exemptions.py"
+sha256 = "9faa7ce23589ea825168ad56b7dc21ba9fea6d77926c73f499c56b4b3eaf6412"
+
+
+
+
+[[files]]
+path = "tests/test_git_isolation.py"
+sha256 = "70c3c9a7aaa27b89ed0f8f2c1c36f6e27e58106857aee293d3853211d0a86219"
+
+
+
+
+[[files]]
+path = "tests/test_git_observe.py"
+sha256 = "52b5e27d68b99d727c477831e32333ecd53223f7880015a092ca75e13ceb33a8"
+
+
+
+
+[[files]]
+path = "tests/test_hooks_stay_installed.py"
+sha256 = "d35f0c53507705ef2799705f291b08389dd2d69b7652461548f92ed85402d6c5"
+
+
+
+
+[[files]]
+path = "tests/test_import_direction.py"
+sha256 = "fd654df0c7e2be3d681beeb2f605a768253530777e7a01a07bd228323b582819"
+
+
+
+
+[[files]]
+path = "tests/test_integration_ref.py"
+sha256 = "6548da3d42b57913305dd96e58db6dff8316eb0251ab41fc1c19a4c065eabba8"
+
+
+
+
+[[files]]
+path = "tests/test_layer_audit.py"
+sha256 = "8e481825bcf142de0d22db528c52ea2f07c117751f642fa24e040cdbbbb7d05c"
+
+
+
+
+[[files]]
+path = "tests/test_lint_is_cache_free.py"
+sha256 = "cad960e2777baa271c00c0e450be9859934674d47aca7face538876cba4bef91"
+
+
+
+
+[[files]]
+path = "tests/test_lockfile_drift.py"
+sha256 = "a5366b07c16389ef51a694b069493579f9814c9f776a0eae2a80536421267c9d"
+
+
+
+
+[[files]]
+path = "tests/test_merge_readiness.py"
+sha256 = "6a7213557c6b1e1fbd5bbc663bc62a8c4ce6cbf8dd82e8dde3ed09986ae10a32"
+
+
+
+
+[[files]]
+path = "tests/test_model_audit.py"
+sha256 = "82177c9508604a3e07bbc8fcdfcd7b9b12dfc4611b27a91710a76b716c4db556"
+
+
+
+
+[[files]]
+path = "tests/test_mutation_anchors.py"
+sha256 = "c589f34baa5fc82181862b8b4d1cbcdab82d18428386b38779802332aad3fa78"
+
+
+
+
+[[files]]
+path = "tests/test_mutation_check.py"
+sha256 = "27cb0ab5840c1114a417a300a0c9063069df778483ef203b88a973a7b5d137eb"
+
+
+
+
+[[files]]
+path = "tests/test_named_tasks.py"
+sha256 = "b57467edd0122cc6c75ab894da8f719c8d8f453b80fd6316094185bc21d8c0b4"
+
+
+
+
+[[files]]
+path = "tests/test_no_data_in_repo.py"
+sha256 = "b1b16fcd8d340662309e7bc835dd612980405458b8ed01608c2ff94b567bbb3f"
+
+
+
+
+[[files]]
+path = "tests/test_no_raw_parse.py"
+sha256 = "63a7015d3ac91889dae39d7f4f37a11dfa48758d601ef6bd5cf3c2eeb5a9328f"
+
+
+
+
+[[files]]
+path = "tests/test_plan_add.py"
+sha256 = "b0ccd1d55b6c2813c8476819ea65115294e623e691f104503d539018a43143db"
+
+
+
+
+[[files]]
+path = "tests/test_plan_amend.py"
+sha256 = "e272a6a5dee9302711bf41ea4b8142822b606eb65860337302e82615c8617c43"
+
+
+
+
+[[files]]
+path = "tests/test_plan_evidence.py"
+sha256 = "99529661ab2ca6e13c9d6e776eda2720f81a3f19972fa04e07479e850120b0a4"
+
+
+
+
+[[files]]
+path = "tests/test_plan_retract.py"
+sha256 = "7dce3495fa2f2ec34e8fb1cfea8afbb970d22c49957a3dfaf42a45598b108e53"
+
+
+
+
+[[files]]
+path = "tests/test_plan_trace.py"
+sha256 = "550b242917a69137c2a9ea7b3326d7634619e9a3d40563058f56f4fecd219652"
+
+
+
+
+[[files]]
+path = "tests/test_pr.py"
+sha256 = "8773606c9bf50000576591b846b853b4692be21f7bf90fe49f9797560e6f7ed7"
+
+
+
+
+[[files]]
+path = "tests/test_pr_checks.py"
+sha256 = "d510bf9e6fbf9b289c54b622266bf9f9384fade4bd851deefe59a08abf2efb64"
+
+
+
+
+[[files]]
+path = "tests/test_pr_keepalive.py"
+sha256 = "df5b7b14d16786de3ab23241be60189f54579b333bfeb47b3d44df5e2514a8aa"
+
+
+
+
+[[files]]
+path = "tests/test_pr_progress.py"
+sha256 = "1ee4f9c6b3c4771880ac0ebd6538a18d45b391150abdc0fdf0c7a0b60b853cef"
+
+
+
+
+[[files]]
+path = "tests/test_pr_push.py"
+sha256 = "79d60857896ee19e3f469f0bba7e2b4a630f3c9804859d9278ad38cfdc380b89"
+
+
+
+
+[[files]]
+path = "tests/test_pr_push_failure.py"
+sha256 = "8102e92bb6e4df7af2e89e3405ef82f7de2510a4c9eeb369e649e25c084c79d4"
+
+
+
+
+[[files]]
+path = "tests/test_pr_settling.py"
+sha256 = "f804b0d9c7a4cceaee4297a5741e261dbfe0bfa66a4d53ee500a0c68693ba156"
+
+
+
+
+[[files]]
+path = "tests/test_publish_lock.py"
+sha256 = "062a7f20a78198718c8553581fbe9538941d776f48396180567413c99a080a83"
+
+
+
+
+[[files]]
+path = "tests/test_publish_policy.py"
+sha256 = "5fe027ee7a3643ee68e635ad76e8c1502e7e1a70c139ddb919bef09cfe2e4899"
+
+
+
+
+[[files]]
+path = "tests/test_publish_push.py"
+sha256 = "a078020192267efc1bc702bfdf95801dd6d1d66538965faf0d3a5fcd48cea848"
+
+
+
+
+[[files]]
+path = "tests/test_publish_states.py"
+sha256 = "ae290f523dde5720d7e711899e987c7d982296e9142cfb8bd4187f9f8a80ad39"
+
+
+
+
+[[files]]
+path = "tests/test_repo_history.py"
+sha256 = "ba8bacf20bf8e188cdc905908acf4093c96e8151aa3fc2b753118ae6d96cc0c1"
+
+
+
+
+[[files]]
+path = "tests/test_repo_state.py"
+sha256 = "88664542556050e3cbea3e0aacdfa669bae9fa0e9e73669111fe3cca75215a40"
+
+
+
+
+[[files]]
+path = "tests/test_repo_state_task.py"
+sha256 = "7102a6b8d97bb19b947f095b531805f755231e2a1bece497e08b3a53baac4067"
+
+
+
+
+[[files]]
+path = "tests/test_schema_audit.py"
+sha256 = "f2668b24cd42b69c38c33b3ef295a15c5704eaead5cc007848fb5431425bc48a"
+
+
+
+
+[[files]]
+path = "tests/test_snapshot_gate.py"
+sha256 = "edc6c492cfa054dcf2c68a3f31c977002ed4600cdcfa06d3203809aff9b82d5f"
+
+
+
+
+[[files]]
+path = "tests/test_source_apply.py"
+sha256 = "8596f67209845fda0607bda524b7917ab966f84abe1fb8d36cb6f1f7908f3662"
+
+
+
+
+[[files]]
+path = "tests/test_source_outline.py"
+sha256 = "4afbb4444dbd8f822fdcf6411de5e0f5664774c7a004aa286c0d7a0b1416f1a5"
+
+
+
+
+[[files]]
+path = "tests/test_source_read.py"
+sha256 = "6a77d6915387a09ea3bea6b2aee61f8b65ee360ffa8832917b4a9371cbd1ced9"
+
+
+
+
+[[files]]
+path = "tests/test_source_restore.py"
+sha256 = "7e0f8a890a93ea1b3dca777c9e96133e4edbcc010232eb8eb9278c7388a264bd"
+
+
+
+
+[[files]]
+path = "tests/test_source_search.py"
+sha256 = "12c99812afd1ec7fe4d52654ecdbdf075460cba02203c6e7775969242914ab20"
+
+
+
+
+[[files]]
+path = "tests/test_source_structure.py"
+sha256 = "d19e24e31a5334c43bbd7f6291ff227dc45143f04caf045218cc3dde29185ae6"
+
+
+
+
+[[files]]
+path = "tests/test_source_units.py"
+sha256 = "6190366fc637b88abc7db87fd4d135cdb17f6196e20bc7817fdb96c74b86c3dc"
+
+
+
+
+[[files]]
+path = "tests/test_suppression_audit.py"
+sha256 = "b48a19460be5872e173ce9f2015b087ca2e42443b035e67d7b2a8a7431e9c1db"
+
+
+
+
+[[files]]
+path = "tests/test_sync_branches.py"
+sha256 = "331a4d2077e1081f81fda6b42259ded0296761e061097d4e6bbbec23999fdb21"
+
+
+
+
+[[files]]
+path = "tests/test_sync_environment.py"
+sha256 = "b4acc2fcce36ac4321b7ae2b8b0d3b94391b1b9f3745896f5d3ab31cdc8580a3"
+
+
+
+
+[[files]]
+path = "tests/test_task_commands.py"
+sha256 = "fe7eee8fd5a317ec79d87c815e51dad7ed771d7d35efdcbbd3f4dd78a5cf5366"
+
+
+
+
+[[files]]
+path = "tests/test_tasks_list.py"
+sha256 = "fa31bd909ac5ad62eebfd6a894d1f86a11937ddab95e73d5d3f4c31d2086c76c"
+
+
+
+
+[[files]]
+path = "tests/test_type_check_agrees.py"
+sha256 = "84178ffc77ec9e72f0e96cc112ff7372717af0e2b784c5ae74b7eb3f85b377dc"
+
+
+
+
+[[files]]
+path = "tests/test_workflow_audit.py"
+sha256 = "349d0a4ae598c942a04a50b5ad77b4b2067373f836c122cf4d44d0e741fe369b"
+
+
+
+
+[[files]]
+path = "tests/test_workflow_governance.py"
+sha256 = "c8386a6e5cce26eef4d09d7e1c0640bfc80eec8abb7436e62a630ced3f028f96"
+
+
+
+
+[[files]]
+path = "tests/test_worktree_conflicts.py"
+sha256 = "a39faa15d7ffe5ac220dd82b6c30a44098e7aa5b3299531d8a023347056a4c14"
+
+
+
+
+[[files]]
+path = "tests/test_worktree_continue.py"
+sha256 = "8e204c0ec67bc9b2c934994471f7d0e62fefa0c4751258a4b1ac43563711dfde"
+
+
+
+
+[[files]]
+path = "tests/test_worktree_env.py"
+sha256 = "ef30727e25989d4f95337d1ec98e355b713fed24f686404acdf49a3dd64df630"
+
+
+
+
+[[files]]
+path = "tests/test_worktree_refresh.py"
+sha256 = "7a7c2b8900df46055d005cd78d67e4da1637cba0ddea2de0b6e56fdfda844f4d"
+
+
+
+
+[[files]]
+path = "tests/test_worktree_remove.py"
+sha256 = "446e49bce584d01a264e808c500b11e6d5a0df18f76c63d9b7bf8e43604636e8"
+
+
+
+[[files]]
+path = "tests/test_problem_codes.py"
+sha256 = "949ee4d3c2f5a8a910c480bf6aa073af621d4fc3006e72bbfa9409529ba3c1e5"
 [[adapted]]
 path = "tests/conftest.py"
 reason = "publication guards absent until pr and publish_push are ported; plan and develop tests strict-xfail until their preconditions exist"
@@ -400,169 +2786,466 @@ sha256 = "bb48b746c596b2f55358430c9d9ca3b79b74bfc63ec8ad6333117e8c47e05661"
 path = "tests/test_policy_inputs.py"
 sha256 = "20b42d632e5a2534b5767966722b8909157723f5e93e768d3c35c0a66ed4d8f6"
 reason = "tests cscie103 Nix and Databricks policy inputs, outside the approved scope"
+
 [[withdrawn]]
 path = "assignments/assignment-01/notebooks/assignment_01_spark_api.py"
 reason = "cscie103 coursework: course content, not a capability"
+
 [[withdrawn]]
 path = "assignments/assignment-02/notebooks/assignment_02_etl.py"
 reason = "cscie103 coursework: course content, not a capability"
+
 [[withdrawn]]
 path = "context/review-d168.toml"
 reason = "cscie103's own plan review: plan data belongs to the project it plans"
+
 [[withdrawn]]
 path = "contracts/schemas/contracts/export_copy.ExportCopy.json"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "contracts/schemas/nix-contract-output.schema.json"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "databricks.yml"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "flake.lock"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "flake.nix"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "policies/bundle/bundle.rego"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "policies/bundle/bundle_test.rego"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "policies/export/copy/copy.rego"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "policies/machine/nix/helpers.rego"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "policies/machine/nix/nix.rego"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "policies/machine/nix/nix_test.rego"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "policies/machine/nix/problems.rego"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "policies/machine/nix/warnings.rego"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "policies/runs/nix_lock/nix_lock.rego"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "resources/assignment_01_job.yml"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "resources/assignment_02_job.yml"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "resources/coursework.yml"
 reason = "cscie103 coursework: course content, not a capability"
+
 [[withdrawn]]
 path = "resources/unity_catalog.yml"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "scripts/databricks_cli.py"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "scripts/export_copy.py"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "scripts/load_assignment_data.py"
 reason = "cscie103 coursework: course content, not a capability"
+
 [[withdrawn]]
 path = "scripts/nix_contract.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "scripts/nix_evidence.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "scripts/nix_ledger.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "scripts/nix_lock_update.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "scripts/nix_models.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "scripts/nix_observability.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "scripts/nix_output.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "scripts/nix_policy.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "scripts/nix_request.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "scripts/nix_system.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "scripts/verify_export.py"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "tests/fixtures/bundle-resolved-fixture-target.json"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "tests/fixtures/release/bundle-with-a-job.json"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "tests/test_assignment_02.py"
 reason = "cscie103 coursework: course content, not a capability"
+
 [[withdrawn]]
 path = "tests/test_bundle_tasks.py"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "tests/test_databricks_cli.py"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "tests/test_export_copy.py"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
 [[withdrawn]]
 path = "tests/test_nix_contract.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "tests/test_nix_errors.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "tests/test_nix_evidence.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "tests/test_nix_ledger_binding.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "tests/test_nix_lock_update.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "tests/test_nix_observe.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "tests/test_nix_output_contract.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "tests/test_nix_policy_inputs.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "tests/test_nix_project_flake.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "tests/test_nix_report_invariants.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "tests/test_nix_run.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "tests/test_nix_schemas.py"
 reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+
 [[withdrawn]]
 path = "tests/test_verify_export.py"
 reason = "Databricks bundle and export: recsys has no Databricks workspace"
 
+
+[[withdrawn]]
+path = "context/plan-ids.toml"
+reason = "recsys keeps its own plan data: a plan belongs to the project it plans"
+
+[[withdrawn]]
+path = "context/plan-trace.toml"
+reason = "recsys keeps its own plan data: a plan belongs to the project it plans"
+
+[[withdrawn]]
+path = "context/plan.toml"
+reason = "recsys keeps its own plan data: a plan belongs to the project it plans"
+
+[[withdrawn]]
+path = "mise.toml"
+reason = "recsys's own founded configuration: cscie103's tasks are merged into it by A.14, A.16 and A.17"
+
+[[withdrawn]]
+path = "pyproject.toml"
+reason = "recsys's own founded project definition"
+
+[[withdrawn]]
+path = "uv.lock"
+reason = "recsys's own lock, resolved from its own pyproject.toml"
+
+[[withdrawn]]
+path = "contracts/signing-keys.toml"
+reason = "recsys's own signing keys: keys belong to the repository they sign for"
+
+[[withdrawn]]
+path = "contracts/environment-versions.json"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "contracts/schemas/contracts/auth_login.LoginPlan.json"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "contracts/schemas/contracts/ci_federation.FederationPlan.json"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "policies/runs/auth_login/auth_login.rego"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "policies/runs/ci_federation/ci_federation.rego"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "scripts/auth_login.py"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "scripts/bootstrap_identity.py"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "scripts/check_env_parity.py"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "scripts/check_prereqs.py"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "scripts/ci_federation.py"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "scripts/environment_versions.py"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "scripts/update_fixtures.py"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "tests/test_auth_login.py"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "tests/test_ci_federation.py"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "tests/test_env_parity.py"
+reason = "Databricks: its task is withdrawn with the workspace recsys does not have"
+
+[[withdrawn]]
+path = "tests/test_release_target.py"
+reason = "Databricks: it derives a release target from a bundle job, which recsys release does not have"
+
+[[withdrawn]]
+path = ".github/workflows/ci.yml"
+reason = "cscie103's own content (its course README, its CI): recsys writes its own"
+
+[[withdrawn]]
+path = "README.md"
+reason = "cscie103's own content (its course README, its CI): recsys writes its own"
+
+[[withdrawn]]
+path = "contracts/project-identity.toml"
+reason = "Databricks identity: its model requires catalog, workspace and account fields; origin names the repository"
+
+[[withdrawn]]
+path = "contracts/schemas/contracts/claim_signing.GateClaim.json"
+reason = "unused by recsys: no kept file names it"
+
+[[withdrawn]]
+path = "contracts/schemas/contracts/template_discard.DiscardRequest.json"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "contracts/schemas/contracts/template_identity.IdentityRequest.json"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "contracts/schemas/contracts/template_init.InitRequest.json"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "contracts/schemas/contracts/template_new.TemplateRequest.json"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "contracts/schemas/contracts/template_publish.PublishRequest.json"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "copier.yml"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "scripts/check_pii.py"
+reason = "unused by recsys: no kept task, gate or module reaches it"
+
+[[withdrawn]]
+path = "scripts/check_repo_hygiene.py"
+reason = "unused by recsys: no kept task, gate or module reaches it"
+
+[[withdrawn]]
+path = "scripts/claim_signing.py"
+reason = "unused by recsys: no kept task, gate or module reaches it"
+
+[[withdrawn]]
+path = "scripts/runtime_contract.py"
+reason = "unused by recsys: no kept task, gate or module reaches it"
+
+[[withdrawn]]
+path = "scripts/template_discard.py"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "scripts/template_identity.py"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "scripts/template_init.py"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "scripts/template_new.py"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "scripts/template_publish.py"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "tests/test_claim.py"
+reason = "unused by recsys: it tests code recsys does not carry"
+
+[[withdrawn]]
+path = "tests/test_claim_signing.py"
+reason = "unused by recsys: it tests code recsys does not carry"
+
+[[withdrawn]]
+path = "tests/test_copier_template.py"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "tests/test_generated_gate.py"
+reason = "unused by recsys: it tests code recsys does not carry"
+
+[[withdrawn]]
+path = "tests/test_policy_fixtures.py"
+reason = "unused by recsys: it tests code recsys does not carry"
+
+[[withdrawn]]
+path = "tests/test_repo_hygiene.py"
+reason = "unused by recsys: it tests code recsys does not carry"
+
+[[withdrawn]]
+path = "tests/test_run_template_policies.py"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "tests/test_runtime_contract.py"
+reason = "unused by recsys: it tests code recsys does not carry"
+
+[[withdrawn]]
+path = "tests/test_template_discard.py"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "tests/test_template_identity.py"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "tests/test_template_init.py"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "tests/test_template_new.py"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "tests/test_template_publish.py"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+
+[[withdrawn]]
+path = "tests/test_workspace_identity.py"
+reason = "Databricks identity (catalog, workspace, account): recsys has no Databricks workspace"
+
+[[withdrawn]]
+path = "{{ _copier_conf.answers_file }}.jinja"
+reason = "unused by recsys: cscie103's generator for new repositories from itself"
+[[withdrawn]]
+path = "scripts/project_identity.py"
+reason = "Databricks identity: its model requires catalog, workspace and account fields; origin names the repository"
+[[withdrawn]]
+path = "contracts/schemas/contracts/project_identity.IdentityInventory.json"
+reason = "Databricks identity: its model requires catalog, workspace and account fields; origin names the repository"
+[[withdrawn]]
+path = "contracts/schemas/contracts/project_identity.ProjectIdentity.json"
+reason = "Databricks identity: its model requires catalog, workspace and account fields; origin names the repository"
+[[withdrawn]]
+path = "policies/identity/identity.rego"
+reason = "Databricks identity: its model requires catalog, workspace and account fields; origin names the repository"
+[[withdrawn]]
+path = "tests/test_project_identity.py"
+reason = "Databricks identity: its model requires catalog, workspace and account fields; origin names the repository"
 [upstream_tree]
 commit = "58af9d32a9972d6abb5a18acd94ee1235843da66"
 paths = 492

@@ -100,7 +100,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.13"
-title = "Every applicable cscie103 capability is ported whole, or withdrawn by name with its reason"
+title = "Every cscie103 capability recsys uses is ported whole or minimally adapted; Databricks, Nix and unused files are withdrawn by name"
 thread = "A"
 done_when = [
   { kind = "proof", test = "tests/test_provenance.py::test_every_upstream_path_is_ported_or_withdrawn" },
