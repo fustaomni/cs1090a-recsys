@@ -1339,12 +1339,10 @@
  code = "ERR_RESTORE_NO_PATHS"
  title = "At least one path is named"
  severity = "error"
-@@ -809,428 +619,3 @@
- code = "ERR_RESTORE_UNTRACKED"
- title = "Only paths HEAD knows are restored"
+@@ -811,426 +621,11 @@
  severity = "error"
--
--[[problems]]
+ 
+ [[problems]]
 -code = "ERR_RUFF_CACHED"
 -title = "Every ruff check runs cache-free"
 -severity = "error"
@@ -1768,3 +1766,11 @@
 -code = "ERR_MUTATION_ANCHORS_UNREADABLE"
 -title = "Every spec reads as a mutation spec"
 -severity = "error"
++code = "ERR_COPIES_INPUT_MISSING"
++title = "The copy inventory is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_COPIES_UNVERIFIED"
++title = "Every untracked copy matches the pinned tree"
++severity = "error"

@@ -794,7 +794,7 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 path = "contracts/problems.toml"
 reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "d04a76b95fbe356ddb4cfc4476b5f4cdfc1a25a50c5630e6ca258d768719f2b6"
+sha256 = "50bf3edd29141b6c859aee91769c4127c62685f2e9f0d3d6a8d38e5616bac548"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
