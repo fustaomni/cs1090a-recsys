@@ -554,3 +554,38 @@ severity = "error"
 code = "ERR_MODELS_UNBASELINED"
 title = "A new model derives from Contract or Reading, never BaseModel"
 severity = "error"
+
+[[problems]]
+code = "ERR_MUTATION_ANCHOR_NOT_ONCE"
+title = "Every mutant's anchor is found exactly once"
+severity = "error"
+
+[[problems]]
+code = "ERR_MUTATION_BASELINE_FAILED"
+title = "Every killer passes before any mutant is applied"
+severity = "error"
+
+[[problems]]
+code = "ERR_MUTATION_INPUT_MISSING"
+title = "The mutation evidence is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_MUTATION_KILLER_UNJUDGED"
+title = "Every killer's result could be judged"
+severity = "error"
+
+[[problems]]
+code = "ERR_MUTATION_SURVIVED_ITS_KILLER"
+title = "Every named killer kills its mutant"
+severity = "error"
+
+[[problems]]
+code = "ERR_MUTATION_TREE_TOUCHED"
+title = "The tree under test is never mutated in place"
+severity = "error"
+
+[[problems]]
+code = "ERR_MUTATION_TREE_UNLISTED"
+title = "The tree under test could be listed"
+severity = "error"

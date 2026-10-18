@@ -544,6 +544,69 @@ mutant = "\tfalse\n"
 proof = "tests/test_audit_policies.py::test_an_unresolved_evidence_argument_is_refused_by_the_policy"
 
 [[safeguards]]
+id = "MUTATION.INPUT_MISSING"
+engine = "mutation:check"
+guard = "ERR_MUTATION_INPUT_MISSING"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\tnot input.mutation\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_policy.py::test_an_unobserved_mutation_run_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MUTATION.TREE_UNLISTED"
+engine = "mutation:check"
+guard = "ERR_MUTATION_TREE_UNLISTED"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\tinput.mutation.tree_listed == false\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_policy.py::test_an_unlisted_tree_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MUTATION.BASELINE_FAILED"
+engine = "mutation:check"
+guard = "ERR_MUTATION_BASELINE_FAILED"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\trun.exit_code != 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_check.py::test_a_failing_baseline_halts_instead_of_counting_every_mutant_killed"
+
+[[safeguards]]
+id = "MUTATION.ANCHOR_NOT_ONCE"
+engine = "mutation:check"
+guard = "ERR_MUTATION_ANCHOR_NOT_ONCE"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\tnot mutant.anchor_found_once\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_check.py::test_an_anchor_not_found_once_is_unknown_not_survived"
+
+[[safeguards]]
+id = "MUTATION.SURVIVED_ITS_KILLER"
+engine = "mutation:check"
+guard = "ERR_MUTATION_SURVIVED_ITS_KILLER"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\trun.exit_code == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_check.py::test_a_mutant_its_named_killer_misses_is_refused_even_if_another_test_kills_it"
+
+[[safeguards]]
+id = "MUTATION.KILLER_UNJUDGED"
+engine = "mutation:check"
+guard = "ERR_MUTATION_KILLER_UNJUDGED"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\tnot _judged(run.exit_code)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_policy.py::test_an_unjudged_killer_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MUTATION.TREE_TOUCHED"
+engine = "mutation:check"
+guard = "ERR_MUTATION_TREE_TOUCHED"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\tinput.mutation.tree_untouched == false\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_policy.py::test_a_touched_tree_is_refused_by_the_policy"
+
+[[safeguards]]
 id = "SA.ANCHOR_COUNT"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_ANCHOR_COUNT"
