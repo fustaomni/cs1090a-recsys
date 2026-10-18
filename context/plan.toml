@@ -946,9 +946,13 @@ thread = "A"
 depends_on = ["A.20"]
 because = { "A.20" = "the gates join the registry check runs" }
 done_when = [
+  { kind = "proof", test = "tests/test_problem_codes.py::test_registry_and_emitters_agree_both_ways" },
+  { kind = "proof", test = "tests/test_problem_codes.py::test_every_entry_has_the_rfc_9457_members" },
+  { kind = "proof", test = "tests/test_suppression_audit.py::test_the_committed_tree_has_no_unregistered_suppression" },
   { kind = "task", name = "audit:exemptions" },
   { kind = "task", name = "audit:suppressions" },
   { kind = "task", name = "audit:problems" },
+  { kind = "task", name = "problems:register" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
