@@ -472,6 +472,23 @@ description = "Install exactly the tools mise.lock records, refusing any it does
 # --locked: a tool missing from the lock fails instead of resolving a version from the network.
 run = "mise install --locked"
 
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.107).
+[tasks."audit:assertions"]
+description = "Refuse any test assertion over a collection it has not proven non-empty"
+# M40 (D.107): all() and not any() over nothing are True, and a loop over nothing asserts nothing.
+# Each such claim must range over a non-empty literal or nonempty(...). Runs in check and in CI.
+run = "uv run --no-sync python scripts/assertion_audit.py"
+
+[tasks."audit:evidence"]
+description = "Refuse any evidence contract holding a conclusion, and any evaluate() argument unresolved"
+# D.142, C17: evidence is what was observed; what policy decides is recorded apart from it.
+run = "uv run --no-sync python scripts/evidence_audit.py"
+
+[tasks."audit:models"]
+description = "Refuse any model deriving from BaseModel directly unless the shrinking baseline lists it"
+# D.147: every model derives from Contract or Reading; the baseline may only shrink (M61).
+run = "uv run --no-sync python scripts/model_audit.py"
+
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.108).
 [tasks."audit:exemptions"]
 description = "Refuse an expired exemption, or one naming a path that no longer exists"

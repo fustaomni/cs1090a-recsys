@@ -116,8 +116,8 @@ class GateReport(Contract):
 # WITHDRAWN IN THE PORT (recsys founding F7, plan A.3): cscie103's registry named gates whose
 # script, task or tool recsys does not have, so the pre-push gate failed closed on gates that
 # could never run. Each returns with its script or tool; until then it is named, not skipped.
-# Hooks: policy, policy decisions, repo hygiene,
-# assertions, evidence, models, mutation anchors,
+# Hooks: policy, policy decisions,
+# mutation anchors,
 # schemas, nix contract. CI-only: pii, fixtures, prereqs, env-parity, nix flake.
 GATES: tuple[GateSpec, ...] = (
     GateSpec(
@@ -168,6 +168,18 @@ GATES: tuple[GateSpec, ...] = (
     #
     # --redact keeps any finding out of CI logs, where it would become a second
     # leak in the process of reporting the first.
+    # DEBRIS, alongside the secret and PII scans. Those ask what a file
+    # CONTAINS; this asks whether a tracked file looks like an accident at all.
+    #
+    # A zero-byte `nix_contract` -- a mistyped shell redirect -- was swept into
+    # a commit by `git add -A` and no gate saw it. Offline and instant, so it
+    # belongs in the hooks where the mistake is made.
+    GateSpec(
+        name="repo hygiene",
+        command=("uv", "run", "python", "scripts/check_repo_hygiene.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
     GateSpec(
         name="secrets (history)",
         command=("betterleaks", "git", "--redact", "--no-banner"),
@@ -183,6 +195,26 @@ GATES: tuple[GateSpec, ...] = (
     GateSpec(
         name="workflows",
         command=("uv", "run", "python", "scripts/workflow_audit.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    GateSpec(
+        name="assertions",
+        command=("uv", "run", "python", "scripts/assertion_audit.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    # EVIDENCE HOLDS OBSERVATIONS ONLY (D.142). Offline and sub-second, so the hooks run it.
+    GateSpec(
+        name="evidence",
+        command=("uv", "run", "python", "scripts/evidence_audit.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    # THE MODEL RATCHET (D.147): a new direct BaseModel subclass, or a stale entry, fails.
+    GateSpec(
+        name="models",
+        command=("uv", "run", "python", "scripts/model_audit.py"),
         runs_in_hooks=True,
         timeout_seconds=300.0,
     ),

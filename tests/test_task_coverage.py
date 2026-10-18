@@ -12,6 +12,8 @@ import json
 import tomllib
 from pathlib import Path
 
+from nonvacuous import nonempty
+
 ROOT = Path(__file__).resolve().parent.parent
 PLATFORM = "linux-x64"
 TOOLCHAIN = {
@@ -30,7 +32,7 @@ def test_every_toolchain_operation_is_a_task() -> None:
     listed = _load("contracts", "capabilities.toml")["capabilities"]
     assert isinstance(listed, list), listed
     registered = {entry["task"] for entry in listed if isinstance(entry, dict)}
-    for task, command in TOOLCHAIN.items():
+    for task, command in nonempty(TOOLCHAIN.items()):
         body = tasks.get(task)
         assert isinstance(body, dict) and body.get("run") == command, (task, body)
         assert task in registered, f"{task} is not a registered capability"

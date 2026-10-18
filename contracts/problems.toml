@@ -499,3 +499,58 @@ severity = "error"
 code = "ERR_WORKFLOW_ZIZMOR_UNAVAILABLE"
 title = "zizmor completed its audit"
 severity = "error"
+
+[[problems]]
+code = "ERR_ASSERTION_INPUT_MISSING"
+title = "The assertion inventory is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_ASSERTION_NOTHING_SCANNED"
+title = "The audit examined something"
+severity = "error"
+
+[[problems]]
+code = "ERR_ASSERTION_VACUOUS"
+title = "Every claim ranges over a subject proven to exist"
+severity = "error"
+
+[[problems]]
+code = "ERR_EVIDENCE_CONCLUSION"
+title = "Evidence holds observations, never a conclusion"
+severity = "error"
+
+[[problems]]
+code = "ERR_EVIDENCE_INPUT_MISSING"
+title = "The evidence inventory is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_EVIDENCE_NONE_FOUND"
+title = "An audit that found no evidence contract proves nothing"
+severity = "error"
+
+[[problems]]
+code = "ERR_EVIDENCE_UNRESOLVED"
+title = "Every evaluate() argument resolves to its evidence contract"
+severity = "error"
+
+[[problems]]
+code = "ERR_MODELS_INPUT_MISSING"
+title = "The model inventory is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_MODELS_NOTHING_SCANNED"
+title = "An audit that scanned no file proves nothing"
+severity = "error"
+
+[[problems]]
+code = "ERR_MODELS_STALE"
+title = "The baseline lists only what is still true, so it can only shrink"
+severity = "error"
+
+[[problems]]
+code = "ERR_MODELS_UNBASELINED"
+title = "A new model derives from Contract or Reading, never BaseModel"
+severity = "error"
