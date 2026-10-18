@@ -1,0 +1,38 @@
+--- a/tests/test_publish_policy.py
++++ b/tests/test_publish_policy.py
+@@ -7,10 +7,11 @@
+ from collections.abc import Callable
+ from pathlib import Path
+ 
++import spine
+ from check_all import GATES, GateRun, selected
+ from command_outcome import CommandOutcome
+ from gitenv import scrubbed_env
+-from publish_policy import PublishEvidence, evidence, expected, judge
++from publish_policy import ENTRYPOINT, POLICY, PublishEvidence, evidence, expected, judge
+ from publish_push import publish
+ from snapshot_gate import GateResult
+ from spine import Verdict
+@@ -131,3 +132,22 @@
+     """The snapshot runs the hook gates offline, so publication expects exactly those."""
+     hooked = tuple(spec.name for spec in selected(GATES, hooks=True))
+     assert expected() == hooked, (expected(), hooked)
++
++
++def test_a_failed_gate_is_refused_by_its_own_rule() -> None:
++    """recsys: a failed gate is refused by name, not only because the passed set falls short."""
++    verdict, _ = judge(evidence("c", "t", _ran("lint"), expected()))
++    assert "ERR_PUBLICATION_GATE_FAILED" in _failing(verdict), verdict
++
++
++def test_nothing_declared_is_refused() -> None:
++    """recsys: an empty declaration is not every gate passing."""
++    verdict, _ = judge(evidence("c", "t", _ran(), ()))
++    assert "ERR_PUBLICATION_NOTHING_EXPECTED" in _failing(verdict), verdict
++
++
++def test_an_absent_publication_record_is_refused_by_the_policy() -> None:
++    """recsys: the evidence under another subject leaves the policy nothing to read."""
++    found = evidence("c", "t", _ran(), expected())
++    verdict = spine.evaluate(found, "not_publish", POLICY, ENTRYPOINT)
++    assert "ERR_PUBLICATION_INPUT_MISSING" in _failing(verdict), verdict

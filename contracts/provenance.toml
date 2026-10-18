@@ -374,9 +374,9 @@ path = "contracts/schemas/contracts/deps_add.DepsChange.json"
 sha256 = "73dbed77bfee4919c1be1c5199c0cc8ca6f6139ed4311120812d7b35fd72a92d"
 [[adapted]]
 path = "tests/conftest.py"
-reason = "every test takes its level from its directory, or is refused; A.39"
+reason = "every test takes its level from its directory, or is refused (A.39); the publication guards return with pr and publish_push (A.19)"
 patch = "contracts/vendor-patches/tests/conftest.py.patch"
-sha256 = "d7cb7ca8ce3e1db4ce0c73f68f9b72b2c0d9a85a922b7b4f1fb237a316dc356e"
+sha256 = "5aa127d1d57e9d21f5fd18b999d0cc71251b800d9436f4663e74809420be9094"
 
 [[adapted]]
 path = "tests/test_plan_status.py"
@@ -401,12 +401,6 @@ path = "tests/test_run_gateway.py"
 reason = "registry assertion names plan:trace instead of the cscie103 task audit:assertions"
 patch = "contracts/vendor-patches/tests/test_run_gateway.py.patch"
 sha256 = "5e42c5e892a6f5d791dc560f823a9ac0e93f2bbeb21a88753046e880807854ab"
-
-[[adapted]]
-path = "tests/test_git_subprocesses.py"
-reason = "real-tree spawn set asserted empty; planted tests are its paired negative controls"
-patch = "contracts/vendor-patches/tests/test_git_subprocesses.py.patch"
-sha256 = "b23a62e991e380f23fc281f114fa668765d797d69b3939143c86f78e9c659e55"
 [[adapted]]
 path = "tests/acceptance/acceptance_sandbox.py"
 reason = "no Nix in recsys; .cache excluded from the copy; the path-trust exception stated"
@@ -613,3 +607,129 @@ path = "tests/test_workflow_governance.py"
 reason = "killing proofs for the two runs.workflows guards that had none: zizmor not completing its audit, and a workflow declaring no permissions (A.23)"
 patch = "contracts/vendor-patches/tests/test_workflow_governance.py.patch"
 sha256 = "2854cbb1fa9d13d81c112954387d685a8760f75ddf0887bb424a728cb2f7031f"
+
+[[files]]
+path = "scripts/pr.py"
+sha256 = "cf3aca92233688c323867340b5dba36f8fc3917990ef62cb0da586c919890f5f"
+
+[[files]]
+path = "scripts/publish_push.py"
+sha256 = "031c2c50a60fd2bf6cff3529cce5b9c75d732326e0f3e8a4772fe2dd4809ddb5"
+
+[[files]]
+path = "scripts/publish_policy.py"
+sha256 = "77a76df3b380003022457e82d94867fc8985a9cbc420f17ce3b9408b2da88d76"
+
+[[files]]
+path = "scripts/publish_states.py"
+sha256 = "52ab206c621bd2aaa9e8e4c2b8e2254f2527daef346715ba959d6718095f9738"
+
+[[files]]
+path = "scripts/publish_lock.py"
+sha256 = "683f7a081c5cd4f400e3fb6aa690bd0036ae116a939e154506d6b6d638436b39"
+
+[[files]]
+path = "scripts/snapshot_gate.py"
+sha256 = "097665e69c5b56f5a41abc597a040193d8b56f7cb9fc6f910cd355e02f32a783"
+
+[[files]]
+path = "scripts/git_observe.py"
+sha256 = "00fa52f9d8e0a8afb1b0b050e46fc402cc430d7122d928737513f9c00a579cba"
+
+[[files]]
+path = "scripts/exemptions.py"
+sha256 = "8adcff74b0568ed81129ff285daaa8e163d836f4a15def71599a3e0516f57596"
+
+[[files]]
+path = "policies/merge/readiness/readiness.rego"
+sha256 = "cf54985ed2bbcf1b61f34743913abb89d51bdeeb1cddde2c2f12200bdd1602c6"
+
+[[files]]
+path = "policies/runs/publish/publish.rego"
+sha256 = "6059f2d18cd7f6ed9a1615b808e3fd6b8f6099af4dae66ffa980b5da17b1c68d"
+
+[[files]]
+path = "policies/runs/exemptions/exemptions.rego"
+sha256 = "013c9f119a3b813ddd8582b6f755f2ad5a9c08d30943487e561a6ac9bc85e932"
+
+[[files]]
+path = "contracts/publish-expectations.toml"
+sha256 = "f4e1a57ca255e37c01c54b25f12b486313b60ad6b276cf7520ccb6ab3337056a"
+
+[[adapted]]
+path = "contracts/publish-expectations.toml"
+reason = "publication expects exactly this repository's hook gates; the twelve cscie103 gates the founding withdrew are absent, not skipped (A.19)"
+patch = "contracts/vendor-patches/contracts/publish-expectations.toml.patch"
+sha256 = "d790fed589cf53e2c6c89b74357f3fe466f4109064df26351e661b1a9a3370f0"
+
+[[files]]
+path = "contracts/exemptions.toml"
+sha256 = "51ebe69320ef6b6f3f4db802c08afc79218127ed702cdf9cded91c927b105731"
+
+[[files]]
+path = "tests/test_pr.py"
+sha256 = "8773606c9bf50000576591b846b853b4692be21f7bf90fe49f9797560e6f7ed7"
+
+[[files]]
+path = "tests/test_pr_push_failure.py"
+sha256 = "8102e92bb6e4df7af2e89e3405ef82f7de2510a4c9eeb369e649e25c084c79d4"
+
+[[files]]
+path = "tests/test_pr_push.py"
+sha256 = "79d60857896ee19e3f469f0bba7e2b4a630f3c9804859d9278ad38cfdc380b89"
+
+[[files]]
+path = "tests/test_pr_keepalive.py"
+sha256 = "df5b7b14d16786de3ab23241be60189f54579b333bfeb47b3d44df5e2514a8aa"
+
+[[files]]
+path = "tests/test_pr_progress.py"
+sha256 = "1ee4f9c6b3c4771880ac0ebd6538a18d45b391150abdc0fdf0c7a0b60b853cef"
+
+[[files]]
+path = "tests/test_pr_settling.py"
+sha256 = "f804b0d9c7a4cceaee4297a5741e261dbfe0bfa66a4d53ee500a0c68693ba156"
+
+[[files]]
+path = "tests/test_merge_readiness.py"
+sha256 = "6a7213557c6b1e1fbd5bbc663bc62a8c4ce6cbf8dd82e8dde3ed09986ae10a32"
+
+[[adapted]]
+path = "tests/test_merge_readiness.py"
+reason = "killing proofs for the three merge.readiness guards that had none: behind, draft and unstable (A.19)"
+patch = "contracts/vendor-patches/tests/test_merge_readiness.py.patch"
+sha256 = "bd7b43d062a2390b4058fc794cca745da49623fc2322413d48fab1d476ddf3e4"
+
+[[files]]
+path = "tests/test_publish_push.py"
+sha256 = "a078020192267efc1bc702bfdf95801dd6d1d66538965faf0d3a5fcd48cea848"
+
+[[files]]
+path = "tests/test_publish_policy.py"
+sha256 = "5fe027ee7a3643ee68e635ad76e8c1502e7e1a70c139ddb919bef09cfe2e4899"
+
+[[adapted]]
+path = "tests/test_publish_policy.py"
+reason = "killing proofs for the runs.publish guards that had none: a failed gate by its own rule, nothing declared, and an absent record (A.19)"
+patch = "contracts/vendor-patches/tests/test_publish_policy.py.patch"
+sha256 = "fc44ea1db9ce3105f17693306f6f574fad0129c99177b02619662c5c62047284"
+
+[[files]]
+path = "tests/test_publish_states.py"
+sha256 = "ae290f523dde5720d7e711899e987c7d982296e9142cfb8bd4187f9f8a80ad39"
+
+[[files]]
+path = "tests/test_publish_lock.py"
+sha256 = "062a7f20a78198718c8553581fbe9538941d776f48396180567413c99a080a83"
+
+[[files]]
+path = "tests/test_snapshot_gate.py"
+sha256 = "edc6c492cfa054dcf2c68a3f31c977002ed4600cdcfa06d3203809aff9b82d5f"
+
+[[files]]
+path = "tests/test_git_observe.py"
+sha256 = "52b5e27d68b99d727c477831e32333ecd53223f7880015a092ca75e13ceb33a8"
+
+[[files]]
+path = "tests/test_exemptions.py"
+sha256 = "9faa7ce23589ea825168ad56b7dc21ba9fea6d77926c73f499c56b4b3eaf6412"
