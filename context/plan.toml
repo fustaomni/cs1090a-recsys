@@ -895,3 +895,12 @@ because = { "A.26" = "tools:install is the one sanctioned install", "A.102" = "p
 done_when = [
   { kind = "proof", test = "tests/test_task_coverage.py::test_a_tool_arrives_only_through_tools_install" },
 ]
+[[steps]]
+id = "A.104"
+title = "A claim about this machine runs in this machine's gates, never on CI's runner"
+thread = "A"
+depends_on = ["A.39", "A.20"]
+because = { "A.39" = "a test's lane is declared by the directory it lives in", "A.20" = "CI's quality gate runs check, which ran A.8's claims about this machine on GitHub's runner" }
+done_when = [
+  { kind = "proof", test = "tests/test_machine_lane.py::test_a_machine_claim_runs_here_and_never_on_ci" },
+]

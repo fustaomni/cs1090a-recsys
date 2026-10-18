@@ -89,4 +89,5 @@ issued = [
   { id = "A.101", first_title = "sync returns to develop, brings every long-lived branch current, and removes only what is safe" },
   { id = "A.102", first_title = "gh is pinned in the founding data and mise.toml, locked by tools:lock, its provenance verified" },
   { id = "A.103", first_title = "A tool reaches this machine only through tools:install: mise's auto-install is off, pinned with the rest" },
+  { id = "A.104", first_title = "A claim about this machine runs in this machine's gates, never on CI's runner" },
 ]
