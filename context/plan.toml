@@ -965,8 +965,8 @@ done_when = [
 id = "A.109"
 title = "The contract gates return from cscie103: mutation anchors and schemas"
 thread = "A"
-depends_on = ["A.20"]
-because = { "A.20" = "the gates join the registry check runs" }
+depends_on = ["A.20", "A.116"]
+because = { "A.20" = "the gates join the registry check runs", "A.116" = "mutation_anchors loads specs and counts anchors with mutation_check's own models, so the gate needs its harness" }
 done_when = [
   { kind = "task", name = "audit:schemas" },
   { kind = "task", name = "check" },
@@ -1032,5 +1032,25 @@ because = { "A.107" = "the ratchet that holds them begins there, listing exactly
 done_when = [
   { kind = "proof", test = "tests/test_audit_policies.py::test_the_model_baseline_is_empty" },
   { kind = "task", name = "audit:models" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.116"
+title = "cscie103's mutation harness returns: mutation:check, its runs.mutation policy, its proofs and its task"
+thread = "A"
+depends_on = ["A.28"]
+because = { "A.28" = "the harness is ported from cscie103 at its pinned commit" }
+done_when = [
+  { kind = "task", name = "mutation:check" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.117"
+title = "One harness proves every guard: safeguards:prove, which cscie103 does not have, is reconciled with mutation:check"
+thread = "A"
+depends_on = ["A.116"]
+because = { "A.116" = "the reconciliation needs both harnesses present" }
+done_when = [
+  { kind = "proof", test = "tests/test_guard_harness.py::test_one_harness_proves_every_guard" },
   { kind = "task", name = "check" },
 ]
