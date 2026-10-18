@@ -1041,6 +1041,10 @@ thread = "A"
 depends_on = ["A.28"]
 because = { "A.28" = "the harness is ported from cscie103 at its pinned commit" }
 done_when = [
+  { kind = "proof", test = "tests/test_mutation_check.py::test_a_mutant_its_named_killer_misses_is_refused_even_if_another_test_kills_it" },
+  { kind = "proof", test = "tests/test_mutation_check.py::test_a_failing_baseline_halts_instead_of_counting_every_mutant_killed" },
+  { kind = "proof", test = "tests/test_mutation_check.py::test_a_mutant_killed_by_its_named_test_passes" },
+  { kind = "proof", test = "tests/test_mutation_check.py::test_the_tree_is_never_mutated_in_place" },
   { kind = "task", name = "mutation:check" },
   { kind = "task", name = "check" },
 ]
