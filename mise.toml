@@ -472,6 +472,27 @@ description = "Install exactly the tools mise.lock records, refusing any it does
 # --locked: a tool missing from the lock fails instead of resolving a version from the network.
 run = "mise install --locked"
 
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.108).
+[tasks."audit:exemptions"]
+description = "Refuse an expired exemption, or one naming a path that no longer exists"
+# D.174, R55.4: contracts/exemptions.toml is the only place an exemption exists, and each lapses.
+run = "uv run --no-sync python scripts/exemptions.py"
+
+[tasks."audit:suppressions"]
+description = "Refuse an inline suppression that no live exemption registers"
+# D.219, R55.4: a suppression is a permission, kept as data in contracts/exemptions.toml.
+run = "uv run --no-sync python scripts/suppression_audit.py"
+
+[tasks."audit:problems"]
+description = "Refuse an unregistered, undeclared or repurposed problem code, and any branch on prose"
+# D.177, R60: one registry of stable problem codes, read both ways and against origin/develop.
+run = "uv run --no-sync python scripts/problem_codes.py"
+
+[tasks."problems:register"]
+description = "Register every declared problem code not yet in contracts/problems.toml"
+# D.177: appends only; an entry once registered is never rewritten.
+run = "uv run --no-sync python scripts/problem_codes.py --register"
+
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.105).
 [tasks."check:ruleset"]
 description = "Judge the server's ruleset: the gate required, pinned to its app, strict, unbypassable"

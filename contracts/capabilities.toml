@@ -320,3 +320,27 @@ task = "repo:configure"
 version = "1.0.0"
 implementation = "mise.toml"
 emits = "text"
+
+[[capabilities]]
+task = "audit:exemptions"
+version = "1.0.0"
+implementation = "scripts/exemptions.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "audit:suppressions"
+version = "1.0.0"
+implementation = "scripts/suppression_audit.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "audit:problems"
+version = "1.0.0"
+implementation = "scripts/problem_codes.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "problems:register"
+version = "1.0.0"
+implementation = "scripts/problem_codes.py"
+emits = "command-outcome/v1"

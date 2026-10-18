@@ -11,5 +11,8 @@ gates = [
   "test",
   "secrets (history)",
   "workflows",
+  "exemptions",
+  "suppressions",
+  "problems",
   "test (machine)",
 ]

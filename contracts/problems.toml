@@ -1,0 +1,501 @@
+# contracts/problems.toml
+# ONE REGISTRY OF STABLE PROBLEM CODES (D.177, R60). Every code a policy rule declares is
+# registered here with its rule's title; an entry is never rewritten or removed, only retired,
+# so a code keeps one meaning for good. problems:register appends what is new; audit:problems
+# checks both directions and the registry on origin/develop.
+contract = "problems/v1"
+
+[[problems]]
+code = "ERR_DEPS_EXISTING_CHANGED"
+title = "No locked package changes version"
+severity = "error"
+
+[[problems]]
+code = "ERR_DEPS_LOCK_STALE"
+title = "The lock matches pyproject.toml"
+severity = "error"
+
+[[problems]]
+code = "ERR_DEPS_NOT_ADDED"
+title = "The package landed"
+severity = "error"
+
+[[problems]]
+code = "ERR_DEPS_REMOVED"
+title = "No locked package is removed"
+severity = "error"
+
+[[problems]]
+code = "ERR_ENV_STALE"
+title = "A changed lock was installed"
+severity = "error"
+
+[[problems]]
+code = "ERR_ENV_UNOBSERVED"
+title = "The environment was observed"
+severity = "error"
+
+[[problems]]
+code = "ERR_EXEMPTION_EXPIRED"
+title = "An exemption has not expired"
+severity = "error"
+
+[[problems]]
+code = "ERR_EXEMPTION_INPUT_MISSING"
+title = "The exemption inventory is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_EXEMPTION_PATH_MISSING"
+title = "An exemption names a path that exists"
+severity = "error"
+
+[[problems]]
+code = "ERR_GIT_SPAWNS_INPUT_MISSING"
+title = "The git spawns must be observed"
+severity = "error"
+
+[[problems]]
+code = "ERR_GIT_SPAWNS_NOTHING_SCANNED"
+title = "Something must have been scanned"
+severity = "error"
+
+[[problems]]
+code = "ERR_GIT_SPAWN_HELPER"
+title = "A generic runner is never handed git"
+severity = "error"
+
+[[problems]]
+code = "ERR_GIT_SPAWN_UNSCRUBBED"
+title = "A subprocess running git uses gitenv's scrubbed environment"
+severity = "error"
+
+[[problems]]
+code = "ERR_LEDGER_ANCHOR_BROKEN"
+title = "The anchored record is still in the ledger, unchanged"
+severity = "error"
+
+[[problems]]
+code = "ERR_LEDGER_CHAIN_BROKEN"
+title = "The hash chain holds"
+severity = "error"
+
+[[problems]]
+code = "ERR_LEDGER_INPUT_MISSING"
+title = "The ledger report is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_LEDGER_SIGNATURE_INVALID"
+title = "Every seal verifies against a published key"
+severity = "error"
+
+[[problems]]
+code = "ERR_LEDGER_UNSIGNED_AFTER_SIGNING"
+title = "Sealing never stops once it has begun"
+severity = "error"
+
+[[problems]]
+code = "ERR_LEDGER_WAIVER_UNMATCHED"
+title = "A waiver names exactly the record it accounts for"
+severity = "error"
+
+[[problems]]
+code = "ERR_MATRIX_COMMIT_UNTRACED"
+title = "Every change traces to a step"
+severity = "error"
+
+[[problems]]
+code = "ERR_MATRIX_DONE_UNTRACED"
+title = "Every done step traces to its work"
+severity = "error"
+
+[[problems]]
+code = "ERR_MATRIX_UNOBSERVED"
+title = "The matrix must be observed"
+severity = "error"
+
+[[problems]]
+code = "ERR_MERGE_BEHIND"
+title = "A pull request behind its base cannot merge"
+severity = "error"
+
+[[problems]]
+code = "ERR_MERGE_CHECK_FAILED"
+title = "A failed check refuses the merge, by name"
+severity = "error"
+
+[[problems]]
+code = "ERR_MERGE_CONFLICTING"
+title = "A conflicting pull request cannot merge"
+severity = "error"
+
+[[problems]]
+code = "ERR_MERGE_DRAFT"
+title = "A draft pull request cannot merge"
+severity = "error"
+
+[[problems]]
+code = "ERR_MERGE_EXPECTATIONS_MISSING"
+title = "A pull request is judged against its declared expected checks"
+severity = "error"
+
+[[problems]]
+code = "ERR_MERGE_UNSTABLE"
+title = "An unstable pull request does not merge"
+severity = "error"
+
+[[problems]]
+code = "ERR_OUTLINE_INPUT_MISSING"
+title = "The outline evidence is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_OUTLINE_NOT_FOUND"
+title = "The file exists"
+severity = "error"
+
+[[problems]]
+code = "ERR_OUTLINE_NOT_PYTHON"
+title = "The file is Python"
+severity = "error"
+
+[[problems]]
+code = "ERR_OUTLINE_OUTSIDE_REPOSITORY"
+title = "The file lies inside the repository"
+severity = "error"
+
+[[problems]]
+code = "ERR_OUTLINE_TOO_LARGE"
+title = "The outline stays within its bound"
+severity = "error"
+
+[[problems]]
+code = "ERR_OUTLINE_UNPARSEABLE"
+title = "The file parses"
+severity = "error"
+
+[[problems]]
+code = "ERR_PLAN_DONE_BEFORE_DEPENDENCY"
+title = "Nothing is done before what it depends on"
+severity = "error"
+
+[[problems]]
+code = "ERR_PLAN_UNOBSERVED"
+title = "Facts must be observed"
+severity = "error"
+
+[[problems]]
+code = "ERR_PROBLEMS_BASE_UNREAD"
+title = "The registry on the base was read"
+severity = "error"
+
+[[problems]]
+code = "ERR_PROBLEMS_DECLARATIONS_UNREAD"
+title = "The rules' declared codes were read"
+severity = "error"
+
+[[problems]]
+code = "ERR_PROBLEMS_DUPLICATE"
+title = "Each code is registered once"
+severity = "error"
+
+[[problems]]
+code = "ERR_PROBLEMS_INPUT_MISSING"
+title = "The problems inventory is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_PROBLEMS_PROSE_DISPATCH"
+title = "No branch decides on prose"
+severity = "error"
+
+[[problems]]
+code = "ERR_PROBLEMS_REPURPOSED"
+title = "A registered code is never repurposed"
+severity = "error"
+
+[[problems]]
+code = "ERR_PROBLEMS_UNDECLARED"
+title = "Every live registered code is still declared"
+severity = "error"
+
+[[problems]]
+code = "ERR_PROBLEMS_UNREGISTERED"
+title = "Every declared problem code is registered"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUBLICATION_GATE_FAILED"
+title = "No gate failed on the snapshot"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUBLICATION_GATE_UNOBSERVED"
+title = "Every declared gate ran on the snapshot"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUBLICATION_INPUT_MISSING"
+title = "The publish evidence is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUBLICATION_NOTHING_EXPECTED"
+title = "Publication declares the gates it requires"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUBLICATION_PASSED_SET_MISMATCH"
+title = "The passed gates are exactly the declared gates"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUSH_DETACHED"
+title = "A detached head is never pushed"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUSH_GATE_UNPROVEN"
+title = "The full gate passed at the commit being pushed"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUSH_INPUT_MISSING"
+title = "The push request is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUSH_PROTECTED_BRANCH"
+title = "A protected branch changes only through a merged pull request"
+severity = "error"
+
+[[problems]]
+code = "ERR_RULESET_BYPASS_PRESENT"
+title = "Nothing bypasses the ruleset"
+severity = "error"
+
+[[problems]]
+code = "ERR_RULESET_BYPASS_UNOBSERVED"
+title = "The bypass list must be observable"
+severity = "error"
+
+[[problems]]
+code = "ERR_RULESET_CHECK_NOT_REQUIRED"
+title = "The quality gate is required"
+severity = "error"
+
+[[problems]]
+code = "ERR_RULESET_CHECK_UNPINNED"
+title = "The quality gate is pinned to its app"
+severity = "error"
+
+[[problems]]
+code = "ERR_RULESET_INPUT_MISSING"
+title = "The ruleset state must be observed"
+severity = "error"
+
+[[problems]]
+code = "ERR_RULESET_MERGE_METHODS"
+title = "Merges keep their topology"
+severity = "error"
+
+[[problems]]
+code = "ERR_RULESET_MISSING"
+title = "The protection ruleset must exist"
+severity = "error"
+
+[[problems]]
+code = "ERR_RULESET_NOT_ACTIVE"
+title = "The ruleset must be enforced"
+severity = "error"
+
+[[problems]]
+code = "ERR_RULESET_NOT_STRICT"
+title = "Required checks must pass against the current base"
+severity = "error"
+
+[[problems]]
+code = "ERR_RULESET_PRODUCER_MISMATCH"
+title = "The pinned app is the one that produces the gate"
+severity = "error"
+
+[[problems]]
+code = "ERR_RULESET_REF_UNPROTECTED"
+title = "Both long-lived branches are covered"
+severity = "error"
+
+[[problems]]
+code = "ERR_RULESET_RULE_MISSING"
+title = "Every protecting rule is present"
+severity = "error"
+
+[[problems]]
+code = "ERR_RUN_DUPLICATE_EXECUTION"
+title = "A mutating task never runs twice at once in one worktree"
+severity = "error"
+
+[[problems]]
+code = "ERR_RUN_INPUT_MISSING"
+title = "The run request is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_RUN_TASK_UNDECLARED"
+title = "Only a declared task is started"
+severity = "error"
+
+[[problems]]
+code = "ERR_SETUP_ENV_INHERITED"
+title = "Setup inherits no environment-selecting variable"
+severity = "error"
+
+[[problems]]
+code = "ERR_SETUP_ENV_UNOBSERVED"
+title = "The setup environment must be observed"
+severity = "error"
+
+[[problems]]
+code = "ERR_SIGNING_INPUT_MISSING"
+title = "The key state is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_SIGNING_KEY_ABSENT"
+title = "The private key exists"
+severity = "error"
+
+[[problems]]
+code = "ERR_SIGNING_KEY_EXPOSED"
+title = "The private key is protected and outside every repository"
+severity = "error"
+
+[[problems]]
+code = "ERR_SIGNING_KEY_UNLISTED"
+title = "The key is published by this repository"
+severity = "error"
+
+[[problems]]
+code = "ERR_SOURCE_APPLY_ANCHOR_COUNT"
+title = "Every anchor is found exactly as often as expected"
+severity = "error"
+
+[[problems]]
+code = "ERR_SOURCE_APPLY_CREATE_EXISTS"
+title = "A created file is new"
+severity = "error"
+
+[[problems]]
+code = "ERR_SOURCE_APPLY_DELETE_MISSING"
+title = "A deleted file exists"
+severity = "error"
+
+[[problems]]
+code = "ERR_SOURCE_APPLY_INPUT_MISSING"
+title = "The apply request is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_SOURCE_APPLY_LINE_TOO_LONG"
+title = "No line the spec writes into Python passes the line limit"
+severity = "error"
+
+[[problems]]
+code = "ERR_SOURCE_APPLY_PATH_OUTSIDE"
+title = "Every path is inside the repository and outside .git"
+severity = "error"
+
+[[problems]]
+code = "ERR_SOURCE_APPLY_PYTHON_UNPARSEABLE"
+title = "Every Python file the spec leaves behind parses"
+severity = "error"
+
+[[problems]]
+code = "ERR_SOURCE_APPLY_REPLACE_MISSING"
+title = "A replaced file exists"
+severity = "error"
+
+[[problems]]
+code = "ERR_SOURCE_APPLY_TOML_UNPARSEABLE"
+title = "Every TOML file the spec leaves behind parses"
+severity = "error"
+
+[[problems]]
+code = "ERR_SUPPRESSION_INPUT_MISSING"
+title = "The suppression inventory is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_SUPPRESSION_UNREGISTERED"
+title = "Every inline suppression is registered"
+severity = "error"
+
+[[problems]]
+code = "ERR_TEST_GIT_ENV_LEAKED"
+title = "No repository-local git variable reaches a test"
+severity = "error"
+
+[[problems]]
+code = "ERR_TEST_GIT_ENV_UNOBSERVED"
+title = "The session's git environment must be observed"
+severity = "error"
+
+[[problems]]
+code = "ERR_TRAILER_MISSING"
+title = "Every commit names a plan step"
+severity = "error"
+
+[[problems]]
+code = "ERR_TRAILER_RETIRED"
+title = "A named step is live"
+severity = "error"
+
+[[problems]]
+code = "ERR_TRAILER_UNKNOWN"
+title = "A named step was issued"
+severity = "error"
+
+[[problems]]
+code = "ERR_TRAILER_UNOBSERVED"
+title = "Commits must be observed"
+severity = "error"
+
+[[problems]]
+code = "ERR_WORKFLOW_DEFAULT_PERMISSIONS"
+title = "Every workflow declares its permissions"
+severity = "error"
+
+[[problems]]
+code = "ERR_WORKFLOW_ID_TOKEN_WITHOUT_ENVIRONMENT"
+title = "An id-token grant runs only inside an environment"
+severity = "error"
+
+[[problems]]
+code = "ERR_WORKFLOW_INPUT_MISSING"
+title = "The workflow inventory is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_WORKFLOW_PERMISSION_UNLISTED"
+title = "Every grant is named exactly in the allow-list"
+severity = "error"
+
+[[problems]]
+code = "ERR_WORKFLOW_SUPPRESSION_PRESENT"
+title = "No suppression switches the audit off"
+severity = "error"
+
+[[problems]]
+code = "ERR_WORKFLOW_WRITE_ALL"
+title = "No grant is write-all"
+severity = "error"
+
+[[problems]]
+code = "ERR_WORKFLOW_ZIZMOR_FINDING"
+title = "zizmor finds nothing"
+severity = "error"
+
+[[problems]]
+code = "ERR_WORKFLOW_ZIZMOR_UNAVAILABLE"
+title = "zizmor completed its audit"
+severity = "error"
