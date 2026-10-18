@@ -916,3 +916,75 @@ done_when = [
   { kind = "task", name = "check:ruleset" },
   { kind = "task", name = "repo:configure" },
 ]
+[[steps]]
+id = "A.106"
+title = "The policy gates return from cscie103: check:policy and policy decisions"
+thread = "A"
+depends_on = ["A.20", "A.19"]
+because = { "A.20" = "the gates join the registry check runs", "A.19" = "the policies they format, test and evaluate are already ported" }
+done_when = [
+  { kind = "task", name = "check:policy" },
+  { kind = "task", name = "check:policy-decisions" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.107"
+title = "The source audit gates return from cscie103: repo hygiene, assertions, evidence and models"
+thread = "A"
+depends_on = ["A.20"]
+because = { "A.20" = "the gates join the registry check runs" }
+done_when = [
+  { kind = "task", name = "audit:assertions" },
+  { kind = "task", name = "audit:evidence" },
+  { kind = "task", name = "audit:models" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.108"
+title = "The permission gates return from cscie103: exemptions, suppressions and problems"
+thread = "A"
+depends_on = ["A.20"]
+because = { "A.20" = "the gates join the registry check runs" }
+done_when = [
+  { kind = "task", name = "audit:exemptions" },
+  { kind = "task", name = "audit:suppressions" },
+  { kind = "task", name = "audit:problems" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.109"
+title = "The contract gates return from cscie103: mutation anchors and schemas"
+thread = "A"
+depends_on = ["A.20"]
+because = { "A.20" = "the gates join the registry check runs" }
+done_when = [
+  { kind = "task", name = "audit:schemas" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.110"
+title = "This machine is judged as cscie103 judges its own, by a machine contract gate, replacing A.104's invented lane"
+thread = "A"
+depends_on = ["A.20", "A.104"]
+because = { "A.20" = "the gate joins the registry check runs", "A.104" = "its runs_in_ci field, check:ci task and machine test level have no cscie103 counterpart and are replaced" }
+done_when = [
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.111"
+title = "The pii gate returns from cscie103"
+thread = "A"
+depends_on = ["A.20"]
+because = { "A.20" = "the gate joins the registry check runs" }
+done_when = [
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.112"
+title = "fixtures, prereqs, env-parity and nix flake: each ported from cscie103, or recorded as a grounded deviation"
+thread = "A"
+depends_on = ["A.20"]
+because = { "A.20" = "the gates join the registry check runs" }
+done_when = [
+  { kind = "task", name = "check" },
+]

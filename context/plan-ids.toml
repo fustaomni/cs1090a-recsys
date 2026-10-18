@@ -91,4 +91,11 @@ issued = [
   { id = "A.103", first_title = "A tool reaches this machine only through tools:install: mise's auto-install is off, pinned with the rest" },
   { id = "A.104", first_title = "A claim about this machine runs in this machine's gates, never on CI's runner" },
   { id = "A.105", first_title = "develop requires the quality gate from GitHub Actions, kept as a ruleset in code, so a running gate reads BLOCKED" },
+  { id = "A.106", first_title = "The policy gates return from cscie103: check:policy and policy decisions" },
+  { id = "A.107", first_title = "The source audit gates return from cscie103: repo hygiene, assertions, evidence and models" },
+  { id = "A.108", first_title = "The permission gates return from cscie103: exemptions, suppressions and problems" },
+  { id = "A.109", first_title = "The contract gates return from cscie103: mutation anchors and schemas" },
+  { id = "A.110", first_title = "This machine is judged as cscie103 judges its own, by a machine contract gate, replacing A.104's invented lane" },
+  { id = "A.111", first_title = "The pii gate returns from cscie103" },
+  { id = "A.112", first_title = "fixtures, prereqs, env-parity and nix flake: each ported from cscie103, or recorded as a grounded deviation" },
 ]
