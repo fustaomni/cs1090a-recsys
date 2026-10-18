@@ -472,6 +472,17 @@ description = "Install exactly the tools mise.lock records, refusing any it does
 # --locked: a tool missing from the lock fails instead of resolving a version from the network.
 run = "mise install --locked"
 
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.120).
+[tasks."worktree:conflicts"]
+description = "Read a worktree's rebase conflicts as data: each block's sides and context"
+# D.30: what a stopped refresh left, as data, so a resolution is never guessed.
+run = "uv run --no-sync python scripts/rebase_state.py conflicts"
+
+[tasks."worktree:continue"]
+description = "Continue a worktree's resolved rebase, refused while any marker remains"
+# D.31: continue-plan/v1 judged by runs.worktree_continue before anything is staged.
+run = "uv run --no-sync python scripts/rebase_state.py continue"
+
 # This repository's own (plan A.114): cscie103 has no copy verifier; the shape follows
 # upstream:checkout, and the checkout is named so it runs against one whose tasks predate it.
 [tasks."upstream:copies"]

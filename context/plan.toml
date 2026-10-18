@@ -1074,3 +1074,18 @@ done_when = [
   { kind = "task", name = "source:restore" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.120"
+title = "cscie103's worktree:conflicts and worktree:continue return: a rebase's conflicts read as data, and a continue only once no marker remains"
+thread = "A"
+depends_on = ["A.114"]
+because = { "A.114" = "the main checkout's preserved commits reach develop by a rebase that must stop on a conflict and continue only when it is resolved" }
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_conflicts.py::test_blocks_come_back_with_their_sides_and_context" },
+  { kind = "proof", test = "tests/test_worktree_continue.py::test_a_remaining_marker_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_continue.py::test_a_stray_marker_line_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_continue.py::test_a_resolved_rebase_is_continued" },
+  { kind = "task", name = "worktree:conflicts" },
+  { kind = "task", name = "worktree:continue" },
+  { kind = "task", name = "check" },
+]
