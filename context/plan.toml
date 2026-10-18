@@ -906,10 +906,13 @@ done_when = [
 ]
 [[steps]]
 id = "A.105"
-title = "develop requires the quality gate from GitHub Actions, kept as a ruleset in code, so a running gate reads BLOCKED"
+title = "develop and main require the quality gate pinned, strict and unbypassable: repo:configure applies it, check:ruleset verifies it"
 thread = "A"
 depends_on = ["A.19", "A.20"]
-because = { "A.19" = "merge.readiness waits on BLOCKED and refuses UNSTABLE, as cscie103's required-check ruleset intends", "A.20" = "quality gate is the check CI reports, and the one the rule must require" }
+because = { "A.19" = "merge.readiness waits on BLOCKED and refuses UNSTABLE, which holds only while a ruleset requires the gate", "A.20" = "quality gate is the check CI reports, and the one the ruleset must require, pinned to the app that produces it" }
 done_when = [
-  { kind = "proof", test = "tests/test_rulesets.py::test_develop_requires_the_quality_gate_from_github_actions" },
+  { kind = "proof", test = "tests/test_check_ruleset.py::test_a_pinned_strict_unbypassable_ruleset_passes" },
+  { kind = "proof", test = "tests/test_check_ruleset.py::test_a_check_required_by_name_only_is_refused" },
+  { kind = "task", name = "check:ruleset" },
+  { kind = "task", name = "repo:configure" },
 ]
