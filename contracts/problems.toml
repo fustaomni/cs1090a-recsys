@@ -629,3 +629,18 @@ severity = "error"
 code = "ERR_COPIES_UNVERIFIED"
 title = "Every untracked copy matches the pinned tree"
 severity = "error"
+
+[[problems]]
+code = "ERR_CONTINUE_INPUT_MISSING"
+title = "The continue plan is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_CONTINUE_MARKERS"
+title = "No conflict marker remains"
+severity = "error"
+
+[[problems]]
+code = "ERR_CONTINUE_NO_REBASE"
+title = "A rebase is in progress"
+severity = "error"

@@ -607,7 +607,7 @@
  severity = "error"
  
  [[problems]]
-@@ -76,731 +611,6 @@
+@@ -76,68 +611,23 @@
  severity = "error"
  
  [[problems]]
@@ -673,22 +673,30 @@
 -[[problems]]
 -code = "ERR_CI_RERUN_SUCCEEDED"
 -title = "The run did not already succeed"
--severity = "error"
--
--[[problems]]
--code = "ERR_CONTINUE_INPUT_MISSING"
--title = "The continue plan is supplied, never assumed"
--severity = "error"
--
--[[problems]]
--code = "ERR_CONTINUE_MARKERS"
--title = "No conflict marker remains"
--severity = "error"
--
--[[problems]]
--code = "ERR_CONTINUE_NO_REBASE"
--title = "A rebase is in progress"
--severity = "error"
++code = "ERR_RESTORE_NO_PATHS"
++title = "At least one path is named"
++severity = "error"
++
++[[problems]]
++code = "ERR_RESTORE_UNTRACKED"
++title = "Only paths HEAD knows are restored"
++severity = "error"
++
++[[problems]]
++code = "ERR_COPIES_INPUT_MISSING"
++title = "The copy inventory is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_COPIES_UNVERIFIED"
++title = "Every untracked copy matches the pinned tree"
+ severity = "error"
+ 
+ [[problems]]
+@@ -154,1083 +644,3 @@
+ code = "ERR_CONTINUE_NO_REBASE"
+ title = "A rebase is in progress"
+ severity = "error"
 -
 -[[problems]]
 -code = "ERR_DEPS_EXISTING_CHANGED"
@@ -1336,13 +1344,16 @@
 -severity = "error"
 -
 -[[problems]]
- code = "ERR_RESTORE_NO_PATHS"
- title = "At least one path is named"
- severity = "error"
-@@ -811,426 +621,11 @@
- severity = "error"
- 
- [[problems]]
+-code = "ERR_RESTORE_NO_PATHS"
+-title = "At least one path is named"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_RESTORE_UNTRACKED"
+-title = "Only paths HEAD knows are restored"
+-severity = "error"
+-
+-[[problems]]
 -code = "ERR_RUFF_CACHED"
 -title = "Every ruff check runs cache-free"
 -severity = "error"
@@ -1766,11 +1777,3 @@
 -code = "ERR_MUTATION_ANCHORS_UNREADABLE"
 -title = "Every spec reads as a mutation spec"
 -severity = "error"
-+code = "ERR_COPIES_INPUT_MISSING"
-+title = "The copy inventory is supplied, never assumed"
-+severity = "error"
-+
-+[[problems]]
-+code = "ERR_COPIES_UNVERIFIED"
-+title = "Every untracked copy matches the pinned tree"
-+severity = "error"

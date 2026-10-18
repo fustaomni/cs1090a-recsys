@@ -104,4 +104,5 @@ issued = [
   { id = "A.116", first_title = "cscie103's mutation harness returns: mutation:check, its runs.mutation policy, its proofs and its task" },
   { id = "A.117", first_title = "One harness proves every guard: safeguards:prove, which cscie103 does not have, is reconciled with mutation:check" },
   { id = "A.118", first_title = "cscie103's repo:history and source:restore return: history read as data, and tracked changes discarded only by a judged plan" },
+  { id = "A.120", first_title = "cscie103's worktree:conflicts and worktree:continue return: a rebase's conflicts read as data, and a continue only once no marker remains" },
 ]

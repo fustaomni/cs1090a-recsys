@@ -794,7 +794,7 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 path = "contracts/problems.toml"
 reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "50bf3edd29141b6c859aee91769c4127c62685f2e9f0d3d6a8d38e5616bac548"
+sha256 = "147cbf74e499c97659cbc815abacead7db0bfdd76908022099d84a9d473da634"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
@@ -919,3 +919,19 @@ sha256 = "ba8bacf20bf8e188cdc905908acf4093c96e8151aa3fc2b753118ae6d96cc0c1"
 [[files]]
 path = "tests/test_source_restore.py"
 sha256 = "7e0f8a890a93ea1b3dca777c9e96133e4edbcc010232eb8eb9278c7388a264bd"
+
+[[files]]
+path = "scripts/rebase_state.py"
+sha256 = "0171d0cebace533becb7f8c922a9b98ba76b2f3ef27c9a6c9f32f9778b9cc615"
+
+[[files]]
+path = "policies/runs/worktree_continue/worktree_continue.rego"
+sha256 = "010d8347fddbdfb1696ea2ba2339f621e49a9e136f701cbce5de0a2f7bc4cdfc"
+
+[[files]]
+path = "tests/test_worktree_conflicts.py"
+sha256 = "a39faa15d7ffe5ac220dd82b6c30a44098e7aa5b3299531d8a023347056a4c14"
+
+[[files]]
+path = "tests/test_worktree_continue.py"
+sha256 = "8e204c0ec67bc9b2c934994471f7d0e62fefa0c4751258a4b1ac43563711dfde"
