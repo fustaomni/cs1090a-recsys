@@ -164,12 +164,8 @@
 -      # do check:prereqs and check:env-parity run, because they need a live
 -      # workspace -- and only here is a --no-verify bypass caught, which requires
 -      # that CI check strictly more than the hooks it backstops.
-+      # ONE COMMAND. ci.yml deliberately restates NOTHING about what is checked:
-+      # adding a gate to `check` extends local runs, the git hooks and this
-+      # workflow at once. CI runs the full gate where the pre-push hook runs
-+      # check:offline, so a --no-verify bypass is caught here.
-       - name: mise run check
-         run: mise run check
+-      - name: mise run check
+-        run: mise run check
 -        env:
 -          DATABRICKS_HOST: https://dbc-c7e8aa56-e393.cloud.databricks.com
 -          # NOT A SECRET. The OAuth client ID identifies the service principal
@@ -218,3 +214,9 @@
 -          DATABRICKS_CLIENT_ID: 223db154-8528-4bdb-b579-866010b8fc1c
 -          DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
 -          DATABRICKS_AUTH_TYPE: oauth-m2m
++      # ONE COMMAND. ci.yml deliberately restates NOTHING about what is checked:
++      # adding a gate to `check` extends local runs, the git hooks and this
++      # workflow at once. CI runs every gate but those declaring themselves claims
++      # about the developer machine (A.104), so a --no-verify bypass is caught here.
++      - name: mise run check:ci
++        run: mise run check:ci

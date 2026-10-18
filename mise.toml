@@ -83,6 +83,12 @@ description = "The gate minus anything needing network or Databricks auth (git h
 # gate; that is the layer where a bypass is caught.
 run = "uv run --no-sync python scripts/check_all.py --offline"
 
+[tasks."check:ci"]
+description = "The gate minus claims about the developer machine, for CI's runner"
+# SAME LIST, FILTERED, as check:offline is: a gate declaring runs_in_ci = false is a claim
+# about the developer machine (A.104), which GitHub's runner is not. ci.yml runs this task.
+run = "uv run --no-sync python scripts/check_all.py --ci"
+
 [tasks.setup]
 description = "One-command onboarding: dependencies and git hooks"
 # `lefthook install` writes into .git/hooks, which is NOT version controlled. A

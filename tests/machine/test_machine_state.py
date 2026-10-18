@@ -1,4 +1,4 @@
-# tests/test_machine_state.py
+# tests/machine/test_machine_state.py
 """This machine's mise state and new files are owner-only, whatever the platform's umask (A.8).
 
 FAS OnDemand's ~/.bashrc sets umask 0002, the user-private-group convention, but here the
@@ -6,6 +6,9 @@ primary group is shared (ondemand-users-*), so 0002 made mise's trust records, i
 (where paranoid = true lives) and its installs writable by every member of that group. Those
 are exactly what nobody else may be able to replace. The directories must exist, so the check
 cannot pass on nothing.
+
+A CLAIM ABOUT THIS MACHINE (A.104): it lives in tests/machine, the machine lane, which this
+machine's hooks and gates run and CI's runner, which is not this machine, never does.
 """
 
 from __future__ import annotations

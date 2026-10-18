@@ -67,7 +67,7 @@ jobs:
 
       # ONE COMMAND. ci.yml deliberately restates NOTHING about what is checked:
       # adding a gate to `check` extends local runs, the git hooks and this
-      # workflow at once. CI runs the full gate where the pre-push hook runs
-      # check:offline, so a --no-verify bypass is caught here.
-      - name: mise run check
-        run: mise run check
+      # workflow at once. CI runs every gate but those declaring themselves claims
+      # about the developer machine (A.104), so a --no-verify bypass is caught here.
+      - name: mise run check:ci
+        run: mise run check:ci
