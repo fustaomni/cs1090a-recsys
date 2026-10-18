@@ -117,7 +117,7 @@ class GateReport(Contract):
 # script, task or tool recsys does not have, so the pre-push gate failed closed on gates that
 # could never run. Each returns with its script or tool; until then it is named, not skipped.
 # Hooks: policy, policy decisions, repo hygiene,
-# assertions, evidence, models, exemptions, suppressions, problems, mutation anchors,
+# assertions, evidence, models, mutation anchors,
 # schemas, nix contract. CI-only: pii, fixtures, prereqs, env-parity, nix flake.
 GATES: tuple[GateSpec, ...] = (
     GateSpec(
@@ -183,6 +183,27 @@ GATES: tuple[GateSpec, ...] = (
     GateSpec(
         name="workflows",
         command=("uv", "run", "python", "scripts/workflow_audit.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    # EXEMPTIONS LAPSE (D.174, R55.4): an expired one, or one naming a path that is gone, fails.
+    GateSpec(
+        name="exemptions",
+        command=("uv", "run", "python", "scripts/exemptions.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    # INLINE SUPPRESSIONS ARE PERMISSIONS (D.219, R55.4): one with no live exemption fails.
+    GateSpec(
+        name="suppressions",
+        command=("uv", "run", "python", "scripts/suppression_audit.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    # ONE REGISTRY OF PROBLEM CODES (D.177, R60): unregistered, repurposed or prose fails.
+    GateSpec(
+        name="problems",
+        command=("uv", "run", "python", "scripts/problem_codes.py"),
         runs_in_hooks=True,
         timeout_seconds=300.0,
     ),

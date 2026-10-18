@@ -355,6 +355,96 @@ mutant = "\tfalse\n"
 proof = "tests/test_check_ruleset.py::test_a_gate_from_another_app_is_refused"
 
 [[safeguards]]
+id = "SUPPRESSION.INPUT_MISSING"
+engine = "audit:suppressions"
+guard = "ERR_SUPPRESSION_INPUT_MISSING"
+path = "policies/runs/suppressions/suppressions.rego"
+anchor = "\tnot input.suppressions\n"
+mutant = "\tfalse\n"
+proof = "tests/test_suppression_audit.py::test_an_absent_inventory_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SUPPRESSION.UNREGISTERED"
+engine = "audit:suppressions"
+guard = "ERR_SUPPRESSION_UNREGISTERED"
+path = "policies/runs/suppressions/suppressions.rego"
+anchor = "\tnot found.registered\n"
+mutant = "\tfalse\n"
+proof = "tests/test_suppression_audit.py::test_an_unregistered_inline_suppression_is_refused"
+
+[[safeguards]]
+id = "PROBLEMS.INPUT_MISSING"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_INPUT_MISSING"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tnot input.problems\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_an_unobserved_inventory_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "PROBLEMS.DECLARATIONS_UNREAD"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_DECLARATIONS_UNREAD"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tcount(input.problems.declared) == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_no_declared_code_read_is_refused"
+
+[[safeguards]]
+id = "PROBLEMS.UNREGISTERED"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_UNREGISTERED"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tnot code in _registered\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_an_unregistered_code_is_refused"
+
+[[safeguards]]
+id = "PROBLEMS.UNDECLARED"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_UNDECLARED"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tnot code in _declared\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_a_registered_code_no_rule_declares_is_refused"
+
+[[safeguards]]
+id = "PROBLEMS.DUPLICATE"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_DUPLICATE"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tcount([entry | some entry in input.problems.registry; entry.code == code]) > 1\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_a_code_registered_twice_is_refused"
+
+[[safeguards]]
+id = "PROBLEMS.BASE_UNREAD"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_BASE_UNREAD"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tinput.problems.base == null\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_an_unread_base_is_refused"
+
+[[safeguards]]
+id = "PROBLEMS.REPURPOSED"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_REPURPOSED"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tnot _kept(old)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_a_registered_code_is_never_repurposed"
+
+[[safeguards]]
+id = "PROBLEMS.PROSE_DISPATCH"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_PROSE_DISPATCH"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tsome found in input.problems.prose\n"
+mutant = "\tsome found in input.problems.prose\n\tfalse\n"
+proof = "tests/test_problem_codes.py::test_a_branch_on_message_text_fails_the_audit"
+
+[[safeguards]]
 id = "SA.ANCHOR_COUNT"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_ANCHOR_COUNT"

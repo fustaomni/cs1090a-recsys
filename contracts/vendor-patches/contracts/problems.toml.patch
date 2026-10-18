@@ -1,0 +1,937 @@
+--- a/contracts/problems.toml
++++ b/contracts/problems.toml
+@@ -6,156 +6,6 @@
+ contract = "problems/v1"
+ 
+ [[problems]]
+-code = "ERR_ANY_EXPLICIT"
+-title = "No explicit Any"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_ANY_IMPLICIT"
+-title = "No implicit Any"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_ANY_UNOBSERVED"
+-title = "The inventory must exist"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_ASSERTION_INPUT_MISSING"
+-title = "The assertion inventory is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_ASSERTION_NOTHING_SCANNED"
+-title = "The audit examined something"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_ASSERTION_VACUOUS"
+-title = "Every claim ranges over a subject proven to exist"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_AUTH_ACCOUNT_ID_MISSING"
+-title = "An account profile names its account"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_AUTH_HOST_INSECURE"
+-title = "Every declared host is https"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_AUTH_INPUT_MISSING"
+-title = "The login plan is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_AUTH_STALE_DESIRED"
+-title = "A declared profile is never removed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_BRANCH_AHEAD"
+-title = "No long-lived branch is ahead"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_BRANCH_BEHIND"
+-title = "No long-lived branch is behind"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_BRANCH_DIVERGED"
+-title = "No long-lived branch has diverged"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_BRANCH_UNOBSERVED"
+-title = "The checkout's branches must be observed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_BUNDLE_CATALOG_DECLARED"
+-title = "Catalogs are a prerequisite, not a bundle resource"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_BUNDLE_DIRECT_USER_GRANT"
+-title = "Grants go to groups, not individuals"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_BUNDLE_NO_PREVENT_DESTROY"
+-title = "Managed objects declare prevent_destroy"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_BUNDLE_WORKSPACE_HOST"
+-title = "workspace.host must not be pinned"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_BUNDLE_WORKSPACE_LOCAL_GRANT"
+-title = "Workspace-local groups cannot hold UC privileges"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_CAPABILITY_INPUT_MISSING"
+-title = "The capability inventory is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_CAPABILITY_OFF_SPINE"
+-title = "Every task runs on the governance spine; ownership plans a conversion, never admits one"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_CI_RERUN_ACTIONS_NOT_STEADY"
+-title = "Actions read operational on every one of the required consecutive readings"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_CI_RERUN_INPUT_MISSING"
+-title = "The re-run request is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_CI_RERUN_NOT_FINISHED"
+-title = "The run has finished"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_CI_RERUN_NOT_THE_BRANCH_HEAD"
+-title = "The run is this branch's head"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_CI_RERUN_NO_RUN"
+-title = "There is a run to re-run"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_CI_RERUN_SUCCEEDED"
+-title = "The run did not already succeed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_CONTINUE_INPUT_MISSING"
+-title = "The continue plan is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_CONTINUE_MARKERS"
+-title = "No conflict marker remains"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_CONTINUE_NO_REBASE"
+-title = "A rebase is in progress"
+-severity = "error"
+-
+-[[problems]]
+ code = "ERR_DEPS_EXISTING_CHANGED"
+ title = "No locked package changes version"
+ severity = "error"
+@@ -176,46 +26,6 @@
+ severity = "error"
+ 
+ [[problems]]
+-code = "ERR_DISCARD_AUTHORED"
+-title = "The destination holds only its generated commit"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_DISCARD_DIRTY"
+-title = "The destination is clean"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_DISCARD_INPUT_MISSING"
+-title = "The template:discard request is present"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_DISCARD_NOT_GENERATED"
+-title = "The destination was generated"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_DISCARD_PROTECTED"
+-title = "The destination is not this repository, home or a root"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_DISCARD_PUBLISHED"
+-title = "The destination is not published"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_DISCARD_SYMLINK"
+-title = "The destination is not a symlink"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_DISCARD_UNSAFE"
+-title = "The removal resists symlink attacks"
+-severity = "error"
+-
+-[[problems]]
+ code = "ERR_ENV_STALE"
+ title = "A changed lock was installed"
+ severity = "error"
+@@ -226,26 +36,6 @@
+ severity = "error"
+ 
+ [[problems]]
+-code = "ERR_EVIDENCE_CONCLUSION"
+-title = "Evidence holds observations, never a conclusion"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_EVIDENCE_INPUT_MISSING"
+-title = "The evidence inventory is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_EVIDENCE_NONE_FOUND"
+-title = "An audit that found no evidence contract proves nothing"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_EVIDENCE_UNRESOLVED"
+-title = "Every evaluate() argument resolves to its evidence contract"
+-severity = "error"
+-
+-[[problems]]
+ code = "ERR_EXEMPTION_EXPIRED"
+ title = "An exemption has not expired"
+ severity = "error"
+@@ -261,56 +51,6 @@
+ severity = "error"
+ 
+ [[problems]]
+-code = "ERR_EXPORT_COPY_MISMATCH"
+-title = "The copy matches its source exactly"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_EXPORT_DESTINATION_EXISTS"
+-title = "An existing file is never overwritten"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_EXPORT_SOURCE_MISSING"
+-title = "The assignment has exactly one export"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_EXPORT_UNRELEASED"
+-title = "Only a released assignment is copied out"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_FEDERATION_AUDIENCE"
+-title = "The audience is exactly this account"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_FEDERATION_INPUT_MISSING"
+-title = "The federation plan is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_FEDERATION_ISSUER"
+-title = "The issuer is GitHub Actions"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_FEDERATION_PRINCIPAL_FOREIGN"
+-title = "The principal is the declared CI principal"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_FEDERATION_PRINCIPAL_MISSING"
+-title = "The CI principal exists"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_FEDERATION_SUBJECT"
+-title = "The subject is exactly this repository's environment"
+-severity = "error"
+-
+-[[problems]]
+ code = "ERR_GIT_SPAWNS_INPUT_MISSING"
+ title = "The git spawns must be observed"
+ severity = "error"
+@@ -331,93 +71,8 @@
+ severity = "error"
+ 
+ [[problems]]
+-code = "ERR_HOOKS_AUTO_INSTALL_DISABLED"
+-title = "Hooks install themselves"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_HOOKS_TRAILERS_UNHOOKED"
+-title = "The trailer hook stays configured"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_HOOKS_UNOBSERVED"
+-title = "The hooks configuration must be observed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_IDENTITY_HAS_REMOTE"
+-title = "The project is not yet published"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_IDENTITY_INPUT_MISSING"
+-title = "The identity inventory is present"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_IDENTITY_LITERAL"
+-title = "Identity lives only in declared slots"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_IDENTITY_NOT_FRESH"
+-title = "The project is fresh"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_IDENTITY_NOT_GENERATED"
+-title = "The destination was generated"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_IDENTITY_REQUEST_MISSING"
+-title = "The template:identity request is present"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_INIT_ALREADY_REPOSITORY"
+-title = "The destination is not yet a repository"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_INIT_INPUT_MISSING"
+-title = "The template:init request is present"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_INIT_INSIDE_SOURCE"
+-title = "The destination is outside the source"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_INIT_NOT_GENERATED"
+-title = "The destination was generated"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_LAYERS_ENTRY_NOT_ON_SPINE"
+-title = "An entry point evaluates, decides and enforces through the spine"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_LAYERS_EXIT_NOT_FROM_DECISION"
+-title = "An entry point exits only from its __main__ guard"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_LAYERS_INPUT_MISSING"
+-title = "The audit's evidence is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_LAYERS_LIBRARY_EXITS"
+-title = "A library never exits the process"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_LAYERS_OWNER_ALREADY_DONE"
+-title = "A committed step cannot still own a failing module"
++code = "ERR_LEDGER_ANCHOR_BROKEN"
++title = "The anchored record is still in the ledger, unchanged"
+ severity = "error"
+ 
+ [[problems]]
+@@ -461,11 +116,6 @@
+ severity = "error"
+ 
+ [[problems]]
+-code = "ERR_MERGE_AUTO_MERGE"
+-title = "Auto-merge is broken for this purpose"
+-severity = "error"
+-
+-[[problems]]
+ code = "ERR_MERGE_BEHIND"
+ title = "A pull request behind its base cannot merge"
+ severity = "error"
+@@ -481,11 +131,6 @@
+ severity = "error"
+ 
+ [[problems]]
+-code = "ERR_MERGE_DIRECT_ENDPOINT"
+-title = "The merge endpoint verifies nothing"
+-severity = "error"
+-
+-[[problems]]
+ code = "ERR_MERGE_DRAFT"
+ title = "A draft pull request cannot merge"
+ severity = "error"
+@@ -501,151 +146,6 @@
+ severity = "error"
+ 
+ [[problems]]
+-code = "ERR_MODELS_INPUT_MISSING"
+-title = "The model inventory is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MODELS_NOTHING_SCANNED"
+-title = "An audit that scanned no file proves nothing"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MODELS_STALE"
+-title = "The baseline lists only what is still true, so it can only shrink"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MODELS_UNBASELINED"
+-title = "A new model derives from Contract or Reading, never BaseModel"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_ANCHOR_NOT_ONCE"
+-title = "Every mutant's anchor is found exactly once"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_BASELINE_FAILED"
+-title = "Every killer passes before any mutant is applied"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_INPUT_MISSING"
+-title = "The mutation evidence is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_KILLER_UNJUDGED"
+-title = "Every killer's result could be judged"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_SURVIVED_ITS_KILLER"
+-title = "Every named killer kills its mutant"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_TREE_TOUCHED"
+-title = "The tree under test is never mutated in place"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_TREE_UNLISTED"
+-title = "The tree under test could be listed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MYPY_FILES_UNDECLARED"
+-title = "The files mypy checks are declared"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MYPY_PATHS"
+-title = "No caller names its own paths"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MYPY_UNOBSERVED"
+-title = "Type checking must be observed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_ABSENT"
+-title = "Nix must be installed when this project needs it"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_BUILD_USER_LOGIN_SHELL"
+-title = "Build users must not be loggable"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_CANNOT_EVALUATE"
+-title = "Nix must evaluate expressions"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_CANNOT_EVALUATE_FLAKE"
+-title = "Nix must evaluate flakes"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_LOCK_INPUT_MISSING"
+-title = "The lock update request is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_LOCK_OWNER"
+-title = "The refreshed input is owned by the NixOS organisation"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_LOCK_REF"
+-title = "The refreshed input follows nixpkgs-unstable, as flake.nix declares"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_LOCK_STALE"
+-title = "The refreshed input is younger than the CI flake checker allows"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_NO_RECEIPT"
+-title = "The installation must be uninstallable"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_OBSERVATION_INCOMPLETE"
+-title = "The observation must carry every field the rules read"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_PROJECT_FLAKE_BROKEN"
+-title = "This repository's own flake must evaluate"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_STORE_NOT_MOUNTED"
+-title = "The Nix store must be mounted"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_STORE_PATH_CORRUPTED"
+-title = "Store contents must match their recorded hash"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_STORE_WRITABLE"
+-title = "The store must not be writable by this user"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_NIX_VERSION_BELOW_FLOOR"
+-title = "Nix must meet the version floor"
+-severity = "error"
+-
+-[[problems]]
+ code = "ERR_OUTLINE_INPUT_MISSING"
+ title = "The outline evidence is supplied, never assumed"
+ severity = "error"
+@@ -676,16 +176,6 @@
+ severity = "error"
+ 
+ [[problems]]
+-code = "ERR_PARSE_RAW"
+-title = "No raw parse"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PARSE_UNOBSERVED"
+-title = "The parses must be observed"
+-severity = "error"
+-
+-[[problems]]
+ code = "ERR_PLAN_DONE_BEFORE_DEPENDENCY"
+ title = "Nothing is done before what it depends on"
+ severity = "error"
+@@ -736,88 +226,48 @@
+ severity = "error"
+ 
+ [[problems]]
+-code = "ERR_PR_CHECKS_INPUT_MISSING"
+-title = "The checks request is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PR_CHECKS_NOTHING_MISSING"
+-title = "A declared check has no run on the head"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PR_CHECKS_NO_AWAITING_SUITE"
+-title = "An app suite on the head awaits a run"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PR_CHECKS_NO_PR"
+-title = "There is a pull request"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PR_CHECKS_OWNER_UNDECLARED"
+-title = "Every missing check names the app that owns it"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PUBLISH_DIRTY"
+-title = "The destination is clean"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PUBLISH_HAS_REMOTE"
+-title = "The destination is not yet published"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PUBLISH_HOOKS_INSTALLED"
+-title = "The destination's hooks are not yet installed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PUBLISH_INPUT_MISSING"
+-title = "The template:publish request is present"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PUBLISH_NOT_GENERATED"
+-title = "The destination was generated"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PUBLISH_REMOTE_POPULATED"
+-title = "The GitHub repository holds nothing yet"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PUBLISH_REMOTE_UNKNOWN"
+-title = "The GitHub repository's state was observed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_RELEASE_TAG_MISMATCH"
+-title = "A tag names its assignment and a version"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_RESTORE_NO_PATHS"
+-title = "At least one path is named"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_RESTORE_UNTRACKED"
+-title = "Only paths HEAD knows are restored"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_RUFF_CACHED"
+-title = "Every ruff check runs cache-free"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_RUFF_UNOBSERVED"
+-title = "Linting must be observed"
++code = "ERR_PUBLICATION_GATE_FAILED"
++title = "No gate failed on the snapshot"
++severity = "error"
++
++[[problems]]
++code = "ERR_PUBLICATION_GATE_UNOBSERVED"
++title = "Every declared gate ran on the snapshot"
++severity = "error"
++
++[[problems]]
++code = "ERR_PUBLICATION_INPUT_MISSING"
++title = "The publish evidence is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_PUBLICATION_NOTHING_EXPECTED"
++title = "Publication declares the gates it requires"
++severity = "error"
++
++[[problems]]
++code = "ERR_PUBLICATION_PASSED_SET_MISMATCH"
++title = "The passed gates are exactly the declared gates"
++severity = "error"
++
++[[problems]]
++code = "ERR_PUSH_DETACHED"
++title = "A detached head is never pushed"
++severity = "error"
++
++[[problems]]
++code = "ERR_PUSH_GATE_UNPROVEN"
++title = "The full gate passed at the commit being pushed"
++severity = "error"
++
++[[problems]]
++code = "ERR_PUSH_INPUT_MISSING"
++title = "The push request is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_PUSH_PROTECTED_BRANCH"
++title = "A protected branch changes only through a merged pull request"
+ severity = "error"
+ 
+ [[problems]]
+@@ -881,21 +331,6 @@
+ severity = "error"
+ 
+ [[problems]]
+-code = "ERR_RUNTIME_BARE_INTERPRETER"
+-title = "Interpreters are not resolved through PATH"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_RUNTIME_MISE_EXEC_INTERPRETER"
+-title = "mise exec does not make an interpreter controlled"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_RUNTIME_UNPARSEABLE_BODY"
+-title = "A body that cannot be tokenised was not checked"
+-severity = "error"
+-
+-[[problems]]
+ code = "ERR_RUN_DUPLICATE_EXECUTION"
+ title = "A mutating task never runs twice at once in one worktree"
+ severity = "error"
+@@ -911,36 +346,6 @@
+ severity = "error"
+ 
+ [[problems]]
+-code = "ERR_SCHEMAS_BREAKING"
+-title = "A change that can break a reader needs a new version"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_SCHEMAS_INPUT_MISSING"
+-title = "The schema inventory is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_SCHEMAS_NOTHING_SCANNED"
+-title = "An audit that found no versioned contract proves nothing"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_SCHEMAS_ORPHANED"
+-title = "A snapshot belongs to a versioned contract"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_SCHEMAS_STALE"
+-title = "A changed schema is committed deliberately"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_SCHEMAS_UNSNAPSHOTTED"
+-title = "Every versioned contract has a committed schema"
+-severity = "error"
+-
+-[[problems]]
+ code = "ERR_SETUP_ENV_INHERITED"
+ title = "Setup inherits no environment-selecting variable"
+ severity = "error"
+@@ -981,6 +386,11 @@
+ severity = "error"
+ 
+ [[problems]]
++code = "ERR_SOURCE_APPLY_DELETE_MISSING"
++title = "A deleted file exists"
++severity = "error"
++
++[[problems]]
+ code = "ERR_SOURCE_APPLY_INPUT_MISSING"
+ title = "The apply request is supplied, never assumed"
+ severity = "error"
+@@ -1021,71 +431,6 @@
+ severity = "error"
+ 
+ [[problems]]
+-code = "ERR_TASK_CURL_PIPE_SHELL"
+-title = "Only nix:bootstrap may pipe a fetch into a shell"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_TASK_MISE_EXEC"
+-title = "mise exec resolves through shims that no longer exist"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_TASK_NAMED_INPUT_MISSING"
+-title = "The named-task inventory is present"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_TASK_NAMED_PROFILE"
+-title = "Credentials live in the DEFAULT profile"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_TASK_NAMED_UNDECLARED"
+-title = "A named task is declared"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_TASK_RAW_API_CALL"
+-title = "Infrastructure work belongs in the bundle"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_TASK_SECRET_RENDERED"
+-title = "A secret goes API to stdin to the store, never through a variable"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_TASK_UNDESCRIBED"
+-title = "Every task says what it does"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_TEMPLATE_DESTINATION_INSIDE"
+-title = "The destination is outside the source"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_TEMPLATE_DESTINATION_OCCUPIED"
+-title = "The destination is new"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_TEMPLATE_INPUT_MISSING"
+-title = "The template:new request is present"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_TEMPLATE_SOURCE_NOT_SSH"
+-title = "The source is SSH"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_TEMPLATE_UNPINNED"
+-title = "The ref is a full commit sha"
+-severity = "error"
+-
+-[[problems]]
+ code = "ERR_TEST_GIT_ENV_LEAKED"
+ title = "No repository-local git variable reaches a test"
+ severity = "error"
+@@ -1154,83 +499,3 @@
+ code = "ERR_WORKFLOW_ZIZMOR_UNAVAILABLE"
+ title = "zizmor completed its audit"
+ severity = "error"
+-
+-[[problems]]
+-code = "WARN_NIX_ABSENT_NOT_REQUIRED"
+-title = "An absent Nix is noted when nothing yet depends on one"
+-severity = "warning"
+-
+-[[problems]]
+-code = "WARN_NIX_BUILD_GROUP_MISSING"
+-title = "A build group indicates a multi-user install"
+-severity = "warning"
+-
+-[[problems]]
+-code = "WARN_NIX_STORE_PATH_UNTRUSTED"
+-title = "Store paths should carry a trusted signature"
+-severity = "warning"
+-
+-[[problems]]
+-code = "WARN_NIX_STORE_PERMISSIONS"
+-title = "Store ownership and mode should match the documented values"
+-severity = "warning"
+-
+-[[problems]]
+-code = "WARN_NIX_STORE_VERIFY_KILLED"
+-title = "Store verification should complete"
+-severity = "warning"
+-
+-[[problems]]
+-code = "WARN_NIX_UNKNOWN_PLATFORM"
+-title = "The platform must be one this toolchain supports"
+-severity = "warning"
+-
+-[[problems]]
+-code = "ERR_PUBLICATION_GATE_FAILED"
+-title = "No gate failed on the snapshot"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PUBLICATION_GATE_UNOBSERVED"
+-title = "Every declared gate ran on the snapshot"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PUBLICATION_INPUT_MISSING"
+-title = "The publish evidence is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PUBLICATION_NOTHING_EXPECTED"
+-title = "Publication declares the gates it requires"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_PUBLICATION_PASSED_SET_MISMATCH"
+-title = "The passed gates are exactly the declared gates"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_ANCHORS_AMBIGUOUS"
+-title = "No anchor is ambiguous"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_ANCHORS_INPUT_MISSING"
+-title = "The anchor inventory is supplied, never assumed"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_ANCHORS_NOTHING_SCANNED"
+-title = "The gate read at least one spec"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_ANCHORS_STALE"
+-title = "Every anchor is still in its file"
+-severity = "error"
+-
+-[[problems]]
+-code = "ERR_MUTATION_ANCHORS_UNREADABLE"
+-title = "Every spec reads as a mutation spec"
+-severity = "error"

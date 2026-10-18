@@ -31,7 +31,7 @@
 +# script, task or tool recsys does not have, so the pre-push gate failed closed on gates that
 +# could never run. Each returns with its script or tool; until then it is named, not skipped.
 +# Hooks: policy, policy decisions, repo hygiene,
-+# assertions, evidence, models, exemptions, suppressions, problems, mutation anchors,
++# assertions, evidence, models, mutation anchors,
 +# schemas, nix contract. CI-only: pii, fixtures, prereqs, env-parity, nix flake.
  GATES: tuple[GateSpec, ...] = (
      GateSpec(
@@ -76,7 +76,7 @@
      GateSpec(
          name="secrets (history)",
          command=("betterleaks", "git", "--redact", "--no-banner"),
-@@ -199,164 +186,32 @@
+@@ -199,26 +186,6 @@
          runs_in_hooks=True,
          timeout_seconds=300.0,
      ),
@@ -100,26 +100,13 @@
 -        runs_in_hooks=True,
 -        timeout_seconds=300.0,
 -    ),
--    # EXEMPTIONS LAPSE (D.174, R55.4): an expired one, or one naming a path that is gone, fails.
--    GateSpec(
--        name="exemptions",
--        command=("uv", "run", "python", "scripts/exemptions.py"),
--        runs_in_hooks=True,
--        timeout_seconds=300.0,
--    ),
--    # INLINE SUPPRESSIONS ARE PERMISSIONS (D.219, R55.4): one with no live exemption fails.
--    GateSpec(
--        name="suppressions",
--        command=("uv", "run", "python", "scripts/suppression_audit.py"),
--        runs_in_hooks=True,
--        timeout_seconds=300.0,
--    ),
--    # ONE REGISTRY OF PROBLEM CODES (D.177, R60): unregistered, repurposed or prose fails.
--    GateSpec(
--        name="problems",
--        command=("uv", "run", "python", "scripts/problem_codes.py"),
--        runs_in_hooks=True,
--        timeout_seconds=300.0,
+     # EXEMPTIONS LAPSE (D.174, R55.4): an expired one, or one naming a path that is gone, fails.
+     GateSpec(
+         name="exemptions",
+@@ -239,124 +206,33 @@
+         command=("uv", "run", "python", "scripts/problem_codes.py"),
+         runs_in_hooks=True,
+         timeout_seconds=300.0,
 -    ),
 -    # EVERY VERSIONED CONTRACT'S SCHEMA IS COMMITTED (D.147): a stale one, or a break under
 -    # the same identifiers, fails. Offline and quick, so the hooks run it.
@@ -172,7 +159,7 @@
 -        command=("uv", "run", "python", "scripts/update_fixtures.py", "--check"),
 -        runs_in_hooks=False,
 -        timeout_seconds=600.0,
--    ),
+     ),
      # The integration-marked tests, deselected from the hermetic `test` gate.
      GateSpec(
          name="test (integration)",
@@ -255,7 +242,7 @@
  
  
  def run_gate(spec: GateSpec) -> GateRun:
-@@ -368,6 +223,8 @@
+@@ -368,6 +244,8 @@
          state: State = "timed_out"
      elif isinstance(ended, Exited) and ended.code == 0:
          state = "executed_passed"
@@ -264,7 +251,7 @@
      else:
          state = "executed_failed"
      return GateRun(
-@@ -387,7 +244,11 @@
+@@ -387,7 +265,11 @@
  
  def main() -> int:
      offline = "--offline" in sys.argv
@@ -277,7 +264,7 @@
  
      if offline:
          skipped = [spec.name for spec in GATES if not spec.runs_in_hooks]
-@@ -399,13 +260,14 @@
+@@ -399,13 +281,14 @@
          ran = run_gate(spec)
          runs.append(ran)
          late = f" (timed out after {spec.timeout_seconds:g}s)" if ran.state == "timed_out" else ""
@@ -294,7 +281,7 @@
  
      if failed:
          for ran in failed:
-@@ -417,7 +279,9 @@
+@@ -417,7 +300,9 @@
          )
          return 1
  

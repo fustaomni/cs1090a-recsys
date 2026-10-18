@@ -394,7 +394,7 @@ sha256 = "bcbcf81b839c521bd70c27eb0a560d2bc9c5c9ce9992d786e7bb317e2826674d"
 path = "contracts/task-effects.toml"
 reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification; check:ci, recsys's own, is read-only as check:offline is (A.104)"
 patch = "contracts/vendor-patches/contracts/task-effects.toml.patch"
-sha256 = "b2be15f21f8d355cc8ef881c6a012f87f3adde98e11f5020736a175aec901938"
+sha256 = "508f0519a98210750ccc13b61a4acffecc40bdec0398f36a90dda5f26191f9f7"
 
 [[adapted]]
 path = "tests/test_run_gateway.py"
@@ -423,9 +423,9 @@ patch = "contracts/vendor-patches/tests/test_signing.py.patch"
 sha256 = "e79583063db873058c6af6a2e3129fbee985d965f177bc249940cf2f0bb0b62d"
 [[adapted]]
 path = "scripts/check_all.py"
-reason = "a lane that may be empty reports nothing to run instead of failing (A.90); the workflows gate returns with the workflow audit (A.23); claims about the developer machine are a hooks lane declared out of CI (A.104)"
+reason = "a lane that may be empty reports nothing to run instead of failing (A.90); the workflows gate returns with the workflow audit (A.23); claims about the developer machine are a hooks lane declared out of CI (A.104); exemptions, suppressions and problems return with their audits (A.108)"
 patch = "contracts/vendor-patches/scripts/check_all.py.patch"
-sha256 = "3b0053658b42d169451e1ba8637decd1a2644fc9d85acafb90e95fe2588f0a35"
+sha256 = "fa266ace2d00a1d47a5239f4c98bd32664d9f9b6eec6b4d9705a1ffdaa75222e"
 [[adapted]]
 path = "scripts/commit.py"
 reason = "the root commit names its branch (A.5); nothing staged is refused and git reasons kept (A.12)"
@@ -658,9 +658,9 @@ sha256 = "f4e1a57ca255e37c01c54b25f12b486313b60ad6b276cf7520ccb6ab3337056a"
 
 [[adapted]]
 path = "contracts/publish-expectations.toml"
-reason = "publication expects exactly this repository's hook gates; the twelve cscie103 gates the founding withdrew are absent, not skipped (A.19); test (machine) among them, so this machine's claims are proven before every publication (A.104)"
+reason = "publication expects exactly this repository's hook gates; nine of the twelve cscie103 gates the founding withdrew are absent, not skipped (A.19), exemptions, suppressions and problems having returned (A.108); test (machine) among them, so this machine's claims are proven before every publication (A.104)"
 patch = "contracts/vendor-patches/contracts/publish-expectations.toml.patch"
-sha256 = "9285c9a6a19040db12f20e9549159cfced12e736aab897f2c181271b20bdf950"
+sha256 = "c4be70acf7e96cee5943ca43ddff4cacc17b5dc43208f8a1a9aa9a5c8507e390"
 
 [[files]]
 path = "contracts/exemptions.toml"
@@ -755,3 +755,43 @@ path = "tests/test_check_ruleset.py"
 reason = "killing proofs for the six runs.check_ruleset guards that had none: an unobserved state, evaluate mode, a missing rule, main unprotected, another check required, and squash allowed (A.105)"
 patch = "contracts/vendor-patches/tests/test_check_ruleset.py.patch"
 sha256 = "a7307d9bc886868359f71648955150c6ea623760d143666c99582dc4c8f395e0"
+
+[[files]]
+path = "scripts/suppression_audit.py"
+sha256 = "cdc96b2a1313cb4e78d0ce2cc38abdd2c535121afad4faa2057423db7ec4208c"
+
+[[files]]
+path = "scripts/problem_codes.py"
+sha256 = "b93307f2dcda25f0d32bd0ec824fb4733a2a0b4e1bbc9754ec74abb2265c586e"
+
+[[files]]
+path = "policies/runs/suppressions/suppressions.rego"
+sha256 = "d8503d3c765347ba14e957b3f76ea53ddc233cacb43aacfba40a85323232c121"
+
+[[files]]
+path = "policies/runs/problems/problems.rego"
+sha256 = "d42336710e9373deaa9aa68ff10f1377bfc8a50510a576b221663ccd0a87bb85"
+
+[[files]]
+path = "tests/test_suppression_audit.py"
+sha256 = "b48a19460be5872e173ce9f2015b087ca2e42443b035e67d7b2a8a7431e9c1db"
+
+[[files]]
+path = "tests/test_problem_codes.py"
+sha256 = "949ee4d3c2f5a8a910c480bf6aa073af621d4fc3006e72bbfa9409529ba3c1e5"
+
+[[adapted]]
+path = "tests/test_problem_codes.py"
+reason = "test_a_missing_repository_is_read_from_the_error_type and its template_publish import are removed: the proof judges template:publish, which is not ported here, and returns with it (A.108); killing proofs for the four runs.problems guards that had none: an unobserved inventory, no declared code read, a code registered twice, and an unread base (A.108); a hermetic killer for UNDECLARED, since test_registry_and_emitters_agree_both_ways judges the live repository and a trial's copy has no origin/develop (A.108)"
+patch = "contracts/vendor-patches/tests/test_problem_codes.py.patch"
+sha256 = "1518b75068f149209b3372175fd6a3852ca092910206aaa1b8606ccfbf6ed211"
+
+[[files]]
+path = "contracts/problems.toml"
+sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
+
+[[adapted]]
+path = "contracts/problems.toml"
+reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108)"
+patch = "contracts/vendor-patches/contracts/problems.toml.patch"
+sha256 = "af11561e1e95633223fbe6878930fac0b074bcd4a974b45501ba397fcb88c5eb"
