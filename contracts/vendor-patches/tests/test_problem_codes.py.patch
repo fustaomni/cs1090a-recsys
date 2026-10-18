@@ -1,0 +1,54 @@
+--- a/tests/test_problem_codes.py
++++ b/tests/test_problem_codes.py
+@@ -23,7 +23,6 @@
+     load,
+     prose_dispatches,
+ )
+-from template_publish import remote_from
+ 
+ NEWLINE = chr(10)
+ 
+@@ -97,13 +96,33 @@
+         Problem(code="WARN_PROBE", title="a probe", severity="error")
+ 
+ 
+-def test_a_missing_repository_is_read_from_the_error_type() -> None:
+-    """template:publish reads NOT_FOUND from the error's type, never from its message."""
+-    typed = (
+-        '{"data": {"repository": null}, '
+-        '"errors": [{"type": "NOT_FOUND", "path": ["repository"], "message": "x"}]}'
+-    )
+-    assert remote_from(typed) == "absent"
+-    worded = '{"data": {"repository": null}, "errors": [{"message": "Could not resolve"}]}'
+-    assert remote_from(worded) == "unknown"
+-    assert remote_from('{"data": {"repository": {"isEmpty": true}}}') == "empty"
++def test_an_unobserved_inventory_is_refused_by_the_policy() -> None:
++    """recsys: evidence under another subject leaves the policy nothing to judge."""
++    found = spine.evaluate(_inventory(), "not_problems", POLICY, ENTRYPOINT)
++    failing = {rule.code for rule in found.rules if rule.outcome == "fail"}
++    assert "ERR_PROBLEMS_INPUT_MISSING" in failing, found
++
++
++def test_no_declared_code_read_is_refused() -> None:
++    """recsys: no rules read is not every rule registered."""
++    assert "ERR_PROBLEMS_DECLARATIONS_UNREAD" in _failing(_inventory(declared=()))
++    assert "ERR_PROBLEMS_DECLARATIONS_UNREAD" not in _failing(_inventory(registry=(_problem(),)))
++
++
++def test_a_code_registered_twice_is_refused() -> None:
++    """recsys: each code is registered once."""
++    twice = _inventory(registry=(_problem(), _problem()))
++    assert "ERR_PROBLEMS_DUPLICATE" in _failing(twice)
++
++
++def test_an_unread_base_is_refused() -> None:
++    """recsys: an unread origin/develop would let a repurposed code pass unseen."""
++    assert "ERR_PROBLEMS_BASE_UNREAD" in _failing(_inventory(base=None))
++
++
++def test_a_registered_code_no_rule_declares_is_refused() -> None:
++    """recsys: a live entry no rule declares is refused and a retired one stands, judged alone."""
++    stale = _inventory(registry=(_problem(), _problem("ERR_GONE")))
++    assert "ERR_PROBLEMS_UNDECLARED" in _failing(stale)
++    retired = Problem(code="ERR_GONE", title="gone", severity="error", retired=True)
++    assert "ERR_PROBLEMS_UNDECLARED" not in _failing(_inventory(registry=(_problem(), retired)))

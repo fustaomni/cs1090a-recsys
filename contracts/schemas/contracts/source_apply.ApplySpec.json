@@ -1,0 +1,103 @@
+{
+  "ids": [
+    "source-apply/v1"
+  ],
+  "json_schema": {
+    "$defs": {
+      "Create": {
+        "additionalProperties": false,
+        "properties": {
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "op": {
+            "const": "create",
+            "title": "Op",
+            "type": "string"
+          },
+          "path": {
+            "minLength": 1,
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "op",
+          "path",
+          "content"
+        ],
+        "title": "Create",
+        "type": "object"
+      },
+      "Replace": {
+        "additionalProperties": false,
+        "properties": {
+          "anchor": {
+            "minLength": 1,
+            "title": "Anchor",
+            "type": "string"
+          },
+          "expected_count": {
+            "default": 1,
+            "minimum": 1,
+            "title": "Expected Count",
+            "type": "integer"
+          },
+          "op": {
+            "const": "replace",
+            "title": "Op",
+            "type": "string"
+          },
+          "path": {
+            "minLength": 1,
+            "title": "Path",
+            "type": "string"
+          },
+          "replacement": {
+            "title": "Replacement",
+            "type": "string"
+          }
+        },
+        "required": [
+          "op",
+          "path",
+          "anchor",
+          "replacement"
+        ],
+        "title": "Replace",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "description": "source-apply/v1: the operations, applied in order, all or nothing.",
+    "properties": {
+      "contract": {
+        "const": "source-apply/v1",
+        "title": "Contract",
+        "type": "string"
+      },
+      "operations": {
+        "items": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Create"
+            },
+            {
+              "$ref": "#/$defs/Replace"
+            }
+          ]
+        },
+        "minItems": 1,
+        "title": "Operations",
+        "type": "array"
+      }
+    },
+    "required": [
+      "contract",
+      "operations"
+    ],
+    "title": "ApplySpec",
+    "type": "object"
+  }
+}

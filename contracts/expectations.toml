@@ -1,0 +1,19 @@
+# contracts/expectations.toml
+# expectations/v1 (A.65): for each evidence kind the plan uses, the runtime record that shows
+# an expectation of that kind held, and the registered task that produces it.
+contract = "expectations/v1"
+
+[[expectations]]
+kind = "proof"
+record = "green-verdict/v1"
+producer = "test:green"
+
+[[expectations]]
+kind = "task"
+record = "capabilities-listing/v1"
+producer = "capabilities:list"
+
+[[expectations]]
+kind = "path"
+record = "source-lines/v1"
+producer = "source:read"

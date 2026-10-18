@@ -1,0 +1,15 @@
+# contracts/expected-checks.toml
+# Every check a pull request must show, registered and concluded, before pr merges it (D.77).
+#
+# GitHub's ruleset requires only the quality gate: a required check that never reports
+# blocks a merge forever, with nothing to re-run. The rest are expected HERE, where a missing
+# one makes merge.readiness wait, and a wait that outlasts the deadline halts with its name.
+#
+# recsys: only the check this repository's own CI runs. Another app's check is added here once
+# pr has seen it register on this repository, never because cscie103 had it.
+checks = ["quality gate"]
+
+# EACH CHECK'S GITHUB APP, BY SLUG (D.218): pr:checks re-requests only the suite of the app that
+# owns a missing check.
+[owners]
+"quality gate" = "github-actions"

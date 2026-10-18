@@ -1,0 +1,27 @@
+--- a/tests/test_merge_readiness.py
++++ b/tests/test_merge_readiness.py
+@@ -113,3 +113,24 @@
+     """THE CONTROL: a policy that always waits on expectations would pass the rest."""
+     observed = _pr("CLEAN", ("quality gate", "SUCCESS"), ("GitGuardian Security Checks", "SUCCESS"))
+     assert readiness(observed, EXPECTED).decision == "merge"
++
++
++def test_a_pr_behind_its_base_refuses() -> None:
++    """recsys: BEHIND is a verdict to update the branch, never a wait."""
++    verdict = readiness(_pr("BEHIND", ("quality gate", "SUCCESS")))
++    assert verdict.decision == "refuse"
++    assert any(r.startswith("[ERR_MERGE_BEHIND]") for r in verdict.reasons)
++
++
++def test_a_draft_pr_refuses() -> None:
++    """recsys: a draft is not ready to merge, however green its checks."""
++    verdict = readiness(_pr("DRAFT", ("quality gate", "SUCCESS")))
++    assert verdict.decision == "refuse"
++    assert any(r.startswith("[ERR_MERGE_DRAFT]") for r in verdict.reasons)
++
++
++def test_an_unstable_pr_refuses() -> None:
++    """recsys: a non-passing status GitHub does not require still blocks this merge."""
++    verdict = readiness(_pr("UNSTABLE", ("quality gate", "SUCCESS")))
++    assert verdict.decision == "refuse"
++    assert any(r.startswith("[ERR_MERGE_UNSTABLE]") for r in verdict.reasons)

@@ -1,0 +1,212 @@
+--- a/scripts/run_task.py
++++ b/scripts/run_task.py
+@@ -20,11 +20,14 @@
+ import re
+ import subprocess
+ import sys
++import tempfile
++import threading
+ import time
+ import tomllib
+ from collections.abc import Sequence
++from concurrent.futures import ThreadPoolExecutor
+ from pathlib import Path
+-from typing import ClassVar, Literal, TextIO
++from typing import IO, ClassVar, Literal, TextIO
+ 
+ from pydantic import Field, JsonValue, NonNegativeFloat, NonNegativeInt
+ from securesystemslib.signer import Signer
+@@ -40,11 +43,11 @@
+ 
+ 
+ class TaskRun(Contract):
+-    """task-run/v1: one task run through the wrapper."""
+-
+-    CONTRACT_ID: ClassVar[str] = "task-run/v1"
+-
+-    contract: Literal["task-run/v1"] = "task-run/v1"
++    """task-run/v2: one task run through the wrapper, both its streams kept as evidence (A.41)."""
++
++    CONTRACT_ID: ClassVar[str] = "task-run/v2"
++
++    contract: Literal["task-run/v2"] = "task-run/v2"
+     task: str = Field(min_length=1)
+     arguments: tuple[str, ...]
+     exit_code: int
+@@ -52,6 +55,20 @@
+     output_lines: NonNegativeInt
+     output_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+     tail: tuple[str, ...]
++    evidence: str | None
++    stdout_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
++    stderr_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
++
++
++class RunEvidence(Contract):
++    """run-evidence/v1: a run's two streams, each kept whole in its own file, with its digest."""
++
++    contract: Literal["run-evidence/v1"] = "run-evidence/v1"
++    task: str = Field(min_length=1)
++    stdout_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
++    stderr_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
++    stdout_lines: NonNegativeInt
++    stderr_lines: NonNegativeInt
+ 
+ 
+ ROOT = Path(__file__).resolve().parent.parent
+@@ -169,6 +186,9 @@
+         output_lines=0,
+         output_sha256=EMPTY_SHA256,
+         tail=(),
++        evidence=None,
++        stdout_sha256=EMPTY_SHA256,
++        stderr_sha256=EMPTY_SHA256,
+     )
+     outcome = CommandOutcome.model_validate(
+         {
+@@ -201,6 +221,7 @@
+     declared: frozenset[str] | None = None,
+     read_only: frozenset[str] | None = None,
+     signer: Signer | Literal["published"] | None = "published",
++    evidence: Path | None = None,
+ ) -> int:
+     """Run the task, stream it, record it, and return its own exit code."""
+     args = list(sys.argv[1:] if argv is None else argv)
+@@ -228,7 +249,7 @@
+     try:
+         if decision.action != "proceed":
+             return _refuse(task, arguments, decision, ledger, active)
+-        return _launch(task, arguments, decision, ledger, active, launcher)
++        return _launch(task, arguments, decision, ledger, active, launcher, evidence)
+     finally:
+         if held is not None:
+             held.close()
+@@ -271,6 +292,42 @@
+     )
+ 
+ 
++class _Captured:
++    """The merged console view: every line in arrival order, its digest, its count and its tail."""
++
++    def __init__(self) -> None:
++        self.lock = threading.Lock()
++        self.digest = hashlib.sha256()
++        self.count = 0
++        self.tail: list[str] = []
++
++
++def _pump(source: IO[str], kept: Path, captured: _Captured) -> tuple[str, int]:
++    """Copy one stream live to the console and whole to its own file: its digest and lines."""
++    own = hashlib.sha256()
++    lines = 0
++    with kept.open("w", encoding="utf-8") as file:
++        for line in source:
++            file.write(line)
++            own.update(line.encode("utf-8"))
++            lines += 1
++            with captured.lock:
++                sys.stdout.write(line)
++                sys.stdout.flush()
++                captured.digest.update(line.encode("utf-8"))
++                captured.count += 1
++                captured.tail.append(ANSI.sub("", line.rstrip("\n")))
++                if len(captured.tail) > TAIL:
++                    del captured.tail[0]
++    return own.hexdigest(), lines
++
++
++def evidence_folder(root: Path, task: str) -> Path:
++    """A directory no other run can share: mkdtemp creates it atomically and uniquely named."""
++    root.mkdir(parents=True, exist_ok=True)
++    return Path(tempfile.mkdtemp(prefix=f"{task.replace(':', '_')}-", dir=root))
++
++
+ def _launch(
+     task: str,
+     arguments: tuple[str, ...],
+@@ -278,42 +335,59 @@
+     ledger: Path | None,
+     active: Signer | None,
+     launcher: Sequence[str],
++    evidence: Path | None,
+ ) -> int:
+-    """Start the task, stream it, record it, and return its own exit code."""
++    """Start the task, stream and keep both its streams, record it, return its own exit code.
++
++    TWO PIPES, ONE READER EACH (A.41): neither stream can block the other, and each is kept whole
++    with its own digest. Separate pipes cannot fix the order between them, so the console and
++    output_sha256 follow arrival order, while each stream's own file and digest are exact.
++    """
+     started = time.monotonic()
+-    digest = hashlib.sha256()
+-    tail: list[str] = []
+-    count = 0
+-    with subprocess.Popen(
+-        [*launcher, task, *arguments],
+-        stdout=subprocess.PIPE,
+-        stderr=subprocess.STDOUT,
+-        text=True,
+-        bufsize=1,
+-        # PYTHON CHILDREN WRITE EACH LINE AS THEY PRINT IT: into a pipe Python
+-        # block-buffers stdout, so a task's own lines arrived after a child's (D.20).
+-        env={**os.environ, "PYTHONUNBUFFERED": "1"},
+-    ) as process:
+-        if process.stdout is None:
++    captured = _Captured()
++    folder = evidence_folder(evidence or (ledger or default_ledger()).parent / "evidence", task)
++    with (
++        subprocess.Popen(
++            [*launcher, task, *arguments],
++            stdout=subprocess.PIPE,
++            stderr=subprocess.PIPE,
++            text=True,
++            bufsize=1,
++            # PYTHON CHILDREN WRITE EACH LINE AS THEY PRINT IT: into a pipe Python
++            # block-buffers stdout, so a task's own lines arrived after a child's (D.20).
++            env={**os.environ, "PYTHONUNBUFFERED": "1"},
++        ) as process,
++        ThreadPoolExecutor(max_workers=2) as pool,
++    ):
++        if process.stdout is None or process.stderr is None:
+             raise SystemExit("the task's output could not be captured")
+-        for line in process.stdout:
+-            sys.stdout.write(line)
+-            sys.stdout.flush()
+-            digest.update(line.encode("utf-8"))
+-            count += 1
+-            tail.append(ANSI.sub("", line.rstrip("\n")))
+-            if len(tail) > TAIL:
+-                del tail[0]
++        out = pool.submit(_pump, process.stdout, folder / "stdout", captured)
++        err = pool.submit(_pump, process.stderr, folder / "stderr", captured)
++        (stdout_sha256, stdout_lines), (stderr_sha256, stderr_lines) = out.result(), err.result()
+         exit_code = process.wait()
++    kept = RunEvidence(
++        task=task,
++        stdout_sha256=stdout_sha256,
++        stderr_sha256=stderr_sha256,
++        stdout_lines=stdout_lines,
++        stderr_lines=stderr_lines,
++    )
++    # WRITTEN BY RENAME: the manifest is whole or absent, never half written.
++    staging = folder / "evidence.json.partial"
++    staging.write_text(kept.model_dump_json(indent=2), encoding="utf-8")
++    staging.replace(folder / "evidence.json")
+ 
+     run = TaskRun(
+         task=task,
+         arguments=arguments,
+         exit_code=exit_code,
+         duration_seconds=round(time.monotonic() - started, 3),
+-        output_lines=count,
+-        output_sha256=digest.hexdigest(),
+-        tail=tuple(tail),
++        output_lines=captured.count,
++        output_sha256=captured.digest.hexdigest(),
++        tail=tuple(captured.tail),
++        evidence=str(folder),
++        stdout_sha256=stdout_sha256,
++        stderr_sha256=stderr_sha256,
+     )
+     outcome = outcome_of(run)
+     _summarise(run, append(outcome, ledger=ledger, signer=active), decision)
