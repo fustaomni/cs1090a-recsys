@@ -472,6 +472,24 @@ description = "Install exactly the tools mise.lock records, refusing any it does
 # --locked: a tool missing from the lock fails instead of resolving a version from the network.
 run = "mise install --locked"
 
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.101).
+[tasks.sync]
+description = "Return to develop, pull, and remove branches that are safe to remove"
+# STATE-DRIVEN, NOT A PIPELINE. This piped `git for-each-ref` through awk and
+# deleted whatever reported [gone]. It worked until a worktree held one of those
+# branches: git refused -- correctly -- and the task ABORTED after the pull had
+# succeeded, leaving the sync half done.
+#
+# Cleanup had no model of what it was cleaning. scripts/repo_state.py answers
+# protection, merge status and worktree ownership at once, and reports what it
+# did NOT remove and why.
+run = "uv run --no-sync python scripts/sync.py"
+
+[tasks."repo:state"]
+description = "Observe every worktree and long-lived branch as typed evidence, and record the run"
+# EVIDENCE AS DATA: repository-state/v1, verdicts as booleans, never console prose.
+run = "uv run --no-sync python scripts/repo_report.py"
+
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.116).
 # The <spec> help names the mutation spec, as cscie103 corrected it after the pin (D.225); at the
 # pin it carried plan:add's text, "[[steps]] and one [trace]".
