@@ -904,3 +904,12 @@ because = { "A.39" = "a test's lane is declared by the directory it lives in", "
 done_when = [
   { kind = "proof", test = "tests/test_machine_lane.py::test_a_machine_claim_runs_here_and_never_on_ci" },
 ]
+[[steps]]
+id = "A.105"
+title = "develop requires the quality gate from GitHub Actions, kept as a ruleset in code, so a running gate reads BLOCKED"
+thread = "A"
+depends_on = ["A.19", "A.20"]
+because = { "A.19" = "merge.readiness waits on BLOCKED and refuses UNSTABLE, as cscie103's required-check ruleset intends", "A.20" = "quality gate is the check CI reports, and the one the rule must require" }
+done_when = [
+  { kind = "proof", test = "tests/test_rulesets.py::test_develop_requires_the_quality_gate_from_github_actions" },
+]
