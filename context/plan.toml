@@ -972,6 +972,7 @@ thread = "A"
 depends_on = ["A.20", "A.104"]
 because = { "A.20" = "the gate joins the registry check runs", "A.104" = "its runs_in_ci field, check:ci task and machine test level have no cscie103 counterpart and are replaced" }
 done_when = [
+  { kind = "task", name = "nix:contract" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -981,6 +982,7 @@ thread = "A"
 depends_on = ["A.20"]
 because = { "A.20" = "the gate joins the registry check runs" }
 done_when = [
+  { kind = "task", name = "check:pii" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -990,6 +992,10 @@ thread = "A"
 depends_on = ["A.20"]
 because = { "A.20" = "the gates join the registry check runs" }
 done_when = [
+  { kind = "task", name = "check:fixtures" },
+  { kind = "task", name = "check:prereqs" },
+  { kind = "task", name = "check:env-parity" },
+  { kind = "task", name = "nix:flake-check" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1008,5 +1014,6 @@ thread = "A"
 depends_on = ["A.113"]
 because = { "A.113" = "a file is verified only against cscie103's tree at the pin, never against a local copy" }
 done_when = [
-  { kind = "task", name = "status" },
+  { kind = "proof", test = "tests/test_upstream_copies.py::test_no_unverified_upstream_copy_remains" },
+  { kind = "task", name = "check" },
 ]
