@@ -8,6 +8,7 @@ registered capability.
 
 from __future__ import annotations
 
+import json
 import tomllib
 from pathlib import Path
 
@@ -42,3 +43,12 @@ def test_every_toolchain_operation_is_a_task() -> None:
         if key.startswith("platforms.")
     }
     assert platforms == {PLATFORM}, platforms
+
+
+def test_a_tool_arrives_only_through_tools_install() -> None:
+    """A.103: mise's auto-install is off, in mise.toml and the founding data's pins alike."""
+    settings = _load("mise.toml")["settings"]
+    assert isinstance(settings, dict) and settings.get("auto_install") is False, settings
+    data = ROOT / "policies" / "founding" / "data.json"
+    pinned = json.loads(data.read_text(encoding="utf-8"))["founding"]["pins"]["settings"]
+    assert pinned.get("auto_install") is False, pinned
