@@ -962,9 +962,9 @@ sha256 = "a7444ad736650f3e27e7a9a9223b870e1fa2d1629304e4992b19594d080eefb8"
 
 [[adapted]]
 path = "scripts/project_identity.py"
-reason = "identity keeps name and repository: the seven Databricks values are withdrawn from the model and from _values, as the founding withdrew Databricks (A.121)"
+reason = "identity keeps name and repository: the seven Databricks values are withdrawn from the model and from _values, as the founding withdrew Databricks (A.121); a refused spec names every validation error by its field, never the error's count line alone (A.130)"
 patch = "contracts/vendor-patches/scripts/project_identity.py.patch"
-sha256 = "fabc6c554ffa581df190c147c38ef492b6ad3012a13b1be944b2b71983667aad"
+sha256 = "91d9b35565b64ee8157a5889d16155677ddbfff8f2f68bf54349967f559c8bcb"
 
 [[files]]
 path = "scripts/template_new.py"
@@ -983,6 +983,12 @@ sha256 = "792edf3c8298efa540846241f993b7e73ed30614dcd20967f0e2338211a56867"
 [[files]]
 path = "scripts/template_identity.py"
 sha256 = "38fa77e4d0809facd60750e29127df670fe4e9ecca2108d26fc94a02c978af5d"
+
+[[adapted]]
+path = "scripts/template_identity.py"
+reason = "a refused spec names every validation error by its field, through project_identity's refusal_reason, never the error's count line alone (A.130)"
+patch = "contracts/vendor-patches/scripts/template_identity.py.patch"
+sha256 = "a1dce649c445706dd3ec716ff2b7955063838ae5d81af870901dc70fe92d1c8a"
 
 [[files]]
 path = "scripts/template_publish.py"

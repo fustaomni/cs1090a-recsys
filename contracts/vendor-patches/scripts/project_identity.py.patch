@@ -9,6 +9,15 @@
  Code reads it here, at the boundary, and derives every relation from it. Files that
  cannot read it -- TOML names, YAML defaults, a Nix string, a JSON $id, two shell lines --
  hold SLOTS: line templates the declaration renders, and identity:set rewrites only those.
+@@ -21,7 +21,7 @@
+ from typing import ClassVar, Literal
+ 
+ import tomlkit
+-from pydantic import Field, PositiveInt
++from pydantic import Field, PositiveInt, ValidationError
+ 
+ from command_outcome import announce
+ from contract_base import Contract, from_document
 @@ -41,10 +41,6 @@
      line: str = Field(min_length=1)
  
@@ -52,3 +61,34 @@
      }
  
  
+@@ -198,6 +178,21 @@
+     """What identity:set reads: exactly the identity values, inherited, never restated."""
+ 
+ 
++def refusal_reason(problem: OSError | ValueError) -> str:
++    """Why a spec was refused: every validation error by its field, else the first line (A.130).
++
++    str() of a ValidationError opens with its count, "1 validation error for IdentitySpec", and
++    keeping only that line dropped the field and the rule it broke. pydantic carries each error
++    in e.errors(), with its loc and msg, so the refusal names them all.
++    """
++    if isinstance(problem, ValidationError):
++        return "; ".join(
++            f"{'.'.join(str(part) for part in error['loc'])}: {error['msg']}"
++            for error in problem.errors()
++        )
++    return (str(problem).strip() or type(problem).__name__).splitlines()[0]
++
++
+ def main(argv: Sequence[str] | None = None) -> int:
+     """identity:set <spec> -- every slot and the declaration, together or not at all."""
+     args = list(sys.argv[1:] if argv is None else argv)
+@@ -212,7 +207,7 @@
+         target = previous.model_copy(update=spec.model_dump())
+         changed = set_identity(ROOT, target)
+     except (OSError, ValueError) as problem:
+-        reason = (str(problem).strip() or type(problem).__name__).splitlines()[0]
++        reason = refusal_reason(problem)
+         refused = decide(schema_verdict("identity_spec", IdentitySpec, reason))
+         return enforce(announce(COMMAND, refused, "identity_refused", reason, {}))
+     # AUTHORISED BY A JUDGED RULE, the spec's schema; the scan below REPORTS, it never gates.
