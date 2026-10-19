@@ -1143,3 +1143,49 @@ done_when = [
   { kind = "proof", test = "tests/integration/test_generated_gate.py::test_a_generated_project_passes_its_own_tests" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.125"
+title = "provenance:adapt refuses an upstream file that is missing by naming it, never with a traceback"
+thread = "A"
+depends_on = ["A.85"]
+because = { "A.85" = "provenance:adapt reads the upstream copy it plans against" }
+done_when = [
+  { kind = "proof", test = "tests/test_provenance_adapt.py::test_a_missing_upstream_file_is_refused_not_raised" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.126"
+title = "sync re-trusts a mise.toml its pull rewrote, through the founding gate, as worktree:refresh does"
+thread = "A"
+depends_on = ["A.101", "A.122"]
+because = { "A.101" = "sync pulls develop into the checkout it runs in", "A.122" = "a refresh already re-trusts a rewritten mise.toml through one trust path" }
+done_when = [
+  { kind = "proof", test = "tests/test_sync_retrust.py::test_a_sync_that_changes_mise_toml_retrusts_it" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.127"
+title = "worktree:skip drops a stopped rebase's commit only when another named ref preserves it, and says why"
+thread = "A"
+depends_on = ["A.120"]
+because = { "A.120" = "a stopped rebase is read and continued by worktree:conflicts and worktree:continue; skip is the third verb" }
+done_when = [
+  { kind = "task", name = "worktree:skip" },
+  { kind = "proof", test = "tests/test_worktree_skip.py::test_a_preserved_commit_is_skipped_and_the_rebase_finishes" },
+  { kind = "proof", test = "tests/test_worktree_skip.py::test_an_unpreserved_commit_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_skip.py::test_the_rebasing_branch_cannot_preserve_its_own_commit" },
+  { kind = "proof", test = "tests/test_worktree_skip.py::test_a_skip_without_a_reason_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_skip.py::test_skip_without_a_rebase_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_skip_policy.py::test_an_absent_plan_is_refused_by_the_policy" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.128"
+title = "plan:add, plan:amend, plan:record and plan:retract refuse an invalid spec as a closed outcome, never a traceback"
+thread = "A"
+depends_on = ["A.60"]
+because = { "A.60" = "a failed operation is a closed outcome, and a refusal is never an exception" }
+done_when = [
+  { kind = "proof", test = "tests/test_plan_edit_refusals.py::test_a_spec_with_an_undeclared_field_is_a_closed_refusal" },
+  { kind = "task", name = "check" },
+]
