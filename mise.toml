@@ -536,6 +536,14 @@ description = "Continue a worktree's resolved rebase, refused while any marker r
 # D.31: continue-plan/v1 judged by runs.worktree_continue before anything is staged.
 run = "uv run --no-sync python scripts/rebase_state.py continue"
 
+# This repository's own (plan A.127): cscie103's rebase_state.py has no skip at the pin.
+[tasks."worktree:skip"]
+description = "Drop a worktree's stopped rebase commit, only when another named ref preserves it"
+# skip-plan/v1 judged by runs.worktree_skip before git skips anything. raw_args passes
+# <slug> <preserving-ref> <reason> untouched, so a reason with spaces arrives whole.
+raw_args = true
+run = "uv run --no-sync python scripts/rebase_skip.py"
+
 # This repository's own (plan A.114): cscie103 has no copy verifier; the shape follows
 # upstream:checkout, and the checkout is named so it runs against one whose tasks predate it.
 [tasks."upstream:copies"]
