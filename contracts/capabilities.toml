@@ -410,3 +410,39 @@ task = "worktree:continue"
 version = "1.0.0"
 implementation = "scripts/rebase_state.py"
 emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "identity:set"
+version = "1.0.0"
+implementation = "scripts/project_identity.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "template:new"
+version = "1.0.0"
+implementation = "scripts/template_new.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "template:init"
+version = "1.0.0"
+implementation = "scripts/template_init.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "template:identity"
+version = "1.0.0"
+implementation = "scripts/template_identity.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "template:publish"
+version = "1.0.0"
+implementation = "scripts/template_publish.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "template:discard"
+version = "1.0.0"
+implementation = "scripts/template_discard.py"
+emits = "command-outcome/v1"

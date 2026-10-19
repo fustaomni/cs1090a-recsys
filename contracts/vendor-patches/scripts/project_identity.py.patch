@@ -1,0 +1,54 @@
+--- a/scripts/project_identity.py
++++ b/scripts/project_identity.py
+@@ -1,7 +1,7 @@
+ # scripts/project_identity.py
+ """Project identity, declared once (D.52).
+ 
+-contracts/project-identity.toml names the project and the Databricks objects it owns.
++contracts/project-identity.toml names the project and the repository it lives in.
+ Code reads it here, at the boundary, and derives every relation from it. Files that
+ cannot read it -- TOML names, YAML defaults, a Nix string, a JSON $id, two shell lines --
+ hold SLOTS: line templates the declaration renders, and identity:set rewrites only those.
+@@ -41,10 +41,6 @@
+     line: str = Field(min_length=1)
+ 
+ 
+-# A UUID as Databricks prints one: the account and an OAuth client are identified this way.
+-_UUID = r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+-
+-
+ class IdentityValues(Contract):
+     """The identity values, declared once: the declaration and a spec both inherit them.
+ 
+@@ -54,16 +50,7 @@
+     """
+ 
+     name: str = Field(pattern=r"^[a-z][a-z0-9-]*$")
+-    catalog: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
+-    reader_group: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
+-    ci_principal: str = Field(pattern=r"^[a-z][a-z0-9-]*$")
+-    default_schema: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
+     repository: str = Field(pattern=r"^https://github\.com/[\w.-]+/[\w.-]+$")
+-    # THE WORKSPACE IS IDENTITY (D.96): a generated project has its own workspace, account
+-    # and CI principal, so none of them may be inherited as a literal from this one.
+-    workspace_host: str = Field(pattern=r"^https://[a-z0-9.-]+$")
+-    account_id: str = Field(pattern=_UUID)
+-    ci_client_id: str = Field(pattern=_UUID)
+ 
+ 
+ class ProjectIdentity(IdentityValues):
+@@ -96,14 +83,7 @@
+ def _values(identity: ProjectIdentity) -> dict[str, str]:
+     return {
+         "name": identity.name,
+-        "catalog": identity.catalog,
+-        "reader_group": identity.reader_group,
+-        "ci_principal": identity.ci_principal,
+-        "default_schema": identity.default_schema,
+         "repository": identity.repository,
+-        "workspace_host": identity.workspace_host,
+-        "account_id": identity.account_id,
+-        "ci_client_id": identity.ci_client_id,
+     }
+ 
+ 

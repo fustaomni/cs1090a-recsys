@@ -1,0 +1,78 @@
+--- a/tests/test_project_identity.py
++++ b/tests/test_project_identity.py
+@@ -17,8 +17,6 @@
+ 
+ import pytest
+ 
+-from bootstrap_identity import desired
+-from check_prereqs import required
+ from nonvacuous import nonempty
+ from opa import denials
+ from project_identity import (
+@@ -35,13 +33,6 @@
+ ENTRYPOINT = "data.identity.deny"
+ PROBE = {
+     "name": "probe-project",
+-    "catalog": "probe_catalog",
+-    "reader_group": "probe_readers",
+-    "ci_principal": "probe-ci",
+-    "workspace_host": "https://probe.cloud.databricks.com",
+-    "account_id": "00000000-0000-4000-8000-000000000001",
+-    "ci_client_id": "00000000-0000-4000-8000-000000000002",
+-    "default_schema": "probe_schema",
+     "repository": "https://github.com/example/probe-project",
+ }
+ 
+@@ -50,24 +41,13 @@
+     return denials(ENTRYPOINT, {"identity_inventory": inventory.model_dump(mode="json")})
+ 
+ 
+-def test_scripts_derive_identity_relations_from_the_declaration() -> None:
+-    probe = load(REPO).model_copy(update=PROBE)
+-    wanted = desired(probe)
+-    assert wanted.groups == ("probe_readers",)
+-    assert wanted.service_principals == ("probe-ci",)
+-    assert wanted.memberships == {"probe_readers": ("probe-ci",)}
+-    assert wanted.catalog_grants == {"probe_catalog": {"probe_readers": ("USE_CATALOG", "BROWSE")}}
+-    needed = required(probe)
+-    assert (needed.catalog, needed.group) == ("probe_catalog", "probe_readers")
+-
+-
+ def test_a_stray_identity_literal_is_refused() -> None:
+     exempt = load(REPO).exempt
+-    stray = Occurrence(path="scripts/new_tool.py", number=3, value="cscie103_catalog", slot=False)
++    stray = Occurrence(path="scripts/new_tool.py", number=3, value="cs1090a-recsys", slot=False)
+     found = _decide(IdentityInventory(exempt=exempt, occurrences=(stray,)))
+     assert any("scripts/new_tool.py" in denial for denial in found), found
+-    slotted = Occurrence(path="databricks.yml", number=174, value="cscie103_catalog", slot=True)
+-    derived = Occurrence(path="uv.lock", number=1, value="cscie103-data-engineering", slot=False)
++    slotted = Occurrence(path="pyproject.toml", number=6, value="cs1090a-recsys", slot=True)
++    derived = Occurrence(path="uv.lock", number=168, value="cs1090a-recsys", slot=False)
+     assert _decide(IdentityInventory(exempt=exempt, occurrences=(slotted, derived))) == []
+     assert any("ERR_IDENTITY_INPUT_MISSING" in denial for denial in denials(ENTRYPOINT, {}))
+ 
+@@ -96,9 +76,7 @@
+         expected = [rewrites.get(line, line) for line in old_lines]
+         assert (tmp_path / name).read_text(encoding="utf-8").splitlines() == expected, name
+     after = load(tmp_path)
+-    values = (after.name, after.catalog, after.reader_group, after.ci_principal)
+-    workspace = (after.workspace_host, after.account_id, after.ci_client_id)
+-    assert (*values, *workspace, after.default_schema, after.repository) == tuple(PROBE.values())
++    assert (after.name, after.repository) == tuple(PROBE.values())
+ 
+ 
+ def test_identity_set_refuses_a_spec_it_cannot_apply(tmp_path: Path) -> None:
+@@ -115,13 +93,6 @@
+     (
+         'contract = "project-identity/v1"',
+         'name = "old-project"',
+-        'catalog = "old_catalog"',
+-        'reader_group = "old_readers"',
+-        'ci_principal = "old-ci"',
+-        'workspace_host = "https://old.cloud.databricks.com"',
+-        'account_id = "00000000-0000-4000-8000-000000000003"',
+-        'ci_client_id = "00000000-0000-4000-8000-000000000004"',
+-        'default_schema = "old"',
+         'repository = "https://github.com/example/old-repo"',
+         "exempt = []",
+         "[[slots]]",

@@ -1,0 +1,39 @@
+# copier.yml
+# The platform as a Copier template (D.50).
+#
+# THE TEMPLATE IS THIS REPOSITORY'S ROOT, with no _subdirectory: the root files ARE
+# the platform, and moving them would break every task, hook and CI path here.
+#
+# A generated project records the template commit it came from in
+# .copier-answers.yml (`_commit`), and `copier update` merges later template
+# changes into it from there -- provenance, and the channel that stops drift.
+_min_copier_version: "9.17"
+_answers_file: .copier-answers.yml
+_exclude:
+  # COPIER'S OWN DEFAULTS, VERBATIM. _exclude REPLACES them rather than adding to
+  # them; leaving them out copies copier.yml and .git into every project, and a
+  # 2026 template that did so aborted every `copier update` it ran.
+  - "copier.yaml"
+  - "copier.yml"
+  - "~*"
+  - "*.py[co]"
+  - "__pycache__"
+  - ".git"
+  - ".DS_Store"
+  - ".svn"
+  # COURSEWORK IS NOT THE PLATFORM: this repository's assignments stay here.
+  - "assignments"
+  - "resources/assignment_*"
+  - "tests/test_assignment_*"
+  # THIS REPOSITORY'S PLAN IS ITS OWN HISTORY: a generated project starts its own (plan:init).
+  - "context/plan.toml"
+  - "context/plan-ids.toml"
+  - "context/plan-trace.toml"
+  # THIS REPOSITORY'S RUN LEDGER IS ITS OWN, as its plan is: a generated project starts its own.
+  - "contracts/ledger-anchor.toml"
+  # TESTS OF THE TEMPLATE BELONG WHERE THE TEMPLATE IS: a generated project has no
+  # copier.yml to render (D.61).
+  - "tests/test_copier_template.py"
+  - "tests/test_generated_gate.py"
+  # THIS COURSE'S OWN RESOURCES: a project has its own schema (D.64).
+  - "resources/coursework.yml"
