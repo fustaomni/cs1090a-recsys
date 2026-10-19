@@ -1,6 +1,6 @@
 --- a/contracts/project-identity.toml
 +++ b/contracts/project-identity.toml
-@@ -6,42 +6,26 @@
+@@ -6,42 +6,28 @@
  # rewrites exactly those lines, so a generated project takes its own identity in one
  # recorded operation -- and policies/identity refuses any copy that lives anywhere else.
  contract = "project-identity/v1"
@@ -51,4 +51,6 @@
 -  { path = "mise.toml", line = '''  echo "{ci_principal} not found; run 'mise run bootstrap:identity' first" >&2''' },
 -  { path = ".github/workflows/ci.yml", line = "          DATABRICKS_HOST: {workspace_host}" },
 -  { path = ".github/workflows/ci.yml", line = "          DATABRICKS_CLIENT_ID: {ci_client_id}" },
++  # uv.lock records the project's own package: its root line is renamed with pyproject.toml's (A.129)
++  { path = "uv.lock", line = 'name = "{name}"' },
  ]
