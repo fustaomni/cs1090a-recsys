@@ -1252,3 +1252,13 @@ done_when = [
   { kind = "proof", test = "tests/test_identity_refusals.py::test_a_spec_refusal_names_the_field_and_its_rule" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.131"
+title = "start:here cuts a feature branch with --no-track, so a bare push can never reach develop"
+thread = "A"
+depends_on = ["A.93"]
+because = { "A.93" = "worktree:add already cuts with --no-track; start:here is the other way a branch is cut" }
+done_when = [
+  { kind = "proof", test = "tests/test_start_here.py::test_start_here_cuts_a_branch_with_no_upstream" },
+  { kind = "task", name = "check" },
+]
