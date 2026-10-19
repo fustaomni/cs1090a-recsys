@@ -1188,6 +1188,7 @@ depends_on = ["A.60"]
 because = { "A.60" = "a failed operation is a closed outcome, and a refusal is never an exception" }
 done_when = [
   { kind = "proof", test = "tests/test_plan_edit_refusals.py::test_a_spec_with_an_undeclared_field_is_a_closed_refusal" },
+  { kind = "proof", test = "tests/test_plan_edit_refusals.py::test_a_spec_that_cannot_be_parsed_or_read_is_a_closed_refusal" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
