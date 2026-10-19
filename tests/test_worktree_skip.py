@@ -41,7 +41,7 @@ def _repository(tmp_path: Path) -> Path:
     _git(tmp_path, "config", "user.useConfigOnly", "true")
     _git(tmp_path, "config", "user.name", "t")
     _git(tmp_path, "config", "user.email", "t@example.invalid")
-    (tmp_path / "f.txt").write_text("line1\\nshared\\nline3\\n", encoding="utf-8")
+    (tmp_path / "f.txt").write_text("line1\nshared\nline3\n", encoding="utf-8")
     _git(tmp_path, "add", "f.txt")
     _git(tmp_path, "commit", "-q", "-m", "base")
     return tmp_path
@@ -51,12 +51,12 @@ def _stopped(tmp_path: Path, *, keep: bool) -> Path:
     """feature is rebased onto main and stops; with keep, `keep` holds feature's commit."""
     repo = _repository(tmp_path)
     _git(repo, "switch", "-q", "-c", "feature")
-    (repo / "f.txt").write_text("line1\\nfeature\\nline3\\n", encoding="utf-8")
+    (repo / "f.txt").write_text("line1\nfeature\nline3\n", encoding="utf-8")
     _git(repo, "commit", "-q", "-am", "feature change")
     if keep:
         _git(repo, "branch", "keep")
     _git(repo, "switch", "-q", "main")
-    (repo / "f.txt").write_text("line1\\nmain\\nline3\\n", encoding="utf-8")
+    (repo / "f.txt").write_text("line1\nmain\nline3\n", encoding="utf-8")
     _git(repo, "commit", "-q", "-am", "main change")
     _git(repo, "switch", "-q", "feature")
     _git(repo, "rebase", "main", check=False)
@@ -68,7 +68,7 @@ def test_a_preserved_commit_is_skipped_and_the_rebase_finishes(tmp_path: Path) -
     result = skip_rebase(repo, "keep", "superseded by main")
     assert result.outcome == "finished", result.message
     assert conflicts(repo).operation == "none"
-    assert (repo / "f.txt").read_text(encoding="utf-8") == "line1\\nmain\\nline3\\n"
+    assert (repo / "f.txt").read_text(encoding="utf-8") == "line1\nmain\nline3\n"
     assert _git(repo, "log", "-1", "--format=%s", "keep") == "feature change"
 
 
@@ -102,3 +102,10 @@ def test_skip_without_a_rebase_is_refused(tmp_path: Path) -> None:
     result = skip_rebase(repo, "keep", "superseded by main")
     assert result.outcome == "refused"
     assert "ERR_SKIP_NO_REBASE" in result.message, result.message
+
+
+def test_the_conflicting_file_holds_three_lines(tmp_path: Path) -> None:
+    """The fixture is the multi-line file the docstring names, never one line of escape text."""
+    repo = _repository(tmp_path)
+    lines = (repo / "f.txt").read_text(encoding="utf-8").splitlines()
+    assert lines == ["line1", "shared", "line3"], lines

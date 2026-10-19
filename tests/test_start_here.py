@@ -57,7 +57,7 @@ def _clone(tmp_path: Path) -> Path:
     origin, seed, clone = tmp_path / "origin.git", tmp_path / "seed", tmp_path / "clone"
     _git(tmp_path, "init", "-q", "--bare", "-b", "develop", str(origin))
     _git(tmp_path, "init", "-q", "-b", "develop", str(seed))
-    (seed / "f.txt").write_text("base\\n", encoding="utf-8")
+    (seed / "f.txt").write_text("base\n", encoding="utf-8")
     _git(seed, "add", "f.txt")
     _git(seed, "commit", "-q", "-m", "base")
     _git(seed, "push", "-q", str(origin), "develop")
@@ -71,6 +71,7 @@ def test_start_here_cuts_a_branch_with_no_upstream(tmp_path: Path) -> None:
         ["bash", "-c", _printed("probe")], cwd=clone, capture_output=True, text=True, check=False
     )
     assert cut.returncode == 0, cut.stderr
+    assert (clone / "f.txt").read_text(encoding="utf-8") == "base\n"
     assert _git(clone, "rev-parse", "--abbrev-ref", "HEAD").stdout.strip() == "feature/probe"
     found = _git(clone, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}", check=False)
     assert found.returncode != 0, f"feature/probe tracks {found.stdout.strip()}"
