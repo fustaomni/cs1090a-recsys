@@ -235,6 +235,9 @@ description = "Cut a feature branch from origin/develop in THIS shell"
 #
 # Uncommitted work carries across automatically: `git switch -c` keeps the
 # working tree, so a modified file on develop lands on the new branch.
+#
+# --no-track (A.131): a branch started from origin/develop otherwise tracks it, and a bare
+# `git push` then publishes to develop with no review. worktree:add cuts the same way (A.93).
 usage = '''
 arg "<slug>" help="Short kebab-case description, e.g. assignment-01-spark-api"
 '''
@@ -246,7 +249,7 @@ case "$slug" in
   *[!a-z0-9-]*|"")
     echo "echo 'slug must be lowercase kebab-case: $slug' >&2; false" ;;
   *)
-    echo "git fetch origin --prune --quiet && git switch -c feature/$slug origin/develop" ;;
+    echo "git fetch origin --prune --quiet && git switch --no-track -c feature/$slug origin/develop" ;;
 esac
 '''
 
