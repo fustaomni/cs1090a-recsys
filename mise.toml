@@ -472,6 +472,57 @@ description = "Install exactly the tools mise.lock records, refusing any it does
 # --locked: a tool missing from the lock fails instead of resolving a version from the network.
 run = "mise install --locked"
 
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.121); the spec help names this
+# repository's identity fields, name and repository.
+[tasks."identity:set"]
+description = "Set the project identity from a spec: every declared slot and the declaration, all or nothing"
+# THE FIRST OPERATION A GENERATED PROJECT RUNS: every slot is rewritten, or none is.
+usage = 'arg "<spec>" help="TOML spec: name, repository"'
+run = 'uv run --no-sync python scripts/project_identity.py "${usage_spec?}"'
+
+[tasks."template:new"]
+description = "Generate a new project from this template on GitHub, pinned to a commit, or refuse"
+# THE SOURCE IS THE DECLARED REPOSITORY AND THE REF A FULL SHA: no laptop path, no HEAD.
+usage = '''
+arg "<destination>" help="An absent or empty directory outside this repository"
+arg "<ref>" help="A full 40-character commit sha of this template"
+'''
+run = 'uv run --no-sync python scripts/template_new.py "${usage_destination?}" "${usage_ref?}"'
+
+[tasks."template:init"]
+description = "Make a generated project a git repository: the template as one commit on main, and develop"
+# THE BASELINE copier update DIFFS AGAINST: refused unless generated, new to git, and outside.
+usage = 'arg "<destination>" help="A directory template:new generated, not yet a repository"'
+run = 'uv run --no-sync python scripts/template_init.py "${usage_destination?}"'
+
+[tasks."template:identity"]
+description = "Give a fresh generated project its identity from a spec, as its second commit"
+# ONE COMMIT AND NO REMOTE, OR REFUSED: identity is taken once, before publishing.
+usage = '''
+arg "<destination>" help="A project template:init made: one commit, no remote"
+arg "<spec>" help="TOML spec: name, repository"
+'''
+run = 'uv run --no-sync python scripts/template_identity.py "${usage_destination?}" "${usage_spec?}"'
+
+[tasks."template:publish"]
+description = "Publish a generated project: create it on GitHub, push main and develop, default develop"
+# RIGHT AFTER template:init: everything later arrives through a pull request.
+usage = '''
+arg "<destination>" help="A project template:init made: clean, with no remote"
+arg "<repository>" help="owner/name on GitHub"
+arg "<visibility>" help="public or private"
+'''
+run = 'uv run --no-sync python scripts/template_publish.py "${usage_destination?}" "${usage_repository?}" "${usage_visibility?}"'
+
+[tasks."template:discard"]
+description = "Remove an unpublished generated project that holds only its generated commit"
+# IRREVERSIBLE, SO EVERY REFUSAL IS OBSERVED FIRST: generated, no symlink, no remote,
+# one commit, clean, not this repository or home, rmtree resistant to symlink attacks.
+usage = '''
+arg "<destination>" help="A project template:init made that nothing has touched since"
+'''
+run = 'uv run --no-sync python scripts/template_discard.py "${usage_destination?}"'
+
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.120).
 [tasks."worktree:conflicts"]
 description = "Read a worktree's rebase conflicts as data: each block's sides and context"

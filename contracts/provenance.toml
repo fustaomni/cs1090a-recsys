@@ -794,7 +794,7 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 path = "contracts/problems.toml"
 reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "147cbf74e499c97659cbc815abacead7db0bfdd76908022099d84a9d473da634"
+sha256 = "966230cc3a27272e4f58fba2ac09d0751cbfabc37ff3fc3958c2b5edb88b21ca"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
@@ -935,3 +935,162 @@ sha256 = "a39faa15d7ffe5ac220dd82b6c30a44098e7aa5b3299531d8a023347056a4c14"
 [[files]]
 path = "tests/test_worktree_continue.py"
 sha256 = "8e204c0ec67bc9b2c934994471f7d0e62fefa0c4751258a4b1ac43563711dfde"
+
+[[files]]
+path = "copier.yml"
+sha256 = "48cb399c2caa9ffac9db7a5c53b2f9c2cb0da1d169b7988243866d88e3e5e1c4"
+
+[[adapted]]
+path = "copier.yml"
+reason = "the run-ledger anchor is excluded, since a generated project starts its own ledger as it starts its own plan (A.121)"
+patch = "contracts/vendor-patches/copier.yml.patch"
+sha256 = "bc300f4e25d9a3824dbf79ff5d2226730e04be54e0582b4a1b95ce0922600889"
+
+[[files]]
+path = "contracts/project-identity.toml"
+sha256 = "83f723e72a23bb4a4783e7354bd4101b3c8284e5fb6e225d4266d69f41e0989f"
+
+[[adapted]]
+path = "contracts/project-identity.toml"
+reason = "this repository's own identity and repository, with one slot in pyproject.toml; exempt adds bootstrap/, the ledger anchor and contracts/vendor-patches/, whose diffs quote identity lines verbatim, and the coursework paths are dropped (A.121)"
+patch = "contracts/vendor-patches/contracts/project-identity.toml.patch"
+sha256 = "373b4ceb1a61f0f0aa107341c93d3b9d60148f9cdd6377b4313d11a2156d72cc"
+
+[[files]]
+path = "scripts/project_identity.py"
+sha256 = "a7444ad736650f3e27e7a9a9223b870e1fa2d1629304e4992b19594d080eefb8"
+
+[[adapted]]
+path = "scripts/project_identity.py"
+reason = "identity keeps name and repository: the seven Databricks values are withdrawn from the model and from _values, as the founding withdrew Databricks (A.121)"
+patch = "contracts/vendor-patches/scripts/project_identity.py.patch"
+sha256 = "fabc6c554ffa581df190c147c38ef492b6ad3012a13b1be944b2b71983667aad"
+
+[[files]]
+path = "scripts/template_new.py"
+sha256 = "50fd91741632ac4d6c650b1a751ec2cd21498d817e4319bcb737abeb1bf79db7"
+
+[[adapted]]
+path = "scripts/template_new.py"
+reason = "the clone runs over HTTPS through gh's credential helper, with prompts still off, since FAS OnDemand blocks SSH to GitHub; the SSH address and its URL rewrite are removed (A.121)"
+patch = "contracts/vendor-patches/scripts/template_new.py.patch"
+sha256 = "4e7aa36302983c754bad119f9bb1cff64172d3e854cd522feb26ef40ca4b0683"
+
+[[files]]
+path = "scripts/template_init.py"
+sha256 = "792edf3c8298efa540846241f993b7e73ed30614dcd20967f0e2338211a56867"
+
+[[files]]
+path = "scripts/template_identity.py"
+sha256 = "38fa77e4d0809facd60750e29127df670fe4e9ecca2108d26fc94a02c978af5d"
+
+[[files]]
+path = "scripts/template_publish.py"
+sha256 = "59bf212b5d60341cc14b3fc718b0d6367e842dad45721aa07a8c8ee88c92d502"
+
+[[adapted]]
+path = "scripts/template_publish.py"
+reason = "origin is added over HTTPS through gh's credential helper, since FAS OnDemand blocks SSH to GitHub; ssh_url becomes https_url (A.121)"
+patch = "contracts/vendor-patches/scripts/template_publish.py.patch"
+sha256 = "6bc03374360469ef7bbe2d86eba920e5c36f4fe310893bc08af302cd5323e2bc"
+
+[[files]]
+path = "scripts/template_discard.py"
+sha256 = "bfa4037692ef455f65ab5801641194ab9905d911de922968616674e71df928c8"
+
+[[files]]
+path = "policies/identity/identity.rego"
+sha256 = "51297d551df93a1b652acf21aa22e94709545f6bf19a6a3995cdc6ee06b69441"
+
+[[files]]
+path = "policies/runs/template/new/new.rego"
+sha256 = "77ec29221b7a2544d211cfff06b85e408e886b031d60634d80a4221c9aad3c7f"
+
+[[adapted]]
+path = "policies/runs/template/new/new.rego"
+reason = "the SSH transport rule becomes ERR_TEMPLATE_SOURCE_NOT_HTTPS: the transport must start with https://github.com/, since FAS OnDemand blocks SSH to GitHub (A.121)"
+patch = "contracts/vendor-patches/policies/runs/template/new/new.rego.patch"
+sha256 = "bfab638444f6818ed4f50286bb2c44a2c26bb2bef497150d007473f4d110c139"
+
+[[files]]
+path = "policies/runs/template/init/init.rego"
+sha256 = "61159fd2f38ccdb24f3f75b87c57d5a32bb7b7bef4c36936b2570b8e1f3fa8f3"
+
+[[files]]
+path = "policies/runs/template/identity/identity.rego"
+sha256 = "133caa2a2b8074579f506f77e27b126f55ee6df12e11c4b198475f913620fbba"
+
+[[files]]
+path = "policies/runs/template/publish/publish.rego"
+sha256 = "001ebc732764bbdd7aa18508acc5c4cc4026384228baa1d519c7d5dbad25df8c"
+
+[[files]]
+path = "policies/runs/template/discard/discard.rego"
+sha256 = "6c19414eefde9aac895bfdd2f55e299b9b95ff7a1c8d13aefd59f4871cbc0a75"
+
+[[files]]
+path = "tests/test_project_identity.py"
+sha256 = "4ddca5985a8fc10436fc4cfa3bb1e6c0d1df1484c8fc30692a4e3caffe0f2e96"
+
+[[adapted]]
+path = "tests/test_project_identity.py"
+reason = "the Databricks provisioning proof and its two imports are withdrawn, and the probes use this repository's two identity values and its own literal (A.121)"
+patch = "contracts/vendor-patches/tests/test_project_identity.py.patch"
+sha256 = "1a29858a99c558687fa2ad3519f1c57ea1f1e554d42286a2388480eb7c9f1c06"
+
+[[files]]
+path = "tests/test_template_new.py"
+sha256 = "6ccc199425d42aff8d9ca6f64cdde20f2248aafcc54a165ee70df1d8ee6862d7"
+
+[[adapted]]
+path = "tests/test_template_new.py"
+reason = "the transport proofs assert HTTPS: the declared repository over HTTPS, an SSH transport refused, and the source recorded and cloned with no rewrite (A.121)"
+patch = "contracts/vendor-patches/tests/test_template_new.py.patch"
+sha256 = "8bda82bb38591f741c64450adbd1a0c59503c5d7fce1b3e07360ef2a268f56e3"
+
+[[files]]
+path = "tests/test_template_init.py"
+sha256 = "b7b3305fd3ff489b71a7bc34479bc9f4ce8e84022b82b379c65a9cb178123d27"
+
+[[files]]
+path = "tests/test_template_identity.py"
+sha256 = "38c135e5624bbd3fce2b0b2cb90f4d4d4e3cea8a3186357591f36a2e358a7d3e"
+
+[[adapted]]
+path = "tests/test_template_identity.py"
+reason = "the identity spec probe holds name and repository only, the two values IdentitySpec accepts here (A.121)"
+patch = "contracts/vendor-patches/tests/test_template_identity.py.patch"
+sha256 = "f2010de3db539d51abdbec070f4a8202437ad8a3e5353ee2731090fdd4f9a6e9"
+
+[[files]]
+path = "tests/test_template_publish.py"
+sha256 = "d8cc61ffefec1d5fa7181d6585286d8c6f53c1d69d4f6779474e6545d31883f3"
+
+[[adapted]]
+path = "tests/test_template_publish.py"
+reason = "a proof that the default remote is HTTPS and holds no user-at-host string, since every other proof injects its own remote (A.121)"
+patch = "contracts/vendor-patches/tests/test_template_publish.py.patch"
+sha256 = "cc38bd01a81f2b7e6fd6c1517970af52e355e6efaeb174b8fca38c100e56b4d7"
+
+[[files]]
+path = "tests/test_template_discard.py"
+sha256 = "713c4f6231c7f2b72c77805a657759527c184aeb7038df6ea95b59ea8e58ad54"
+
+[[files]]
+path = "tests/test_copier_template.py"
+sha256 = "eae07a411ff50b67aad1241353fee3571cff6258ab4c2c3fb938f443ddc5d389"
+
+[[adapted]]
+path = "tests/test_copier_template.py"
+reason = "the coursework fixture writes its three paths into the scratch template, since this repository holds no coursework (A.121)"
+patch = "contracts/vendor-patches/tests/test_copier_template.py.patch"
+sha256 = "095c58e9968c719a516151198a2614fef01ee399bd45094f5ad9798ef4af4977"
+
+[[withdrawn]]
+path = "tests/test_generated_gate.py"
+sha256 = "4e8420974bca55572933817771f2353de77b2f2b0f82975e9bea06a2ac4cf652"
+reason = "its three proofs are integration-level, and this repository declares a test's level by its directory (A.39) while provenance records a file only at its upstream path; it returns at tests/integration once provenance records a relocation (A.123)"
+
+[[files]]
+path = "{{ _copier_conf.answers_file }}.jinja"
+sha256 = "3b3aaae43448091c81e1a75ef97c6c9caabd2c4931b2bed39907839e1cde70c7"

@@ -706,6 +706,276 @@ mutant = "\tsome path in input.worktree_continue.with_markers\n\tfalse\n"
 proof = "tests/test_worktree_continue.py::test_a_remaining_marker_is_refused"
 
 [[safeguards]]
+id = "TEMPLATE_NEW.INPUT_MISSING"
+engine = "template:new"
+guard = "ERR_TEMPLATE_INPUT_MISSING"
+path = "policies/runs/template/new/new.rego"
+anchor = "\tnot input.template_request\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_policy_inputs.py::test_an_absent_new_request_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_NEW.UNPINNED"
+engine = "template:new"
+guard = "ERR_TEMPLATE_UNPINNED"
+path = "policies/runs/template/new/new.rego"
+anchor = "\tnot regex.match(`^[0-9a-f]{40}$`, input.template_request.ref)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_new.py::test_an_unpinned_ref_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_NEW.DESTINATION_OCCUPIED"
+engine = "template:new"
+guard = "ERR_TEMPLATE_DESTINATION_OCCUPIED"
+path = "policies/runs/template/new/new.rego"
+anchor = "\tnot input.template_request.destination_empty\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_new.py::test_an_occupied_destination_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_NEW.DESTINATION_INSIDE"
+engine = "template:new"
+guard = "ERR_TEMPLATE_DESTINATION_INSIDE"
+path = "policies/runs/template/new/new.rego"
+anchor = "\tinput.template_request.inside_source\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_new.py::test_a_destination_inside_the_source_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_NEW.SOURCE_NOT_HTTPS"
+engine = "template:new"
+guard = "ERR_TEMPLATE_SOURCE_NOT_HTTPS"
+path = "policies/runs/template/new/new.rego"
+anchor = "\tnot startswith(input.template_request.transport, \"https://github.com/\")\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_new.py::test_a_source_that_is_not_https_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_INIT.INPUT_MISSING"
+engine = "template:init"
+guard = "ERR_INIT_INPUT_MISSING"
+path = "policies/runs/template/init/init.rego"
+anchor = "\tnot input.template_init\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_policy_inputs.py::test_an_absent_init_request_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_INIT.NOT_GENERATED"
+engine = "template:init"
+guard = "ERR_INIT_NOT_GENERATED"
+path = "policies/runs/template/init/init.rego"
+anchor = "\tnot input.template_init.answers_present\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_init.py::test_a_directory_that_was_not_generated_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_INIT.ALREADY_REPOSITORY"
+engine = "template:init"
+guard = "ERR_INIT_ALREADY_REPOSITORY"
+path = "policies/runs/template/init/init.rego"
+anchor = "\tinput.template_init.already_repository\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_init.py::test_a_directory_that_is_already_a_repository_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_INIT.INSIDE_SOURCE"
+engine = "template:init"
+guard = "ERR_INIT_INSIDE_SOURCE"
+path = "policies/runs/template/init/init.rego"
+anchor = "\tinput.template_init.inside_source\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_init.py::test_a_destination_inside_the_source_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_IDENTITY.REQUEST_MISSING"
+engine = "template:identity"
+guard = "ERR_IDENTITY_REQUEST_MISSING"
+path = "policies/runs/template/identity/identity.rego"
+anchor = "\tnot input.template_identity\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_policy_inputs.py::test_an_absent_identity_request_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_IDENTITY.NOT_GENERATED"
+engine = "template:identity"
+guard = "ERR_IDENTITY_NOT_GENERATED"
+path = "policies/runs/template/identity/identity.rego"
+anchor = "\tnot input.template_identity.answers_present\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_identity.py::test_a_directory_that_was_not_generated_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_IDENTITY.NOT_FRESH"
+engine = "template:identity"
+guard = "ERR_IDENTITY_NOT_FRESH"
+path = "policies/runs/template/identity/identity.rego"
+anchor = "\trequest.commits != 1\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_identity.py::test_a_project_with_history_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_IDENTITY.HAS_REMOTE"
+engine = "template:identity"
+guard = "ERR_IDENTITY_HAS_REMOTE"
+path = "policies/runs/template/identity/identity.rego"
+anchor = "\tinput.template_identity.has_remote\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_identity.py::test_a_project_with_a_remote_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.INPUT_MISSING"
+engine = "template:publish"
+guard = "ERR_PUBLISH_INPUT_MISSING"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tnot input.template_publish\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_policy_inputs.py::test_an_absent_publish_request_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.NOT_GENERATED"
+engine = "template:publish"
+guard = "ERR_PUBLISH_NOT_GENERATED"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tnot input.template_publish.answers_present\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_publish.py::test_a_directory_that_was_not_generated_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.DIRTY"
+engine = "template:publish"
+guard = "ERR_PUBLISH_DIRTY"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tnot input.template_publish.clean\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_publish.py::test_a_dirty_destination_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.HAS_REMOTE"
+engine = "template:publish"
+guard = "ERR_PUBLISH_HAS_REMOTE"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tinput.template_publish.has_remote\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_publish.py::test_a_destination_with_a_remote_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.HOOKS_INSTALLED"
+engine = "template:publish"
+guard = "ERR_PUBLISH_HOOKS_INSTALLED"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tinput.template_publish.hooks_installed\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_publish.py::test_a_destination_with_hooks_installed_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.REMOTE_POPULATED"
+engine = "template:publish"
+guard = "ERR_PUBLISH_REMOTE_POPULATED"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tinput.template_publish.remote == \"populated\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_publish.py::test_a_populated_remote_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.REMOTE_UNKNOWN"
+engine = "template:publish"
+guard = "ERR_PUBLISH_REMOTE_UNKNOWN"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tinput.template_publish.remote == \"unknown\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_policy_inputs.py::test_a_remote_that_could_not_be_observed_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.INPUT_MISSING"
+engine = "template:discard"
+guard = "ERR_DISCARD_INPUT_MISSING"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tnot input.template_discard\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_policy_inputs.py::test_an_absent_discard_request_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.NOT_GENERATED"
+engine = "template:discard"
+guard = "ERR_DISCARD_NOT_GENERATED"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tnot input.template_discard.answers_present\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_a_directory_that_was_not_generated_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.SYMLINK"
+engine = "template:discard"
+guard = "ERR_DISCARD_SYMLINK"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tinput.template_discard.is_symlink\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_a_symlink_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.PUBLISHED"
+engine = "template:discard"
+guard = "ERR_DISCARD_PUBLISHED"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tinput.template_discard.has_remote\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_a_published_project_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.AUTHORED"
+engine = "template:discard"
+guard = "ERR_DISCARD_AUTHORED"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tinput.template_discard.commits != 1\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_a_project_with_authored_commits_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.DIRTY"
+engine = "template:discard"
+guard = "ERR_DISCARD_DIRTY"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tnot input.template_discard.clean\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_a_dirty_project_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.PROTECTED"
+engine = "template:discard"
+guard = "ERR_DISCARD_PROTECTED"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tinput.template_discard.protected\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_this_repository_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.UNSAFE"
+engine = "template:discard"
+guard = "ERR_DISCARD_UNSAFE"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tnot input.template_discard.safe_removal\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_a_removal_that_does_not_resist_symlink_attacks_is_refused"
+
+[[safeguards]]
+id = "IDENTITY.INPUT_MISSING"
+engine = "identity:set"
+guard = "ERR_IDENTITY_INPUT_MISSING"
+path = "policies/identity/identity.rego"
+anchor = "\tnot input.identity_inventory\n"
+mutant = "\tfalse\n"
+proof = "tests/test_project_identity.py::test_a_stray_identity_literal_is_refused"
+
+[[safeguards]]
+id = "IDENTITY.LITERAL"
+engine = "identity:set"
+guard = "ERR_IDENTITY_LITERAL"
+path = "policies/identity/identity.rego"
+anchor = "\tnot occurrence.slot\n"
+mutant = "\tfalse\n"
+proof = "tests/test_project_identity.py::test_a_stray_identity_literal_is_refused"
+
+[[safeguards]]
 id = "SA.ANCHOR_COUNT"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_ANCHOR_COUNT"

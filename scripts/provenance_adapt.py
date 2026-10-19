@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import difflib
 import hashlib
+import json
 import sys
 import tempfile
 import tomllib
@@ -23,7 +24,6 @@ ROOT = Path(__file__).resolve().parent.parent
 RECORD = Path("contracts") / "provenance.toml"
 PATCHES = Path("contracts") / "vendor-patches"
 USAGE = "usage: provenance_adapt.py --out <spec.toml> --reason <why> <upstream-checkout> <path>"
-TRIPLE = "'" * 3
 
 
 def _digest(data: bytes) -> str:
@@ -31,21 +31,19 @@ def _digest(data: bytes) -> str:
 
 
 def _toml_string(value: str) -> str:
-    return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
+    """A TOML basic string, as source:port writes one: JSON's escapes are a subset TOML accepts.
 
-
-def _literal(value: str) -> str:
-    if TRIPLE in value:
-        raise SystemExit("content holds a triple single quote; it cannot be a TOML literal")
-    return TRIPLE + "\n" + value + TRIPLE
+    Any text survives, three single quotes and newlines included (A.124).
+    """
+    return json.dumps(value, ensure_ascii=False)
 
 
 def _replace(path: str, anchor: str, replacement: str) -> str:
     return (
         '[[operations]]\nop = "replace"\n'
         f"path = {_toml_string(path)}\n"
-        f"anchor = {_literal(anchor)}\n"
-        f"replacement = {_literal(replacement)}\n"
+        f"anchor = {_toml_string(anchor)}\n"
+        f"replacement = {_toml_string(replacement)}\n"
     )
 
 
@@ -132,7 +130,7 @@ def plan(root: Path, upstream: Path, path: str, reason: str) -> str:
         patch_op = (
             '[[operations]]\nop = "create"\n'
             f"path = {_toml_string(patch_path)}\n"
-            f"content = {_literal(patch)}\n"
+            f"content = {_toml_string(patch)}\n"
         )
     return 'contract = "source-apply/v1"\n\n' + patch_op + "\n" + "\n".join(record_ops)
 

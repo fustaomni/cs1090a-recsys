@@ -1,0 +1,21 @@
+--- a/tests/test_template_identity.py
++++ b/tests/test_template_identity.py
+@@ -24,17 +24,7 @@
+ REPO = Path(__file__).resolve().parent.parent
+ # COMPOSED, NOT WRITTEN: the PII gate reads any user-at-host literal as an email.
+ ADDRESS = "t" + "@" + "example.invalid"
+-PROBE = (
+-    'name = "probe-project"\n'
+-    'catalog = "probe_catalog"\n'
+-    'reader_group = "probe_readers"\n'
+-    'ci_principal = "probe-ci"\n'
+-    'workspace_host = "https://probe.cloud.databricks.com"\n'
+-    'account_id = "00000000-0000-4000-8000-000000000005"\n'
+-    'ci_client_id = "00000000-0000-4000-8000-000000000006"\n'
+-    'default_schema = "probe_schema"\n'
+-    'repository = "https://github.com/example/probe-project"\n'
+-)
++PROBE = 'name = "probe-project"\nrepository = "https://github.com/example/probe-project"\n'
+ 
+ 
+ def _decide(made: IdentityRequest) -> list[str]:

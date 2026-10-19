@@ -1,0 +1,42 @@
+--- a/scripts/template_publish.py
++++ b/scripts/template_publish.py
+@@ -3,7 +3,7 @@
+ 
+ This repository was published right after its root commit and changed only through pull
+ requests; the sibling ran gh repo create, pushed develop and made it the default. So
+-template:publish creates the GitHub repository, adds origin over SSH, pushes main and
++template:publish creates the GitHub repository, adds origin over HTTPS, pushes main and
+ develop, and makes develop the default -- non-interactively (D.57). gh exit 4 means
+ authentication required and is reported as data; a failed push takes origin away again,
+ so nothing is left half-done. Python observes; policies/runs/template/publish decides.
+@@ -29,7 +29,7 @@
+ from gitenv import git
+ from pr_logs import ANSI
+ from spine import decide, enforce, evaluate, halted, reasons, refusal_code, schema_verdict
+-from template_new import SSH_USER, _non_interactive
++from template_new import _non_interactive
+ 
+ ENTRYPOINT = "data.runs.template.publish.deny"
+ COMMAND = "template:publish"
+@@ -113,9 +113,9 @@
+     return _gh("repo", "edit", repository, "--default-branch", branch)
+ 
+ 
+-def ssh_url(repository: str) -> str:
+-    """The SSH remote this machine pushes with, composed rather than written (D.57)."""
+-    return f"{SSH_USER}@{HOST}:{repository}.git"
++def https_url(repository: str) -> str:
++    """The HTTPS remote this machine pushes with, answered by gh's credential helper (A.121)."""
++    return f"https://{HOST}/{repository}.git"
+ 
+ 
+ QUERY = (
+@@ -193,7 +193,7 @@
+     inspect: Callable[[str], str] = inspect_remote,
+     create: Call = create_repository,
+     make_default: Call = default_branch,
+-    remote_url: Callable[[str], str] = ssh_url,
++    remote_url: Callable[[str], str] = https_url,
+ ) -> int:
+     """template:publish <destination> <owner/name> <visibility> -- published, or refused."""
+     args = list(sys.argv[1:] if argv is None else argv)

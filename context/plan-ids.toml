@@ -107,4 +107,6 @@ issued = [
   { id = "A.120", first_title = "cscie103's worktree:conflicts and worktree:continue return: a rebase's conflicts read as data, and a continue only once no marker remains" },
   { id = "A.121", first_title = "cscie103's template pipeline returns: a new project is generated from this repository, pinned, given its identity, and published" },
   { id = "A.122", first_title = "machine:trust gates and trusts a named checkout, so a trusted worktree can trust another under paranoid mode" },
+  { id = "A.124", first_title = "provenance:adapt serializes any text a patch holds, as source:port does" },
+  { id = "A.123", first_title = "provenance records a relocated port, and cscie103's generated-project gate returns at tests/integration" },
 ]
