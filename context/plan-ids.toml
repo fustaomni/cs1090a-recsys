@@ -121,4 +121,5 @@ issued = [
   { id = "A.129", first_title = "A generated project's lock takes its name with its identity: uv.lock's root package is an identity slot" },
   { id = "A.130", first_title = "identity:set and template:identity refuse an invalid spec with every validation error, not its first line" },
   { id = "A.131", first_title = "start:here cuts a feature branch with --no-track, so a bare push can never reach develop" },
+  { id = "A.132", first_title = "The worktree:skip and start:here proofs write real newlines into their fixtures, proven by the content" },
 ]
