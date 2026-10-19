@@ -1262,3 +1262,14 @@ done_when = [
   { kind = "proof", test = "tests/test_start_here.py::test_start_here_cuts_a_branch_with_no_upstream" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.132"
+title = "The worktree:skip and start:here proofs write real newlines into their fixtures, proven by the content"
+thread = "A"
+depends_on = ["A.127", "A.131"]
+because = { "A.127" = "its conflict fixture was written as one line of escape text", "A.131" = "its seed file was written the same way" }
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_skip.py::test_the_conflicting_file_holds_three_lines" },
+  { kind = "proof", test = "tests/test_start_here.py::test_start_here_cuts_a_branch_with_no_upstream" },
+  { kind = "task", name = "check" },
+]
