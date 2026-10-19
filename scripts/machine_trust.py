@@ -13,8 +13,9 @@ import getpass
 import hashlib
 import json
 import subprocess
+import sys
 import tomllib
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Literal
@@ -86,9 +87,20 @@ def trust(
     return TrustDecision(config=str(config), sha256=digest, allowed=allowed, trusted=trusted)
 
 
-def main() -> int:
-    """machine:trust -- gate and trust this checkout's mise.toml as it stands on disk."""
-    decision = trust(ROOT, (ROOT / "mise.toml").read_text(encoding="utf-8"))
+def main(argv: Sequence[str] | None = None) -> int:
+    """machine:trust [<checkout>] -- gate and trust a checkout's mise.toml as it stands on disk.
+
+    With no argument it is this checkout. With one it is that checkout, judged and trusted by its
+    own path, so a trusted worktree trusts another without mise ever loading the other (A.122).
+    """
+    args = list(sys.argv[1:] if argv is None else argv)
+    if len(args) > 1:
+        raise SystemExit(f"usage: machine:trust [<checkout>]  (got {args})")
+    checkout = Path(args[0]).expanduser().resolve() if args else ROOT
+    config = checkout / "mise.toml"
+    if not config.is_file():
+        raise SystemExit(f"{checkout} holds no mise.toml, so there is nothing to trust")
+    decision = trust(checkout, config.read_text(encoding="utf-8"))
     print(decision.model_dump_json(indent=2))
     return 0 if decision.trusted else 2
 
