@@ -30,6 +30,19 @@ def _digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _read(target: Path, remedy: str) -> bytes:
+    """A file's bytes, or a refusal naming it, why it cannot be read, and what to do (A.125).
+
+    An OSError escaping here reached the task as a traceback, with no next step. Every other
+    refusal in plan() is a SystemExit naming its file, so an unreadable one is refused alike.
+    """
+    try:
+        return target.read_bytes()
+    except OSError as error:
+        why = error.strerror or type(error).__name__
+        raise SystemExit(f"{target} cannot be read ({why}); {remedy}") from None
+
+
 def _toml_string(value: str) -> str:
     """A TOML basic string, as source:port writes one: JSON's escapes are a subset TOML accepts.
 
@@ -99,10 +112,10 @@ def plan(root: Path, upstream: Path, path: str, reason: str) -> str:
     files = {entry["path"]: entry["sha256"] for entry in record.get("files", [])}
     if path not in files:
         raise SystemExit(f"{path} is not a ported file in {RECORD}")
-    upstream_bytes = (upstream / path).read_bytes()
+    upstream_bytes = _read(upstream / path, "run upstream:checkout at the pin first")
     if _digest(upstream_bytes) != files[path]:
         raise SystemExit(f"{upstream / path} does not match the recorded upstream digest")
-    local_bytes = (root / path).read_bytes()
+    local_bytes = _read(root / path, "the working file the patch is built from must exist")
     if local_bytes == upstream_bytes:
         raise SystemExit(f"{path} equals upstream; there is nothing to adapt")
     patch = _patch(path, upstream_bytes.decode("utf-8"), local_bytes.decode("utf-8"))
