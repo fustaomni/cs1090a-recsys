@@ -1111,12 +1111,15 @@ done_when = [
 ]
 [[steps]]
 id = "A.122"
-title = "machine:trust gates and trusts a named checkout, so a trusted worktree can trust another under paranoid mode"
+title = "machine:trust gates and trusts a named checkout, and a refresh that rewrites mise.toml re-trusts it, so no checkout is left untrusted under paranoid mode"
 thread = "A"
 depends_on = ["A.27", "A.93"]
 because = { "A.27" = "the founding gate and the trust are one operation, judged on the target's own file", "A.93" = "worktree:add already trusts a new worktree from the caller's tooling; this names any checkout the same way" }
 done_when = [
-  { kind = "proof", test = "tests/test_machine_tasks.py::test_a_named_checkout_is_gated_and_trusted_by_its_own_path" },
+  { kind = "proof", test = "tests/test_machine_tasks.py::test_a_named_checkout_is_trusted_by_its_own_path" },
+  { kind = "proof", test = "tests/test_worktree_retrust.py::test_a_refresh_that_changes_mise_toml_retrusts_it" },
+  { kind = "proof", test = "tests/test_worktree_retrust.py::test_a_refused_retrust_fails_the_refresh" },
+  { kind = "task", name = "machine:trust" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
