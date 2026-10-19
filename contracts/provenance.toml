@@ -952,9 +952,9 @@ sha256 = "83f723e72a23bb4a4783e7354bd4101b3c8284e5fb6e225d4266d69f41e0989f"
 
 [[adapted]]
 path = "contracts/project-identity.toml"
-reason = "this repository's own identity and repository, with one slot in pyproject.toml; exempt adds bootstrap/, the ledger anchor and contracts/vendor-patches/, whose diffs quote identity lines verbatim, and the coursework paths are dropped (A.121)"
+reason = "this repository's own identity and repository, with slots in pyproject.toml and in uv.lock's root package line, so a generated project's lock takes its name with its identity (A.129); exempt adds bootstrap/, the ledger anchor and contracts/vendor-patches/, whose diffs quote identity lines verbatim, and the coursework paths are dropped (A.121)"
 patch = "contracts/vendor-patches/contracts/project-identity.toml.patch"
-sha256 = "373b4ceb1a61f0f0aa107341c93d3b9d60148f9cdd6377b4313d11a2156d72cc"
+sha256 = "861240f18e56b3df0e37983877c1889260b3e01c3e1f7a431aa302d5b45617a1"
 
 [[files]]
 path = "scripts/project_identity.py"
