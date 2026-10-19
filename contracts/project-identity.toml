@@ -1,0 +1,31 @@
+# contracts/project-identity.toml
+# Project identity, declared once (D.52).
+#
+# Code reads these values through scripts/project_identity.py and derives every relation
+# from them. Files that cannot read this file hold the SLOTS below, and identity:set
+# rewrites exactly those lines, so a generated project takes its own identity in one
+# recorded operation -- and policies/identity refuses any copy that lives anywhere else.
+contract = "project-identity/v1"
+name = "cs1090a-recsys"
+repository = "https://github.com/fustaomni/cs1090a-recsys"
+
+# Paths whose identity is derived, quoted verbatim, or this repository's own history.
+exempt = [
+  "contracts/project-identity.toml",
+  "uv.lock",
+  "tests/",
+  "context/",
+  # the founding's hash-locked bootstrap: its own record of the project it founded
+  "bootstrap/",
+  # this repository's own run-ledger anchor: a generated project starts its own ledger
+  "contracts/ledger-anchor.toml",
+  # derived provenance: _src_path names the template a project was generated from (D.61)
+  ".copier-answers.yml",
+  # quoted verbatim: a vendor patch reproduces the identity lines it changes (A.121)
+  "contracts/vendor-patches/",
+]
+
+# Lines that cannot read this file. Each renders exactly as the file holds it.
+slots = [
+  { path = "pyproject.toml", line = 'name = "{name}"' },
+]

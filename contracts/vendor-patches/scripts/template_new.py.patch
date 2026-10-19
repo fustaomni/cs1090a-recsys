@@ -1,0 +1,63 @@
+--- a/scripts/template_new.py
++++ b/scripts/template_new.py
+@@ -7,8 +7,9 @@
+ declaration names (D.52), the ref must be a full commit sha, and the destination must
+ be new and outside this repository. Python observes; policies/runs/template/new decides.
+ 
+-OVER SSH, NEVER WAITING: this machine reaches GitHub over SSH, and git and ssh prompt on
+-the terminal, so the clone runs with prompts off and a failure is reported as data (D.57).
++OVER HTTPS THROUGH THE CREDENTIAL HELPER, NEVER WAITING: this machine reaches GitHub only
++over HTTPS, answered by gh's credential helper, and git prompts on the terminal when nothing
++answers, so the clone runs with prompts off and a failure is reported as data (D.57, A.121).
+ """
+ 
+ from __future__ import annotations
+@@ -19,7 +20,6 @@
+ from contextlib import contextmanager
+ from pathlib import Path
+ from typing import ClassVar, Literal
+-from urllib.parse import urlsplit
+ 
+ from copier import run_copy
+ 
+@@ -33,9 +33,6 @@
+ COMMAND = "template:new"
+ SUBJECT = "template_request"
+ POLICY = Path(__file__).resolve().parent.parent / "policies" / "runs" / "template" / "new"
+-# SSH'S ACCOUNT NAME ON GITHUB. The host and path come from the declaration, and the
+-# address is composed, never written whole: an address literal reads as an email (D.57).
+-SSH_USER = "git"
+ 
+ 
+ class TemplateRequest(Contract):
+@@ -53,12 +50,6 @@
+     destination_exists: bool
+     destination_empty: bool
+     inside_source: bool
+-
+-
+-def _ssh(repository: str) -> str:
+-    """The declared GitHub repository as the SSH URL this machine pushes with (D.57)."""
+-    parts = urlsplit(repository)
+-    return f"{SSH_USER}@{parts.netloc}:{parts.path.strip('/')}.git"
+ 
+ 
+ @contextmanager
+@@ -97,7 +88,7 @@
+     declared = load(root).repository
+     return TemplateRequest(
+         source=f"{declared}.git",
+-        transport=_ssh(declared),
++        transport=f"{declared}.git",
+         ref=ref,
+         destination=str(target),
+         destination_exists=exists,
+@@ -122,7 +113,7 @@
+         return enforce(announce(COMMAND, decision, code, reasons(found), observed))
+     # REACHED ONLY WHEN THE POLICY ALLOWS: a pinned sha, a new place, outside this repo.
+     try:
+-        with _non_interactive((made.transport, made.source)):
++        with _non_interactive():
+             run_copy(made.source, made.destination, vcs_ref=made.ref, defaults=True, quiet=True)
+     except Exception as problem:
+         reason = (str(problem).strip() or type(problem).__name__).splitlines()[0]

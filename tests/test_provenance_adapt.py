@@ -78,3 +78,27 @@ def test_an_adaptation_recorded_twice_is_consolidated_into_one(tmp_path: Path) -
     mine = [entry for entry in adapted if entry["path"] == "scripts/answer.py"]
     assert [entry["sha256"] for entry in mine] == [_digest(LOCAL)]
     assert [entry["path"] for entry in adapted].count("scripts/other.py") == 1
+
+
+def test_a_patch_holding_a_triple_single_quote_is_planned(tmp_path: Path) -> None:
+    """A patch is text, and text may hold any delimiter, three single quotes included (A.124)."""
+    quote = "'" * 3
+    upstream_text = f"value = {quote}old{quote}\n"
+    local_text = f"value = {quote}new{quote}\n"
+    root, upstream = tmp_path / "root", tmp_path / "upstream"
+    for base, text in ((root, local_text), (upstream, upstream_text)):
+        (base / "scripts").mkdir(parents=True)
+        (base / "scripts" / "answer.py").write_text(text, encoding="utf-8")
+    record = (
+        'contract = "provenance/v1"\n\n[[files]]\npath = "scripts/answer.py"\n'
+        f'sha256 = "{_digest(upstream_text)}"\n'
+    )
+    (root / "contracts").mkdir()
+    (root / "contracts" / "provenance.toml").write_text(record, encoding="utf-8")
+    spec = tomllib.loads(provenance_adapt.plan(root, upstream, "scripts/answer.py", "why"))
+    patch = spec["operations"][0]["content"]
+    assert quote in patch
+    local = local_text.encode("utf-8")
+    assert provenance_adapt.reverses_to_upstream(
+        "scripts/answer.py", patch, local, _digest(upstream_text)
+    )
