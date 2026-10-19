@@ -7,6 +7,7 @@ from upstream to the working file, proves it reverses, and plans both writes as 
 from __future__ import annotations
 
 import hashlib
+import re
 import tomllib
 from pathlib import Path
 
@@ -102,3 +103,19 @@ def test_a_patch_holding_a_triple_single_quote_is_planned(tmp_path: Path) -> Non
     assert provenance_adapt.reverses_to_upstream(
         "scripts/answer.py", patch, local, _digest(upstream_text)
     )
+
+
+def test_a_missing_upstream_file_is_refused_not_raised(tmp_path: Path) -> None:
+    """A checkout without the file is refused by name, never as a traceback (A.125)."""
+    root, upstream = _setup(tmp_path, UPSTREAM)
+    (upstream / "scripts" / "answer.py").unlink()
+    with pytest.raises(SystemExit, match=re.escape("answer.py cannot be read")):
+        provenance_adapt.plan(root, upstream, "scripts/answer.py", "why")
+
+
+def test_a_missing_working_file_is_refused_not_raised(tmp_path: Path) -> None:
+    """The working file the patch is built from is refused the same way (A.125)."""
+    root, upstream = _setup(tmp_path, UPSTREAM)
+    (root / "scripts" / "answer.py").unlink()
+    with pytest.raises(SystemExit, match=re.escape("answer.py cannot be read")):
+        provenance_adapt.plan(root, upstream, "scripts/answer.py", "why")

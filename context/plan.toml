@@ -1151,6 +1151,7 @@ depends_on = ["A.85"]
 because = { "A.85" = "provenance:adapt reads the upstream copy it plans against" }
 done_when = [
   { kind = "proof", test = "tests/test_provenance_adapt.py::test_a_missing_upstream_file_is_refused_not_raised" },
+  { kind = "proof", test = "tests/test_provenance_adapt.py::test_a_missing_working_file_is_refused_not_raised" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
