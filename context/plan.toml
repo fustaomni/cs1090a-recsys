@@ -1089,3 +1089,27 @@ done_when = [
   { kind = "task", name = "worktree:continue" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.121"
+title = "cscie103's template pipeline returns: a new project is generated from this repository, pinned, given its identity, and published"
+thread = "A"
+depends_on = ["A.21", "A.28"]
+because = { "A.21" = "copier enters the lock only through deps:add", "A.28" = "the pipeline is ported from cscie103 at its pinned commit" }
+done_when = [
+  { kind = "task", name = "template:new" },
+  { kind = "task", name = "template:init" },
+  { kind = "task", name = "template:identity" },
+  { kind = "task", name = "template:publish" },
+  { kind = "task", name = "identity:set" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.122"
+title = "machine:trust gates and trusts a named checkout, so a trusted worktree can trust another under paranoid mode"
+thread = "A"
+depends_on = ["A.27", "A.93"]
+because = { "A.27" = "the founding gate and the trust are one operation, judged on the target's own file", "A.93" = "worktree:add already trusts a new worktree from the caller's tooling; this names any checkout the same way" }
+done_when = [
+  { kind = "proof", test = "tests/test_machine_tasks.py::test_a_named_checkout_is_gated_and_trusted_by_its_own_path" },
+  { kind = "task", name = "check" },
+]
