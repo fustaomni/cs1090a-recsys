@@ -1232,3 +1232,23 @@ because = { "A.16" = "the coverage policy is what names the toolchain operations
 done_when = [
   { kind = "proof", test = "tests/test_task_coverage.py::test_toolchain_operations_are_tasks" },
 ]
+[[steps]]
+id = "A.129"
+title = "A generated project's lock takes its name with its identity: uv.lock's root package is an identity slot"
+thread = "A"
+depends_on = ["A.121"]
+because = { "A.121" = "template:identity rewrites the declared slots, and the lock's root package was never one" }
+done_when = [
+  { kind = "proof", test = "tests/test_identity_lock.py::test_taking_an_identity_renames_the_lock_root" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.130"
+title = "identity:set and template:identity refuse an invalid spec with every validation error, not its first line"
+thread = "A"
+depends_on = ["A.121"]
+because = { "A.121" = "both read an IdentitySpec, and both keep only the first line of its error" }
+done_when = [
+  { kind = "proof", test = "tests/test_identity_refusals.py::test_a_spec_refusal_names_the_field_and_its_rule" },
+  { kind = "task", name = "check" },
+]
