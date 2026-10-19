@@ -106,6 +106,12 @@ sha256 = "35de7db337fc9e191c6bc6f6fc2b5b660e075bede2ec5caab5e3f36a22a57aa2"
 path = "scripts/plan_edit.py"
 sha256 = "b52e795a1ba2e6aaff5bc3834325f9e82d7ec693b04f6c4fdbca2ad81a4be4ea"
 
+[[adapted]]
+path = "scripts/plan_edit.py"
+reason = "every verb reads its spec through one reader, as plan:retract alone did: an invalid spec is refused as spec_invalid and an unreadable or unparseable one as spec_unreadable, never a traceback, and every refusal names each field (A.128)"
+patch = "contracts/vendor-patches/scripts/plan_edit.py.patch"
+sha256 = "75c50e5fa7a4625dead6a82218111fa38e252c627b651980ad7ec0df0c4f1b1a"
+
 [[files]]
 path = "scripts/plan_files.py"
 sha256 = "49c44f79b88b3da117fe3074025a5928e6dffeb24e5002ccf0f9ecde737633bc"
