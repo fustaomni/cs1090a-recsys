@@ -22,7 +22,7 @@ from pydantic import NonNegativeInt
 from command_outcome import announce
 from contract_base import Contract
 from gitenv import git
-from project_identity import IdentitySpec, load, set_identity
+from project_identity import IdentitySpec, load, refusal_reason, set_identity
 from spine import decide, enforce, evaluate, halted, reasons, refusal_code, schema_verdict
 
 ENTRYPOINT = "data.runs.template.identity.deny"
@@ -89,7 +89,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         target = load(destination).model_copy(update=spec.model_dump())
         changed = set_identity(destination, target)
     except (OSError, ValueError) as problem:
-        reason = (str(problem).strip() or type(problem).__name__).splitlines()[0]
+        reason = refusal_reason(problem)
         # THE SPEC'S SCHEMA IS THE RULE: an unreadable or invalid spec is refused (2).
         refused = decide(schema_verdict("identity_spec", IdentitySpec, reason))
         return enforce(announce(COMMAND, refused, "identity_refused", reason, observed))

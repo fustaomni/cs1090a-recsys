@@ -1,0 +1,20 @@
+--- a/scripts/template_identity.py
++++ b/scripts/template_identity.py
+@@ -22,7 +22,7 @@
+ from command_outcome import announce
+ from contract_base import Contract
+ from gitenv import git
+-from project_identity import IdentitySpec, load, set_identity
++from project_identity import IdentitySpec, load, refusal_reason, set_identity
+ from spine import decide, enforce, evaluate, halted, reasons, refusal_code, schema_verdict
+ 
+ ENTRYPOINT = "data.runs.template.identity.deny"
+@@ -89,7 +89,7 @@
+         target = load(destination).model_copy(update=spec.model_dump())
+         changed = set_identity(destination, target)
+     except (OSError, ValueError) as problem:
+-        reason = (str(problem).strip() or type(problem).__name__).splitlines()[0]
++        reason = refusal_reason(problem)
+         # THE SPEC'S SCHEMA IS THE RULE: an unreadable or invalid spec is refused (2).
+         refused = decide(schema_verdict("identity_spec", IdentitySpec, reason))
+         return enforce(announce(COMMAND, refused, "identity_refused", reason, observed))
