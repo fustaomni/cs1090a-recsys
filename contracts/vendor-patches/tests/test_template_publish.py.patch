@@ -1,0 +1,22 @@
+--- a/tests/test_template_publish.py
++++ b/tests/test_template_publish.py
+@@ -17,7 +17,7 @@
+ 
+ from opa import denials
+ from template_init import main as init_main
+-from template_publish import PublishRequest, main, observe
++from template_publish import PublishRequest, https_url, main, observe
+ 
+ ENTRYPOINT = "data.runs.template.publish.deny"
+ REPOSITORY = "example/project"
+@@ -204,3 +204,10 @@
+     outcome = json.loads(capsys.readouterr().out)
+     assert outcome["code"] == "push_failed", outcome
+     assert "refused by the remote policy" in outcome["message"], outcome
++
++
++def test_the_remote_is_https_through_the_credential_helper() -> None:
++    """origin is HTTPS, answered by gh's credential helper, since SSH is blocked here (A.121)."""
++    url = https_url(REPOSITORY)
++    assert url == "https://github.com/example/project.git"
++    assert "@" not in url

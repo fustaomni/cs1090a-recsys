@@ -1,0 +1,24 @@
+--- a/policies/runs/template/new/new.rego
++++ b/policies/runs/template/new/new.rego
+@@ -54,16 +54,16 @@
+ }
+ 
+ # METADATA
+-# title: The source is SSH
+-# description: This machine reaches GitHub over SSH; HTTPS stops at a credential prompt (D.57).
++# title: The source is HTTPS through the credential helper
++# description: This machine reaches GitHub only over HTTPS, answered by gh's credential helper (A.121).
+ # custom:
+-#   code: ERR_TEMPLATE_SOURCE_NOT_SSH
++#   code: ERR_TEMPLATE_SOURCE_NOT_HTTPS
+ deny contains denial if {
+ 	input.template_request
+-	not startswith(input.template_request.transport, concat("@", ["git", "github.com:"]))
++	not startswith(input.template_request.transport, "https://github.com/")
+ 	denial := {
+ 		"code": rego.metadata.rule().custom.code,
+-		"message": sprintf("%s is not an SSH transport, so the clone would wait for a prompt", [
++		"message": sprintf("%s is not an HTTPS transport, so the clone could not authenticate", [
+ 			input.template_request.transport,
+ 		]),
+ 	}

@@ -1,0 +1,4 @@
+{# {{ _copier_conf.answers_file }}.jinja -- writes each project's answers file (D.50). #}
+{# _commit and _src_path are the provenance `copier update` merges against. #}
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+{{ _copier_answers|to_nice_yaml -}}

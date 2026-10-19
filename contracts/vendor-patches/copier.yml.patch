@@ -1,0 +1,11 @@
+--- a/copier.yml
++++ b/copier.yml
+@@ -29,6 +29,8 @@
+   - "context/plan.toml"
+   - "context/plan-ids.toml"
+   - "context/plan-trace.toml"
++  # THIS REPOSITORY'S RUN LEDGER IS ITS OWN, as its plan is: a generated project starts its own.
++  - "contracts/ledger-anchor.toml"
+   # TESTS OF THE TEMPLATE BELONG WHERE THE TEMPLATE IS: a generated project has no
+   # copier.yml to render (D.61).
+   - "tests/test_copier_template.py"

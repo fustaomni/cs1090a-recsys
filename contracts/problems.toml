@@ -644,3 +644,159 @@ severity = "error"
 code = "ERR_CONTINUE_NO_REBASE"
 title = "A rebase is in progress"
 severity = "error"
+
+[[problems]]
+code = "ERR_DISCARD_AUTHORED"
+title = "The destination holds only its generated commit"
+severity = "error"
+
+[[problems]]
+code = "ERR_DISCARD_DIRTY"
+title = "The destination is clean"
+severity = "error"
+
+[[problems]]
+code = "ERR_DISCARD_INPUT_MISSING"
+title = "The template:discard request is present"
+severity = "error"
+
+[[problems]]
+code = "ERR_DISCARD_NOT_GENERATED"
+title = "The destination was generated"
+severity = "error"
+
+[[problems]]
+code = "ERR_DISCARD_PROTECTED"
+title = "The destination is not this repository, home or a root"
+severity = "error"
+
+[[problems]]
+code = "ERR_DISCARD_PUBLISHED"
+title = "The destination is not published"
+severity = "error"
+
+[[problems]]
+code = "ERR_DISCARD_SYMLINK"
+title = "The destination is not a symlink"
+severity = "error"
+
+[[problems]]
+code = "ERR_DISCARD_UNSAFE"
+title = "The removal resists symlink attacks"
+severity = "error"
+
+[[problems]]
+code = "ERR_IDENTITY_HAS_REMOTE"
+title = "The project is not yet published"
+severity = "error"
+
+[[problems]]
+code = "ERR_IDENTITY_INPUT_MISSING"
+title = "The identity inventory is present"
+severity = "error"
+
+[[problems]]
+code = "ERR_IDENTITY_LITERAL"
+title = "Identity lives only in declared slots"
+severity = "error"
+
+[[problems]]
+code = "ERR_IDENTITY_NOT_FRESH"
+title = "The project is fresh"
+severity = "error"
+
+[[problems]]
+code = "ERR_IDENTITY_NOT_GENERATED"
+title = "The destination was generated"
+severity = "error"
+
+[[problems]]
+code = "ERR_IDENTITY_REQUEST_MISSING"
+title = "The template:identity request is present"
+severity = "error"
+
+[[problems]]
+code = "ERR_INIT_ALREADY_REPOSITORY"
+title = "The destination is not yet a repository"
+severity = "error"
+
+[[problems]]
+code = "ERR_INIT_INPUT_MISSING"
+title = "The template:init request is present"
+severity = "error"
+
+[[problems]]
+code = "ERR_INIT_INSIDE_SOURCE"
+title = "The destination is outside the source"
+severity = "error"
+
+[[problems]]
+code = "ERR_INIT_NOT_GENERATED"
+title = "The destination was generated"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUBLISH_DIRTY"
+title = "The destination is clean"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUBLISH_HAS_REMOTE"
+title = "The destination is not yet published"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUBLISH_HOOKS_INSTALLED"
+title = "The destination's hooks are not yet installed"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUBLISH_INPUT_MISSING"
+title = "The template:publish request is present"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUBLISH_NOT_GENERATED"
+title = "The destination was generated"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUBLISH_REMOTE_POPULATED"
+title = "The GitHub repository holds nothing yet"
+severity = "error"
+
+[[problems]]
+code = "ERR_PUBLISH_REMOTE_UNKNOWN"
+title = "The GitHub repository's state was observed"
+severity = "error"
+
+[[problems]]
+code = "ERR_TEMPLATE_DESTINATION_INSIDE"
+title = "The destination is outside the source"
+severity = "error"
+
+[[problems]]
+code = "ERR_TEMPLATE_DESTINATION_OCCUPIED"
+title = "The destination is new"
+severity = "error"
+
+[[problems]]
+code = "ERR_TEMPLATE_INPUT_MISSING"
+title = "The template:new request is present"
+severity = "error"
+
+[[problems]]
+code = "ERR_TEMPLATE_SOURCE_NOT_SSH"
+title = "The source is SSH"
+severity = "error"
+retired = true
+
+[[problems]]
+code = "ERR_TEMPLATE_UNPINNED"
+title = "The ref is a full commit sha"
+severity = "error"
+
+[[problems]]
+code = "ERR_TEMPLATE_SOURCE_NOT_HTTPS"
+title = "The source is HTTPS through the credential helper"
+severity = "error"
