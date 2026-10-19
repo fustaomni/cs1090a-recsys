@@ -149,6 +149,30 @@ def _report(command: str, outcome: str, code: str, message: str, data: dict[str,
     return envelope.exit_code
 
 
+def _summary(error: ValidationError) -> str:
+    """Each validation error as `field: message`, joined: never the count line alone (A.128)."""
+    return "; ".join(
+        f"{'.'.join(str(part) for part in detail['loc'])}: {detail['msg']}"
+        for detail in error.errors(include_url=False)
+    )
+
+
+def _read_spec[S: Contract](model: type[S], argv: Sequence[str] | None, verb: str) -> S | int:
+    """The verb's spec as its contract, or its refusal reported and that exit code (A.128).
+
+    plan:retract alone refused an invalid spec; the other verbs let ValidationError escape as a
+    traceback, and every verb did so for a spec that could not be read or parsed as TOML.
+    """
+    command = f"plan:{verb}"
+    try:
+        return from_document(model, tomllib.loads(_spec_text(argv, verb)))
+    except ValidationError as error:
+        data: dict[str, JsonValue] = {"errors": _errors(error)}
+        return _report(command, "refused", "spec_invalid", _summary(error), data)
+    except (OSError, tomllib.TOMLDecodeError) as error:
+        return _report(command, "refused", "spec_unreadable", str(error), {})
+
+
 def _spec_text(argv: Sequence[str] | None, verb: str) -> str:
     args = list(sys.argv[2:] if argv is None else argv)
     if len(args) != 1:
@@ -158,7 +182,9 @@ def _spec_text(argv: Sequence[str] | None, verb: str) -> str:
 
 def add(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
     """plan:add <spec> -- steps, their ids and one trace entry, together or not at all."""
-    spec = from_document(AddSpec, tomllib.loads(_spec_text(argv, "add")))
+    spec = _read_spec(AddSpec, argv, "add")
+    if isinstance(spec, int):
+        return spec
     documents = {relative: _parse(root, relative) for relative in (PLAN, IDS, TRACE)}
     planned = {str(step["id"]) for step in _steps(documents[PLAN])}
     issued = {str(entry["id"]) for entry in _array(documents[IDS], "issued")}
@@ -191,7 +217,7 @@ def add(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
             "plan:add",
             "refused",
             "contract_violated",
-            str(error).splitlines()[0],
+            _summary(error),
             {"ids": list(new_ids), "errors": _errors(error)},
         )
     for relative, text in rendered.items():
@@ -217,7 +243,9 @@ def _entries(document: TOMLDocument) -> list[Table]:
 
 def amend(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
     """plan:amend <spec> -- replace named fields of one step or decision, in place."""
-    spec = from_document(AmendSpec, tomllib.loads(_spec_text(argv, "amend")))
+    spec = _read_spec(AmendSpec, argv, "amend")
+    if isinstance(spec, int):
+        return spec
     document = _parse(root, PLAN)
     target = next((t for t in _entries(document) if t["id"] == spec.id), None)
     if target is None:
@@ -237,7 +265,7 @@ def amend(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
             "plan:amend",
             "refused",
             "contract_violated",
-            str(error).splitlines()[0],
+            _summary(error),
             {"id": spec.id, "errors": _errors(error)},
         )
     (root / PLAN).write_text(rendered[PLAN], encoding="utf-8")
@@ -265,7 +293,9 @@ def _mapped(candidate: dict[str, JsonValue]) -> list[str]:
 
 def record(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
     """plan:record <spec> -- sources, and candidates mapped to planned steps or declared not."""
-    spec = from_document(TraceSpec, tomllib.loads(_spec_text(argv, "record")))
+    spec = _read_spec(TraceSpec, argv, "record")
+    if isinstance(spec, int):
+        return spec
     documents = {relative: _parse(root, relative) for relative in (PLAN, TRACE)}
     planned = {str(step["id"]) for step in _steps(documents[PLAN])}
     named = {step for candidate in spec.candidates for step in _mapped(candidate)}
@@ -302,7 +332,7 @@ def record(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
             "plan:record",
             "refused",
             "contract_violated",
-            str(error).splitlines()[0],
+            _summary(error),
             {"errors": _errors(error)},
         )
     (root / TRACE).write_text(rendered[TRACE], encoding="utf-8")
@@ -332,11 +362,9 @@ def retract(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
     """plan:retract <spec> -- withdraw candidates, never leaving a step untraced."""
     from plan_models import untraced
 
-    try:
-        spec = from_document(RetractSpec, tomllib.loads(_spec_text(argv, "retract")))
-    except ValidationError as error:
-        first = str(error).splitlines()[0]
-        return _report("plan:retract", "refused", "spec_invalid", first, {"errors": _errors(error)})
+    spec = _read_spec(RetractSpec, argv, "retract")
+    if isinstance(spec, int):
+        return spec
     documents = {relative: _parse(root, relative) for relative in (PLAN, TRACE)}
     text = (root / TRACE).read_text(encoding="utf-8")
     current = from_document(PlanTrace, tomllib.loads(text)).candidates
@@ -360,8 +388,8 @@ def retract(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
     try:
         rendered = _validated(documents)
     except ValidationError as error:
-        first = str(error).splitlines()[0]
-        return _report("plan:retract", "refused", "contract_violated", first, {})
+        data: dict[str, JsonValue] = {"errors": _errors(error)}
+        return _report("plan:retract", "refused", "contract_violated", _summary(error), data)
     plan = from_document(ProjectPlan, tomllib.loads(rendered[PLAN]))
     broken = untraced(from_document(PlanTrace, tomllib.loads(rendered[TRACE])), plan)
     if broken:
