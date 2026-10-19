@@ -109,4 +109,8 @@ issued = [
   { id = "A.122", first_title = "machine:trust gates and trusts a named checkout, so a trusted worktree can trust another under paranoid mode" },
   { id = "A.124", first_title = "provenance:adapt serializes any text a patch holds, as source:port does" },
   { id = "A.123", first_title = "provenance records a relocated port, and cscie103's generated-project gate returns at tests/integration" },
+  { id = "A.125", first_title = "provenance:adapt refuses an upstream file that is missing by naming it, never with a traceback" },
+  { id = "A.126", first_title = "sync re-trusts a mise.toml its pull rewrote, through the founding gate, as worktree:refresh does" },
+  { id = "A.127", first_title = "worktree:skip drops a stopped rebase's commit only when another named ref preserves it, and says why" },
+  { id = "A.128", first_title = "plan:add, plan:amend, plan:record and plan:retract refuse an invalid spec as a closed outcome, never a traceback" },
 ]

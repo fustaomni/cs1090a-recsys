@@ -412,6 +412,12 @@ implementation = "scripts/rebase_state.py"
 emits = "command-outcome/v1"
 
 [[capabilities]]
+task = "worktree:skip"
+version = "1.0.0"
+implementation = "scripts/rebase_skip.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
 task = "identity:set"
 version = "1.0.0"
 implementation = "scripts/project_identity.py"
