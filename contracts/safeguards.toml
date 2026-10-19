@@ -706,6 +706,60 @@ mutant = "\tsome path in input.worktree_continue.with_markers\n\tfalse\n"
 proof = "tests/test_worktree_continue.py::test_a_remaining_marker_is_refused"
 
 [[safeguards]]
+id = "SKIP.INPUT_MISSING"
+engine = "worktree:skip"
+guard = "ERR_SKIP_INPUT_MISSING"
+path = "policies/runs/worktree_skip/worktree_skip.rego"
+anchor = "\tnot input.worktree_skip\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_skip_policy.py::test_an_absent_plan_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SKIP.NO_REBASE"
+engine = "worktree:skip"
+guard = "ERR_SKIP_NO_REBASE"
+path = "policies/runs/worktree_skip/worktree_skip.rego"
+anchor = "\tinput.worktree_skip.operation != \"rebase\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_skip.py::test_skip_without_a_rebase_is_refused"
+
+[[safeguards]]
+id = "SKIP.NO_STOPPED"
+engine = "worktree:skip"
+guard = "ERR_SKIP_NO_STOPPED"
+path = "policies/runs/worktree_skip/worktree_skip.rego"
+anchor = "\tinput.worktree_skip.stopped == \"\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_skip_policy.py::test_a_rebase_with_no_stopped_commit_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SKIP.UNPRESERVED"
+engine = "worktree:skip"
+guard = "ERR_SKIP_UNPRESERVED"
+path = "policies/runs/worktree_skip/worktree_skip.rego"
+anchor = "\tnot input.worktree_skip.preserved\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_skip.py::test_an_unpreserved_commit_is_refused"
+
+[[safeguards]]
+id = "SKIP.SAME_BRANCH"
+engine = "worktree:skip"
+guard = "ERR_SKIP_SAME_BRANCH"
+path = "policies/runs/worktree_skip/worktree_skip.rego"
+anchor = "\tinput.worktree_skip.preserving == input.worktree_skip.rebasing\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_skip.py::test_the_rebasing_branch_cannot_preserve_its_own_commit"
+
+[[safeguards]]
+id = "SKIP.NO_REASON"
+engine = "worktree:skip"
+guard = "ERR_SKIP_NO_REASON"
+path = "policies/runs/worktree_skip/worktree_skip.rego"
+anchor = "\ttrim_space(input.worktree_skip.reason) == \"\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_skip.py::test_a_skip_without_a_reason_is_refused"
+
+[[safeguards]]
 id = "TEMPLATE_NEW.INPUT_MISSING"
 engine = "template:new"
 guard = "ERR_TEMPLATE_INPUT_MISSING"
