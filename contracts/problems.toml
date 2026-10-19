@@ -800,3 +800,33 @@ severity = "error"
 code = "ERR_TEMPLATE_SOURCE_NOT_HTTPS"
 title = "The source is HTTPS through the credential helper"
 severity = "error"
+
+[[problems]]
+code = "ERR_SKIP_INPUT_MISSING"
+title = "The skip plan is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_SKIP_NO_REASON"
+title = "A skip says why"
+severity = "error"
+
+[[problems]]
+code = "ERR_SKIP_NO_REBASE"
+title = "A rebase is in progress"
+severity = "error"
+
+[[problems]]
+code = "ERR_SKIP_NO_STOPPED"
+title = "The rebase stopped on a commit"
+severity = "error"
+
+[[problems]]
+code = "ERR_SKIP_SAME_BRANCH"
+title = "The preserving ref is not the branch being rebased"
+severity = "error"
+
+[[problems]]
+code = "ERR_SKIP_UNPRESERVED"
+title = "Another ref preserves the stopped commit"
+severity = "error"
