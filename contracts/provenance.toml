@@ -532,9 +532,9 @@ sha256 = "fa7e99480e9c10832ce0c93b9a74fd82d741846bf1c94a8ce2a4544e6e5e005d"
 
 [[adapted]]
 path = "scripts/worktree.py"
-reason = "cut from an optional base with --no-track; trusted through machine_trust; -z listings through gitenv.git_bytes; A.93"
+reason = "cut from an optional base with --no-track; trusted through machine_trust; -z listings through gitenv.git_bytes; A.93; one _trust helper serves a new worktree and a refresh that rewrote mise.toml, which is re-trusted or fails the refresh; A.122"
 patch = "contracts/vendor-patches/scripts/worktree.py.patch"
-sha256 = "5a24d7260e003d2dc680c06de293b05c1cfab841f0b65a80085cebf7352cb3fd"
+sha256 = "3b83e0c3e10a4afd5aa79a55363d13dac368fee3b6e60b61304a1400d3280644"
 
 [[files]]
 path = "policies/machine/setup/setup_env.rego"

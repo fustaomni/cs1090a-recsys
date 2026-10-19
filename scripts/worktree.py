@@ -137,6 +137,28 @@ def cmd_add(slug: str, base: str | None = None) -> int:
     return _ready(path, slug)
 
 
+def _trust(path: Path) -> machine_trust.TrustDecision:
+    """Gate path's own mise.toml, then trust that file by its own path, never inherited (A.27).
+
+    ONE TRUST PATH FOR EVERY CALLER: a new worktree (A.93) and a refresh that rewrote mise.toml
+    (A.122). Each command runs in the cleaned environment, the caller's VIRTUAL_ENV removed.
+    """
+    env = setup_environment(os.environ)
+
+    def run(command: list[str], cwd: Path, stdin: str | None) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            command, cwd=cwd, input=stdin, env=env, capture_output=True, text=True, check=False
+        )
+
+    return machine_trust.trust(
+        path,
+        (path / "mise.toml").read_text(encoding="utf-8"),
+        allows=lambda text: machine_trust.founding_allows(text, run=run),
+        run=run,
+        events=machine_trust.EVENTS,
+    )
+
+
 def _ready(path: Path, slug: str) -> int:
     """Trust the new worktree's own mise.toml through the founding gate, then run its setup.
 
@@ -149,18 +171,7 @@ def _ready(path: Path, slug: str) -> int:
     print("running setup in the new worktree...")
     env = setup_environment(os.environ)
 
-    def run(command: list[str], cwd: Path, stdin: str | None) -> subprocess.CompletedProcess[str]:
-        return subprocess.run(
-            command, cwd=cwd, input=stdin, env=env, capture_output=True, text=True, check=False
-        )
-
-    decision = machine_trust.trust(
-        path,
-        (path / "mise.toml").read_text(encoding="utf-8"),
-        allows=lambda text: machine_trust.founding_allows(text, run=run),
-        run=run,
-        events=machine_trust.EVENTS,
-    )
+    decision = _trust(path)
     if not decision.trusted:
         print(
             f"\n{path}'s mise.toml was not trusted: the founding policy refused it or mise "
@@ -267,6 +278,15 @@ def cmd_refresh(slug: str) -> int:
     after = git_run("rev-parse", "HEAD", cwd=path).stdout.strip()
     target = git_run("rev-parse", "origin/develop", cwd=path).stdout.strip()
     _settle_environment(path, before)
+
+    # MISE BINDS TRUST TO CONTENT (A.122): a rebase that rewrote mise.toml left this checkout
+    # untrusted, and every task in it refused. It is re-trusted as a new worktree is, or fails.
+    rewritten = git_run("diff", "--quiet", before, after, "--", "mise.toml", cwd=path)
+    if before != after and rewritten.returncode != 0 and not _trust(path).trusted:
+        raise SystemExit(
+            f"rebased {path}, but its changed mise.toml was not trusted: the founding policy "
+            "refused it or mise could not trust it"
+        )
 
     if before == after:
         print(f"{path} was already on origin/develop ({target[:12]})")

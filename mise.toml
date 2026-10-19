@@ -367,8 +367,10 @@ description = "Prove every listed safeguard: its proof passes, then fails once i
 run = "uv run --no-sync python scripts/safeguards.py"
 
 [tasks."machine:trust"]
-description = "Trust this checkout's mise.toml by its own path, only after the founding policy allows it"
-run = "uv run --no-sync python scripts/machine_trust.py"
+description = "Trust a checkout's mise.toml by its own path, only after the founding policy allows it"
+# A.122: [checkout] names another one, so a trusted worktree trusts it without loading it.
+usage = 'arg "[checkout]" help="Another checkout to trust; this one when omitted"'
+run = 'uv run --no-sync python scripts/machine_trust.py ${usage_checkout:-}'
 
 [tasks."policies:admit"]
 description = "Refuse any policy domain the manifest declares but cannot admit, or plan one's admission"
