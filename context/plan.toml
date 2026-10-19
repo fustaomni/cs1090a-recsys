@@ -1250,6 +1250,7 @@ depends_on = ["A.121"]
 because = { "A.121" = "both read an IdentitySpec, and both keep only the first line of its error" }
 done_when = [
   { kind = "proof", test = "tests/test_identity_refusals.py::test_a_spec_refusal_names_the_field_and_its_rule" },
+  { kind = "proof", test = "tests/test_identity_refusals.py::test_template_identity_refuses_a_spec_with_the_same_detail" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
