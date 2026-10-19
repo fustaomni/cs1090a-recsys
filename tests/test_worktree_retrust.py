@@ -55,8 +55,9 @@ def _setup(
     monkeypatch.setattr(worktree, "sibling_path", lambda slug: tmp_path)
     monkeypatch.setattr(worktree, "git_run", git_run)
     monkeypatch.setattr(worktree, "_git", lambda *args, **kwargs: "")
-    # RAISING=FALSE ONLY UNTIL GREEN: a renamed helper still fails these, since nothing calls it.
-    monkeypatch.setattr(worktree, "_trust", retrust, raising=False)
+    # RAISING, PYTEST'S DEFAULT (A.133): a renamed helper fails here, at the patch, by name.
+    # With raising=False the no-trust guard below would pass with nothing called at all.
+    monkeypatch.setattr(worktree, "_trust", retrust)
     monkeypatch.setattr(subprocess, "run", clean)
     monkeypatch.setattr(env_sync, "follow_lock", lambda path, before: UNCHANGED)
     return trusts

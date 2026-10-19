@@ -1276,3 +1276,14 @@ done_when = [
   { kind = "proof", test = "tests/test_start_here.py::test_start_here_cuts_a_branch_with_no_upstream" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.133"
+title = "The retrust proofs patch worktree._trust with pytest's default raising, so a rename fails at the patch"
+thread = "A"
+depends_on = ["A.122"]
+because = { "A.122" = "its proofs patched _trust with raising=False before the helper existed, and kept it after" }
+done_when = [
+  { kind = "proof", test = "tests/test_monkeypatch_raising.py::test_no_proof_patches_an_existing_attribute_with_raising_false" },
+  { kind = "proof", test = "tests/test_monkeypatch_raising.py::test_the_rule_flags_a_patch_whose_name_exists_and_spares_one_that_does_not" },
+  { kind = "task", name = "check" },
+]
