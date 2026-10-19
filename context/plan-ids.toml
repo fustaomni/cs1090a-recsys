@@ -113,4 +113,9 @@ issued = [
   { id = "A.126", first_title = "sync re-trusts a mise.toml its pull rewrote, through the founding gate, as worktree:refresh does" },
   { id = "A.127", first_title = "worktree:skip drops a stopped rebase's commit only when another named ref preserves it, and says why" },
   { id = "A.128", first_title = "plan:add, plan:amend, plan:record and plan:retract refuse an invalid spec as a closed outcome, never a traceback" },
+  { id = "A.13", first_title = "Every applicable cscie103 capability is ported whole, or withdrawn by name with its reason" },
+  { id = "A.14", first_title = "Features reach develop only through pr, branches start only through worktree:add, and main moves only through release" },
+  { id = "A.15", first_title = "Repository settings and the develop-and-main ruleset are code, applied by repo:configure" },
+  { id = "A.16", first_title = "Every repository operation is a declared task run through the recording gateway, enforced as policy" },
+  { id = "A.17", first_title = "Toolchain operations -- trust, lock, install, prune -- are tasks" },
 ]
