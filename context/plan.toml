@@ -1418,3 +1418,13 @@ done_when = [
   { kind = "proof", test = "tests/test_pr_logs_task.py::test_pr_logs_is_read_only_and_a_capability" },
   { kind = "task", name = "pr:logs" },
 ]
+[[steps]]
+id = "A.145"
+title = "template:identity's commit names the step it serves, Plan-Step: A.1, as template:init's does"
+thread = "A"
+depends_on = ["A.121"]
+because = { "A.121" = "template:identity was ported there, committing a project's identity with no trailer" }
+done_when = [
+  { kind = "proof", test = "tests/test_template_identity_trailer.py::test_the_identity_commit_names_step_a1" },
+  { kind = "task", name = "check" },
+]

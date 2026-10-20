@@ -30,7 +30,8 @@ COMMAND = "template:identity"
 SUBJECT = "template_identity"
 POLICY = Path(__file__).resolve().parent.parent / "policies" / "runs" / "template" / "identity"
 ANSWERS = ".copier-answers.yml"
-MESSAGE = "chore: take the project identity"
+# TRACED, AS THE FIRST COMMIT IS (A.145): A.1's done_when lists identity:set, which this records.
+MESSAGE = "chore: take the project identity\n\nPlan-Step: A.1"
 STEPS: tuple[tuple[str, ...], ...] = (
     ("add", "-A"),
     ("commit", "-q", "-m", MESSAGE),
