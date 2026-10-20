@@ -170,8 +170,10 @@ def test_a_generated_project_with_its_own_identity_passes_its_own_gate(
     left = data["left_behind"]
     assert isinstance(left, list), data
     assert left == [], "\n".join(str(entry) for entry in left)
-    # ITS OWN PRE-PUSH GATE: everything check runs except its integration tier (A.123).
-    gates = (("python", "scripts/check_all.py", "--offline"),)
+    # ITS OWN GATE, JUDGING THE PROJECT, NOT THE MACHINE (A.123): --offline drops its integration
+    # tier, which is this proof, and --ci its claims about the developer machine (A.104), which
+    # this repository's own test (machine) judges and which a CI runner is not.
+    gates = (("python", "scripts/check_all.py", "--offline", "--ci"),)
     failed: dict[str, str] = {}
     for gate in gates:
         done = _in(project, "uv", "run", "--no-sync", *gate)
