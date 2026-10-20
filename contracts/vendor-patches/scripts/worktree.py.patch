@@ -144,7 +144,7 @@
      if before == after:
          print(f"{path} was already on origin/develop ({target[:12]})")
      else:
-@@ -251,18 +295,30 @@
+@@ -251,21 +295,43 @@
      return 0
  
  
@@ -184,7 +184,46 @@
  
      print(f"deleted branch {branch}")
      return 0
-@@ -298,12 +354,15 @@
++
++
++def _branch_found(branch: str) -> bool:
++    """Whether refs/heads/<branch> exists; any answer but yes or no stops the removal."""
++    found = git_run("rev-parse", "--verify", "--quiet", f"refs/heads/{branch}", cwd=ROOT)
++    if found.returncode not in (0, 1):
++        raise SystemExit(
++            f"could not tell whether {branch} exists: rev-parse exited {found.returncode}"
++        )
++    return found.returncode == 0
+ 
+ 
+ def cmd_remove(slug: str) -> int:
+@@ -276,19 +342,19 @@
+         # ALREADY GONE IS THE END STATE, NOT AN ERROR (D.105). prune removes only registrations
+         # whose directories are missing; the branch, if any, goes exactly as below: branch -d.
+         _git("worktree", "prune")
+-        found = git_run("rev-parse", "--verify", "--quiet", f"refs/heads/{branch}", cwd=ROOT)
+-        if found.returncode == 1:
++        if not _branch_found(branch):
+             print(f"{path} already removed; branch {branch} already deleted")
+             return 0
+-        if found.returncode != 0:
+-            raise SystemExit(
+-                f"could not tell whether {branch} exists: rev-parse exited {found.returncode}"
+-            )
+         print(f"{path} already removed")
+         return _delete_branch(branch)
+ 
+     _git("worktree", "remove", str(path))
+     print(f"removed {path}")
++    # A BRANCH ALREADY GONE IS THE END STATE TOO (A.139): a worktree may hold another branch,
++    # and merge-base asked about one that does not exist would misreport it as unmerged.
++    if not _branch_found(branch):
++        print(f"branch {branch} already deleted")
++        return 0
+     return _delete_branch(branch)
+ 
+ 
+@@ -298,12 +364,15 @@
              return cmd_list()
          case ["add", slug]:
              return cmd_add(slug)
