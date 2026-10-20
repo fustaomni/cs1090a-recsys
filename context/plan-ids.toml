@@ -126,4 +126,5 @@ issued = [
   { id = "A.134", first_title = "template:update brings a generated project to a later commit of this template, pinned, clean, on a branch, with conflicts reported" },
   { id = "A.135", first_title = "repo:history reads a clone upstream:checkout made, and nothing else outside this checkout" },
   { id = "A.136", first_title = "A ported file records the commit it was read at when that is not the pin, so a later port is recorded truthfully" },
+  { id = "A.137", first_title = "branches:prune returns from cscie103 at 25061c1 with the repo_state it needs, so a merged branch nobody uses is deleted locally and on origin" },
 ]
