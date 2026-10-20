@@ -1143,6 +1143,7 @@ done_when = [
   { kind = "proof", test = "tests/test_provenance.py::test_an_adaptation_follows_its_files_entry_whole" },
   { kind = "proof", test = "tests/test_source_port_relocate.py::test_a_port_placed_elsewhere_records_its_upstream_path" },
   { kind = "proof", test = "tests/integration/test_generated_gate.py::test_a_generated_project_passes_its_own_tests" },
+  { kind = "proof", test = "tests/integration/test_generated_gate.py::test_a_generated_project_with_its_own_identity_passes_its_own_gate" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1393,4 +1394,27 @@ done_when = [
   { kind = "proof", test = "tests/test_start_switch.py::test_a_branch_that_does_not_exist_is_refused" },
   { kind = "task", name = "start:switch" },
   { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.141"
+title = "A named proof runs whatever its level: the verifiers lift addopts' level filter for named targets only"
+thread = "A"
+depends_on = ["A.39"]
+because = { "A.39" = "test levels are declared by directory, and addopts deselects integration and machine tests from a bare run" }
+done_when = [
+  { kind = "proof", test = "tests/test_verify_levels.py::test_red_runs_named_proofs_at_any_level" },
+  { kind = "proof", test = "tests/test_verify_levels.py::test_a_selected_green_runs_its_targets_at_any_level" },
+  { kind = "proof", test = "tests/test_verify_levels.py::test_a_full_green_keeps_the_level_filter" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.142"
+title = "pr:logs returns: the ported CI-failure reader runs as a declared, read-only task"
+thread = "A"
+depends_on = ["A.19"]
+because = { "A.19" = "pr returned with publication, and its refusal names a failed check whose reason pr:logs reads" }
+done_when = [
+  { kind = "proof", test = "tests/test_pr_logs_task.py::test_pr_logs_runs_the_ported_reader" },
+  { kind = "proof", test = "tests/test_pr_logs_task.py::test_pr_logs_is_read_only_and_a_capability" },
+  { kind = "task", name = "pr:logs" },
 ]
