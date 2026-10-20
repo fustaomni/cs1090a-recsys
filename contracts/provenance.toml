@@ -2,6 +2,7 @@
 # EVERY FILE PORTED FROM cscie103-data-engineering, at the commit it was read, with the
 # SHA-256 of the bytes ported. A later diff against these digests shows exactly what this
 # repository changed; mirrored, not reinvented, is then checkable rather than claimed.
+# An entry naming its own commit was read there; any other was read at the commit below (A.136).
 contract = "provenance/v1"
 source = "https://github.com/ltphongssvn/cscie103-data-engineering"
 commit = "58af9d32a9972d6abb5a18acd94ee1235843da66"
