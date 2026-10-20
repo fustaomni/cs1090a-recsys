@@ -324,6 +324,16 @@ def _delete_branch(branch: str) -> int:
     return 0
 
 
+def _branch_found(branch: str) -> bool:
+    """Whether refs/heads/<branch> exists; any answer but yes or no stops the removal."""
+    found = git_run("rev-parse", "--verify", "--quiet", f"refs/heads/{branch}", cwd=ROOT)
+    if found.returncode not in (0, 1):
+        raise SystemExit(
+            f"could not tell whether {branch} exists: rev-parse exited {found.returncode}"
+        )
+    return found.returncode == 0
+
+
 def cmd_remove(slug: str) -> int:
     path = sibling_path(slug)
     branch = f"feature/{slug}"
@@ -332,19 +342,19 @@ def cmd_remove(slug: str) -> int:
         # ALREADY GONE IS THE END STATE, NOT AN ERROR (D.105). prune removes only registrations
         # whose directories are missing; the branch, if any, goes exactly as below: branch -d.
         _git("worktree", "prune")
-        found = git_run("rev-parse", "--verify", "--quiet", f"refs/heads/{branch}", cwd=ROOT)
-        if found.returncode == 1:
+        if not _branch_found(branch):
             print(f"{path} already removed; branch {branch} already deleted")
             return 0
-        if found.returncode != 0:
-            raise SystemExit(
-                f"could not tell whether {branch} exists: rev-parse exited {found.returncode}"
-            )
         print(f"{path} already removed")
         return _delete_branch(branch)
 
     _git("worktree", "remove", str(path))
     print(f"removed {path}")
+    # A BRANCH ALREADY GONE IS THE END STATE TOO (A.139): a worktree may hold another branch,
+    # and merge-base asked about one that does not exist would misreport it as unmerged.
+    if not _branch_found(branch):
+        print(f"branch {branch} already deleted")
+        return 0
     return _delete_branch(branch)
 
 

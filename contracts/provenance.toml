@@ -539,9 +539,9 @@ sha256 = "fa7e99480e9c10832ce0c93b9a74fd82d741846bf1c94a8ce2a4544e6e5e005d"
 
 [[adapted]]
 path = "scripts/worktree.py"
-reason = "cut from an optional base with --no-track; trusted through machine_trust; -z listings through gitenv.git_bytes; A.93; one _trust helper serves a new worktree and a refresh that rewrote mise.toml, which is re-trusted or fails the refresh; A.122; a branch is deleted only once origin/develop contains it, and a kept branch sends the reader to branches:retire, never git branch -D, as cscie103 D.229 and D.228 do; A.138"
+reason = "cut from an optional base with --no-track; trusted through machine_trust; -z listings through gitenv.git_bytes; A.93; one _trust helper serves a new worktree and a refresh that rewrote mise.toml, which is re-trusted or fails the refresh; A.122; a branch is deleted only once origin/develop contains it, and a kept branch sends the reader to branches:retire, never git branch -D, as cscie103 D.229 and D.228 do; A.138; a present worktree whose branch is already gone is reported so, as an absent one is; A.139"
 patch = "contracts/vendor-patches/scripts/worktree.py.patch"
-sha256 = "b0e5dcc84925db868fe593076205e421e87cf77925a9371b2a89ec8ef7aa8727"
+sha256 = "cc301e666b03bfa0d4f193f2e9c898a720919eafebae34c382d54112fa1cdd1b"
 
 [[files]]
 path = "policies/machine/setup/setup_env.rego"
