@@ -1329,6 +1329,6 @@ commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
 
 [[adapted]]
 path = "tests/integration/test_generated_gate.py"
-reason = "at tests/integration, where this repository declares the integration level (A.39); git through gitenv's scrubbed environment; a two-field identity, as this repository declares one; the bundle-fixture refresh, the PII gate and the policy-decision proof dropped, since this repository has no update_fixtures.py, check_pii.py or evaluate_policies.py; origin reads as the project's declared GitHub repository while its pushes reach a local bare one through pushInsteadOf, since source:apply reads the repository from origin; A.123"
+reason = "at tests/integration, where this repository declares the integration level (A.39); git through gitenv's scrubbed environment; a two-field identity, as this repository declares one; the bundle-fixture refresh, the PII gate and the policy-decision proof dropped, since this repository has no update_fixtures.py, check_pii.py or evaluate_policies.py; origin reads as the project's declared GitHub repository while its pushes reach a local bare one through pushInsteadOf, since source:apply reads the repository from origin; the nested gate runs --offline --ci, judging the project and never the developer machine, whose claims are declared out of CI (A.104); A.123"
 patch = "contracts/vendor-patches/tests/integration/test_generated_gate.py.patch"
-sha256 = "ab8f88055de4dcfe33c68e2ab1cc3e43bf809e93902059170ed096ff5a4ba51a"
+sha256 = "d18fe94135f9312b903d801e3b420f91042fadc52f37f17fce5c883ef3fc3ffc"
