@@ -140,18 +140,9 @@ def identified(
 
 @pytest.mark.integration
 def test_a_generated_project_passes_its_own_tests(published: Path) -> None:
-    done = _in(
-        published,
-        "uv",
-        "run",
-        "--no-sync",
-        "pytest",
-        "-q",
-        "-p",
-        "no:cacheprovider",
-        "-m",
-        "not integration",
-    )
+    # ITS OWN TESTS AS ITS test TASK RUNS THEM (A.123): the project's own addopts selects them,
+    # since an -m here would replace that filter and run its claims about the machine (A.104).
+    done = _in(published, "uv", "run", "--no-sync", "pytest", "-q", "-p", "no:cacheprovider")
     assert done.returncode == 0, _tail(done)
 
 
