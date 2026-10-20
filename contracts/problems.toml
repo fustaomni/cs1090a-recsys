@@ -865,3 +865,23 @@ severity = "error"
 code = "ERR_TEMPLATE_UPDATE_UNPINNED"
 title = "The ref is a full commit sha"
 severity = "error"
+
+[[problems]]
+code = "ERR_BRANCHES_PRUNE_HELD"
+title = "A branch a worktree holds is in use, and is never deleted"
+severity = "error"
+
+[[problems]]
+code = "ERR_BRANCHES_PRUNE_INPUT_MISSING"
+title = "The prune request is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_BRANCHES_PRUNE_PROTECTED"
+title = "A protected branch is never deleted, whatever its state"
+severity = "error"
+
+[[problems]]
+code = "ERR_BRANCHES_PRUNE_UNMERGED"
+title = "Only a branch proven merged into the integration branch is deleted"
+severity = "error"

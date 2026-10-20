@@ -558,6 +558,12 @@ description = "Drop a worktree's stopped rebase commit, only when another named 
 raw_args = true
 run = "uv run --no-sync python scripts/rebase_skip.py"
 
+# Ported from cscie103-data-engineering at 25061c1 (plan A.137): cscie103 built it after this
+# repository's pin, and provenance records each of its files at that commit (A.136).
+[tasks."branches:prune"]
+description = "Delete a merged branch left behind, locally or on origin, once proven merged; a dry run unless --yes"
+run = "uv run --no-sync python scripts/branches_prune.py"
+
 # This repository's own (plan A.114): cscie103 has no copy verifier; the shape follows
 # upstream:checkout, and the checkout is named so it runs against one whose tasks predate it.
 [tasks."upstream:copies"]

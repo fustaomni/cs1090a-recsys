@@ -95,6 +95,8 @@ class Branch(Contract):
     position: Position
     is_merged: bool
     held_by: Path | None
+    # The remote-tracking ref it follows, as git records it; None when it tracks nothing.
+    upstream: str | None = None
 
     @property
     def upstream_gone(self) -> bool:
@@ -294,6 +296,7 @@ def gather(root: Path) -> RepositoryState:
                 position=position_of(upstream, track),
                 is_merged=name in merged,
                 held_by=holders.get(name),
+                upstream=upstream or None,
             )
         )
 
