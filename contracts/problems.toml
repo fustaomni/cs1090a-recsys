@@ -885,3 +885,28 @@ severity = "error"
 code = "ERR_BRANCHES_PRUNE_UNMERGED"
 title = "Only a branch proven merged into the integration branch is deleted"
 severity = "error"
+
+[[problems]]
+code = "ERR_BRANCHES_RETIRE_ARCHIVED"
+title = "An existing archive is never overwritten"
+severity = "error"
+
+[[problems]]
+code = "ERR_BRANCHES_RETIRE_HELD"
+title = "A branch a worktree holds is in use, and is never retired"
+severity = "error"
+
+[[problems]]
+code = "ERR_BRANCHES_RETIRE_INPUT_MISSING"
+title = "The retire request is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_BRANCHES_RETIRE_PROTECTED"
+title = "A protected branch is never retired"
+severity = "error"
+
+[[problems]]
+code = "ERR_BRANCHES_RETIRE_STEP_UNKNOWN"
+title = "A branch is retired only for a step the plan declares"
+severity = "error"
