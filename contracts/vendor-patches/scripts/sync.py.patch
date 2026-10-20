@@ -1,0 +1,42 @@
+--- a/scripts/sync.py
++++ b/scripts/sync.py
+@@ -30,6 +30,7 @@
+ from gitenv import git
+ from opa import denials
+ from repo_state import INTEGRATION_BRANCH, PROTECTED_BRANCHES, RepositoryState, gather
++from worktree import _trust
+ 
+ ROOT = Path(__file__).resolve().parent.parent
+ 
+@@ -77,6 +78,22 @@
+     return tuple(planned)
+ 
+ 
++def retrust_if_rewritten(root: Path, before: str) -> None:
++    """A pull that rewrote mise.toml re-trusts it through the founding gate, or fails (A.126).
++
++    Under paranoid mode mise binds trust to a config's content, so a pull that rewrites
++    mise.toml leaves this checkout untrusted, and every task here refused. worktree:refresh
++    re-trusts since A.122; sync does the same, through the same _trust, only on a change.
++    """
++    after = git("rev-parse", "HEAD", cwd=root).stdout.strip()
++    changed = git("diff", "--quiet", before, after, "--", "mise.toml", cwd=root).returncode != 0
++    if before != after and changed and not _trust(root).trusted:
++        raise SystemExit(
++            f"pulled into {root}, but its changed mise.toml was not trusted: "
++            "the founding policy refused it or mise could not trust it"
++        )
++
++
+ def run(*args: str) -> None:
+     result = git(*args, cwd=ROOT)
+     if result.returncode != 0:
+@@ -108,6 +125,8 @@
+ 
+     # THE ENVIRONMENT FOLLOWS THE LOCK (D.38): a pull that changed uv.lock installs it.
+     environment = follow_lock(ROOT, before)
++    # AND ITS TRUST FOLLOWS mise.toml (A.126): a pull that rewrote it re-trusts it, or fails.
++    retrust_if_rewritten(ROOT, before)
+ 
+     state = gather(ROOT)
+ 

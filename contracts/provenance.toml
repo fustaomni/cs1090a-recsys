@@ -878,6 +878,12 @@ sha256 = "764494a34a82163d5a6086eef643d65b58d6eede2561b6bddf6e1e08c61c78c7"
 path = "scripts/sync.py"
 sha256 = "eab028694420f9dc536717b8f8f34b77b3fc0d033f6230c23b10c405df311333"
 
+[[adapted]]
+path = "scripts/sync.py"
+reason = "a pull that rewrote mise.toml re-trusts it through worktree's _trust and the founding gate, or sync fails naming the refusal, since paranoid mode binds trust to a config's content (A.126)"
+patch = "contracts/vendor-patches/scripts/sync.py.patch"
+sha256 = "0ae2c795c14a56645e4c224cabd1814791395905df646d5b6683f71502517dda"
+
 [[files]]
 path = "scripts/repo_state.py"
 sha256 = "a10930278c6e4bf6b89e190e5b60057eaae793dfbdc2aa4eaa964adcd5d771f1"
