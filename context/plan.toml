@@ -1369,3 +1369,13 @@ done_when = [
   { kind = "task", name = "branches:retire" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.139"
+title = "worktree:remove reports a branch that is already gone as such, for a present worktree as for an absent one"
+thread = "A"
+depends_on = ["A.138"]
+because = { "A.138" = "D.229's merge-base proof made a missing branch read as unmerged" }
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_remove_absent_branch.py::test_a_present_worktree_whose_branch_is_gone_is_removed" },
+  { kind = "task", name = "check" },
+]
