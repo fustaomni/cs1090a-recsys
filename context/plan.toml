@@ -1379,3 +1379,16 @@ done_when = [
   { kind = "proof", test = "tests/test_worktree_remove_absent_branch.py::test_a_present_worktree_whose_branch_is_gone_is_removed" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.140"
+title = "start:switch prints the switch of this shell's checkout to an existing branch, refusing an unknown or held one"
+thread = "A"
+depends_on = ["A.131"]
+because = { "A.131" = "start:here prints the command a shell evaluates; start:switch is its twin for an existing branch" }
+done_when = [
+  { kind = "proof", test = "tests/test_start_switch.py::test_a_checkout_on_a_feature_branch_returns_to_develop" },
+  { kind = "proof", test = "tests/test_start_switch.py::test_a_branch_another_worktree_holds_is_refused" },
+  { kind = "proof", test = "tests/test_start_switch.py::test_a_branch_that_does_not_exist_is_refused" },
+  { kind = "task", name = "start:switch" },
+  { kind = "task", name = "check" },
+]
