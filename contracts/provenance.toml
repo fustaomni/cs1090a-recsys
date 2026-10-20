@@ -399,9 +399,9 @@ sha256 = "bcbcf81b839c521bd70c27eb0a560d2bc9c5c9ce9992d786e7bb317e2826674d"
 
 [[adapted]]
 path = "contracts/task-effects.toml"
-reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification; check:ci, recsys's own, is read-only as check:offline is (A.104)"
+reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification; check:ci, recsys's own, is read-only as check:offline is (A.104); pr:logs returns read-only with its task, as cscie103 classifies it (A.142)"
 patch = "contracts/vendor-patches/contracts/task-effects.toml.patch"
-sha256 = "cf5dd9f9d8acd0ee8702bd23f84e6ccbdc79a0cc89246c898c4e383e2736e587"
+sha256 = "eba845d14db2a979f35058ac59d56c0571db057dca4becce389d17bd08c00789"
 
 [[adapted]]
 path = "tests/test_run_gateway.py"
@@ -953,9 +953,9 @@ sha256 = "48cb399c2caa9ffac9db7a5c53b2f9c2cb0da1d169b7988243866d88e3e5e1c4"
 
 [[adapted]]
 path = "copier.yml"
-reason = "the run-ledger anchor is excluded, since a generated project starts its own ledger as it starts its own plan (A.121)"
+reason = "the run-ledger anchor is excluded, since a generated project starts its own ledger as it starts its own plan (A.121); this repository's provenance record, its vendor patches and the two proofs that verify them are excluded as its own port history, and the generated-project gate is excluded where it now lives, at tests/integration (A.123)"
 patch = "contracts/vendor-patches/copier.yml.patch"
-sha256 = "bc300f4e25d9a3824dbf79ff5d2226730e04be54e0582b4a1b95ce0922600889"
+sha256 = "88013fc6d41f8fa5d0cdd791821ffb6e036f991d76f2605b30d182b6f1e1bc1e"
 
 [[files]]
 path = "contracts/project-identity.toml"
@@ -1320,3 +1320,15 @@ commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
 path = "tests/test_branches_retire.py"
 sha256 = "20eb17b9db3e196d2af64f61ca357dde5120d354745fa9895cc6e11c5630f0c0"
 commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "tests/integration/test_generated_gate.py"
+upstream_path = "tests/test_generated_gate.py"
+sha256 = "4e8420974bca55572933817771f2353de77b2f2b0f82975e9bea06a2ac4cf652"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[adapted]]
+path = "tests/integration/test_generated_gate.py"
+reason = "at tests/integration, where this repository declares the integration level (A.39); git through gitenv's scrubbed environment; a two-field identity, as this repository declares one; the bundle-fixture refresh, the PII gate and the policy-decision proof dropped, since this repository has no update_fixtures.py, check_pii.py or evaluate_policies.py; origin reads as the project's declared GitHub repository while its pushes reach a local bare one through pushInsteadOf, since source:apply reads the repository from origin; the nested gate runs --offline --ci, judging the project and never the developer machine, whose claims are declared out of CI (A.104); the project's own tests run as its test task runs them, selected by its own addopts, since an -m would replace that filter and run its claims about the machine (A.104); A.123"
+patch = "contracts/vendor-patches/tests/integration/test_generated_gate.py.patch"
+sha256 = "bc86e65d1401a062affa610a5b7ab60a168f6574c348866199c3dbd44ce85d54"

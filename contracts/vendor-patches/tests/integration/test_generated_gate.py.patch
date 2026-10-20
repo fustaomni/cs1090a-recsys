@@ -1,0 +1,164 @@
+--- a/tests/integration/test_generated_gate.py
++++ b/tests/integration/test_generated_gate.py
+@@ -1,11 +1,11 @@
+-# tests/test_generated_gate.py
+-"""A generated project passes its own gate from its first published commit (D.61).
++# tests/integration/test_generated_gate.py
++"""A generated project passes its own gate from its first published commit (D.61, A.123).
+ 
+ olist-lakehouse-bi failed its own offline gate on the push that would have published it.
+ 2026 templates prove the opposite with an integration test: generate, then run the
+ project's own checks in it. This does that -- generate from this working tree, start the
+ repository and its plan, publish to a local bare repository so origin/develop is real,
+-then run the project's own tests and policy decisions with this interpreter.
++then run the project's own tests with this interpreter.
+ 
+ INTEGRATION, NOT OFFLINE: it renders a whole project and runs its suite, which is slow
+ and needs the devShell tools; check runs it, CI runs it, pre-push does not.
+@@ -17,6 +17,7 @@
+ import json
+ import os
+ import subprocess
++import tomllib
+ import warnings
+ from collections.abc import Iterator
+ from contextlib import redirect_stdout
+@@ -27,9 +28,11 @@
+ from copier.errors import DirtyLocalWarning
+ from platformdirs.testing import isolated_dirs
+ 
++from gitenv import scrubbed_env
+ from template_init import main as init_main
+ 
+-REPO = Path(__file__).resolve().parent.parent
++# THREE PARENTS: this file lives at tests/integration, the level its directory declares (A.39).
++REPO = Path(__file__).resolve().parent.parent.parent
+ # COMPOSED, NOT WRITTEN: the PII gate reads any user-at-host literal as an email.
+ ADDRESS = "t" + "@" + "example.invalid"
+ # A SCRATCH IDENTITY, as a project takes its own after generation (D.64). SENTINEL VALUES:
+@@ -38,13 +41,6 @@
+ IDENTITY = "\n".join(
+     (
+         'name = "zqx-sentinel-project"',
+-        'catalog = "zqx_sentinel_catalog"',
+-        'reader_group = "zqx_sentinel_readers"',
+-        'ci_principal = "zqx-sentinel-ci"',
+-        'workspace_host = "https://zqx-sentinel.cloud.databricks.com"',
+-        'account_id = "00000000-0000-4000-8000-0000000000a1"',
+-        'ci_client_id = "00000000-0000-4000-8000-0000000000a2"',
+-        'default_schema = "zqx_sentinel"',
+         'repository = "https://github.com/example/zqx-sentinel-project"',
+         "",
+     )
+@@ -52,7 +48,9 @@
+ 
+ 
+ def _git(repo: Path, *args: str) -> None:
+-    subprocess.run(["git", *args], cwd=repo, check=True, capture_output=True, text=True)
++    subprocess.run(
++        ["git", *args], cwd=repo, env=scrubbed_env(), check=True, capture_output=True, text=True
++    )
+ 
+ 
+ def _tail(done: subprocess.CompletedProcess[str]) -> str:
+@@ -77,6 +75,19 @@
+     )
+ 
+ 
++def _point(project: Path, bare: Path) -> None:
++    """origin names the project's declared GitHub repository; its pushes reach a local bare one.
++
++    source:apply reads the repository from origin, so origin must read as GitHub, as every real
++    project's does. git remote get-url expands insteadOf but not pushInsteadOf, so only the push
++    is redirected, and it stays offline (A.123).
++    """
++    declared = tomllib.loads((project / "contracts" / "project-identity.toml").read_text("utf-8"))
++    url = f"{declared['repository']}.git"
++    _git(project, "remote", "set-url", "origin", url)
++    _git(project, "config", f"url.{bare}.pushInsteadOf", url)
++
++
+ def _born(base: Path, patch: pytest.MonkeyPatch) -> Path:
+     """Generated, born a repository with its plan, published to a bare remote, synced."""
+     for role in ("AUTHOR", "COMMITTER"):
+@@ -93,6 +104,7 @@
+     bare = base / "remote.git"
+     _git(base, "init", "-q", "--bare", str(bare))
+     _git(project, "remote", "add", "origin", str(bare))
++    _point(project, bare)
+     _git(project, "push", "-q", "origin", "main", "develop")
+     # ITS OWN VENV, AS ITS setup MAKES IT: the runtime contract refuses any other (6874ca0).
+     synced = _in(project, "uv", "sync", "--locked", "--all-groups", "--offline")
+@@ -112,7 +124,7 @@
+ def identified(
+     tmp_path_factory: pytest.TempPathFactory,
+ ) -> Iterator[tuple[Path, dict[str, object]]]:
+-    """Born as above, then given its own identity and its own refreshed bundle fixture."""
++    """Born as above, then given its own identity."""
+     base = tmp_path_factory.mktemp("identified")
+     with pytest.MonkeyPatch.context() as patch, isolated_dirs(base / "dirs"):
+         project = _born(base, patch)
+@@ -121,31 +133,16 @@
+         script = ("uv", "run", "--no-sync", "python")
+         named = _in(project, *script, "scripts/project_identity.py", str(spec))
+         assert named.returncode == 0, _tail(named)
+-        refreshed = _in(project, *script, "scripts/update_fixtures.py")
+-        assert refreshed.returncode == 0, _tail(refreshed)
++        # ITS ORIGIN FOLLOWS ITS IDENTITY, as template:publish pairs them in a real project.
++        _point(project, base / "remote.git")
+         yield project, json.loads(named.stdout)
+ 
+ 
+ @pytest.mark.integration
+ def test_a_generated_project_passes_its_own_tests(published: Path) -> None:
+-    done = _in(
+-        published,
+-        "uv",
+-        "run",
+-        "--no-sync",
+-        "pytest",
+-        "-q",
+-        "-p",
+-        "no:cacheprovider",
+-        "-m",
+-        "not integration",
+-    )
+-    assert done.returncode == 0, _tail(done)
+-
+-
+-@pytest.mark.integration
+-def test_a_generated_project_passes_its_own_policy_decisions(published: Path) -> None:
+-    done = _in(published, "uv", "run", "--no-sync", "python", "scripts/evaluate_policies.py")
++    # ITS OWN TESTS AS ITS test TASK RUNS THEM (A.123): the project's own addopts selects them,
++    # since an -m here would replace that filter and run its claims about the machine (A.104).
++    done = _in(published, "uv", "run", "--no-sync", "pytest", "-q", "-p", "no:cacheprovider")
+     assert done.returncode == 0, _tail(done)
+ 
+ 
+@@ -153,7 +150,7 @@
+ def test_a_generated_project_with_its_own_identity_passes_its_own_gate(
+     identified: tuple[Path, dict[str, object]],
+ ) -> None:
+-    """What every real project does next: take its identity, refresh its bundle (D.64).
++    """What every real project does next: take its identity (D.64).
+ 
+     olist-lakehouse-bi then kept this repository's name in files no slot covers, and its
+     release tests read this repository's coursework job. Every failing gate is collected.
+@@ -164,13 +161,10 @@
+     left = data["left_behind"]
+     assert isinstance(left, list), data
+     assert left == [], "\n".join(str(entry) for entry in left)
+-    # ITS OWN PRE-PUSH GATE, then the two gates needing the CLI: everything check runs except
+-    # what needs this project's own workspace (prereqs, env-parity, its integration tier).
+-    gates = (
+-        ("python", "scripts/check_all.py", "--offline"),
+-        ("python", "scripts/check_pii.py"),
+-        ("python", "scripts/update_fixtures.py", "--check"),
+-    )
++    # ITS OWN GATE, JUDGING THE PROJECT, NOT THE MACHINE (A.123): --offline drops its integration
++    # tier, which is this proof, and --ci its claims about the developer machine (A.104), which
++    # this repository's own test (machine) judges and which a CI runner is not.
++    gates = (("python", "scripts/check_all.py", "--offline", "--ci"),)
+     failed: dict[str, str] = {}
+     for gate in gates:
+         done = _in(project, "uv", "run", "--no-sync", *gate)
