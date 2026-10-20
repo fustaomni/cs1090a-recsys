@@ -9,7 +9,17 @@
  from spine import decide, enforce, evaluate, halted, reasons, refusal_code, schema_verdict
  
  ENTRYPOINT = "data.runs.template.identity.deny"
-@@ -89,7 +89,7 @@
+@@ -30,7 +30,8 @@
+ SUBJECT = "template_identity"
+ POLICY = Path(__file__).resolve().parent.parent / "policies" / "runs" / "template" / "identity"
+ ANSWERS = ".copier-answers.yml"
+-MESSAGE = "chore: take the project identity"
++# TRACED, AS THE FIRST COMMIT IS (A.145): A.1's done_when lists identity:set, which this records.
++MESSAGE = "chore: take the project identity\n\nPlan-Step: A.1"
+ STEPS: tuple[tuple[str, ...], ...] = (
+     ("add", "-A"),
+     ("commit", "-q", "-m", MESSAGE),
+@@ -89,7 +90,7 @@
          target = load(destination).model_copy(update=spec.model_dump())
          changed = set_identity(destination, target)
      except (OSError, ValueError) as problem:

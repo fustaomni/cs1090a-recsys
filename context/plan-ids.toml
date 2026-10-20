@@ -132,4 +132,5 @@ issued = [
   { id = "A.140", first_title = "start:switch prints the switch of this shell's checkout to an existing branch, refusing an unknown or held one" },
   { id = "A.141", first_title = "A named proof runs whatever its level: the verifiers lift addopts' level filter for named targets only" },
   { id = "A.142", first_title = "pr:logs returns: the ported CI-failure reader runs as a declared, read-only task" },
+  { id = "A.145", first_title = "template:identity's commit names the step it serves, Plan-Step: A.1, as template:init's does" },
 ]
