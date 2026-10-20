@@ -295,18 +295,30 @@ def cmd_refresh(slug: str) -> int:
     return 0
 
 
+# THE MERGE TARGET A BRANCH MUST BE CONTAINED IN BEFORE IT IS DELETED (cscie103 D.229).
+DEVELOP = "refs/remotes/origin/develop"
+
+
+def _kept(branch: str, why: str) -> int:
+    """The branch stays; the reader is told why, and the governed way to retire it (D.228)."""
+    print(
+        f"worktree removed, but branch {branch} was kept: {why}\n"
+        "Merge it; or, if a plan step superseded it, retire it: "
+        f"mise run run branches:retire {branch} <step>",
+        file=sys.stderr,
+    )
+    return 1
+
+
 def _delete_branch(branch: str) -> int:
-    """branch -d, never -D: an unmerged branch is reported, never lost."""
+    """branch -d, never -D, and only once origin/develop contains the branch (D.229)."""
+    # -d JUDGES A PUSHED BRANCH AGAINST ITS UPSTREAM, so it proves a push, never a merge.
+    proven = git_run("merge-base", "--is-ancestor", branch, DEVELOP, cwd=ROOT)
+    if proven.returncode != 0:
+        return _kept(branch, f"{DEVELOP} does not contain it")
     result = git_run("branch", "-d", branch, cwd=ROOT)
     if result.returncode != 0:
-        print(
-            f"worktree removed, but branch {branch} was NOT deleted:\n"
-            f"  {result.stderr.strip()}\n"
-            "That refusal means the branch is unmerged. Merge it, or delete it "
-            "deliberately with `git branch -D`.",
-            file=sys.stderr,
-        )
-        return 1
+        return _kept(branch, f"git branch -d refused: {result.stderr.strip()}")
 
     print(f"deleted branch {branch}")
     return 0
