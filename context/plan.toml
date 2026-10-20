@@ -1331,3 +1331,20 @@ done_when = [
   { kind = "proof", test = "tests/test_provenance_record.py::test_an_entry_names_only_a_full_commit" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.137"
+title = "branches:prune returns from cscie103 at 25061c1 with the repo_state it needs, so a merged branch nobody uses is deleted locally and on origin"
+thread = "A"
+depends_on = ["A.135", "A.136"]
+because = { "A.135" = "cscie103's history, read through repo:history, places branches:prune at its tip", "A.136" = "a file read at 25061c1 records that commit" }
+done_when = [
+  { kind = "proof", test = "tests/test_branches_prune.py::test_only_a_proven_merged_branch_is_deleted" },
+  { kind = "proof", test = "tests/test_branches_prune.py::test_a_protected_branch_is_never_deleted" },
+  { kind = "proof", test = "tests/test_branches_prune.py::test_a_branch_a_worktree_holds_is_never_deleted" },
+  { kind = "proof", test = "tests/test_branches_prune.py::test_a_merged_branch_never_pushed_is_deleted" },
+  { kind = "proof", test = "tests/test_branches_prune.py::test_a_dry_run_deletes_nothing" },
+  { kind = "proof", test = "tests/test_branches_prune.py::test_an_absent_request_is_refused_by_the_policy" },
+  { kind = "proof", test = "tests/test_branches_prune.py::test_a_merged_remote_and_its_local_branch_go_in_one_run" },
+  { kind = "task", name = "branches:prune" },
+  { kind = "task", name = "check" },
+]
