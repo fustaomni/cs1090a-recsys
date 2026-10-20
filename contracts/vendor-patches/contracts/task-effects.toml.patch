@@ -1,6 +1,6 @@
 --- a/contracts/task-effects.toml
 +++ b/contracts/task-effects.toml
-@@ -5,49 +5,27 @@
+@@ -5,49 +5,28 @@
  
  contract = "task-effects/v1"
  read_only = [
@@ -65,6 +65,7 @@
 +    "plan:step",
 +    "plan:trace",
 +    "plan:trailers",
++    "pr:logs",
 +    "repo:history",
 +    "repo:state",
 +    "runs:verify",
