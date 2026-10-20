@@ -76,6 +76,12 @@ implementation = "mise.toml"
 emits = "text"
 
 [[capabilities]]
+task = "start:switch"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
 task = "plan:trace"
 version = "1.0.0"
 implementation = "scripts/plan_files.py"
