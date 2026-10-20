@@ -86,8 +86,8 @@ def reverses_to_upstream(path: str, patch: str, local: bytes, upstream_sha: str)
         return reversed_.returncode == 0 and _digest(copy.read_bytes()) == upstream_sha
 
 
-def _adapted_blocks(text: str, path: str) -> list[str]:
-    """Every [[adapted]] block recorded for path, exactly as written, blank lines or not.
+def _adapted_blocks(text: str, path: str, header: str = "[[adapted]]") -> list[str]:
+    """Every block under header recorded for path, exactly as written, blank lines or not.
 
     A block is its header and its path line, then key lines up to a blank line or the next table
     header: the record's later entries sit back to back, so blank lines cannot delimit them.
@@ -96,7 +96,7 @@ def _adapted_blocks(text: str, path: str) -> list[str]:
     path_line = f"path = {_toml_string(path)}\n"
     blocks: list[str] = []
     for index, line in enumerate(lines):
-        if line != "[[adapted]]\n" or lines[index + 1 : index + 2] != [path_line]:
+        if line != f"{header}\n" or lines[index + 1 : index + 2] != [path_line]:
             continue
         end = index + 1
         while end < len(lines) and lines[end].strip() and not lines[end].startswith("["):
@@ -109,17 +109,20 @@ def plan(root: Path, upstream: Path, path: str, reason: str) -> str:
     """The source-apply/v1 spec recording path's adaptation, after every check has held."""
     record_text = (root / RECORD).read_text(encoding="utf-8")
     record = tomllib.loads(record_text)
-    files = {entry["path"]: entry["sha256"] for entry in record.get("files", [])}
+    files = {entry["path"]: entry for entry in record.get("files", [])}
     if path not in files:
         raise SystemExit(f"{path} is not a ported file in {RECORD}")
-    upstream_bytes = _read(upstream / path, "run upstream:checkout at the pin first")
-    if _digest(upstream_bytes) != files[path]:
-        raise SystemExit(f"{upstream / path} does not match the recorded upstream digest")
+    # A RELOCATED PORT IS READ WHERE IT CAME FROM (A.123): upstream_path, else its own path.
+    origin = str(files[path].get("upstream_path", path))
+    upstream_sha = str(files[path]["sha256"])
+    upstream_bytes = _read(upstream / origin, "run upstream:checkout at the pin first")
+    if _digest(upstream_bytes) != upstream_sha:
+        raise SystemExit(f"{upstream / origin} does not match the recorded upstream digest")
     local_bytes = _read(root / path, "the working file the patch is built from must exist")
     if local_bytes == upstream_bytes:
         raise SystemExit(f"{path} equals upstream; there is nothing to adapt")
     patch = _patch(path, upstream_bytes.decode("utf-8"), local_bytes.decode("utf-8"))
-    if not reverses_to_upstream(path, patch, local_bytes, files[path]):
+    if not reverses_to_upstream(path, patch, local_bytes, upstream_sha):
         raise SystemExit(f"{path}: the patch does not lead back to upstream; nothing planned")
     patch_path = (PATCHES / f"{path}.patch").as_posix()
     entry = (
@@ -131,7 +134,8 @@ def plan(root: Path, upstream: Path, path: str, reason: str) -> str:
     )
     existing = _adapted_blocks(record_text, path)
     if not existing:
-        anchor = f"[[files]]\npath = {_toml_string(path)}\nsha256 = {_toml_string(files[path])}\n"
+        # AFTER THE WHOLE [[files]] BLOCK: a commit line (A.136) or upstream_path stays the port's.
+        anchor = _adapted_blocks(record_text, path, "[[files]]")[0]
         record_ops = [_replace(RECORD.as_posix(), anchor, anchor + "\n" + entry)]
     else:
         record_ops = [_replace(RECORD.as_posix(), existing[0], entry)]
