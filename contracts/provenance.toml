@@ -539,9 +539,9 @@ sha256 = "fa7e99480e9c10832ce0c93b9a74fd82d741846bf1c94a8ce2a4544e6e5e005d"
 
 [[adapted]]
 path = "scripts/worktree.py"
-reason = "cut from an optional base with --no-track; trusted through machine_trust; -z listings through gitenv.git_bytes; A.93; one _trust helper serves a new worktree and a refresh that rewrote mise.toml, which is re-trusted or fails the refresh; A.122"
+reason = "cut from an optional base with --no-track; trusted through machine_trust; -z listings through gitenv.git_bytes; A.93; one _trust helper serves a new worktree and a refresh that rewrote mise.toml, which is re-trusted or fails the refresh; A.122; a branch is deleted only once origin/develop contains it, and a kept branch sends the reader to branches:retire, never git branch -D, as cscie103 D.229 and D.228 do; A.138"
 patch = "contracts/vendor-patches/scripts/worktree.py.patch"
-sha256 = "3b83e0c3e10a4afd5aa79a55363d13dac368fee3b6e60b61304a1400d3280644"
+sha256 = "b0e5dcc84925db868fe593076205e421e87cf77925a9371b2a89ec8ef7aa8727"
 
 [[files]]
 path = "policies/machine/setup/setup_env.rego"
@@ -801,7 +801,7 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 path = "contracts/problems.toml"
 reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "6279005dcbce867820a3611eed982dd9016da4c07787cc9b9ab0c04b23dd38b7"
+sha256 = "3b11ce07bb59db874ab56b9fd6f62eec3f966928b3ab01550e2a076195d48bbe"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
@@ -1304,4 +1304,19 @@ commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
 [[files]]
 path = "tests/test_branches_prune.py"
 sha256 = "57f800e5d4e382d3c31e82fb2066f8fbbfc8f1ebc1c2d7eca2a6002d214b49df"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "scripts/branches_retire.py"
+sha256 = "79b77100d01c0960451cac6770bab30543c7fe2585d6e339530572db220d40af"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "policies/runs/branches_retire/branches_retire.rego"
+sha256 = "9a0fe7be86242f93e1b02abd3ab51fcfa488b0521fa2dae7e667f536800abbb6"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "tests/test_branches_retire.py"
+sha256 = "20eb17b9db3e196d2af64f61ca357dde5120d354745fa9895cc6e11c5630f0c0"
 commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
