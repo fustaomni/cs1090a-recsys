@@ -129,4 +129,5 @@ issued = [
   { id = "A.137", first_title = "branches:prune returns from cscie103 at 25061c1 with the repo_state it needs, so a merged branch nobody uses is deleted locally and on origin" },
   { id = "A.138", first_title = "branches:retire returns from cscie103, and worktree:remove deletes a branch only once origin/develop contains it" },
   { id = "A.139", first_title = "worktree:remove reports a branch that is already gone as such, for a present worktree as for an absent one" },
+  { id = "A.140", first_title = "start:switch prints the switch of this shell's checkout to an existing branch, refusing an unknown or held one" },
 ]
