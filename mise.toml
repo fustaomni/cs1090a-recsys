@@ -528,6 +528,17 @@ arg "<destination>" help="A project template:init made that nothing has touched 
 '''
 run = 'uv run --no-sync python scripts/template_discard.py "${usage_destination?}"'
 
+# This repository's own (plan A.134): cscie103's pipeline built every precondition for copier
+# update and stopped short of the operation. A full sha, a clean tree, a feature branch, this
+# template; Copier's conflicts are left as .rej files and reported by path, never as success.
+[tasks."template:update"]
+description = "Bring a generated project to a later commit of this template, on a feature branch, or refuse"
+usage = """
+arg "<destination>" help="A project this template generated: clean, on a feature branch"
+arg "<ref>" help="A full 40-character commit sha of this template, later than the recorded one"
+"""
+run = 'uv run --no-sync python scripts/template_update.py "${usage_destination?}" "${usage_ref?}"'
+
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.120).
 [tasks."worktree:conflicts"]
 description = "Read a worktree's rebase conflicts as data: each block's sides and context"

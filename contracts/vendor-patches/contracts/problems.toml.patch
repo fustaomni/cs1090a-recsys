@@ -1509,7 +1509,7 @@
  
  [[problems]]
  code = "ERR_TEMPLATE_UNPINNED"
-@@ -1086,151 +797,36 @@
+@@ -1086,151 +797,71 @@
  severity = "error"
  
  [[problems]]
@@ -1693,4 +1693,39 @@
 +[[problems]]
 +code = "ERR_SKIP_UNPRESERVED"
 +title = "Another ref preserves the stopped commit"
++severity = "error"
++
++[[problems]]
++code = "ERR_TEMPLATE_UPDATE_CURRENT"
++title = "The project is not already at the ref"
++severity = "error"
++
++[[problems]]
++code = "ERR_TEMPLATE_UPDATE_DIRTY"
++title = "The project's tree is clean"
++severity = "error"
++
++[[problems]]
++code = "ERR_TEMPLATE_UPDATE_FOREIGN"
++title = "The project was generated from this template"
++severity = "error"
++
++[[problems]]
++code = "ERR_TEMPLATE_UPDATE_INPUT_MISSING"
++title = "The template:update request is present"
++severity = "error"
++
++[[problems]]
++code = "ERR_TEMPLATE_UPDATE_NOT_GENERATED"
++title = "The destination was generated"
++severity = "error"
++
++[[problems]]
++code = "ERR_TEMPLATE_UPDATE_PROTECTED"
++title = "The update lands on a feature branch"
++severity = "error"
++
++[[problems]]
++code = "ERR_TEMPLATE_UPDATE_UNPINNED"
++title = "The ref is a full commit sha"
 +severity = "error"
