@@ -1407,3 +1407,14 @@ done_when = [
   { kind = "proof", test = "tests/test_verify_levels.py::test_a_full_green_keeps_the_level_filter" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.142"
+title = "pr:logs returns: the ported CI-failure reader runs as a declared, read-only task"
+thread = "A"
+depends_on = ["A.19"]
+because = { "A.19" = "pr returned with publication, and its refusal names a failed check whose reason pr:logs reads" }
+done_when = [
+  { kind = "proof", test = "tests/test_pr_logs_task.py::test_pr_logs_runs_the_ported_reader" },
+  { kind = "proof", test = "tests/test_pr_logs_task.py::test_pr_logs_is_read_only_and_a_capability" },
+  { kind = "task", name = "pr:logs" },
+]
