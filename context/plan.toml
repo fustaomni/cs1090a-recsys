@@ -1394,3 +1394,15 @@ done_when = [
   { kind = "task", name = "start:switch" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.141"
+title = "A named proof runs whatever its level: the verifiers lift addopts' level filter for named targets only"
+thread = "A"
+depends_on = ["A.39"]
+because = { "A.39" = "test levels are declared by directory, and addopts deselects integration and machine tests from a bare run" }
+done_when = [
+  { kind = "proof", test = "tests/test_verify_levels.py::test_red_runs_named_proofs_at_any_level" },
+  { kind = "proof", test = "tests/test_verify_levels.py::test_a_selected_green_runs_its_targets_at_any_level" },
+  { kind = "proof", test = "tests/test_verify_levels.py::test_a_full_green_keeps_the_level_filter" },
+  { kind = "task", name = "check" },
+]
