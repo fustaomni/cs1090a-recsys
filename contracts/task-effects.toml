@@ -21,6 +21,7 @@ read_only = [
     "plan:step",
     "plan:trace",
     "plan:trailers",
+    "pr:logs",
     "repo:history",
     "repo:state",
     "runs:verify",

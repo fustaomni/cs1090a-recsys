@@ -618,6 +618,12 @@ description = "Discard changes to tracked paths, back to HEAD; a dry run unless 
 raw_args = true
 run = "uv run --no-sync python scripts/source_restore.py"
 
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.142): pr_logs.py and its proof
+# came with A.19, but the task that runs them did not, so a failed CI run could not be read.
+[tasks."pr:logs"]
+description = "Read the current branch's latest failed CI run as typed data, and record the run"
+run = "uv run --no-sync python scripts/pr_logs.py"
+
 [tasks."repo:history"]
 description = "Read commit history as data: subject, authored time, trailers and files, newest first"
 # NUL- AND CONTROL-BYTE-SEPARATED, as git's own %(trailers) options allow: nothing can break the parse.
