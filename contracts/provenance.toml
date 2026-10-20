@@ -916,6 +916,12 @@ sha256 = "b4acc2fcce36ac4321b7ae2b8b0d3b94391b1b9f3745896f5d3ab31cdc8580a3"
 path = "scripts/repo_history.py"
 sha256 = "65d7c05962af709e9e45397fe2af652782d5979050706eb74f273ea0c5859307"
 
+[[adapted]]
+path = "scripts/repo_history.py"
+reason = "--repository reads a clone upstream:checkout made under .artifacts/upstream, and nothing else outside this checkout, so another repository's history is read through a recorded task (A.135)"
+patch = "contracts/vendor-patches/scripts/repo_history.py.patch"
+sha256 = "63e49b62efac30d523c051f5c7e240539e01eb9fb89dc34e8383b0dc02f16c2b"
+
 [[files]]
 path = "scripts/source_restore.py"
 sha256 = "d74601d71bb95cb9c4883da5248756bb9c5d37d230e326f38aebdd9aa0184842"

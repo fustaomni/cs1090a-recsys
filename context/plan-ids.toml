@@ -124,4 +124,5 @@ issued = [
   { id = "A.132", first_title = "The worktree:skip and start:here proofs write real newlines into their fixtures, proven by the content" },
   { id = "A.133", first_title = "The retrust proofs patch worktree._trust with pytest's default raising, so a rename fails at the patch" },
   { id = "A.134", first_title = "template:update brings a generated project to a later commit of this template, pinned, clean, on a branch, with conflicts reported" },
+  { id = "A.135", first_title = "repo:history reads a clone upstream:checkout made, and nothing else outside this checkout" },
 ]
