@@ -1162,6 +1162,8 @@ depends_on = ["A.101", "A.122"]
 because = { "A.101" = "sync pulls develop into the checkout it runs in", "A.122" = "a refresh already re-trusts a rewritten mise.toml through one trust path" }
 done_when = [
   { kind = "proof", test = "tests/test_sync_retrust.py::test_a_sync_that_changes_mise_toml_retrusts_it" },
+  { kind = "proof", test = "tests/test_sync_retrust.py::test_a_sync_that_leaves_mise_toml_alone_trusts_nothing" },
+  { kind = "proof", test = "tests/test_sync_retrust.py::test_a_refused_retrust_fails_the_sync" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
