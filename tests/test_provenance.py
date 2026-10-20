@@ -17,6 +17,8 @@ import tomllib
 from pathlib import Path
 
 from gitenv import scrubbed_env
+from nonvacuous import nonempty
+from provenance_adapt import plan
 
 ROOT = Path(__file__).resolve().parent.parent
 RECORD = tomllib.loads((ROOT / "contracts" / "provenance.toml").read_text(encoding="utf-8"))
@@ -98,3 +100,56 @@ def test_a_drifted_port_is_named(tmp_path: Path) -> None:
         "scripts/a.py: differs from upstream with no recorded patch",
         "scripts/b.py: its patch does not lead back to upstream",
     ]
+
+
+def _applied(root: Path, spec: str) -> None:
+    """The operations provenance:adapt plans, applied in order as source:apply would."""
+    for operation in nonempty(tomllib.loads(spec)["operations"]):
+        target = root / operation["path"]
+        if operation["op"] == "create":
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(operation["content"], encoding="utf-8")
+        else:
+            text = target.read_text(encoding="utf-8")
+            assert text.count(operation["anchor"]) == 1, operation["anchor"]
+            replaced = text.replace(operation["anchor"], operation["replacement"])
+            target.write_text(replaced, encoding="utf-8")
+
+
+def _ported(tmp_path: Path, block: str) -> tuple[Path, Path]:
+    """An upstream checkout holding tests/t.py, and a root whose record is `block`."""
+    upstream, root = tmp_path / "upstream", tmp_path / "root"
+    (upstream / "tests").mkdir(parents=True)
+    (upstream / "tests" / "t.py").write_text("x = 1\n", encoding="utf-8")
+    (root / "contracts").mkdir(parents=True)
+    (root / "contracts" / "provenance.toml").write_text(block, encoding="utf-8")
+    return upstream, root
+
+
+def test_a_relocated_port_reverses_to_its_upstream_path(tmp_path: Path) -> None:
+    """A.123: adapted where it now lives, its patch still leads back to the upstream bytes."""
+    upstream_sha = _digest(b"x = 1\n")
+    block = (
+        f'[[files]]\npath = "tests/integration/t.py"\nupstream_path = "tests/t.py"\n'
+        f'sha256 = "{upstream_sha}"\n'
+    )
+    upstream, root = _ported(tmp_path, block)
+    (root / "tests" / "integration").mkdir(parents=True)
+    (root / "tests" / "integration" / "t.py").write_text("x = 2\n", encoding="utf-8")
+    _applied(root, plan(root, upstream, "tests/integration/t.py", "moved"))
+    record = tomllib.loads((root / "contracts" / "provenance.toml").read_text(encoding="utf-8"))
+    assert _unproven(root, record, tmp_path / "scratch") == []
+
+
+def test_an_adaptation_follows_its_files_entry_whole(tmp_path: Path) -> None:
+    """A commit line after sha256 (A.136) stays the port's, never the adaptation's."""
+    upstream_sha = _digest(b"x = 1\n")
+    commit = "0" * 40
+    block = f'[[files]]\npath = "tests/t.py"\nsha256 = "{upstream_sha}"\ncommit = "{commit}"\n'
+    upstream, root = _ported(tmp_path, block)
+    (root / "tests").mkdir(parents=True)
+    (root / "tests" / "t.py").write_text("x = 2\n", encoding="utf-8")
+    _applied(root, plan(root, upstream, "tests/t.py", "changed"))
+    record = tomllib.loads((root / "contracts" / "provenance.toml").read_text(encoding="utf-8"))
+    assert record["files"][0]["commit"] == commit
+    assert "commit" not in record["adapted"][0], record["adapted"]
