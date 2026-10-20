@@ -801,7 +801,7 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 path = "contracts/problems.toml"
 reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "906ca4b3825db1ed8d2bf2013f3029c9bea2037d8c7c434667681f2feb7667dd"
+sha256 = "6279005dcbce867820a3611eed982dd9016da4c07787cc9b9ab0c04b23dd38b7"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
@@ -886,10 +886,6 @@ patch = "contracts/vendor-patches/scripts/sync.py.patch"
 sha256 = "0ae2c795c14a56645e4c224cabd1814791395905df646d5b6683f71502517dda"
 
 [[files]]
-path = "scripts/repo_state.py"
-sha256 = "a10930278c6e4bf6b89e190e5b60057eaae793dfbdc2aa4eaa964adcd5d771f1"
-
-[[files]]
 path = "scripts/repo_report.py"
 sha256 = "8809e4a245c12c8827b27ab91d891ffa6420840d0bab167a821d819a9e180832"
 
@@ -900,10 +896,6 @@ sha256 = "90811a6ea275038694cb5009cac0e24b2edfd1ebb7d1b1d825bbdba0dd4003a5"
 [[files]]
 path = "tests/test_sync_branches.py"
 sha256 = "331a4d2077e1081f81fda6b42259ded0296761e061097d4e6bbbec23999fdb21"
-
-[[files]]
-path = "tests/test_repo_state.py"
-sha256 = "88664542556050e3cbea3e0aacdfa669bae9fa0e9e73669111fe3cca75215a40"
 
 [[files]]
 path = "tests/test_repo_state_task.py"
@@ -1288,3 +1280,28 @@ commit = "58af9d32a9972d6abb5a18acd94ee1235843da66"
 paths = 492
 sha256 = "3fc90cf97b28133d551b8313b214189f404dcba19c87cf3dd53dbc042d44c810"
 note = "every path here is in [[files]] or [[withdrawn]]; tests/test_provenance.py proves it (A.13)"
+
+[[files]]
+path = "scripts/repo_state.py"
+sha256 = "3e75a456c9db060822e1200ae6694874473122a6585736fbcb3e3245b1faf0e5"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "tests/test_repo_state.py"
+sha256 = "88664542556050e3cbea3e0aacdfa669bae9fa0e9e73669111fe3cca75215a40"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "scripts/branches_prune.py"
+sha256 = "1c81b636160d0575e01b4cc1a95896eba055c81abcd6547a08d641d40974db74"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "policies/runs/branches_prune/branches_prune.rego"
+sha256 = "04c8d56523dfd825aff21dc088d6d9d1a8dc29c94721efb39d99d24fafe24370"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "tests/test_branches_prune.py"
+sha256 = "57f800e5d4e382d3c31e82fb2066f8fbbfc8f1ebc1c2d7eca2a6002d214b49df"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
