@@ -24,6 +24,9 @@ from contract_base import Contract
 from gitenv import git
 
 ROOT = Path(__file__).resolve().parent.parent
+# WHERE upstream:checkout CLONES (A.135): another repository's history is read only there.
+EVIDENCE = ROOT / ".artifacts" / "upstream"
+USAGE = "usage: mise run run repo:history [revision] [--limit N] [--repository CLONE]"
 RECORD, TRAILER, KEY_VALUE = "\x1e", "\x1f", "\x1d"
 FORMAT = (
     "--format=%x1e%H%x00%s%x00%aI%x00"
@@ -92,9 +95,24 @@ def history(root: Path, revision: str, limit: int) -> RepoHistory:
     return RepoHistory(revision=revision, limit=limit, commits=tuple(commits), count=len(commits))
 
 
+def _repository(args: list[str]) -> Path:
+    """This checkout, or a clone upstream:checkout made, named by --repository (A.135)."""
+    if "--repository" not in args:
+        return ROOT
+    at = args.index("--repository")
+    if at + 1 >= len(args):
+        raise SystemExit("--repository needs a clone under .artifacts/upstream")
+    named = Path(args[at + 1]).expanduser().resolve()
+    del args[at : at + 2]
+    if not named.is_relative_to(EVIDENCE.resolve()) or not (named / ".git").exists():
+        raise SystemExit(f"{named}: --repository reads only a clone under {EVIDENCE}")
+    return named
+
+
 def main(argv: Sequence[str] | None = None) -> int:
-    """repo:history [revision] [--limit N]."""
+    """repo:history [revision] [--limit N] [--repository CLONE]."""
     args = list(sys.argv[1:] if argv is None else argv)
+    root = _repository(args)
     limit = 20
     if "--limit" in args:
         at = args.index("--limit")
@@ -103,10 +121,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         limit = int(args[at + 1])
         del args[at : at + 2]
     if len(args) > 1:
-        raise SystemExit("usage: mise run run repo:history [revision] [--limit N]")
+        raise SystemExit(USAGE)
     revision = args[0] if args else "HEAD"
     try:
-        read = history(ROOT, revision, limit)
+        read = history(root, revision, limit)
     except ValueError as problem:
         envelope = CommandOutcome.model_validate(
             {
