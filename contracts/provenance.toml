@@ -997,9 +997,9 @@ sha256 = "38fa77e4d0809facd60750e29127df670fe4e9ecca2108d26fc94a02c978af5d"
 
 [[adapted]]
 path = "scripts/template_identity.py"
-reason = "a refused spec names every validation error by its field, through project_identity's refusal_reason, never the error's count line alone (A.130)"
+reason = "a refused spec names every validation error by its field, through project_identity's refusal_reason, never the error's count line alone (A.130); its commit carries Plan-Step: A.1, as template:init's does, since A.1's done_when lists identity:set and a commit naming no step is refused by the project's own matrix (A.145)"
 patch = "contracts/vendor-patches/scripts/template_identity.py.patch"
-sha256 = "a1dce649c445706dd3ec716ff2b7955063838ae5d81af870901dc70fe92d1c8a"
+sha256 = "601b42f19e410c4987e3e5662fc54e3b4d20b87aa8c6497dd91b91907876c01d"
 
 [[files]]
 path = "scripts/template_publish.py"
