@@ -1319,3 +1319,15 @@ done_when = [
   { kind = "proof", test = "tests/test_repo_history_across.py::test_a_repository_outside_the_evidence_root_is_refused" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.136"
+title = "A ported file records the commit it was read at when that is not the pin, so a later port is recorded truthfully"
+thread = "A"
+depends_on = ["A.29"]
+because = { "A.29" = "source:port writes each ported file's provenance entry" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_port_commit.py::test_a_port_from_another_commit_records_that_commit" },
+  { kind = "proof", test = "tests/test_source_port_commit.py::test_a_port_from_the_pinned_commit_records_none" },
+  { kind = "proof", test = "tests/test_provenance_record.py::test_an_entry_names_only_a_full_commit" },
+  { kind = "task", name = "check" },
+]
