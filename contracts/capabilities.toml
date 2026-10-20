@@ -464,3 +464,9 @@ task = "branches:prune"
 version = "1.0.0"
 implementation = "scripts/branches_prune.py"
 emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "branches:retire"
+version = "1.0.0"
+implementation = "scripts/branches_retire.py"
+emits = "command-outcome/v1"
