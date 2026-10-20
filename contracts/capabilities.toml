@@ -452,3 +452,9 @@ task = "template:discard"
 version = "1.0.0"
 implementation = "scripts/template_discard.py"
 emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "template:update"
+version = "1.0.0"
+implementation = "scripts/template_update.py"
+emits = "command-outcome/v1"

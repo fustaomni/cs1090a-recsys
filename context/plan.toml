@@ -1289,3 +1289,22 @@ done_when = [
   { kind = "proof", test = "tests/test_monkeypatch_raising.py::test_the_rule_flags_a_patch_whose_name_exists_and_spares_one_that_does_not" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.134"
+title = "template:update brings a generated project to a later commit of this template, pinned, clean, on a branch, with conflicts reported"
+thread = "A"
+depends_on = ["A.121"]
+because = { "A.121" = "the ported pipeline built every precondition for copier update and stopped short of the operation" }
+done_when = [
+  { kind = "proof", test = "tests/test_template_update.py::test_a_generated_project_takes_its_templates_later_commit" },
+  { kind = "proof", test = "tests/test_template_update.py::test_a_conflicting_update_is_reported_by_its_rej_files" },
+  { kind = "proof", test = "tests/test_template_update_policy.py::test_an_absent_request_is_refused_by_the_policy" },
+  { kind = "proof", test = "tests/test_template_update_policy.py::test_a_destination_that_was_not_generated_is_refused" },
+  { kind = "proof", test = "tests/test_template_update_policy.py::test_an_unpinned_ref_is_refused" },
+  { kind = "proof", test = "tests/test_template_update_policy.py::test_a_project_from_another_template_is_refused" },
+  { kind = "proof", test = "tests/test_template_update_policy.py::test_a_dirty_project_is_refused" },
+  { kind = "proof", test = "tests/test_template_update_policy.py::test_a_protected_or_detached_branch_is_refused" },
+  { kind = "proof", test = "tests/test_template_update_policy.py::test_a_project_already_at_the_ref_is_refused" },
+  { kind = "task", name = "template:update" },
+  { kind = "task", name = "check" },
+]
