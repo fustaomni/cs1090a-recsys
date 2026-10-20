@@ -1140,6 +1140,8 @@ depends_on = ["A.121"]
 because = { "A.121" = "the gate test was withdrawn by name there, since this repository declares a test's level by its directory and provenance records a file only at its upstream path" }
 done_when = [
   { kind = "proof", test = "tests/test_provenance.py::test_a_relocated_port_reverses_to_its_upstream_path" },
+  { kind = "proof", test = "tests/test_provenance.py::test_an_adaptation_follows_its_files_entry_whole" },
+  { kind = "proof", test = "tests/test_source_port_relocate.py::test_a_port_placed_elsewhere_records_its_upstream_path" },
   { kind = "proof", test = "tests/integration/test_generated_gate.py::test_a_generated_project_passes_its_own_tests" },
   { kind = "task", name = "check" },
 ]
