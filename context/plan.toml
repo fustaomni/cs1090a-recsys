@@ -1308,3 +1308,14 @@ done_when = [
   { kind = "task", name = "template:update" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.135"
+title = "repo:history reads a clone upstream:checkout made, and nothing else outside this checkout"
+thread = "A"
+depends_on = ["A.118", "A.28"]
+because = { "A.118" = "repo:history is the governed history reader", "A.28" = "upstream:checkout makes the blobless clones it reads" }
+done_when = [
+  { kind = "proof", test = "tests/test_repo_history_across.py::test_a_clone_under_the_evidence_root_is_read" },
+  { kind = "proof", test = "tests/test_repo_history_across.py::test_a_repository_outside_the_evidence_root_is_refused" },
+  { kind = "task", name = "check" },
+]
