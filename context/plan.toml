@@ -1617,6 +1617,7 @@ done_when = [
   { kind = "proof", test = "tests/test_path_redaction.py::test_a_run_record_holds_no_absolute_path" },
   { kind = "proof", test = "tests/test_path_redaction.py::test_a_worktree_is_resolved_from_its_slug" },
   { kind = "proof", test = "tests/test_path_redaction.py::test_a_home_directory_in_a_diagnostic_is_redacted" },
+  { kind = "proof", test = "tests/test_path_redaction.py::test_a_linked_worktrees_own_root_and_its_shared_repository_resolve_apart" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1666,6 +1667,7 @@ done_when = [
   { kind = "proof", test = "tests/test_run_requests.py::test_an_unknown_operation_or_project_reference_is_refused_before_anything_runs" },
   { kind = "proof", test = "tests/test_run_requests.py::test_a_human_and_an_agent_get_the_same_result_object" },
   { kind = "proof", test = "tests/test_run_requests.py::test_the_cli_form_and_a_request_document_produce_the_same_validated_request" },
+  { kind = "proof", test = "tests/test_run_requests.py::test_a_python_caller_gets_the_same_result_object_without_a_shell" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
