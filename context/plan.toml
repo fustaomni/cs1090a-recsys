@@ -1463,55 +1463,85 @@ done_when = [
 ]
 [[steps]]
 id = "A.150"
-title = "The run gateway enforces non-interaction: CI, no git or gh prompt, closed stdin, no controlling terminal, and a prompt fails closed"
+title = "The run gateway bounds and supervises every task: closed stdin, no terminal, no git or gh prompt, a wall and an idle deadline, its own process group, and SIGTERM then SIGKILL to that whole group"
 thread = "A"
 depends_on = ["A.149"]
 because = { "A.149" = "an envelope is only a contract if the run behind it can never stop to wait for a person" }
 done_when = [
   { kind = "proof", test = "tests/test_run_noninteractive.py::test_the_gateway_injects_the_noninteractive_environment" },
   { kind = "proof", test = "tests/test_run_noninteractive.py::test_a_task_that_prompts_fails_closed_with_a_code" },
+  { kind = "proof", test = "tests/test_run_supervision.py::test_a_task_past_its_deadline_is_killed_with_its_whole_process_tree" },
+  { kind = "proof", test = "tests/test_run_supervision.py::test_a_silent_task_past_its_idle_deadline_is_stopped" },
+  { kind = "proof", test = "tests/test_run_supervision.py::test_a_cancelled_run_leaves_no_descendant_running" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
 id = "A.151"
-title = "The run gateway propagates W3C trace context through TRACEPARENT, as OpenTelemetry's environment carrier specifies, and records it"
+title = "The run gateway records each run as a complete OpenTelemetry span, with trace, span and parent span ids, kind, start, end and status, exported as OTLP JSON, and passes TRACEPARENT to its children"
 thread = "A"
 depends_on = ["A.150"]
 because = { "A.150" = "the gateway already builds each child's environment, which is where the carrier is injected" }
 done_when = [
-  { kind = "proof", test = "tests/test_run_trace_context.py::test_a_run_records_its_trace_and_span" },
-  { kind = "proof", test = "tests/test_run_trace_context.py::test_a_child_run_continues_its_parents_trace" },
+  { kind = "proof", test = "tests/test_run_trace_context.py::test_a_run_records_a_complete_span" },
+  { kind = "proof", test = "tests/test_run_trace_context.py::test_a_child_runs_span_names_its_parent" },
+  { kind = "proof", test = "tests/test_run_trace_context.py::test_a_failed_run_ends_its_span_with_error_status" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
 id = "A.152"
-title = "Each policy decision is also a signed in-toto statement with a SLSA verification summary predicate, verifiable by a task"
+title = "Each policy decision is also a signed in-toto statement with a SLSA verification summary predicate binding the policy and evidence by digest; it is claimed to prove integrity and signer only"
 thread = "A"
 depends_on = ["A.149"]
 because = { "A.149" = "a decision becomes an attestation only once every task's verdict is data" }
 done_when = [
   { kind = "proof", test = "tests/test_decision_attestation.py::test_a_decision_is_a_signed_vsa_statement" },
+  { kind = "proof", test = "tests/test_decision_attestation.py::test_the_statement_binds_the_policy_and_evidence_digests" },
   { kind = "proof", test = "tests/test_decision_attestation.py::test_a_tampered_attestation_fails_verification" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
 id = "A.153"
-title = "Multi-task sequences are declared as data and run by the gateway, fail-fast, each step recorded, replacing hand-written shell chains"
+title = "Multi-task sequences are declared as data and run fail-fast by the gateway, each step recorded with its input digests and environment fingerprint, each effect classified read, idempotent or write"
 thread = "A"
 depends_on = ["A.150"]
 because = { "A.150" = "a declared sequence inherits the gateway's non-interactive guarantees for every step" }
 done_when = [
   { kind = "proof", test = "tests/test_sequences.py::test_a_declared_sequence_stops_at_its_first_refusal" },
   { kind = "proof", test = "tests/test_sequences.py::test_every_step_of_a_sequence_is_a_ledger_record" },
+  { kind = "proof", test = "tests/test_sequences.py::test_a_step_records_its_input_digests_and_environment" },
+  { kind = "proof", test = "tests/test_sequences.py::test_a_write_step_is_never_retried_without_an_idempotency_key" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
 id = "A.154"
-title = "Every capability has an acceptance proof that runs it through the gateway and validates its envelope against its schema"
+title = "Every capability has an acceptance proof that runs it through the gateway and validates its envelope's shape against its schema, claimed to prove shape only"
 thread = "A"
 depends_on = ["A.149"]
 because = { "A.149" = "acceptance against a schema needs every task to declare one" }
 done_when = [
   { kind = "proof", test = "tests/acceptance/test_capability_contracts.py::test_every_capability_has_an_acceptance_proof" },
+  { kind = "proof", test = "tests/acceptance/test_capability_contracts.py::test_a_malformed_envelope_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.155"
+title = "Every mechanism's guarantee is a scoped claim in the claims register, naming what it does not guarantee, and claims:audit refuses one without its proof"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "a mechanism's claim can be scoped only once its output is data a proof can judge" }
+done_when = [
+  { kind = "proof", test = "tests/test_claim_scopes.py::test_every_mechanism_claim_names_its_non_guarantees" },
+  { kind = "proof", test = "tests/test_claim_scopes.py::test_a_claim_without_its_proof_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.156"
+title = "An envelope's facts are cross-checked against an independent observation, so a well-formed but false result is refused"
+thread = "A"
+depends_on = ["A.154"]
+because = { "A.154" = "a schema check proves an envelope's shape, and only an independent observation can judge its facts" }
+done_when = [
+  { kind = "proof", test = "tests/test_semantic_checks.py::test_a_well_formed_but_false_result_is_refused" },
+  { kind = "proof", test = "tests/test_semantic_checks.py::test_a_true_result_agrees_with_its_independent_observation" },
   { kind = "task", name = "check" },
 ]
