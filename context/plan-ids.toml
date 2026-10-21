@@ -158,4 +158,6 @@ issued = [
   { id = "A.169", first_title = "Every capability declares its effect class, read, idempotent or write; a write is never retried without its idempotency key" },
   { id = "A.170", first_title = "Every decision ends in one action from a closed, registered enum, allow, deny, retry or stop: deny overrides, unknown never allows, retry is bounded and refused for writes, stop halts a sequence" },
   { id = "A.171", first_title = "Every tracked path is classified as desired behavior, as code, or observed behavior, as data; observed data is written only through a task, and an unclassified path is refused" },
+  { id = "A.172", first_title = "Read-only capabilities run under an OS-enforced boundary, Landlock detected by ABI, with no write-capable credential, and any write is detected from a tree digest; where the kernel cannot enforce, the run reports detection only" },
+  { id = "A.173", first_title = "Every proof declares its layer, acceptance, contract, task wrapper, policy, integration or failure injection, and an audit names any capability missing an acceptance or failure-injection proof" },
 ]
