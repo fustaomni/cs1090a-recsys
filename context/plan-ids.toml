@@ -163,4 +163,5 @@ issued = [
   { id = "A.174", first_title = "Every run passes the declared stages in order, request validation, authorization, observation, evidence, policy evaluation, verdict and decision, result and audit event, each leaving a typed record; a failing stage ends the run with its reason" },
   { id = "A.175", first_title = "Tasks that commit, open or merge decide from the repository observer's typed evidence and refuse when it is unknown; an audit refuses any task parsing git's human-readable output" },
   { id = "A.176", first_title = "Every locked tool records its checksum and verified provenance, an install without verifiable provenance is refused, and each run records the tool versions and digests it used" },
+  { id = "A.177", first_title = "pr-status becomes a typed reader: head sha, merge state, and each check discriminated by type, a CheckRun's name, status and conclusion or a StatusContext's context and state, pending kept apart from never ran, unknown when gh fails" },
 ]

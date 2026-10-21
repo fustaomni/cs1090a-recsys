@@ -1690,6 +1690,7 @@ done_when = [
   { kind = "proof", test = "tests/test_run_receipt.py::test_a_run_receipt_verifies_from_published_keys_alone" },
   { kind = "proof", test = "tests/test_run_receipt.py::test_a_receipt_names_its_schema_definition_and_trace" },
   { kind = "proof", test = "tests/test_run_receipt.py::test_a_tampered_receipt_fails_verification" },
+  { kind = "proof", test = "tests/test_run_receipt.py::test_records_are_queryable_by_run_task_and_verdict" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1776,6 +1777,7 @@ done_when = [
   { kind = "proof", test = "tests/test_run_stages.py::test_every_run_passes_the_declared_stages_in_order" },
   { kind = "proof", test = "tests/test_run_stages.py::test_each_stage_leaves_a_typed_record" },
   { kind = "proof", test = "tests/test_run_stages.py::test_a_failing_stage_ends_the_run_and_no_later_stage_runs" },
+  { kind = "proof", test = "tests/test_run_stages.py::test_every_failure_is_a_registered_code_for_path_config_task_or_exit" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1800,5 +1802,18 @@ done_when = [
   { kind = "proof", test = "tests/test_tool_provenance.py::test_every_locked_tool_records_its_checksum_and_provenance" },
   { kind = "proof", test = "tests/test_tool_provenance.py::test_an_install_without_verifiable_provenance_is_refused" },
   { kind = "proof", test = "tests/test_tool_provenance.py::test_a_run_records_the_tool_versions_and_digests_it_used" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.177"
+title = "pr-status becomes a typed reader: head sha, merge state, and each check discriminated by type, a CheckRun's name, status and conclusion or a StatusContext's context and state, pending kept apart from never ran, unknown when gh fails"
+thread = "A"
+depends_on = ["A.157", "A.162"]
+because = { "A.157" = "status is the first reader built outside-in, and pr-status follows its contract", "A.162" = "the typed result is the output schema pr-status declares" }
+done_when = [
+  { kind = "proof", test = "tests/test_pr_status_reader.py::test_each_check_is_discriminated_by_its_type" },
+  { kind = "proof", test = "tests/test_pr_status_reader.py::test_a_status_context_keeps_its_context_and_state" },
+  { kind = "proof", test = "tests/test_pr_status_reader.py::test_an_in_progress_check_is_pending_not_missing" },
+  { kind = "proof", test = "tests/test_pr_status_reader.py::test_a_failed_gh_call_is_unknown_not_empty" },
   { kind = "task", name = "check" },
 ]
