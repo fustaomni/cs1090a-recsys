@@ -1471,6 +1471,7 @@ depends_on = ["A.149"]
 because = { "A.149" = "an envelope is only a contract if the run behind it can never stop to wait for a person" }
 done_when = [
   { kind = "proof", test = "tests/test_run_noninteractive.py::test_the_gateway_injects_the_noninteractive_environment" },
+  { kind = "proof", test = "tests/test_run_noninteractive.py::test_the_gateway_closes_the_tasks_stdin_itself" },
   { kind = "proof", test = "tests/test_run_noninteractive.py::test_a_task_that_prompts_fails_closed_with_a_code" },
   { kind = "proof", test = "tests/test_run_noninteractive.py::test_every_gui_and_askpass_prompt_vector_is_suppressed" },
   { kind = "proof", test = "tests/test_run_noninteractive.py::test_opening_dev_tty_fails_without_a_controlling_terminal" },
@@ -1690,6 +1691,7 @@ done_when = [
   { kind = "proof", test = "tests/test_verdicts.py::test_unknown_never_satisfies_a_gate_requiring_pass" },
   { kind = "proof", test = "tests/test_verdicts.py::test_unknown_is_never_combined_into_pass" },
   { kind = "proof", test = "tests/test_verdicts.py::test_each_rule_records_its_own_verdict" },
+  { kind = "proof", test = "tests/test_verdicts.py::test_a_run_summary_verdict_is_a_closed_value_never_a_free_string" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1854,5 +1856,17 @@ done_when = [
   { kind = "proof", test = "tests/test_self_governing_tasks.py::test_a_hidden_implementation_refuses_to_run_outside_the_gateway" },
   { kind = "proof", test = "tests/test_self_governing_tasks.py::test_a_direct_run_of_a_public_task_is_recorded_and_judged" },
   { kind = "proof", test = "tests/test_self_governing_tasks.py::test_every_public_task_name_is_namespaced" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.180"
+title = "A run whose signing key cannot be loaded is refused before it starts; only keys:provision, which creates the key, runs unsigned, and any other unsigned run needs a recorded waiver"
+thread = "A"
+depends_on = ["A.152"]
+because = { "A.152" = "a decision attestation is only as good as the guarantee that every run is signed" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_signing.py::test_a_run_whose_key_cannot_be_loaded_is_refused_before_it_starts" },
+  { kind = "proof", test = "tests/test_run_signing.py::test_keys_provision_alone_runs_without_a_key" },
+  { kind = "proof", test = "tests/test_run_signing.py::test_an_unsigned_run_is_allowed_only_under_a_recorded_waiver" },
   { kind = "task", name = "check" },
 ]

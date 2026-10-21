@@ -166,4 +166,5 @@ issued = [
   { id = "A.177", first_title = "pr-status becomes a typed reader: head sha, merge state, and each check discriminated by type, a CheckRun's name, status and conclusion or a StatusContext's context and state, pending kept apart from never ran, unknown when gh fails" },
   { id = "A.178", first_title = "Every capability declares that it is non-interactive, its required inputs and its network egress; a missing required input is refused before running, and undeclared network is denied where Landlock enforces it or reported unenforced" },
   { id = "A.179", first_title = "Every public task routes itself through the gateway under a namespaced name, its implementation a hidden task that refuses to run outside the gateway, so a direct mise run is governed and the run dispatcher retires" },
+  { id = "A.180", first_title = "A run whose signing key cannot be loaded is refused before it starts; only keys:provision, which creates the key, runs unsigned, and any other unsigned run needs a recorded waiver" },
 ]
