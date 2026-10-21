@@ -1602,3 +1602,49 @@ done_when = [
   { kind = "proof", test = "tests/test_ci_run_trailers.py::test_githubs_own_merge_commits_are_the_recorded_exception" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.161"
+title = "Worktrees are addressed by slug and every record carries repository-relative paths, with absolute paths redacted from evidence"
+thread = "A"
+depends_on = ["A.150"]
+because = { "A.150" = "the gateway builds each run's environment and record, where a path is resolved and redacted" }
+done_when = [
+  { kind = "proof", test = "tests/test_path_redaction.py::test_a_run_record_holds_no_absolute_path" },
+  { kind = "proof", test = "tests/test_path_redaction.py::test_a_worktree_is_resolved_from_its_slug" },
+  { kind = "proof", test = "tests/test_path_redaction.py::test_a_home_directory_in_a_diagnostic_is_redacted" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.162"
+title = "Every capability is a typed tool with input and output JSON Schemas, its arguments validated before it runs, exportable as MCP tool definitions"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "an output schema per task is half of a typed tool; the input schema and validation before running are the other" }
+done_when = [
+  { kind = "proof", test = "tests/test_typed_tools.py::test_an_argument_that_breaks_the_input_schema_is_refused_before_the_task_runs" },
+  { kind = "proof", test = "tests/test_typed_tools.py::test_every_capability_declares_input_and_output_schemas" },
+  { kind = "proof", test = "tests/test_typed_tools.py::test_the_registry_exports_valid_mcp_tool_definitions" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.163"
+title = "Every run is authorized by policy from its actor's signing key and its capability's effect, and the decision is recorded with the run"
+thread = "A"
+depends_on = ["A.159"]
+because = { "A.159" = "the ledger key that signs a run trailer is the identity an authorization decision names" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_authorization.py::test_a_mutating_task_from_an_unlisted_key_is_refused" },
+  { kind = "proof", test = "tests/test_run_authorization.py::test_a_run_records_its_actor_and_authorization_decision" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.164"
+title = "Every run record binds the task definition that ran, by the digest of its resolved definition and the commit it came from"
+thread = "A"
+depends_on = ["A.153"]
+because = { "A.153" = "a step's recorded inputs include the definition of the task it ran" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_definition.py::test_a_run_records_its_task_definition_digest_and_commit" },
+  { kind = "proof", test = "tests/test_run_definition.py::test_a_changed_definition_changes_the_recorded_digest" },
+  { kind = "task", name = "check" },
+]
