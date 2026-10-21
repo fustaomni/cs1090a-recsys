@@ -1565,3 +1565,40 @@ done_when = [
   { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_an_untrusted_path_or_malformed_git_output_cannot_bypass_validation" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.158"
+title = "A shell guard in each worktree refuses any command not started by an allowlisted word, so a raw git, gh, python or uv command is skipped with its reason"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "every operation being a task is the rule the guard enforces before a command runs" }
+done_when = [
+  { kind = "proof", test = "tests/test_shell_guard.py::test_a_raw_git_or_gh_command_in_a_worktree_is_skipped_with_its_reason" },
+  { kind = "proof", test = "tests/test_shell_guard.py::test_cd_export_and_mise_run_run_are_allowed" },
+  { kind = "proof", test = "tests/test_shell_guard.py::test_an_indirect_command_is_refused_because_only_listed_words_may_start_one" },
+  { kind = "proof", test = "tests/test_shell_guard.py::test_setup_installs_the_guard_and_status_reports_it" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.159"
+title = "The commit task writes a Run-Id trailer signed by the ledger key, and commit-msg refuses a commit without a valid one"
+thread = "A"
+depends_on = ["A.158"]
+because = { "A.158" = "a shell guard is bypassed by another shell, so the commit itself must carry proof of the gateway" }
+done_when = [
+  { kind = "proof", test = "tests/test_commit_run_trailer.py::test_the_commit_task_writes_a_signed_run_trailer" },
+  { kind = "proof", test = "tests/test_commit_run_trailer.py::test_a_commit_made_outside_the_commit_task_is_refused" },
+  { kind = "proof", test = "tests/test_commit_run_trailer.py::test_a_forged_run_trailer_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.160"
+title = "The required CI gate verifies every pull request commit carries a Run-Id trailer signed by a published key, naming any commit that does not"
+thread = "A"
+depends_on = ["A.159"]
+because = { "A.159" = "commit-msg is skipped by --no-verify, rebase and cherry-pick, so only the server-side gate cannot be bypassed" }
+done_when = [
+  { kind = "proof", test = "tests/test_ci_run_trailers.py::test_a_pull_request_commit_without_a_verified_run_trailer_fails_the_gate" },
+  { kind = "proof", test = "tests/test_ci_run_trailers.py::test_a_forged_run_trailer_fails_verification" },
+  { kind = "proof", test = "tests/test_ci_run_trailers.py::test_githubs_own_merge_commits_are_the_recorded_exception" },
+  { kind = "task", name = "check" },
+]
