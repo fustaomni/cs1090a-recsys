@@ -153,4 +153,7 @@ issued = [
   { id = "A.164", first_title = "Every run record binds the task definition that ran, by the digest of its resolved definition and the commit it came from" },
   { id = "A.165", first_title = "The run gateway accepts a typed run request as data, a stable operation name, a project reference and constraints, through one entry point, returning the same result object to humans and agents" },
   { id = "A.166", first_title = "Verdicts are pass, fail or unknown: an observation that could not be made is unknown, and unknown never satisfies a gate requiring pass nor combines into pass" },
+  { id = "A.167", first_title = "Every run has a receipt naming its schema, task definition, trace and decision, verifiable by an outside party from the published keys alone" },
+  { id = "A.168", first_title = "A controls register maps each control to its enforcing step, its evidence over the signed ledger and its test, and a windowed report shows each control operating over a period or names the gap" },
+  { id = "A.169", first_title = "Every capability declares its effect class, read, idempotent or write; a write is never retried without its idempotency key" },
 ]

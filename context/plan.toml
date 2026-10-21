@@ -1673,3 +1673,39 @@ done_when = [
   { kind = "proof", test = "tests/test_verdicts.py::test_unknown_is_never_combined_into_pass" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.167"
+title = "Every run has a receipt naming its schema, task definition, trace and decision, verifiable by an outside party from the published keys alone"
+thread = "A"
+depends_on = ["A.152"]
+because = { "A.152" = "a decision attestation is the signed core a receipt makes checkable without reading code" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_receipt.py::test_a_run_receipt_verifies_from_published_keys_alone" },
+  { kind = "proof", test = "tests/test_run_receipt.py::test_a_receipt_names_its_schema_definition_and_trace" },
+  { kind = "proof", test = "tests/test_run_receipt.py::test_a_tampered_receipt_fails_verification" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.168"
+title = "A controls register maps each control to its enforcing step, its evidence over the signed ledger and its test, and a windowed report shows each control operating over a period or names the gap"
+thread = "A"
+depends_on = ["A.155"]
+because = { "A.155" = "a control's claim is scoped before it is mapped to the evidence that it operated" }
+done_when = [
+  { kind = "proof", test = "tests/test_controls_register.py::test_every_control_maps_to_an_enforcing_step_evidence_and_test" },
+  { kind = "proof", test = "tests/test_controls_register.py::test_a_control_without_evidence_in_the_period_is_reported" },
+  { kind = "proof", test = "tests/test_controls_register.py::test_the_period_report_is_built_only_from_signed_records" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.169"
+title = "Every capability declares its effect class, read, idempotent or write; a write is never retried without its idempotency key"
+thread = "A"
+depends_on = ["A.162"]
+because = { "A.162" = "a typed tool's definition is where its effect class is declared beside its schemas" }
+done_when = [
+  { kind = "proof", test = "tests/test_effect_classes.py::test_every_capability_declares_read_idempotent_or_write" },
+  { kind = "proof", test = "tests/test_effect_classes.py::test_a_write_is_never_retried_without_its_idempotency_key" },
+  { kind = "proof", test = "tests/test_effect_classes.py::test_a_repeated_idempotent_run_changes_nothing" },
+  { kind = "task", name = "check" },
+]
