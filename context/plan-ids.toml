@@ -147,4 +147,8 @@ issued = [
   { id = "A.158", first_title = "A shell guard in each worktree refuses any command not started by an allowlisted word, so a raw git, gh, python or uv command is skipped with its reason" },
   { id = "A.159", first_title = "The commit task writes a Run-Id trailer signed by the ledger key, and commit-msg refuses a commit without a valid one" },
   { id = "A.160", first_title = "The required CI gate verifies every pull request commit carries a Run-Id trailer signed by a published key, naming any commit that does not" },
+  { id = "A.161", first_title = "Worktrees are addressed by slug and every record carries repository-relative paths, with absolute paths redacted from evidence" },
+  { id = "A.162", first_title = "Every capability is a typed tool with input and output JSON Schemas, its arguments validated before it runs, exportable as MCP tool definitions" },
+  { id = "A.163", first_title = "Every run is authorized by policy from its actor's signing key and its capability's effect, and the decision is recorded with the run" },
+  { id = "A.164", first_title = "Every run record binds the task definition that ran, by the digest of its resolved definition and the commit it came from" },
 ]
