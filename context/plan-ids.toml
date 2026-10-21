@@ -133,4 +133,5 @@ issued = [
   { id = "A.141", first_title = "A named proof runs whatever its level: the verifiers lift addopts' level filter for named targets only" },
   { id = "A.142", first_title = "pr:logs returns: the ported CI-failure reader runs as a declared, read-only task" },
   { id = "A.145", first_title = "template:identity's commit names the step it serves, Plan-Step: A.1, as template:init's does" },
+  { id = "A.146", first_title = "A project's lock agrees with its project, proven by uv lock --check, and a stale one is refused" },
 ]
