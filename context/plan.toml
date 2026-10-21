@@ -1565,6 +1565,7 @@ done_when = [
   { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_status_leaves_the_index_and_refs_unchanged" },
   { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_an_untrusted_path_or_malformed_git_output_cannot_bypass_validation" },
   { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_the_status_result_separates_observation_policy_verdict_and_decision" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_concurrent_status_requests_produce_distinct_execution_records" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1627,6 +1628,7 @@ done_when = [
   { kind = "proof", test = "tests/test_typed_tools.py::test_an_argument_that_breaks_the_input_schema_is_refused_before_the_task_runs" },
   { kind = "proof", test = "tests/test_typed_tools.py::test_every_capability_declares_input_and_output_schemas" },
   { kind = "proof", test = "tests/test_typed_tools.py::test_the_registry_exports_valid_mcp_tool_definitions" },
+  { kind = "proof", test = "tests/test_typed_tools.py::test_a_result_breaking_the_output_schema_is_rejected_not_guessed" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1638,6 +1640,7 @@ because = { "A.159" = "the ledger key that signs a run trailer is the identity a
 done_when = [
   { kind = "proof", test = "tests/test_run_authorization.py::test_a_mutating_task_from_an_unlisted_key_is_refused" },
   { kind = "proof", test = "tests/test_run_authorization.py::test_a_run_records_its_actor_and_authorization_decision" },
+  { kind = "proof", test = "tests/test_run_authorization.py::test_an_unauthorized_request_is_denied_before_any_side_effect" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1736,5 +1739,29 @@ done_when = [
   { kind = "proof", test = "tests/test_artifact_inventory.py::test_every_tracked_path_is_classified_as_desired_or_observed" },
   { kind = "proof", test = "tests/test_artifact_inventory.py::test_an_unclassified_path_is_refused" },
   { kind = "proof", test = "tests/test_artifact_inventory.py::test_observed_data_is_written_only_through_a_task" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.172"
+title = "Read-only capabilities run under an OS-enforced boundary, Landlock detected by ABI, with no write-capable credential, and any write is detected from a tree digest; where the kernel cannot enforce, the run reports detection only"
+thread = "A"
+depends_on = ["A.150", "A.169"]
+because = { "A.150" = "the gateway spawns and supervises each task, where a boundary is applied before it runs", "A.169" = "a capability's read effect class is what places it under the boundary" }
+done_when = [
+  { kind = "proof", test = "tests/test_read_only_boundary.py::test_a_read_task_cannot_write_the_worktree_or_git_directory" },
+  { kind = "proof", test = "tests/test_read_only_boundary.py::test_a_read_task_receives_no_write_capable_credential" },
+  { kind = "proof", test = "tests/test_read_only_boundary.py::test_a_write_by_a_read_task_is_detected_from_the_tree_digest" },
+  { kind = "proof", test = "tests/test_read_only_boundary.py::test_an_unenforceable_boundary_is_reported_as_detection_only" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.173"
+title = "Every proof declares its layer, acceptance, contract, task wrapper, policy, integration or failure injection, and an audit names any capability missing an acceptance or failure-injection proof"
+thread = "A"
+depends_on = ["A.154"]
+because = { "A.154" = "an acceptance proof per capability is the first layer this audit requires of every capability" }
+done_when = [
+  { kind = "proof", test = "tests/test_proof_layers.py::test_every_proof_declares_its_layer" },
+  { kind = "proof", test = "tests/test_proof_layers.py::test_a_capability_missing_acceptance_or_failure_injection_proofs_is_named" },
   { kind = "task", name = "check" },
 ]
