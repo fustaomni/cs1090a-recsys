@@ -2,7 +2,9 @@
 
 READ AT A COMMIT, NEVER A BRANCH. A port reads its upstream at the exact commit it names: a
 complete lowercase 40-character SHA, since an abbreviation is ambiguous and a branch moves. The
-repository is cloned blobless into .artifacts/upstream/<name>-<sha12>, where evidence lives and
+repository is cloned blobless into .artifacts/upstream/<name>-<sha12>-<source8>, named by a digest
+of its normalized source so two sources sharing a name never share a clone, and an existing clone is
+reused only once its origin reads back as that source (A.184), where evidence lives and
 git does not look, checked out detached at that commit, and HEAD is verified to equal it. A
 commit the repository does not hold is refused by name. Nothing in this repository changes, and
 every Git call goes through gitenv's scrubbed environment.
@@ -16,6 +18,7 @@ by name rather than vanishing from the answer (A.182).
 
 from __future__ import annotations
 
+import hashlib
 import re
 import sys
 from pathlib import Path
@@ -28,12 +31,23 @@ FULL_SHA = re.compile(r"[0-9a-f]{40}")
 USAGE = "usage: upstream.py <repository-url-or-path> <full-commit-sha> [pathspec...]"
 
 
+def _normalized(source: str) -> str:
+    """A source as git records it, without a trailing slash or .git: one repository, one name."""
+    return source.strip().rstrip("/").removesuffix(".git")
+
+
+def location(source: str, commit: str, root: Path = EVIDENCE) -> Path:
+    """Where source at commit lives: its name, the commit and a digest of the source (A.184)."""
+    canonical = _normalized(source)
+    digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:8]
+    return root / f"{Path(canonical).name}-{commit[:12]}-{digest}"
+
+
 def checkout(source: str, commit: str, root: Path = EVIDENCE) -> Path:
     """The checkout of source at commit, created once and verified every time."""
     if not FULL_SHA.fullmatch(commit):
         raise SystemExit(f"{commit!r}: a pinned commit must be a full 40-character SHA")
-    name = Path(source.rstrip("/")).name.removesuffix(".git")
-    target = root / f"{name}-{commit[:12]}"
+    target = location(source, commit, root)
     if not target.exists():
         root.mkdir(parents=True, exist_ok=True)
         clone = ("clone", "--quiet", "--filter=blob:none", "--no-checkout", source, str(target))
@@ -44,6 +58,10 @@ def checkout(source: str, commit: str, root: Path = EVIDENCE) -> Path:
         checked = git(*detach, cwd=target)
         if checked.returncode != 0:
             raise SystemExit(f"{commit} is not in {source}: {checked.stderr.strip()}")
+    origin = git("remote", "get-url", "origin", cwd=target)
+    found = origin.stdout.strip() if origin.returncode == 0 else "no origin"
+    if _normalized(found) != _normalized(source):
+        raise SystemExit(f"{target} was cloned from {found}, not {source}; remove it")
     head = git("rev-parse", "HEAD", cwd=target)
     if head.returncode != 0 or head.stdout.strip() != commit:
         raise SystemExit(f"{target} is not at {commit}; remove it and check out again")
