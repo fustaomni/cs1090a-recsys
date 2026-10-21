@@ -1440,3 +1440,78 @@ done_when = [
   { kind = "proof", test = "tests/integration/test_generated_gate.py::test_a_generated_project_renamed_by_identity_set_keeps_a_consistent_lock" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.148"
+title = "source:search refuses a path it cannot search, instead of reporting no matches, as cscie103's D.230 does"
+thread = "A"
+depends_on = ["A.84"]
+because = { "A.84" = "source:search matches tracked files as POSIX extended; an ignored path is outside what git grep sees" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_search.py::test_an_untracked_or_ignored_path_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.149"
+title = "Every task emits a versioned, schema-backed envelope, and audit:capabilities refuses any task off the governance spine"
+thread = "A"
+depends_on = ["A.44"]
+because = { "A.44" = "every task became a versioned capability, but its emits may be text, so status and the other shell tasks print prose with no schema, evidence, verdict or decision" }
+done_when = [
+  { kind = "proof", test = "tests/test_capability_audit.py::test_a_task_off_the_spine_is_refused" },
+  { kind = "proof", test = "tests/test_capability_audit.py::test_every_task_declares_its_envelope_schema" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.150"
+title = "The run gateway enforces non-interaction: CI, no git or gh prompt, closed stdin, no controlling terminal, and a prompt fails closed"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "an envelope is only a contract if the run behind it can never stop to wait for a person" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_noninteractive.py::test_the_gateway_injects_the_noninteractive_environment" },
+  { kind = "proof", test = "tests/test_run_noninteractive.py::test_a_task_that_prompts_fails_closed_with_a_code" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.151"
+title = "The run gateway propagates W3C trace context through TRACEPARENT, as OpenTelemetry's environment carrier specifies, and records it"
+thread = "A"
+depends_on = ["A.150"]
+because = { "A.150" = "the gateway already builds each child's environment, which is where the carrier is injected" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_trace_context.py::test_a_run_records_its_trace_and_span" },
+  { kind = "proof", test = "tests/test_run_trace_context.py::test_a_child_run_continues_its_parents_trace" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.152"
+title = "Each policy decision is also a signed in-toto statement with a SLSA verification summary predicate, verifiable by a task"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "a decision becomes an attestation only once every task's verdict is data" }
+done_when = [
+  { kind = "proof", test = "tests/test_decision_attestation.py::test_a_decision_is_a_signed_vsa_statement" },
+  { kind = "proof", test = "tests/test_decision_attestation.py::test_a_tampered_attestation_fails_verification" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.153"
+title = "Multi-task sequences are declared as data and run by the gateway, fail-fast, each step recorded, replacing hand-written shell chains"
+thread = "A"
+depends_on = ["A.150"]
+because = { "A.150" = "a declared sequence inherits the gateway's non-interactive guarantees for every step" }
+done_when = [
+  { kind = "proof", test = "tests/test_sequences.py::test_a_declared_sequence_stops_at_its_first_refusal" },
+  { kind = "proof", test = "tests/test_sequences.py::test_every_step_of_a_sequence_is_a_ledger_record" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.154"
+title = "Every capability has an acceptance proof that runs it through the gateway and validates its envelope against its schema"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "acceptance against a schema needs every task to declare one" }
+done_when = [
+  { kind = "proof", test = "tests/acceptance/test_capability_contracts.py::test_every_capability_has_an_acceptance_proof" },
+  { kind = "task", name = "check" },
+]

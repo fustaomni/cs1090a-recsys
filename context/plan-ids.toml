@@ -134,4 +134,11 @@ issued = [
   { id = "A.142", first_title = "pr:logs returns: the ported CI-failure reader runs as a declared, read-only task" },
   { id = "A.145", first_title = "template:identity's commit names the step it serves, Plan-Step: A.1, as template:init's does" },
   { id = "A.146", first_title = "A project's lock agrees with its project, proven by uv lock --check, and a stale one is refused" },
+  { id = "A.148", first_title = "source:search refuses a path it cannot search, instead of reporting no matches, as cscie103's D.230 does" },
+  { id = "A.149", first_title = "Every task emits a versioned, schema-backed envelope, and audit:capabilities refuses any task off the governance spine" },
+  { id = "A.150", first_title = "The run gateway enforces non-interaction: CI, no git or gh prompt, closed stdin, no controlling terminal, and a prompt fails closed" },
+  { id = "A.151", first_title = "The run gateway propagates W3C trace context through TRACEPARENT, as OpenTelemetry's environment carrier specifies, and records it" },
+  { id = "A.152", first_title = "Each policy decision is also a signed in-toto statement with a SLSA verification summary predicate, verifiable by a task" },
+  { id = "A.153", first_title = "Multi-task sequences are declared as data and run by the gateway, fail-fast, each step recorded, replacing hand-written shell chains" },
+  { id = "A.154", first_title = "Every capability has an acceptance proof that runs it through the gateway and validates its envelope against its schema" },
 ]
