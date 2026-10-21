@@ -1459,6 +1459,7 @@ because = { "A.44" = "every task became a versioned capability, but its emits ma
 done_when = [
   { kind = "proof", test = "tests/test_capability_audit.py::test_a_task_off_the_spine_is_refused" },
   { kind = "proof", test = "tests/test_capability_audit.py::test_every_task_declares_its_envelope_schema" },
+  { kind = "proof", test = "tests/test_capability_audit.py::test_every_envelope_keeps_observations_apart_from_judgments" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1563,6 +1564,7 @@ done_when = [
   { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_stdout_holds_only_the_result_and_diagnostics_go_to_stderr" },
   { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_status_leaves_the_index_and_refs_unchanged" },
   { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_an_untrusted_path_or_malformed_git_output_cannot_bypass_validation" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_the_status_result_separates_observation_policy_verdict_and_decision" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1576,6 +1578,7 @@ done_when = [
   { kind = "proof", test = "tests/test_shell_guard.py::test_cd_export_and_mise_run_run_are_allowed" },
   { kind = "proof", test = "tests/test_shell_guard.py::test_an_indirect_command_is_refused_because_only_listed_words_may_start_one" },
   { kind = "proof", test = "tests/test_shell_guard.py::test_setup_installs_the_guard_and_status_reports_it" },
+  { kind = "proof", test = "tests/test_shell_guard.py::test_a_mise_directory_other_than_the_working_directory_is_refused" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
