@@ -1656,7 +1656,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.165"
-title = "The run gateway accepts a typed run request as data, a stable operation name, a project reference and constraints, through one entry point, returning the same result object to humans and agents"
+title = "The run gateway keeps mise run run <task> as its entry and translates it into a typed run request, a stable operation name, a project reference and constraints, the same request a request document gives, returning one result object to humans and agents"
 thread = "A"
 depends_on = ["A.161", "A.162"]
 because = { "A.161" = "a project reference is a slug the gateway resolves, never a path", "A.162" = "each operation's input and output schemas are what the request and result are validated against" }
@@ -1664,7 +1664,7 @@ done_when = [
   { kind = "proof", test = "tests/test_run_requests.py::test_a_request_names_an_operation_not_a_command" },
   { kind = "proof", test = "tests/test_run_requests.py::test_an_unknown_operation_or_project_reference_is_refused_before_anything_runs" },
   { kind = "proof", test = "tests/test_run_requests.py::test_a_human_and_an_agent_get_the_same_result_object" },
-  { kind = "proof", test = "tests/test_run_requests.py::test_the_entry_point_takes_no_positional_arguments" },
+  { kind = "proof", test = "tests/test_run_requests.py::test_the_cli_form_and_a_request_document_produce_the_same_validated_request" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1763,5 +1763,29 @@ because = { "A.154" = "an acceptance proof per capability is the first layer thi
 done_when = [
   { kind = "proof", test = "tests/test_proof_layers.py::test_every_proof_declares_its_layer" },
   { kind = "proof", test = "tests/test_proof_layers.py::test_a_capability_missing_acceptance_or_failure_injection_proofs_is_named" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.174"
+title = "Every run passes the declared stages in order, request validation, authorization, observation, evidence, policy evaluation, verdict and decision, result and audit event, each leaving a typed record; a failing stage ends the run with its reason"
+thread = "A"
+depends_on = ["A.163", "A.170"]
+because = { "A.163" = "authorization is the stage that must precede any observation or effect", "A.170" = "a failing stage ends the run with a registered action, deny or stop" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_stages.py::test_every_run_passes_the_declared_stages_in_order" },
+  { kind = "proof", test = "tests/test_run_stages.py::test_each_stage_leaves_a_typed_record" },
+  { kind = "proof", test = "tests/test_run_stages.py::test_a_failing_stage_ends_the_run_and_no_later_stage_runs" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.175"
+title = "Tasks that commit, open or merge decide from the repository observer's typed evidence and refuse when it is unknown; an audit refuses any task parsing git's human-readable output"
+thread = "A"
+depends_on = ["A.157", "A.166"]
+because = { "A.157" = "status's typed evidence is the one source of repository state a decision may use", "A.166" = "an unknown observation is the state no commit, pull request or merge may proceed on" }
+done_when = [
+  { kind = "proof", test = "tests/test_state_consumers.py::test_commit_pr_and_merge_decide_from_typed_evidence" },
+  { kind = "proof", test = "tests/test_state_consumers.py::test_an_unknown_repository_state_refuses_a_commit_pr_or_merge" },
+  { kind = "proof", test = "tests/test_state_consumers.py::test_a_task_parsing_git_human_readable_output_is_refused" },
   { kind = "task", name = "check" },
 ]
