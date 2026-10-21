@@ -162,3 +162,17 @@
      failed: dict[str, str] = {}
      for gate in gates:
          done = _in(project, "uv", "run", "--no-sync", *gate)
+@@ -178,3 +172,13 @@
+             failed[" ".join(gate)] = _tail(done)
+     # A JOINED STRING, NOT A DICT: pytest prints a message whole, a dict's repr truncated.
+     assert not failed, "\n\n".join(f"== {gate}\n{tail}" for gate, tail in failed.items())
++
++
++@pytest.mark.integration
++def test_a_generated_project_renamed_by_identity_set_keeps_a_consistent_lock(
++    identified: tuple[Path, dict[str, object]],
++) -> None:
++    """A.146, in cscie103 D.263's form: identity:set renames the lock's root with the project."""
++    project, _ = identified
++    checked = _in(project, "uv", "lock", "--check", "--offline")
++    assert checked.returncode == 0, _tail(checked)
