@@ -144,4 +144,7 @@ issued = [
   { id = "A.155", first_title = "Every mechanism's guarantee is a scoped claim in the claims register, naming what it does not guarantee, and claims:audit refuses one without its proof" },
   { id = "A.156", first_title = "An envelope's facts are cross-checked against an independent observation, so a well-formed but false result is refused" },
   { id = "A.157", first_title = "status becomes a governed reader of porcelain v2, specified outside-in by ten acceptance criteria named as proofs before any code" },
+  { id = "A.158", first_title = "A shell guard in each worktree refuses any command not started by an allowlisted word, so a raw git, gh, python or uv command is skipped with its reason" },
+  { id = "A.159", first_title = "The commit task writes a Run-Id trailer signed by the ledger key, and commit-msg refuses a commit without a valid one" },
+  { id = "A.160", first_title = "The required CI gate verifies every pull request commit carries a Run-Id trailer signed by a published key, naming any commit that does not" },
 ]
