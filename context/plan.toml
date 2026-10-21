@@ -1572,6 +1572,9 @@ done_when = [
   { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_concurrent_status_requests_produce_distinct_execution_records" },
   { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_the_observed_repository_is_checked_against_its_declared_identity" },
   { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_an_unborn_branch_has_no_head_sha" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_a_dirty_working_tree_is_observed_accurately_without_changing_files" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_an_unexpected_git_failure_is_a_failure_never_a_clean_state" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_a_dirty_repository_is_a_successful_status" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1799,6 +1802,7 @@ done_when = [
   { kind = "proof", test = "tests/test_state_consumers.py::test_commit_pr_and_merge_decide_from_typed_evidence" },
   { kind = "proof", test = "tests/test_state_consumers.py::test_an_unknown_repository_state_refuses_a_commit_pr_or_merge" },
   { kind = "proof", test = "tests/test_state_consumers.py::test_a_task_parsing_git_human_readable_output_is_refused" },
+  { kind = "proof", test = "tests/test_state_consumers.py::test_a_merge_policy_denies_on_a_dirty_status_that_reported_successfully" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
