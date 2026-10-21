@@ -1486,6 +1486,7 @@ done_when = [
   { kind = "proof", test = "tests/test_run_trace_context.py::test_a_run_records_a_complete_span" },
   { kind = "proof", test = "tests/test_run_trace_context.py::test_a_child_runs_span_names_its_parent" },
   { kind = "proof", test = "tests/test_run_trace_context.py::test_a_failed_run_ends_its_span_with_error_status" },
+  { kind = "proof", test = "tests/test_run_trace_context.py::test_a_runs_span_records_its_cpu_time_and_peak_memory" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1787,5 +1788,17 @@ done_when = [
   { kind = "proof", test = "tests/test_state_consumers.py::test_commit_pr_and_merge_decide_from_typed_evidence" },
   { kind = "proof", test = "tests/test_state_consumers.py::test_an_unknown_repository_state_refuses_a_commit_pr_or_merge" },
   { kind = "proof", test = "tests/test_state_consumers.py::test_a_task_parsing_git_human_readable_output_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.176"
+title = "Every locked tool records its checksum and verified provenance, an install without verifiable provenance is refused, and each run records the tool versions and digests it used"
+thread = "A"
+depends_on = ["A.164"]
+because = { "A.164" = "a run already binds its task definition; the tools that ran it are the other half of what it depended on" }
+done_when = [
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_every_locked_tool_records_its_checksum_and_provenance" },
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_an_install_without_verifiable_provenance_is_refused" },
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_a_run_records_the_tool_versions_and_digests_it_used" },
   { kind = "task", name = "check" },
 ]
