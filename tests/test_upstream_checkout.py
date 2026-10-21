@@ -87,3 +87,24 @@ def test_the_tree_at_a_pinned_commit_is_listed_from_its_trees(tmp_path: Path) ->
     repo, pinned = _tree_repository(tmp_path)
     listed = upstream.tree(str(repo), pinned, ("policies",), tmp_path / "upstream")
     assert listed == ("policies/plan/plan.rego", "policies/plan/plan_test.rego"), listed
+
+
+def test_a_pathspec_matching_nothing_is_refused_by_name(tmp_path: Path) -> None:
+    """A.182: git ls-tree takes literal paths, so a wildcard matches nothing; that is refused."""
+    repo, pinned = _tree_repository(tmp_path)
+    specs = ("policies", "policies/plan/*.rego", "docs")
+    with pytest.raises(SystemExit) as refused:
+        upstream.tree(str(repo), pinned, specs, tmp_path / "upstream")
+    message = str(refused.value)
+    assert "policies/plan/*.rego" in message, message
+    assert "docs" in message, message
+    assert "literal" in message, message
+
+
+def test_a_literal_file_and_a_literal_directory_are_listed_together(tmp_path: Path) -> None:
+    """A.182: every pathspec that names a path at the pin still lists it."""
+    repo, pinned = _tree_repository(tmp_path)
+    specs = ("scripts/x.py", "policies/plan")
+    listed = upstream.tree(str(repo), pinned, specs, tmp_path / "upstream")
+    expected = ("policies/plan/plan.rego", "policies/plan/plan_test.rego", "scripts/x.py")
+    assert listed == expected, listed
