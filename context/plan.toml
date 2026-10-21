@@ -1620,6 +1620,7 @@ done_when = [
   { kind = "proof", test = "tests/test_path_redaction.py::test_a_worktree_is_resolved_from_its_slug" },
   { kind = "proof", test = "tests/test_path_redaction.py::test_a_home_directory_in_a_diagnostic_is_redacted" },
   { kind = "proof", test = "tests/test_path_redaction.py::test_a_linked_worktrees_own_root_and_its_shared_repository_resolve_apart" },
+  { kind = "proof", test = "tests/test_path_redaction.py::test_no_task_or_wrapper_reads_the_callers_working_directory" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1832,5 +1833,18 @@ done_when = [
   { kind = "proof", test = "tests/test_capability_declarations.py::test_a_missing_required_input_is_refused_before_running" },
   { kind = "proof", test = "tests/test_capability_declarations.py::test_a_task_without_declared_network_cannot_connect_where_enforced" },
   { kind = "proof", test = "tests/test_capability_declarations.py::test_an_unenforced_network_restriction_is_reported" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.179"
+title = "Every public task routes itself through the gateway under a namespaced name, its implementation a hidden task that refuses to run outside the gateway, so a direct mise run is governed and the run dispatcher retires"
+thread = "A"
+depends_on = ["A.165", "A.158"]
+because = { "A.165" = "a public task's namespaced name is the stable operation name its request carries", "A.158" = "the shell guard refuses raw commands; a self-governing task closes the bypass mise run left open" }
+done_when = [
+  { kind = "proof", test = "tests/test_self_governing_tasks.py::test_every_public_task_runs_through_the_gateway" },
+  { kind = "proof", test = "tests/test_self_governing_tasks.py::test_a_hidden_implementation_refuses_to_run_outside_the_gateway" },
+  { kind = "proof", test = "tests/test_self_governing_tasks.py::test_a_direct_run_of_a_public_task_is_recorded_and_judged" },
+  { kind = "proof", test = "tests/test_self_governing_tasks.py::test_every_public_task_name_is_namespaced" },
   { kind = "task", name = "check" },
 ]
