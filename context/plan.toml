@@ -1648,3 +1648,28 @@ done_when = [
   { kind = "proof", test = "tests/test_run_definition.py::test_a_changed_definition_changes_the_recorded_digest" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.165"
+title = "The run gateway accepts a typed run request as data, a stable operation name, a project reference and constraints, through one entry point, returning the same result object to humans and agents"
+thread = "A"
+depends_on = ["A.161", "A.162"]
+because = { "A.161" = "a project reference is a slug the gateway resolves, never a path", "A.162" = "each operation's input and output schemas are what the request and result are validated against" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_requests.py::test_a_request_names_an_operation_not_a_command" },
+  { kind = "proof", test = "tests/test_run_requests.py::test_an_unknown_operation_or_project_reference_is_refused_before_anything_runs" },
+  { kind = "proof", test = "tests/test_run_requests.py::test_a_human_and_an_agent_get_the_same_result_object" },
+  { kind = "proof", test = "tests/test_run_requests.py::test_the_entry_point_takes_no_positional_arguments" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.166"
+title = "Verdicts are pass, fail or unknown: an observation that could not be made is unknown, and unknown never satisfies a gate requiring pass nor combines into pass"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "a verdict is a field of every task's envelope, where its third value is declared" }
+done_when = [
+  { kind = "proof", test = "tests/test_verdicts.py::test_an_observation_that_could_not_be_made_is_unknown" },
+  { kind = "proof", test = "tests/test_verdicts.py::test_unknown_never_satisfies_a_gate_requiring_pass" },
+  { kind = "proof", test = "tests/test_verdicts.py::test_unknown_is_never_combined_into_pass" },
+  { kind = "task", name = "check" },
+]
