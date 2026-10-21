@@ -1012,6 +1012,7 @@ depends_on = ["A.28"]
 because = { "A.28" = "upstream:checkout already holds every commit and tree at the pin; a listing reads trees, never blobs" }
 done_when = [
   { kind = "task", name = "upstream:checkout" },
+  { kind = "proof", test = "tests/test_upstream_checkout.py::test_the_tree_at_a_pinned_commit_is_listed_from_its_trees" },
 ]
 [[steps]]
 id = "A.114"
@@ -1893,5 +1894,16 @@ done_when = [
   { kind = "proof", test = "tests/test_upstream_checkout.py::test_a_pathspec_matching_nothing_is_refused_by_name" },
   { kind = "proof", test = "tests/test_upstream_checkout.py::test_a_literal_file_and_a_literal_directory_are_listed_together" },
   { kind = "proof", test = "tests/test_upstream_checkout.py::test_the_tree_at_a_pinned_commit_is_listed_from_its_trees" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.184"
+title = "upstream:checkout names each clone by its normalized source's digest, and refuses an existing clone whose origin is another source"
+thread = "A"
+depends_on = ["A.28"]
+because = { "A.28" = "the pinned checkout whose reuse of an existing directory this step makes safe" }
+done_when = [
+  { kind = "proof", test = "tests/test_upstream_checkout.py::test_two_sources_sharing_a_name_and_commit_get_their_own_checkouts" },
+  { kind = "proof", test = "tests/test_upstream_checkout.py::test_a_checkout_whose_origin_is_another_source_is_refused" },
   { kind = "task", name = "check" },
 ]
