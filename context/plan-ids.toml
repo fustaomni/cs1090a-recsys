@@ -141,4 +141,6 @@ issued = [
   { id = "A.152", first_title = "Each policy decision is also a signed in-toto statement with a SLSA verification summary predicate, verifiable by a task" },
   { id = "A.153", first_title = "Multi-task sequences are declared as data and run by the gateway, fail-fast, each step recorded, replacing hand-written shell chains" },
   { id = "A.154", first_title = "Every capability has an acceptance proof that runs it through the gateway and validates its envelope against its schema" },
+  { id = "A.155", first_title = "Every mechanism's guarantee is a scoped claim in the claims register, naming what it does not guarantee, and claims:audit refuses one without its proof" },
+  { id = "A.156", first_title = "An envelope's facts are cross-checked against an independent observation, so a well-formed but false result is refused" },
 ]
