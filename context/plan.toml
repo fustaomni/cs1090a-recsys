@@ -1435,7 +1435,8 @@ thread = "A"
 depends_on = ["A.129", "A.123"]
 because = { "A.129" = "the lock's root became an identity slot, a rewrite nothing proved held", "A.123" = "the generated gate runs a project's own tests after identity:set, where this proof judges the rewrite" }
 done_when = [
-  { kind = "proof", test = "tests/test_lock.py::test_this_repositorys_lock_matches_its_project" },
+  { kind = "proof", test = "tests/integration/test_repository_lock.py::test_this_repositorys_lock_matches_its_project" },
   { kind = "proof", test = "tests/test_lock.py::test_a_lock_naming_another_project_is_refused" },
+  { kind = "proof", test = "tests/integration/test_generated_gate.py::test_a_generated_project_renamed_by_identity_set_keeps_a_consistent_lock" },
   { kind = "task", name = "check" },
 ]

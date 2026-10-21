@@ -1,5 +1,7 @@
 # tests/test_lock.py
-"""This repository's lock agrees with its project, and a lock that does not is refused (A.146).
+"""A lock that no longer agrees with its project is refused (A.146).
+
+This repository's own lock is proven at tests/integration/test_repository_lock.py, after a sync.
 
 cs1090a-volatility was born with a lock whose root still named the template, and no proof saw
 it: the identity policy scans for the declared value outside its slots, never a slot holding
@@ -13,7 +15,6 @@ import os
 import subprocess
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
 PROJECT = (
     '[project]\nname = "{name}"\nversion = "0.1.0"\nrequires-python = ">=3.12"\ndependencies = []\n'
 )
@@ -29,11 +30,6 @@ def _uv(root: Path, *args: str) -> subprocess.CompletedProcess[str]:
 
 def _lock_checked(root: Path) -> subprocess.CompletedProcess[str]:
     return _uv(root, "lock", "--check", "--offline")
-
-
-def test_this_repositorys_lock_matches_its_project() -> None:
-    done = _lock_checked(ROOT)
-    assert done.returncode == 0, done.stderr
 
 
 def test_a_lock_naming_another_project_is_refused(tmp_path: Path) -> None:
