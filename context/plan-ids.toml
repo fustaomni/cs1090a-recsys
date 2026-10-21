@@ -143,4 +143,5 @@ issued = [
   { id = "A.154", first_title = "Every capability has an acceptance proof that runs it through the gateway and validates its envelope against its schema" },
   { id = "A.155", first_title = "Every mechanism's guarantee is a scoped claim in the claims register, naming what it does not guarantee, and claims:audit refuses one without its proof" },
   { id = "A.156", first_title = "An envelope's facts are cross-checked against an independent observation, so a well-formed but false result is refused" },
+  { id = "A.157", first_title = "status becomes a governed reader of porcelain v2, specified outside-in by ten acceptance criteria named as proofs before any code" },
 ]

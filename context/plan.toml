@@ -1510,6 +1510,7 @@ done_when = [
   { kind = "proof", test = "tests/test_sequences.py::test_every_step_of_a_sequence_is_a_ledger_record" },
   { kind = "proof", test = "tests/test_sequences.py::test_a_step_records_its_input_digests_and_environment" },
   { kind = "proof", test = "tests/test_sequences.py::test_a_write_step_is_never_retried_without_an_idempotency_key" },
+  { kind = "proof", test = "tests/test_sequences.py::test_a_failed_observation_blocks_dependent_writes_unless_a_recovery_policy_permits" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1543,5 +1544,24 @@ because = { "A.154" = "a schema check proves an envelope's shape, and only an in
 done_when = [
   { kind = "proof", test = "tests/test_semantic_checks.py::test_a_well_formed_but_false_result_is_refused" },
   { kind = "proof", test = "tests/test_semantic_checks.py::test_a_true_result_agrees_with_its_independent_observation" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.157"
+title = "status becomes a governed reader of porcelain v2, specified outside-in by ten acceptance criteria named as proofs before any code"
+thread = "A"
+depends_on = ["A.149", "A.150"]
+because = { "A.149" = "its result is a versioned, schema-backed envelope", "A.150" = "it runs bounded, supervised and never waiting for input" }
+done_when = [
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_a_valid_repository_yields_a_schema_valid_status" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_an_invalid_repository_path_is_a_typed_failure" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_a_detached_head_is_reported_as_detached" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_a_branch_without_an_upstream_reports_null" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_status_never_waits_for_input" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_unchanged_state_yields_equivalent_evidence" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_a_failed_observation_blocks_a_dependent_write" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_stdout_holds_only_the_result_and_diagnostics_go_to_stderr" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_status_leaves_the_index_and_refs_unchanged" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_an_untrusted_path_or_malformed_git_output_cannot_bypass_validation" },
   { kind = "task", name = "check" },
 ]
