@@ -1428,3 +1428,14 @@ done_when = [
   { kind = "proof", test = "tests/test_template_identity_trailer.py::test_the_identity_commit_names_step_a1" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.146"
+title = "A project's lock agrees with its project, proven by uv lock --check, and a stale one is refused"
+thread = "A"
+depends_on = ["A.129", "A.123"]
+because = { "A.129" = "the lock's root became an identity slot, a rewrite nothing proved held", "A.123" = "the generated gate runs a project's own tests after identity:set, where this proof judges the rewrite" }
+done_when = [
+  { kind = "proof", test = "tests/test_lock.py::test_this_repositorys_lock_matches_its_project" },
+  { kind = "proof", test = "tests/test_lock.py::test_a_lock_naming_another_project_is_refused" },
+  { kind = "task", name = "check" },
+]
