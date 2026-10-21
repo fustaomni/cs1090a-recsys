@@ -9,7 +9,9 @@ every Git call goes through gitenv's scrubbed environment.
 
 ITS TREE IS LISTED AT THE SAME COMMIT (A.113). Given pathspecs, the checkout is verified exactly
 as above, then every path under them in the tree at the commit, never HEAD, is listed from tree
-objects alone, which the blobless clone already holds, so no blob is fetched.
+objects alone, which the blobless clone already holds, so no blob is fetched. A pathspec is a
+literal path, as git ls-tree reads it, so one matching nothing, a wildcard included, is refused
+by name rather than vanishing from the answer (A.182).
 """
 
 from __future__ import annotations
@@ -48,6 +50,14 @@ def checkout(source: str, commit: str, root: Path = EVIDENCE) -> Path:
     return target
 
 
+def _matches(pathspec: str, paths: tuple[str, ...]) -> bool:
+    """A literal pathspec matches itself or anything beneath it; '.' matches anything (A.182)."""
+    prefix = pathspec.rstrip("/")
+    if prefix in ("", "."):
+        return bool(paths)
+    return any(path == prefix or path.startswith(f"{prefix}/") for path in paths)
+
+
 def tree(
     source: str, commit: str, pathspecs: tuple[str, ...], root: Path = EVIDENCE
 ) -> tuple[str, ...]:
@@ -56,7 +66,12 @@ def tree(
     listed = git("ls-tree", "-r", "-z", "--name-only", commit, "--", *pathspecs, cwd=target)
     if listed.returncode != 0:
         raise SystemExit(f"cannot list {commit} in {target}: {listed.stderr.strip()}")
-    return tuple(sorted(path for path in listed.stdout.split("\0") if path))
+    paths = tuple(sorted(path for path in listed.stdout.split("\0") if path))
+    unmatched = [spec for spec in pathspecs if not _matches(spec, paths)]
+    if unmatched:
+        named = ", ".join(unmatched)
+        raise SystemExit(f"{named}: nothing at {commit} matches; pathspecs are literal paths")
+    return paths
 
 
 def blobs(source: str, commit: str, root: Path = EVIDENCE) -> dict[str, str]:
