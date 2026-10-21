@@ -1883,3 +1883,15 @@ done_when = [
   { kind = "proof", test = "tests/test_lineage_events.py::test_every_event_validates_against_the_pinned_openlineage_schema" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.182"
+title = "upstream:checkout's list mode refuses any pathspec that matches no path at the pinned commit, naming it and saying pathspecs are literal"
+thread = "A"
+depends_on = ["A.113"]
+because = { "A.113" = "the tree listing whose silence on an unmatched pathspec this step ends" }
+done_when = [
+  { kind = "proof", test = "tests/test_upstream_checkout.py::test_a_pathspec_matching_nothing_is_refused_by_name" },
+  { kind = "proof", test = "tests/test_upstream_checkout.py::test_a_literal_file_and_a_literal_directory_are_listed_together" },
+  { kind = "proof", test = "tests/test_upstream_checkout.py::test_the_tree_at_a_pinned_commit_is_listed_from_its_trees" },
+  { kind = "task", name = "check" },
+]
