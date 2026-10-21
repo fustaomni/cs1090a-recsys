@@ -1870,3 +1870,16 @@ done_when = [
   { kind = "proof", test = "tests/test_run_signing.py::test_an_unsigned_run_is_allowed_only_under_a_recorded_waiver" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.181"
+title = "Each run emits OpenLineage run events, START then COMPLETE or FAIL, naming its input and output datasets with their digests and its parent run, validated against the pinned OpenLineage schema and written as files"
+thread = "A"
+depends_on = ["A.151", "A.153"]
+because = { "A.151" = "a run's span already carries the parent link a lineage event's parent facet names", "A.153" = "a step's recorded input digests are the datasets a lineage event names" }
+done_when = [
+  { kind = "proof", test = "tests/test_lineage_events.py::test_a_run_emits_start_then_complete_or_fail" },
+  { kind = "proof", test = "tests/test_lineage_events.py::test_a_data_task_names_its_input_and_output_datasets_with_digests" },
+  { kind = "proof", test = "tests/test_lineage_events.py::test_a_child_runs_event_names_its_parent_run" },
+  { kind = "proof", test = "tests/test_lineage_events.py::test_every_event_validates_against_the_pinned_openlineage_schema" },
+  { kind = "task", name = "check" },
+]

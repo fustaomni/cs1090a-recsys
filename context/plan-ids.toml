@@ -167,4 +167,5 @@ issued = [
   { id = "A.178", first_title = "Every capability declares that it is non-interactive, its required inputs and its network egress; a missing required input is refused before running, and undeclared network is denied where Landlock enforces it or reported unenforced" },
   { id = "A.179", first_title = "Every public task routes itself through the gateway under a namespaced name, its implementation a hidden task that refuses to run outside the gateway, so a direct mise run is governed and the run dispatcher retires" },
   { id = "A.180", first_title = "A run whose signing key cannot be loaded is refused before it starts; only keys:provision, which creates the key, runs unsigned, and any other unsigned run needs a recorded waiver" },
+  { id = "A.181", first_title = "Each run emits OpenLineage run events, START then COMPLETE or FAIL, naming its input and output datasets with their digests and its parent run, validated against the pinned OpenLineage schema and written as files" },
 ]
