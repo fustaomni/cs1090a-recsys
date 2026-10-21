@@ -1440,3 +1440,446 @@ done_when = [
   { kind = "proof", test = "tests/integration/test_generated_gate.py::test_a_generated_project_renamed_by_identity_set_keeps_a_consistent_lock" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.148"
+title = "source:search refuses a path it cannot search, instead of reporting no matches, as cscie103's D.230 does"
+thread = "A"
+depends_on = ["A.84"]
+because = { "A.84" = "source:search matches tracked files as POSIX extended; an ignored path is outside what git grep sees" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_search.py::test_an_untracked_or_ignored_path_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.149"
+title = "Every task emits a versioned, schema-backed envelope, and audit:capabilities refuses any task off the governance spine"
+thread = "A"
+depends_on = ["A.44"]
+because = { "A.44" = "every task became a versioned capability, but its emits may be text, so status and the other shell tasks print prose with no schema, evidence, verdict or decision" }
+done_when = [
+  { kind = "proof", test = "tests/test_capability_audit.py::test_a_task_off_the_spine_is_refused" },
+  { kind = "proof", test = "tests/test_capability_audit.py::test_every_task_declares_its_envelope_schema" },
+  { kind = "proof", test = "tests/test_capability_audit.py::test_every_envelope_keeps_observations_apart_from_judgments" },
+  { kind = "proof", test = "tests/test_capability_audit.py::test_every_envelope_model_forbids_extra_fields_and_type_coercion" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.150"
+title = "The run gateway bounds and supervises every task: closed stdin, no terminal, no git or gh prompt, a wall and an idle deadline, its own process group, and SIGTERM then SIGKILL to that whole group"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "an envelope is only a contract if the run behind it can never stop to wait for a person" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_noninteractive.py::test_the_gateway_injects_the_noninteractive_environment" },
+  { kind = "proof", test = "tests/test_run_noninteractive.py::test_the_gateway_closes_the_tasks_stdin_itself" },
+  { kind = "proof", test = "tests/test_run_noninteractive.py::test_a_task_that_prompts_fails_closed_with_a_code" },
+  { kind = "proof", test = "tests/test_run_noninteractive.py::test_every_gui_and_askpass_prompt_vector_is_suppressed" },
+  { kind = "proof", test = "tests/test_run_noninteractive.py::test_opening_dev_tty_fails_without_a_controlling_terminal" },
+  { kind = "proof", test = "tests/test_run_supervision.py::test_a_task_past_its_deadline_is_killed_with_its_whole_process_tree" },
+  { kind = "proof", test = "tests/test_run_supervision.py::test_a_silent_task_past_its_idle_deadline_is_stopped" },
+  { kind = "proof", test = "tests/test_run_supervision.py::test_a_cancelled_run_leaves_no_descendant_running" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.151"
+title = "The run gateway records each run as a complete OpenTelemetry span, with trace, span and parent span ids, kind, start, end and status, exported as OTLP JSON, and passes TRACEPARENT to its children"
+thread = "A"
+depends_on = ["A.150"]
+because = { "A.150" = "the gateway already builds each child's environment, which is where the carrier is injected" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_trace_context.py::test_a_run_records_a_complete_span" },
+  { kind = "proof", test = "tests/test_run_trace_context.py::test_a_child_runs_span_names_its_parent" },
+  { kind = "proof", test = "tests/test_run_trace_context.py::test_a_failed_run_ends_its_span_with_error_status" },
+  { kind = "proof", test = "tests/test_run_trace_context.py::test_a_runs_span_records_its_cpu_time_and_peak_memory" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.152"
+title = "Each policy decision is also a signed in-toto statement with a SLSA verification summary predicate binding the policy and evidence by digest; it is claimed to prove integrity and signer only"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "a decision becomes an attestation only once every task's verdict is data" }
+done_when = [
+  { kind = "proof", test = "tests/test_decision_attestation.py::test_a_decision_is_a_signed_vsa_statement" },
+  { kind = "proof", test = "tests/test_decision_attestation.py::test_the_statement_binds_the_policy_and_evidence_digests" },
+  { kind = "proof", test = "tests/test_decision_attestation.py::test_a_tampered_attestation_fails_verification" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.153"
+title = "Multi-task sequences are declared as data and run fail-fast by the gateway, each step recorded with its input digests and environment fingerprint, each effect classified read, idempotent or write"
+thread = "A"
+depends_on = ["A.150"]
+because = { "A.150" = "a declared sequence inherits the gateway's non-interactive guarantees for every step" }
+done_when = [
+  { kind = "proof", test = "tests/test_sequences.py::test_a_declared_sequence_stops_at_its_first_refusal" },
+  { kind = "proof", test = "tests/test_sequences.py::test_every_step_of_a_sequence_is_a_ledger_record" },
+  { kind = "proof", test = "tests/test_sequences.py::test_a_step_records_its_input_digests_and_environment" },
+  { kind = "proof", test = "tests/test_sequences.py::test_a_write_step_is_never_retried_without_an_idempotency_key" },
+  { kind = "proof", test = "tests/test_sequences.py::test_a_failed_observation_blocks_dependent_writes_unless_a_recovery_policy_permits" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.154"
+title = "Every capability has an acceptance proof that runs it through the gateway and validates its envelope's shape against its schema, claimed to prove shape only"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "acceptance against a schema needs every task to declare one" }
+done_when = [
+  { kind = "proof", test = "tests/acceptance/test_capability_contracts.py::test_every_capability_has_an_acceptance_proof" },
+  { kind = "proof", test = "tests/acceptance/test_capability_contracts.py::test_a_malformed_envelope_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.155"
+title = "Every mechanism's guarantee is a scoped claim in the claims register, naming what it does not guarantee, and claims:audit refuses one without its proof"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "a mechanism's claim can be scoped only once its output is data a proof can judge" }
+done_when = [
+  { kind = "proof", test = "tests/test_claim_scopes.py::test_every_mechanism_claim_names_its_non_guarantees" },
+  { kind = "proof", test = "tests/test_claim_scopes.py::test_a_claim_without_its_proof_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.156"
+title = "An envelope's facts are cross-checked against an independent observation, so a well-formed but false result is refused"
+thread = "A"
+depends_on = ["A.154"]
+because = { "A.154" = "a schema check proves an envelope's shape, and only an independent observation can judge its facts" }
+done_when = [
+  { kind = "proof", test = "tests/test_semantic_checks.py::test_a_well_formed_but_false_result_is_refused" },
+  { kind = "proof", test = "tests/test_semantic_checks.py::test_a_true_result_agrees_with_its_independent_observation" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.157"
+title = "status becomes a governed reader of porcelain v2, specified outside-in by ten acceptance criteria named as proofs before any code"
+thread = "A"
+depends_on = ["A.149", "A.150"]
+because = { "A.149" = "its result is a versioned, schema-backed envelope", "A.150" = "it runs bounded, supervised and never waiting for input" }
+done_when = [
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_a_valid_repository_yields_a_schema_valid_status" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_an_invalid_repository_path_is_a_typed_failure" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_a_detached_head_is_reported_as_detached" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_a_branch_without_an_upstream_reports_null" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_status_never_waits_for_input" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_unchanged_state_yields_equivalent_evidence" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_a_failed_observation_blocks_a_dependent_write" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_stdout_holds_only_the_result_and_diagnostics_go_to_stderr" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_status_leaves_the_index_and_refs_unchanged" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_an_untrusted_path_or_malformed_git_output_cannot_bypass_validation" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_the_status_result_separates_observation_policy_verdict_and_decision" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_concurrent_status_requests_produce_distinct_execution_records" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_the_observed_repository_is_checked_against_its_declared_identity" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_an_unborn_branch_has_no_head_sha" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_a_dirty_working_tree_is_observed_accurately_without_changing_files" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_an_unexpected_git_failure_is_a_failure_never_a_clean_state" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_a_dirty_repository_is_a_successful_status" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.158"
+title = "A shell guard in each worktree refuses any command not started by an allowlisted word, so a raw git, gh, python or uv command is skipped with its reason"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "every operation being a task is the rule the guard enforces before a command runs" }
+done_when = [
+  { kind = "proof", test = "tests/test_shell_guard.py::test_a_raw_git_or_gh_command_in_a_worktree_is_skipped_with_its_reason" },
+  { kind = "proof", test = "tests/test_shell_guard.py::test_cd_export_and_mise_run_run_are_allowed" },
+  { kind = "proof", test = "tests/test_shell_guard.py::test_an_indirect_command_is_refused_because_only_listed_words_may_start_one" },
+  { kind = "proof", test = "tests/test_shell_guard.py::test_setup_installs_the_guard_and_status_reports_it" },
+  { kind = "proof", test = "tests/test_shell_guard.py::test_a_mise_directory_other_than_the_working_directory_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.159"
+title = "The commit task writes a Run-Id trailer signed by the ledger key, and commit-msg refuses a commit without a valid one"
+thread = "A"
+depends_on = ["A.158"]
+because = { "A.158" = "a shell guard is bypassed by another shell, so the commit itself must carry proof of the gateway" }
+done_when = [
+  { kind = "proof", test = "tests/test_commit_run_trailer.py::test_the_commit_task_writes_a_signed_run_trailer" },
+  { kind = "proof", test = "tests/test_commit_run_trailer.py::test_a_commit_made_outside_the_commit_task_is_refused" },
+  { kind = "proof", test = "tests/test_commit_run_trailer.py::test_a_forged_run_trailer_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.160"
+title = "The required CI gate verifies every pull request commit carries a Run-Id trailer signed by a published key, naming any commit that does not"
+thread = "A"
+depends_on = ["A.159"]
+because = { "A.159" = "commit-msg is skipped by --no-verify, rebase and cherry-pick, so only the server-side gate cannot be bypassed" }
+done_when = [
+  { kind = "proof", test = "tests/test_ci_run_trailers.py::test_a_pull_request_commit_without_a_verified_run_trailer_fails_the_gate" },
+  { kind = "proof", test = "tests/test_ci_run_trailers.py::test_a_forged_run_trailer_fails_verification" },
+  { kind = "proof", test = "tests/test_ci_run_trailers.py::test_githubs_own_merge_commits_are_the_recorded_exception" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.161"
+title = "Worktrees are addressed by slug and every record carries repository-relative paths, with absolute paths redacted from evidence"
+thread = "A"
+depends_on = ["A.150"]
+because = { "A.150" = "the gateway builds each run's environment and record, where a path is resolved and redacted" }
+done_when = [
+  { kind = "proof", test = "tests/test_path_redaction.py::test_a_run_record_holds_no_absolute_path" },
+  { kind = "proof", test = "tests/test_path_redaction.py::test_a_worktree_is_resolved_from_its_slug" },
+  { kind = "proof", test = "tests/test_path_redaction.py::test_a_home_directory_in_a_diagnostic_is_redacted" },
+  { kind = "proof", test = "tests/test_path_redaction.py::test_a_linked_worktrees_own_root_and_its_shared_repository_resolve_apart" },
+  { kind = "proof", test = "tests/test_path_redaction.py::test_no_task_or_wrapper_reads_the_callers_working_directory" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.162"
+title = "Every capability is a typed tool with input and output JSON Schemas, its arguments validated before it runs, exportable as MCP tool definitions"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "an output schema per task is half of a typed tool; the input schema and validation before running are the other" }
+done_when = [
+  { kind = "proof", test = "tests/test_typed_tools.py::test_an_argument_that_breaks_the_input_schema_is_refused_before_the_task_runs" },
+  { kind = "proof", test = "tests/test_typed_tools.py::test_every_capability_declares_input_and_output_schemas" },
+  { kind = "proof", test = "tests/test_typed_tools.py::test_the_registry_exports_valid_mcp_tool_definitions" },
+  { kind = "proof", test = "tests/test_typed_tools.py::test_a_result_breaking_the_output_schema_is_rejected_not_guessed" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.163"
+title = "Every run is authorized by policy from its actor's signing key and its capability's effect, and the decision is recorded with the run"
+thread = "A"
+depends_on = ["A.159"]
+because = { "A.159" = "the ledger key that signs a run trailer is the identity an authorization decision names" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_authorization.py::test_a_mutating_task_from_an_unlisted_key_is_refused" },
+  { kind = "proof", test = "tests/test_run_authorization.py::test_a_run_records_its_actor_and_authorization_decision" },
+  { kind = "proof", test = "tests/test_run_authorization.py::test_an_unauthorized_request_is_denied_before_any_side_effect" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.164"
+title = "Every run record binds the task definition that ran, by the digest of its resolved definition and the commit it came from"
+thread = "A"
+depends_on = ["A.153"]
+because = { "A.153" = "a step's recorded inputs include the definition of the task it ran" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_definition.py::test_a_run_records_its_task_definition_digest_and_commit" },
+  { kind = "proof", test = "tests/test_run_definition.py::test_a_changed_definition_changes_the_recorded_digest" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.165"
+title = "The run gateway keeps mise run run <task> as its entry and translates it into a typed run request, a stable operation name, a project reference and constraints, the same request a request document gives, returning one result object to humans and agents"
+thread = "A"
+depends_on = ["A.161", "A.162"]
+because = { "A.161" = "a project reference is a slug the gateway resolves, never a path", "A.162" = "each operation's input and output schemas are what the request and result are validated against" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_requests.py::test_a_request_names_an_operation_not_a_command" },
+  { kind = "proof", test = "tests/test_run_requests.py::test_an_unknown_operation_or_project_reference_is_refused_before_anything_runs" },
+  { kind = "proof", test = "tests/test_run_requests.py::test_a_human_and_an_agent_get_the_same_result_object" },
+  { kind = "proof", test = "tests/test_run_requests.py::test_the_cli_form_and_a_request_document_produce_the_same_validated_request" },
+  { kind = "proof", test = "tests/test_run_requests.py::test_a_python_caller_gets_the_same_result_object_without_a_shell" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.166"
+title = "Verdicts are pass, fail or unknown: an observation that could not be made is unknown, and unknown never satisfies a gate requiring pass nor combines into pass"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "a verdict is a field of every task's envelope, where its third value is declared" }
+done_when = [
+  { kind = "proof", test = "tests/test_verdicts.py::test_an_observation_that_could_not_be_made_is_unknown" },
+  { kind = "proof", test = "tests/test_verdicts.py::test_unknown_never_satisfies_a_gate_requiring_pass" },
+  { kind = "proof", test = "tests/test_verdicts.py::test_unknown_is_never_combined_into_pass" },
+  { kind = "proof", test = "tests/test_verdicts.py::test_each_rule_records_its_own_verdict" },
+  { kind = "proof", test = "tests/test_verdicts.py::test_a_run_summary_verdict_is_a_closed_value_never_a_free_string" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.167"
+title = "Every run has a receipt naming its schema, task definition, trace and decision, verifiable by an outside party from the published keys alone"
+thread = "A"
+depends_on = ["A.152"]
+because = { "A.152" = "a decision attestation is the signed core a receipt makes checkable without reading code" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_receipt.py::test_a_run_receipt_verifies_from_published_keys_alone" },
+  { kind = "proof", test = "tests/test_run_receipt.py::test_a_receipt_names_its_schema_definition_and_trace" },
+  { kind = "proof", test = "tests/test_run_receipt.py::test_a_tampered_receipt_fails_verification" },
+  { kind = "proof", test = "tests/test_run_receipt.py::test_records_are_queryable_by_run_task_and_verdict" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.168"
+title = "A controls register maps each control to its enforcing step, its evidence over the signed ledger and its test, and a windowed report shows each control operating over a period or names the gap"
+thread = "A"
+depends_on = ["A.155"]
+because = { "A.155" = "a control's claim is scoped before it is mapped to the evidence that it operated" }
+done_when = [
+  { kind = "proof", test = "tests/test_controls_register.py::test_every_control_maps_to_an_enforcing_step_evidence_and_test" },
+  { kind = "proof", test = "tests/test_controls_register.py::test_a_control_without_evidence_in_the_period_is_reported" },
+  { kind = "proof", test = "tests/test_controls_register.py::test_the_period_report_is_built_only_from_signed_records" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.169"
+title = "Every capability declares its effect class, read, idempotent or write; a write is never retried without its idempotency key"
+thread = "A"
+depends_on = ["A.162"]
+because = { "A.162" = "a typed tool's definition is where its effect class is declared beside its schemas" }
+done_when = [
+  { kind = "proof", test = "tests/test_effect_classes.py::test_every_capability_declares_read_idempotent_or_write" },
+  { kind = "proof", test = "tests/test_effect_classes.py::test_a_write_is_never_retried_without_its_idempotency_key" },
+  { kind = "proof", test = "tests/test_effect_classes.py::test_a_repeated_idempotent_run_changes_nothing" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.170"
+title = "Every decision ends in one action from a closed, registered enum, allow, deny, retry or stop: deny overrides, unknown never allows, retry is bounded and refused for writes, stop halts a sequence"
+thread = "A"
+depends_on = ["A.166", "A.169"]
+because = { "A.166" = "an unknown verdict is the input that must never map to allow", "A.169" = "a capability's effect class decides whether retry is ever safe" }
+done_when = [
+  { kind = "proof", test = "tests/test_enforcement.py::test_every_decision_action_is_allow_deny_retry_or_stop" },
+  { kind = "proof", test = "tests/test_enforcement.py::test_deny_overrides_any_allow" },
+  { kind = "proof", test = "tests/test_enforcement.py::test_an_unknown_verdict_never_maps_to_allow" },
+  { kind = "proof", test = "tests/test_enforcement.py::test_retry_is_refused_for_a_write_and_bounded_for_an_idempotent_effect" },
+  { kind = "proof", test = "tests/test_enforcement.py::test_stop_halts_the_remaining_steps_of_a_sequence" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.171"
+title = "Every tracked path is classified as desired behavior, as code, or observed behavior, as data; observed data is written only through a task, and an unclassified path is refused"
+thread = "A"
+depends_on = ["A.149"]
+because = { "A.149" = "a task's envelope is the only writer observed data may have" }
+done_when = [
+  { kind = "proof", test = "tests/test_artifact_inventory.py::test_every_tracked_path_is_classified_as_desired_or_observed" },
+  { kind = "proof", test = "tests/test_artifact_inventory.py::test_an_unclassified_path_is_refused" },
+  { kind = "proof", test = "tests/test_artifact_inventory.py::test_observed_data_is_written_only_through_a_task" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.172"
+title = "Read-only capabilities run under an OS-enforced boundary, Landlock detected by ABI, with no write-capable credential, and any write is detected from a tree digest; where the kernel cannot enforce, the run reports detection only"
+thread = "A"
+depends_on = ["A.150", "A.169"]
+because = { "A.150" = "the gateway spawns and supervises each task, where a boundary is applied before it runs", "A.169" = "a capability's read effect class is what places it under the boundary" }
+done_when = [
+  { kind = "proof", test = "tests/test_read_only_boundary.py::test_a_read_task_cannot_write_the_worktree_or_git_directory" },
+  { kind = "proof", test = "tests/test_read_only_boundary.py::test_a_read_task_receives_no_write_capable_credential" },
+  { kind = "proof", test = "tests/test_read_only_boundary.py::test_a_write_by_a_read_task_is_detected_from_the_tree_digest" },
+  { kind = "proof", test = "tests/test_read_only_boundary.py::test_an_unenforceable_boundary_is_reported_as_detection_only" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.173"
+title = "Every proof declares its layer, acceptance, contract, task wrapper, policy, integration or failure injection, and an audit names any capability missing an acceptance or failure-injection proof"
+thread = "A"
+depends_on = ["A.154"]
+because = { "A.154" = "an acceptance proof per capability is the first layer this audit requires of every capability" }
+done_when = [
+  { kind = "proof", test = "tests/test_proof_layers.py::test_every_proof_declares_its_layer" },
+  { kind = "proof", test = "tests/test_proof_layers.py::test_a_capability_missing_acceptance_or_failure_injection_proofs_is_named" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.174"
+title = "Every run passes the declared stages in order, request validation, authorization, observation, evidence, policy evaluation, verdict and decision, result and audit event, each leaving a typed record; a failing stage ends the run with its reason"
+thread = "A"
+depends_on = ["A.163", "A.170"]
+because = { "A.163" = "authorization is the stage that must precede any observation or effect", "A.170" = "a failing stage ends the run with a registered action, deny or stop" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_stages.py::test_every_run_passes_the_declared_stages_in_order" },
+  { kind = "proof", test = "tests/test_run_stages.py::test_each_stage_leaves_a_typed_record" },
+  { kind = "proof", test = "tests/test_run_stages.py::test_a_failing_stage_ends_the_run_and_no_later_stage_runs" },
+  { kind = "proof", test = "tests/test_run_stages.py::test_every_failure_is_a_registered_code_for_path_config_task_or_exit" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.175"
+title = "Tasks that commit, open or merge decide from the repository observer's typed evidence and refuse when it is unknown; an audit refuses any task parsing git's human-readable output"
+thread = "A"
+depends_on = ["A.157", "A.166"]
+because = { "A.157" = "status's typed evidence is the one source of repository state a decision may use", "A.166" = "an unknown observation is the state no commit, pull request or merge may proceed on" }
+done_when = [
+  { kind = "proof", test = "tests/test_state_consumers.py::test_commit_pr_and_merge_decide_from_typed_evidence" },
+  { kind = "proof", test = "tests/test_state_consumers.py::test_an_unknown_repository_state_refuses_a_commit_pr_or_merge" },
+  { kind = "proof", test = "tests/test_state_consumers.py::test_a_task_parsing_git_human_readable_output_is_refused" },
+  { kind = "proof", test = "tests/test_state_consumers.py::test_a_merge_policy_denies_on_a_dirty_status_that_reported_successfully" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.176"
+title = "Every locked tool records its checksum and verified provenance, an install without verifiable provenance is refused, and each run records the tool versions and digests it used"
+thread = "A"
+depends_on = ["A.164"]
+because = { "A.164" = "a run already binds its task definition; the tools that ran it are the other half of what it depended on" }
+done_when = [
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_every_locked_tool_records_its_checksum_and_provenance" },
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_an_install_without_verifiable_provenance_is_refused" },
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_a_run_records_the_tool_versions_and_digests_it_used" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.177"
+title = "pr-status becomes a typed reader: head sha, merge state, and each check discriminated by type, a CheckRun's name, status and conclusion or a StatusContext's context and state, pending kept apart from never ran, unknown when gh fails"
+thread = "A"
+depends_on = ["A.157", "A.162"]
+because = { "A.157" = "status is the first reader built outside-in, and pr-status follows its contract", "A.162" = "the typed result is the output schema pr-status declares" }
+done_when = [
+  { kind = "proof", test = "tests/test_pr_status_reader.py::test_each_check_is_discriminated_by_its_type" },
+  { kind = "proof", test = "tests/test_pr_status_reader.py::test_a_status_context_keeps_its_context_and_state" },
+  { kind = "proof", test = "tests/test_pr_status_reader.py::test_an_in_progress_check_is_pending_not_missing" },
+  { kind = "proof", test = "tests/test_pr_status_reader.py::test_a_failed_gh_call_is_unknown_not_empty" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.178"
+title = "Every capability declares that it is non-interactive, its required inputs and its network egress; a missing required input is refused before running, and undeclared network is denied where Landlock enforces it or reported unenforced"
+thread = "A"
+depends_on = ["A.162", "A.172"]
+because = { "A.162" = "a capability's input schema is where its required inputs are declared", "A.172" = "the Landlock boundary that bounds writes also carries the TCP rules that bound egress" }
+done_when = [
+  { kind = "proof", test = "tests/test_capability_declarations.py::test_every_capability_declares_interaction_inputs_and_network" },
+  { kind = "proof", test = "tests/test_capability_declarations.py::test_a_missing_required_input_is_refused_before_running" },
+  { kind = "proof", test = "tests/test_capability_declarations.py::test_a_task_without_declared_network_cannot_connect_where_enforced" },
+  { kind = "proof", test = "tests/test_capability_declarations.py::test_an_unenforced_network_restriction_is_reported" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.179"
+title = "Every public task routes itself through the gateway under a namespaced name, its implementation a hidden task that refuses to run outside the gateway, so a direct mise run is governed and the run dispatcher retires"
+thread = "A"
+depends_on = ["A.165", "A.158"]
+because = { "A.165" = "a public task's namespaced name is the stable operation name its request carries", "A.158" = "the shell guard refuses raw commands; a self-governing task closes the bypass mise run left open" }
+done_when = [
+  { kind = "proof", test = "tests/test_self_governing_tasks.py::test_every_public_task_runs_through_the_gateway" },
+  { kind = "proof", test = "tests/test_self_governing_tasks.py::test_a_hidden_implementation_refuses_to_run_outside_the_gateway" },
+  { kind = "proof", test = "tests/test_self_governing_tasks.py::test_a_direct_run_of_a_public_task_is_recorded_and_judged" },
+  { kind = "proof", test = "tests/test_self_governing_tasks.py::test_every_public_task_name_is_namespaced" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.180"
+title = "A run whose signing key cannot be loaded is refused before it starts; only keys:provision, which creates the key, runs unsigned, and any other unsigned run needs a recorded waiver"
+thread = "A"
+depends_on = ["A.152"]
+because = { "A.152" = "a decision attestation is only as good as the guarantee that every run is signed" }
+done_when = [
+  { kind = "proof", test = "tests/test_run_signing.py::test_a_run_whose_key_cannot_be_loaded_is_refused_before_it_starts" },
+  { kind = "proof", test = "tests/test_run_signing.py::test_keys_provision_alone_runs_without_a_key" },
+  { kind = "proof", test = "tests/test_run_signing.py::test_an_unsigned_run_is_allowed_only_under_a_recorded_waiver" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.181"
+title = "Each run emits OpenLineage run events, START then COMPLETE or FAIL, naming its input and output datasets with their digests and its parent run, validated against the pinned OpenLineage schema and written as files"
+thread = "A"
+depends_on = ["A.151", "A.153"]
+because = { "A.151" = "a run's span already carries the parent link a lineage event's parent facet names", "A.153" = "a step's recorded input digests are the datasets a lineage event names" }
+done_when = [
+  { kind = "proof", test = "tests/test_lineage_events.py::test_a_run_emits_start_then_complete_or_fail" },
+  { kind = "proof", test = "tests/test_lineage_events.py::test_a_data_task_names_its_input_and_output_datasets_with_digests" },
+  { kind = "proof", test = "tests/test_lineage_events.py::test_a_child_runs_event_names_its_parent_run" },
+  { kind = "proof", test = "tests/test_lineage_events.py::test_every_event_validates_against_the_pinned_openlineage_schema" },
+  { kind = "task", name = "check" },
+]
