@@ -1460,6 +1460,7 @@ done_when = [
   { kind = "proof", test = "tests/test_capability_audit.py::test_a_task_off_the_spine_is_refused" },
   { kind = "proof", test = "tests/test_capability_audit.py::test_every_task_declares_its_envelope_schema" },
   { kind = "proof", test = "tests/test_capability_audit.py::test_every_envelope_keeps_observations_apart_from_judgments" },
+  { kind = "proof", test = "tests/test_capability_audit.py::test_every_envelope_model_forbids_extra_fields_and_type_coercion" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1569,6 +1570,8 @@ done_when = [
   { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_an_untrusted_path_or_malformed_git_output_cannot_bypass_validation" },
   { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_the_status_result_separates_observation_policy_verdict_and_decision" },
   { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_concurrent_status_requests_produce_distinct_execution_records" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_the_observed_repository_is_checked_against_its_declared_identity" },
+  { kind = "proof", test = "tests/acceptance/test_status_contract.py::test_an_unborn_branch_has_no_head_sha" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1683,6 +1686,7 @@ done_when = [
   { kind = "proof", test = "tests/test_verdicts.py::test_an_observation_that_could_not_be_made_is_unknown" },
   { kind = "proof", test = "tests/test_verdicts.py::test_unknown_never_satisfies_a_gate_requiring_pass" },
   { kind = "proof", test = "tests/test_verdicts.py::test_unknown_is_never_combined_into_pass" },
+  { kind = "proof", test = "tests/test_verdicts.py::test_each_rule_records_its_own_verdict" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
