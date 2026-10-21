@@ -108,3 +108,38 @@ def test_a_literal_file_and_a_literal_directory_are_listed_together(tmp_path: Pa
     listed = upstream.tree(str(repo), pinned, specs, tmp_path / "upstream")
     expected = ("policies/plan/plan.rego", "policies/plan/plan_test.rego", "scripts/x.py")
     assert listed == expected, listed
+
+
+def _twin_repositories(tmp_path: Path) -> tuple[Path, Path, str]:
+    """A.184: two sources named origin, the second cloned from the first: one name, one commit."""
+    (tmp_path / "one").mkdir()
+    first, commit, _ = _repository(tmp_path / "one")
+    second = tmp_path / "two" / "origin"
+    second.parent.mkdir()
+    clone = ["git", "clone", "--quiet", str(first), str(second)]
+    subprocess.run(clone, capture_output=True, text=True, check=True)
+    return first, second, commit
+
+
+def test_two_sources_sharing_a_name_and_commit_get_their_own_checkouts(tmp_path: Path) -> None:
+    """A.184: a clone is named by its source, so a second source is never served the first's."""
+    first, second, commit = _twin_repositories(tmp_path)
+    root = tmp_path / "upstream"
+    one = upstream.checkout(str(first), commit, root)
+    two = upstream.checkout(str(second), commit, root)
+    assert one != two, (one, two)
+    origin = ["git", "remote", "get-url", "origin"]
+    read = subprocess.run(origin, cwd=two, capture_output=True, text=True, check=True)
+    assert read.stdout.strip() == str(second), read.stdout
+
+
+def test_a_checkout_whose_origin_is_another_source_is_refused(tmp_path: Path) -> None:
+    """A.184: an existing clone is reused only after its origin is read back as the source."""
+    assert hasattr(upstream, "location"), "upstream:checkout does not name a clone by its source"
+    first, second, commit = _twin_repositories(tmp_path)
+    root = tmp_path / "upstream"
+    made = upstream.checkout(str(first), commit, root)
+    made.rename(upstream.location(str(second), commit, root))
+    with pytest.raises(SystemExit) as refused:
+        upstream.checkout(str(second), commit, root)
+    assert str(first) in str(refused.value), refused.value
