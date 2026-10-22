@@ -55,3 +55,16 @@ deny contains denial if {
 		"message": sprintf("%s's mise.local.toml is not the declared FAS mode", [evidence.name]),
 	}
 }
+
+# METADATA
+# title: The sibling's flake.lock still pins the nixpkgs its FAS mode was read from
+# custom:
+#   code: ERR_SIBLING_TOOLCHAIN_STALE
+deny contains denial if {
+	evidence := input.sibling_trust
+	not evidence.toolchain_current
+	denial := {
+		"code": rego.metadata.rule().custom.code,
+		"message": sprintf("%s's flake.lock has moved past the nixpkgs its pins were read at", [evidence.name]),
+	}
+}

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import importlib
 import importlib.util
+import json
 import subprocess
 import tomllib
 from pathlib import Path
@@ -179,7 +180,12 @@ def test_the_override_leaves_the_clone_clean(tmp_path: Path) -> None:
 def _refused_only_when_broken(field: str, code: str) -> None:
     """Sound evidence is trusted; the same evidence with one field false is refused by code."""
     subject = _subject()
-    sound = {"name": "demo", "head_on_develop": True, "config_unmodified": True}
+    sound = {
+        "name": "demo",
+        "head_on_develop": True,
+        "config_unmodified": True,
+        "toolchain_current": True,
+    }
     evidence = subject.SiblingTrust(**{**sound, "override_matches": True})
     found = spine.evaluate(evidence, "sibling_trust", subject.POLICY, subject.ENTRYPOINT)
     assert not [rule.code for rule in found.rules if rule.outcome == "fail"], found
@@ -202,7 +208,12 @@ def test_a_mismatched_override_is_not_trusted() -> None:
 
 def test_an_absent_trust_request_is_refused_by_the_policy() -> None:
     subject = _subject()
-    sound = {"head_on_develop": True, "config_unmodified": True, "override_matches": True}
+    sound = {
+        "head_on_develop": True,
+        "config_unmodified": True,
+        "override_matches": True,
+        "toolchain_current": True,
+    }
     evidence = subject.SiblingTrust(name="demo", **sound)
     found = spine.evaluate(evidence, "not_sibling_trust", subject.POLICY, subject.ENTRYPOINT)
     codes = [rule.code for rule in found.rules if rule.outcome == "fail"]
@@ -247,6 +258,37 @@ def test_a_failed_setup_is_refused_by_name(tmp_path: Path) -> None:
     with pytest.raises(SystemExit) as refused:
         subject.set_up(tmp_path, run=run, environ={"PATH": "/usr/bin"})
     assert "setup" in str(refused.value), refused.value
+
+
+def test_a_sibling_whose_lock_moved_is_observed_stale(tmp_path: Path) -> None:
+    """A.188: the clone's flake.lock names another nixpkgs than the pins were read at."""
+    subject = _subject()
+    assert "toolchain_current" in subject.SiblingTrust.model_fields, "the lock is not observed"
+    source = _origin(tmp_path, "demo")
+    lock = {"nodes": {"nixpkgs": {"locked": {"rev": "b" * 40}}}}
+    (source / "flake.lock").write_text(json.dumps(lock))
+    _git(source, "add", "flake.lock")
+    _git(source, "commit", "--quiet", "-m", "lock")
+    stale = subject.Sibling(name="demo", source=str(source), tools=TOOLS, nixpkgs="a" * 40)
+    clone = subject.checkout(stale, tmp_path / "siblings")
+    assert subject.observe(clone, stale).toolchain_current is False
+    current = subject.Sibling(name="demo", source=str(source), tools=TOOLS, nixpkgs="b" * 40)
+    assert subject.observe(clone, current).toolchain_current is True
+
+
+def test_a_stale_toolchain_is_not_trusted() -> None:
+    """A.188: a sibling whose lock moved past the recorded nixpkgs is refused, by its code."""
+    subject = _subject()
+    assert "toolchain_current" in subject.SiblingTrust.model_fields, "the lock is not observed"
+    _refused_only_when_broken("toolchain_current", "ERR_SIBLING_TOOLCHAIN_STALE")
+
+
+def test_cscie103_declares_where_its_toolchain_comes_from() -> None:
+    """A.188: the nixpkgs revision its flake.lock pins, and each tool's nixpkgs file."""
+    subject = _subject()
+    cscie103 = {s.name: s for s in subject.declared(ROOT)}["cscie103-data-engineering"]
+    assert getattr(cscie103, "nixpkgs", None), "no nixpkgs revision is recorded"
+    assert set(getattr(cscie103, "packages", {})) == set(cscie103.tools), cscie103
 
 
 def test_cscie103_is_declared_at_its_canonical_source_with_its_toolchain() -> None:

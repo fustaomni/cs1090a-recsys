@@ -48,6 +48,10 @@ class Sibling(Contract):
     source: str = Field(min_length=1)
     branch: str = Field(default="develop", min_length=1)
     tools: dict[str, str]
+    # WHERE THE TOOLCHAIN COMES FROM (A.188): the nixpkgs revision the sibling's flake.lock pins,
+    # and each tool's nixpkgs file, so every pin is proven to be the version the flake resolves.
+    nixpkgs: str | None = Field(default=None, pattern=r"^[0-9a-f]{40}$")
+    packages: dict[str, str] = Field(default_factory=dict)
 
 
 class _Siblings(Contract):
@@ -63,6 +67,8 @@ class SiblingTrust(Contract):
     head_on_develop: bool
     config_unmodified: bool
     override_matches: bool
+    # A.188: the clone's flake.lock still pins the nixpkgs the FAS mode's versions were read at.
+    toolchain_current: bool
 
 
 def declared(root: Path = ROOT) -> tuple[Sibling, ...]:
@@ -143,6 +149,18 @@ def write_override(clone: Path, sibling: Sibling) -> Path:
     return written
 
 
+def _locked_nixpkgs(clone: Path) -> str | None:
+    """The nixpkgs revision the clone's flake.lock pins, or None when it pins none (A.188)."""
+    lock = clone / "flake.lock"
+    if not lock.is_file():
+        return None
+    try:
+        rev = json.loads(lock.read_text(encoding="utf-8"))["nodes"]["nixpkgs"]["locked"]["rev"]
+    except (ValueError, KeyError, TypeError):
+        return None
+    return str(rev)
+
+
 def observe(clone: Path, sibling: Sibling) -> SiblingTrust:
     """What trusting needs: HEAD on origin/develop, mise.toml unmodified, the override exact."""
     with _non_interactive():
@@ -153,12 +171,14 @@ def observe(clone: Path, sibling: Sibling) -> SiblingTrust:
     at_tip = tip.returncode == 0 and head == tip.stdout.strip() and branch == sibling.branch
     unmodified = git("diff", "--quiet", "HEAD", "--", "mise.toml", cwd=clone)
     override = clone / OVERRIDE
+    locked = _locked_nixpkgs(clone)
     return SiblingTrust(
         name=sibling.name,
         head_on_develop=fetched.returncode == 0 and at_tip,
         config_unmodified=unmodified.returncode == 0,
         override_matches=override.is_file()
         and override.read_text(encoding="utf-8") == override_text(sibling),
+        toolchain_current=sibling.nixpkgs is None or locked == sibling.nixpkgs,
     )
 
 

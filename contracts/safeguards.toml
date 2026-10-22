@@ -1658,3 +1658,12 @@ path = "policies/runs/sibling_trust/sibling_trust.rego"
 anchor = "\tnot evidence.override_matches\n"
 mutant = "\tfalse\n"
 proof = "tests/test_sibling_checkout.py::test_a_mismatched_override_is_not_trusted"
+
+[[safeguards]]
+id = "SIBLING.TOOLCHAIN_STALE"
+engine = "sibling:checkout"
+guard = "ERR_SIBLING_TOOLCHAIN_STALE"
+path = "policies/runs/sibling_trust/sibling_trust.rego"
+anchor = "\tnot evidence.toolchain_current\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_a_stale_toolchain_is_not_trusted"

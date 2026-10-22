@@ -174,4 +174,5 @@ issued = [
   { id = "A.185", first_title = "sibling:checkout clones a declared sibling from its canonical source beside this repository, gives it a FAS mode through an excluded mise.local.toml, and trusts it only unmodified at a commit on its develop" },
   { id = "A.186", first_title = "sibling:checkout sets a trusted sibling up by its own setup task in the cleaned environment, and every declared tool is a name in mise's registry" },
   { id = "A.187", first_title = "sibling:checkout puts a sibling on its declared branch at that branch's remote tip, switching and fast-forwarding only when clean, and trusts it only there" },
+  { id = "A.188", first_title = "A sibling's FAS pins are the versions its flake.lock resolves, recorded with the nixpkgs revision and each tool's source, and proven live against the lock, nixpkgs and mise" },
 ]
