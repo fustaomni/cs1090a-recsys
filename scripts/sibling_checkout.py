@@ -14,10 +14,11 @@ exactly as declared, judged by policies/runs/sibling_trust before mise trusts ei
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import tomllib
-from collections.abc import Sequence
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from typing import Literal
 
@@ -26,6 +27,7 @@ from pydantic import Field
 from command_outcome import announce
 from contract_base import Contract, from_document
 from gitenv import git
+from setup_env import setup_environment
 from spine import decide, enforce, evaluate, halted, reasons, refusal_code
 from template_new import _non_interactive
 from upstream import normalized
@@ -133,6 +135,22 @@ def observe(clone: Path, sibling: Sibling) -> SiblingTrust:
     )
 
 
+Setup = Callable[..., int]
+
+
+def _run_setup(command: list[str], *, cwd: Path, env: dict[str, str]) -> int:
+    return subprocess.run(command, cwd=cwd, env=env, check=False).returncode
+
+
+def set_up(
+    clone: Path, *, run: Setup = _run_setup, environ: Mapping[str, str] | None = None
+) -> None:
+    """Run the sibling's own setup, cleaned of the caller's VIRTUAL_ENV, as worktree:add does."""
+    env = setup_environment(os.environ if environ is None else environ)
+    if run(["mise", "run", "setup"], cwd=clone, env=env) != 0:
+        raise SystemExit(f"{clone}: its setup task failed, so it is not workable")
+
+
 def _siblings_parent() -> Path:
     """Where siblings live: beside this repository's main checkout, never inside a worktree."""
     common = git("rev-parse", "--path-format=absolute", "--git-common-dir", cwd=ROOT)
@@ -167,7 +185,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             reason = f"mise trust {name} failed: {trusted.stderr.strip()}"
             stopped = halted(SUBJECT, ENTRYPOINT, POLICY, reason)
             return enforce(announce(COMMAND, stopped, "sibling_untrusted", reason, data))
-    message = f"{sibling.name} at {clone}: cloned, given its FAS mode, and trusted as merged"
+    set_up(clone)
+    message = f"{sibling.name} at {clone}: cloned, given its FAS mode, trusted and set up"
     return enforce(announce(COMMAND, decision, "sibling_checked_out", message, data))
 
 
