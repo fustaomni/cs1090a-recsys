@@ -46,6 +46,7 @@ class Sibling(Contract):
 
     name: str = Field(min_length=1)
     source: str = Field(min_length=1)
+    branch: str = Field(default="develop", min_length=1)
     tools: dict[str, str]
 
 
@@ -76,14 +77,37 @@ def checkout(sibling: Sibling, parent: Path) -> Path:
     if not target.exists():
         parent.mkdir(parents=True, exist_ok=True)
         with _non_interactive():
-            cloned = git("clone", "--quiet", sibling.source, str(target), cwd=parent)
+            command = ("clone", "--quiet", "--branch", sibling.branch, sibling.source, str(target))
+            cloned = git(*command, cwd=parent)
         if cloned.returncode != 0:
             raise SystemExit(f"clone of {sibling.source} failed: {cloned.stderr.strip()}")
     origin = git("remote", "get-url", "origin", cwd=target)
     found = origin.stdout.strip() if origin.returncode == 0 else "no origin"
     if normalized(found) != normalized(sibling.source):
         raise SystemExit(f"{target} was cloned from {found}, not {sibling.source}; remove it")
+    _onto_branch(target, sibling)
     return target
+
+
+def _onto_branch(clone: Path, sibling: Sibling) -> None:
+    """The clone on its declared branch at the remote tip: switched, fast-forwarded, only clean."""
+    with _non_interactive():
+        fetched = git("fetch", "--quiet", "origin", cwd=clone)
+    if fetched.returncode != 0:
+        raise SystemExit(f"{clone}: fetching origin failed: {fetched.stderr.strip()}")
+    dirty = git("status", "--porcelain", "--untracked-files=no", cwd=clone).stdout.strip()
+    if dirty:
+        raise SystemExit(f"{clone} has uncommitted changes; it is neither switched nor merged")
+    current = git("symbolic-ref", "--quiet", "--short", "HEAD", cwd=clone).stdout.strip()
+    if current != sibling.branch:
+        switched = git("switch", "--quiet", sibling.branch, cwd=clone)
+        if switched.returncode != 0:
+            reason = f"{clone}: cannot switch to {sibling.branch}: {switched.stderr.strip()}"
+            raise SystemExit(reason)
+    tip = f"origin/{sibling.branch}"
+    merged = git("merge", "--ff-only", "--quiet", tip, cwd=clone)
+    if merged.returncode != 0:
+        raise SystemExit(f"{clone}: {sibling.branch} cannot fast-forward to {tip}; nothing changed")
 
 
 def override_text(sibling: Sibling) -> str:
@@ -123,12 +147,15 @@ def observe(clone: Path, sibling: Sibling) -> SiblingTrust:
     """What trusting needs: HEAD on origin/develop, mise.toml unmodified, the override exact."""
     with _non_interactive():
         fetched = git("fetch", "--quiet", "origin", cwd=clone)
-    ancestor = git("merge-base", "--is-ancestor", "HEAD", "origin/develop", cwd=clone)
+    head = git("rev-parse", "HEAD", cwd=clone).stdout.strip()
+    tip = git("rev-parse", f"origin/{sibling.branch}", cwd=clone)
+    branch = git("symbolic-ref", "--quiet", "--short", "HEAD", cwd=clone).stdout.strip()
+    at_tip = tip.returncode == 0 and head == tip.stdout.strip() and branch == sibling.branch
     unmodified = git("diff", "--quiet", "HEAD", "--", "mise.toml", cwd=clone)
     override = clone / OVERRIDE
     return SiblingTrust(
         name=sibling.name,
-        head_on_develop=fetched.returncode == 0 and ancestor.returncode == 0,
+        head_on_develop=fetched.returncode == 0 and at_tip,
         config_unmodified=unmodified.returncode == 0,
         override_matches=override.is_file()
         and override.read_text(encoding="utf-8") == override_text(sibling),
