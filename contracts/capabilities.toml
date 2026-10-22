@@ -482,3 +482,9 @@ task = "branches:retire"
 version = "1.0.0"
 implementation = "scripts/branches_retire.py"
 emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "sibling:checkout"
+version = "1.0.0"
+implementation = "scripts/sibling_checkout.py"
+emits = "command-outcome/v1"

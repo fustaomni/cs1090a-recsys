@@ -774,3 +774,10 @@ description = "Install exactly what uv.lock pins, refusing a lock that no longer
 # lets a later `uv run` fail for it under another step's name. --locked never
 # rewrites uv.lock, so starting this task cannot dirty the lockfile (D.9).
 run = "uv sync --locked"
+
+# This repository's own (plan A.185): the reference repository runs every task inside nix develop,
+# which FAS OnDemand cannot run, so a sibling is cloned here with a FAS mode and trusted as merged.
+[tasks."sibling:checkout"]
+description = "Clone a declared sibling beside this repository, give it a FAS mode, trust it as merged"
+usage = 'arg "<name>" help="A sibling contracts/siblings.toml declares"'
+run = 'uv run --no-sync python scripts/sibling_checkout.py "${usage_name?}"'

@@ -31,14 +31,14 @@ FULL_SHA = re.compile(r"[0-9a-f]{40}")
 USAGE = "usage: upstream.py <repository-url-or-path> <full-commit-sha> [pathspec...]"
 
 
-def _normalized(source: str) -> str:
+def normalized(source: str) -> str:
     """A source as git records it, without a trailing slash or .git: one repository, one name."""
     return source.strip().rstrip("/").removesuffix(".git")
 
 
 def location(source: str, commit: str, root: Path = EVIDENCE) -> Path:
     """Where source at commit lives: its name, the commit and a digest of the source (A.184)."""
-    canonical = _normalized(source)
+    canonical = normalized(source)
     digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:8]
     return root / f"{Path(canonical).name}-{commit[:12]}-{digest}"
 
@@ -60,7 +60,7 @@ def checkout(source: str, commit: str, root: Path = EVIDENCE) -> Path:
             raise SystemExit(f"{commit} is not in {source}: {checked.stderr.strip()}")
     origin = git("remote", "get-url", "origin", cwd=target)
     found = origin.stdout.strip() if origin.returncode == 0 else "no origin"
-    if _normalized(found) != _normalized(source):
+    if normalized(found) != normalized(source):
         raise SystemExit(f"{target} was cloned from {found}, not {source}; remove it")
     head = git("rev-parse", "HEAD", cwd=target)
     if head.returncode != 0 or head.stdout.strip() != commit:
