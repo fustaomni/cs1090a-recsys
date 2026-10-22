@@ -126,6 +126,46 @@ def test_an_absent_trust_request_is_refused_by_the_policy() -> None:
     assert "ERR_SIBLING_TRUST_INPUT_MISSING" in codes, found
 
 
+def test_every_declared_tool_is_a_name_in_the_mise_registry() -> None:
+    """A.186: mise resolves a tool by its registry shorthand; any other name is not installed."""
+    subject = _subject()
+    listed = subprocess.run(["mise", "registry"], capture_output=True, text=True, check=True)
+    names = {line.split()[0] for line in listed.stdout.splitlines() if line.strip()}
+    assert names, "mise listed no registry"
+    declared = {tool for sibling in subject.declared(ROOT) for tool in sibling.tools}
+    assert declared, "no sibling declares a tool"
+    assert declared <= names, sorted(declared - names)
+
+
+def test_a_trusted_sibling_is_set_up_by_its_own_setup_task(tmp_path: Path) -> None:
+    """A.186: as worktree:add does, the sibling's own setup runs, the caller's VIRTUAL_ENV gone."""
+    subject = _subject()
+    assert hasattr(subject, "set_up"), "sibling:checkout does not set a sibling up"
+    seen: list[tuple[list[str], Path, dict[str, str]]] = []
+
+    def run(command: list[str], *, cwd: Path, env: dict[str, str]) -> int:
+        seen.append((command, cwd, env))
+        return 0
+
+    caller = {"VIRTUAL_ENV": "/elsewhere/.venv", "PATH": "/usr/bin"}
+    subject.set_up(tmp_path, run=run, environ=caller)
+    assert [(command, cwd) for command, cwd, _ in seen] == [(["mise", "run", "setup"], tmp_path)]
+    assert "VIRTUAL_ENV" not in seen[0][2], seen
+
+
+def test_a_failed_setup_is_refused_by_name(tmp_path: Path) -> None:
+    """A.186: a sibling whose setup fails is not workable, and says so."""
+    subject = _subject()
+    assert hasattr(subject, "set_up"), "sibling:checkout does not set a sibling up"
+
+    def run(command: list[str], *, cwd: Path, env: dict[str, str]) -> int:
+        return 1
+
+    with pytest.raises(SystemExit) as refused:
+        subject.set_up(tmp_path, run=run, environ={"PATH": "/usr/bin"})
+    assert "setup" in str(refused.value), refused.value
+
+
 def test_cscie103_is_declared_at_its_canonical_source_with_its_toolchain() -> None:
     subject = _subject()
     declared = {sibling.name: sibling for sibling in subject.declared(ROOT)}
@@ -133,7 +173,7 @@ def test_cscie103_is_declared_at_its_canonical_source_with_its_toolchain() -> No
     assert cscie103.source == "https://github.com/fustaomni/cscie103-data-engineering"
     expected = {
         "betterleaks",
-        "databricks",
+        "databricks-cli",
         "java",
         "lefthook",
         "opa",
