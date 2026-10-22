@@ -1667,3 +1667,30 @@ path = "policies/runs/sibling_trust/sibling_trust.rego"
 anchor = "\tnot evidence.toolchain_current\n"
 mutant = "\tfalse\n"
 proof = "tests/test_sibling_checkout.py::test_a_stale_toolchain_is_not_trusted"
+
+[[safeguards]]
+id = "SIBLING_OVERRIDE.INPUT_MISSING"
+engine = "sibling:override"
+guard = "ERR_SIBLING_OVERRIDE_INPUT_MISSING"
+path = "policies/runs/sibling_override/sibling_override.rego"
+anchor = "\tnot input.sibling_override\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_an_absent_override_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SIBLING_OVERRIDE.NO_CLONE"
+engine = "sibling:override"
+guard = "ERR_SIBLING_OVERRIDE_NO_CLONE"
+path = "policies/runs/sibling_override/sibling_override.rego"
+anchor = "\tnot evidence.clone_exists\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_an_override_needs_an_existing_clone"
+
+[[safeguards]]
+id = "SIBLING_OVERRIDE.FOREIGN"
+engine = "sibling:override"
+guard = "ERR_SIBLING_OVERRIDE_FOREIGN"
+path = "policies/runs/sibling_override/sibling_override.rego"
+anchor = "\tnot evidence.origin_matches\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_an_override_is_never_written_into_another_sources_clone"
