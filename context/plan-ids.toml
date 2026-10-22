@@ -170,4 +170,5 @@ issued = [
   { id = "A.181", first_title = "Each run emits OpenLineage run events, START then COMPLETE or FAIL, naming its input and output datasets with their digests and its parent run, validated against the pinned OpenLineage schema and written as files" },
   { id = "A.182", first_title = "upstream:checkout's list mode refuses any pathspec that matches no path at the pinned commit, naming it and saying pathspecs are literal" },
   { id = "A.184", first_title = "upstream:checkout names each clone by its normalized source's digest, and refuses an existing clone whose origin is another source" },
+  { id = "A.183", first_title = "Tracked references name cscie103 at fustaomni, where it lives, never relying on GitHub's redirect from its old location" },
 ]

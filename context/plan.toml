@@ -1907,3 +1907,13 @@ done_when = [
   { kind = "proof", test = "tests/test_upstream_checkout.py::test_a_checkout_whose_origin_is_another_source_is_refused" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.183"
+title = "Tracked references name cscie103 at fustaomni, where it lives, never relying on GitHub's redirect from its old location"
+thread = "A"
+depends_on = ["A.184"]
+because = { "A.184" = "an origin-verified checkout is what confirms the repository at its new location" }
+done_when = [
+  { kind = "proof", test = "tests/test_canonical_sources.py::test_tracked_references_name_cscie103_where_it_lives" },
+  { kind = "task", name = "check" },
+]

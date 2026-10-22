@@ -4,7 +4,7 @@
 # repository changed; mirrored, not reinvented, is then checkable rather than claimed.
 # An entry naming its own commit was read there; any other was read at the commit below (A.136).
 contract = "provenance/v1"
-source = "https://github.com/ltphongssvn/cscie103-data-engineering"
+source = "https://github.com/fustaomni/cscie103-data-engineering"
 commit = "58af9d32a9972d6abb5a18acd94ee1235843da66"
 
 [[files]]
@@ -953,9 +953,9 @@ sha256 = "48cb399c2caa9ffac9db7a5c53b2f9c2cb0da1d169b7988243866d88e3e5e1c4"
 
 [[adapted]]
 path = "copier.yml"
-reason = "the run-ledger anchor is excluded, since a generated project starts its own ledger as it starts its own plan (A.121); this repository's provenance record, its vendor patches and the two proofs that verify them are excluded as its own port history, and the generated-project gate is excluded where it now lives, at tests/integration (A.123)"
+reason = "the run-ledger anchor is excluded, since a generated project starts its own ledger as it starts its own plan (A.121); the provenance record of this repository, its vendor patches and the two proofs that verify them are excluded as its own port history, and the generated-project gate is excluded where it now lives, at tests/integration (A.123); the proof that tracked references name cscie103 where it lives is excluded with that record, since a generated project has none (A.183)"
 patch = "contracts/vendor-patches/copier.yml.patch"
-sha256 = "88013fc6d41f8fa5d0cdd791821ffb6e036f991d76f2605b30d182b6f1e1bc1e"
+sha256 = "be410035f21bda29d5cc6e2e081cb560d6354a8731decd5e7ea1eb3c8c806986"
 
 [[files]]
 path = "contracts/project-identity.toml"
