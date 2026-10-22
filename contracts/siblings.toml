@@ -8,6 +8,7 @@ contract = "siblings/v1"
 [[siblings]]
 name = "cscie103-data-engineering"
 source = "https://github.com/fustaomni/cscie103-data-engineering"
+branch = "develop"
 
 [siblings.tools]
 betterleaks = "1.9.0"
