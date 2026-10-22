@@ -176,4 +176,5 @@ issued = [
   { id = "A.187", first_title = "sibling:checkout puts a sibling on its declared branch at that branch's remote tip, switching and fast-forwarding only when clean, and trusts it only there" },
   { id = "A.188", first_title = "A sibling's FAS pins are the versions its flake.lock resolves, recorded with the nixpkgs revision and each tool's source, and proven live against the lock, nixpkgs and mise" },
   { id = "A.189", first_title = "sibling:override writes the declared FAS mode into an existing clone, its origin verified, on whatever branch it is, without switching, merging or touching tracked files" },
+  { id = "A.190", first_title = "sibling:override trusts the override it wrote, by path, as sibling:checkout does, and refuses rather than report a write mise will not load" },
 ]
