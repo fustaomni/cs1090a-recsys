@@ -134,13 +134,25 @@ def override_request(sibling: Sibling, parent: Path) -> SiblingOverride:
     )
 
 
-def refresh_override(sibling: Sibling, parent: Path) -> Path:
-    """The declared FAS mode, written into a clone on whatever branch it is, once judged."""
+Trust = Callable[[Path], int]
+
+
+def _mise_trust(path: Path) -> int:
+    """Under paranoid, trust is content-bound: a rewritten file is trusted again, by its path."""
+    done = subprocess.run(["mise", "trust", str(path)], capture_output=True, text=True, check=False)
+    return done.returncode
+
+
+def refresh_override(sibling: Sibling, parent: Path, *, trust: Trust = _mise_trust) -> Path:
+    """The declared FAS mode, written into a clone on whatever branch it is, judged, trusted."""
     request = override_request(sibling, parent)
     found = evaluate(request, OVERRIDE_SUBJECT, OVERRIDE_POLICY, OVERRIDE_ENTRYPOINT)
     if decide(found).action != "proceed":
         raise SystemExit(reasons(found))
-    return write_override(Path(request.clone), sibling)
+    written = write_override(Path(request.clone), sibling)
+    if trust(written) != 0:
+        raise SystemExit(f"mise trust {written} failed, so mise will not load it")
+    return written
 
 
 def _onto_branch(clone: Path, sibling: Sibling) -> None:
@@ -275,7 +287,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             code = refusal_code(verdict, "sibling_override_refused")
             return enforce(announce(OVERRIDE_COMMAND, verdict, code, reasons(judged), observed))
         written = write_override(Path(request.clone), sibling)
-        note = f"{written}: the declared FAS mode, written on the branch the clone is on"
+        if _mise_trust(written) != 0:
+            reason = f"mise trust {written} failed, so mise will not load it"
+            stopped = halted(OVERRIDE_SUBJECT, OVERRIDE_ENTRYPOINT, OVERRIDE_POLICY, reason)
+            untrusted = "sibling_override_untrusted"
+            return enforce(announce(OVERRIDE_COMMAND, stopped, untrusted, reason, observed))
+        note = f"{written}: the declared FAS mode, written and trusted on the clone's branch"
         written_code = "sibling_override_written"
         return enforce(announce(OVERRIDE_COMMAND, verdict, written_code, note, observed))
     clone = checkout(sibling, _siblings_parent())
