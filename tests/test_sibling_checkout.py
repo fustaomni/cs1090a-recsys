@@ -49,6 +49,89 @@ def _origin(tmp_path: Path, name: str) -> Path:
     return repo
 
 
+def _two_branches(tmp_path: Path) -> Path:
+    """A.187: an origin whose default branch is main, with develop one commit ahead of it."""
+    repo = tmp_path / "remote" / "demo"
+    repo.mkdir(parents=True)
+    _git(repo, "init", "--quiet", "--initial-branch=main")
+    _git(repo, "config", "user.email", "probe@example.invalid")
+    _git(repo, "config", "user.name", "probe")
+    _git(repo, "config", "commit.gpgsign", "false")
+    (repo / "mise.toml").write_text('[task_config]\nshell = "nix develop --command bash -c"\n')
+    _git(repo, "add", "mise.toml")
+    _git(repo, "commit", "--quiet", "-m", "released")
+    _git(repo, "switch", "--quiet", "-c", "develop")
+    _ahead(repo, "integrated")
+    _git(repo, "switch", "--quiet", "main")
+    return repo
+
+
+def _ahead(repo: Path, message: str) -> None:
+    """One more commit on the origin's develop, which is left checked out as it was."""
+    current = _git(repo, "symbolic-ref", "--short", "HEAD")
+    _git(repo, "switch", "--quiet", "develop")
+    (repo / f"{message}.txt").write_text(f"{message}\n")
+    _git(repo, "add", f"{message}.txt")
+    _git(repo, "commit", "--quiet", "-m", message)
+    _git(repo, "switch", "--quiet", current)
+
+
+def _plain_clone(source: Path, target: Path) -> Path:
+    target.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["git", "clone", "--quiet", str(source), str(target)], check=True)
+    return target
+
+
+def test_a_sibling_is_cloned_on_its_declared_branch(tmp_path: Path) -> None:
+    """A.187: the default branch is main; the sibling is still checked out on develop."""
+    subject = _subject()
+    source = _two_branches(tmp_path)
+    clone = subject.checkout(_sibling(subject, source), tmp_path / "siblings")
+    assert _git(clone, "symbolic-ref", "--short", "HEAD") == "develop"
+    assert _git(clone, "rev-parse", "HEAD") == _git(source, "rev-parse", "develop")
+
+
+def test_an_existing_clone_on_another_branch_is_moved_to_its_own(tmp_path: Path) -> None:
+    """A.187: a clean clone on main is switched to develop, its declared branch."""
+    subject = _subject()
+    source = _two_branches(tmp_path)
+    _plain_clone(source, tmp_path / "siblings" / "demo")
+    clone = subject.checkout(_sibling(subject, source), tmp_path / "siblings")
+    assert _git(clone, "symbolic-ref", "--short", "HEAD") == "develop"
+
+
+def test_a_stale_clone_is_fast_forwarded_to_its_branch_tip(tmp_path: Path) -> None:
+    """A.187: a clone behind its branch is brought to the remote tip, by fast-forward only."""
+    subject = _subject()
+    source = _two_branches(tmp_path)
+    sibling = _sibling(subject, source)
+    clone = subject.checkout(sibling, tmp_path / "siblings")
+    _ahead(source, "later")
+    subject.checkout(sibling, tmp_path / "siblings")
+    assert _git(clone, "rev-parse", "HEAD") == _git(source, "rev-parse", "develop")
+
+
+def test_a_dirty_clone_off_its_branch_is_refused(tmp_path: Path) -> None:
+    """A.187: a clone with uncommitted tracked changes is never switched or merged into."""
+    subject = _subject()
+    source = _two_branches(tmp_path)
+    clone = _plain_clone(source, tmp_path / "siblings" / "demo")
+    (clone / "mise.toml").write_text("# changed by hand\n")
+    with pytest.raises(SystemExit) as refused:
+        subject.checkout(_sibling(subject, source), tmp_path / "siblings")
+    assert "uncommitted" in str(refused.value), refused.value
+
+
+def test_a_clone_behind_its_branch_tip_is_not_trusted(tmp_path: Path) -> None:
+    """A.187: an ancestor of develop is not develop; trust needs HEAD to be its branch's tip."""
+    subject = _subject()
+    source = _two_branches(tmp_path)
+    sibling = _sibling(subject, source)
+    clone = subject.checkout(sibling, tmp_path / "siblings")
+    _ahead(source, "later")
+    assert subject.observe(clone, sibling).head_on_develop is False
+
+
 def _sibling(subject: ModuleType, source: Path) -> object:
     return subject.Sibling(name="demo", source=str(source), tools=TOOLS)
 
