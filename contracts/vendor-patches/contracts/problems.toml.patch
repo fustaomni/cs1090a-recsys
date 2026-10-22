@@ -1509,7 +1509,7 @@
  
  [[problems]]
  code = "ERR_TEMPLATE_UNPINNED"
-@@ -1086,151 +797,136 @@
+@@ -1086,151 +797,141 @@
  severity = "error"
  
  [[problems]]
@@ -1793,4 +1793,9 @@
 +[[problems]]
 +code = "ERR_SIBLING_TRUST_INPUT_MISSING"
 +title = "The sibling's trust evidence is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_SIBLING_TOOLCHAIN_STALE"
++title = "The sibling's flake.lock still pins the nixpkgs its FAS mode was read from"
 +severity = "error"
