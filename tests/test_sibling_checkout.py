@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import importlib
 import importlib.util
+import inspect
 import json
 import subprocess
 import tomllib
@@ -293,7 +294,7 @@ def test_the_override_is_rewritten_on_a_clone_mid_feature(tmp_path: Path) -> Non
     (clone / "mise.toml").write_text("# work in progress\\n")
     (clone / "mise.local.toml").write_text("# an older FAS mode\\n")
     repinned = subject.Sibling(name="demo", source=str(source), tools={"uv": "0.12.22"})
-    subject.refresh_override(repinned, tmp_path / "siblings")
+    subject.refresh_override(repinned, tmp_path / "siblings", trust=lambda _: 0)
     assert (clone / "mise.local.toml").read_text() == subject.override_text(repinned)
     assert _git(clone, "symbolic-ref", "--short", "HEAD") == "feature/wip"
     assert (clone / "mise.toml").read_text() == "# work in progress\\n"
@@ -333,6 +334,37 @@ def test_an_absent_override_request_is_refused_by_the_policy() -> None:
     )
     codes = [rule.code for rule in found.rules if rule.outcome == "fail"]
     assert "ERR_SIBLING_OVERRIDE_INPUT_MISSING" in codes, found
+
+
+def test_a_rewritten_override_is_trusted_again(tmp_path: Path) -> None:
+    """A.190: mise trusts by content, so the rewritten file is trusted again, by its path."""
+    subject = _subject()
+    parameters = inspect.signature(subject.refresh_override).parameters
+    assert "trust" in parameters, "a rewritten override is left untrusted"
+    source = _origin(tmp_path, "demo")
+    parent = tmp_path / "siblings"
+    clone = subject.checkout(_sibling(subject, source), parent)
+    trusted: list[Path] = []
+
+    def trust(path: Path) -> int:
+        trusted.append(path)
+        return 0
+
+    subject.refresh_override(_sibling(subject, source), parent, trust=trust)
+    assert trusted == [clone / "mise.local.toml"], trusted
+
+
+def test_an_override_mise_will_not_trust_is_refused(tmp_path: Path) -> None:
+    """A.190: written but untrusted is not done, since mise would refuse every task there."""
+    subject = _subject()
+    parameters = inspect.signature(subject.refresh_override).parameters
+    assert "trust" in parameters, "a rewritten override is left untrusted"
+    source = _origin(tmp_path, "demo")
+    parent = tmp_path / "siblings"
+    subject.checkout(_sibling(subject, source), parent)
+    with pytest.raises(SystemExit) as refused:
+        subject.refresh_override(_sibling(subject, source), parent, trust=lambda _: 1)
+    assert "trust" in str(refused.value), refused.value
 
 
 def test_cscie103_declares_where_its_toolchain_comes_from() -> None:
