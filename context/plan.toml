@@ -1976,3 +1976,16 @@ done_when = [
   { kind = "proof", test = "tests/integration/test_sibling_toolchain.py::test_every_pin_resolves_in_mise" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.189"
+title = "sibling:override writes the declared FAS mode into an existing clone, its origin verified, on whatever branch it is, without switching, merging or touching tracked files"
+thread = "A"
+depends_on = ["A.188"]
+because = { "A.188" = "the pins it corrected, which a clone mid-feature could not receive" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_the_override_is_rewritten_on_a_clone_mid_feature" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_an_override_is_never_written_into_another_sources_clone" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_an_override_needs_an_existing_clone" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_an_absent_override_request_is_refused_by_the_policy" },
+  { kind = "task", name = "check" },
+]
