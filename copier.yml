@@ -37,6 +37,7 @@ _exclude:
   - "contracts/vendor-patches"
   - "tests/test_provenance.py"
   - "tests/test_provenance_record.py"
+  - "tests/test_canonical_sources.py"
   # TESTS OF THE TEMPLATE BELONG WHERE THE TEMPLATE IS: a generated project has no
   # copier.yml to render (D.61).
   - "tests/test_copier_template.py"
