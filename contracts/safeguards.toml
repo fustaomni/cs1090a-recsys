@@ -1622,3 +1622,39 @@ path = "policies/machine/environment/environment.rego"
 anchor = "\tnot input.environment_sync.installed\n"
 mutant = "\tfalse\n"
 proof = "tests/test_environment_policy.py::test_a_changed_lock_left_uninstalled_is_refused"
+
+[[safeguards]]
+id = "SIBLING.INPUT_MISSING"
+engine = "sibling:checkout"
+guard = "ERR_SIBLING_TRUST_INPUT_MISSING"
+path = "policies/runs/sibling_trust/sibling_trust.rego"
+anchor = "\tnot input.sibling_trust\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_an_absent_trust_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SIBLING.HEAD_NOT_ON_DEVELOP"
+engine = "sibling:checkout"
+guard = "ERR_SIBLING_HEAD_NOT_ON_DEVELOP"
+path = "policies/runs/sibling_trust/sibling_trust.rego"
+anchor = "\tnot evidence.head_on_develop\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_a_sibling_head_off_its_develop_is_not_trusted"
+
+[[safeguards]]
+id = "SIBLING.CONFIG_MODIFIED"
+engine = "sibling:checkout"
+guard = "ERR_SIBLING_CONFIG_MODIFIED"
+path = "policies/runs/sibling_trust/sibling_trust.rego"
+anchor = "\tnot evidence.config_unmodified\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_a_modified_sibling_config_is_not_trusted"
+
+[[safeguards]]
+id = "SIBLING.OVERRIDE_MISMATCH"
+engine = "sibling:checkout"
+guard = "ERR_SIBLING_OVERRIDE_MISMATCH"
+path = "policies/runs/sibling_trust/sibling_trust.rego"
+anchor = "\tnot evidence.override_matches\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_a_mismatched_override_is_not_trusted"

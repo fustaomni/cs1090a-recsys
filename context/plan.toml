@@ -1917,3 +1917,21 @@ done_when = [
   { kind = "proof", test = "tests/test_canonical_sources.py::test_tracked_references_name_cscie103_where_it_lives" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.185"
+title = "sibling:checkout clones a declared sibling from its canonical source beside this repository, gives it a FAS mode through an excluded mise.local.toml, and trusts it only unmodified at a commit on its develop"
+thread = "A"
+depends_on = ["A.184", "A.122", "A.121"]
+because = { "A.184" = "an existing clone is reused only once its origin reads back as the declared source", "A.122" = "another checkout is trusted by its own path, never through this one", "A.121" = "this machine reaches GitHub over HTTPS through gh's credential helper, prompts off" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_a_declared_sibling_is_cloned_from_its_canonical_source" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_an_existing_clone_from_another_source_is_refused" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_the_override_replaces_the_nix_shell_and_pins_the_declared_tools" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_the_override_leaves_the_clone_clean" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_a_sibling_head_off_its_develop_is_not_trusted" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_a_modified_sibling_config_is_not_trusted" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_a_mismatched_override_is_not_trusted" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_cscie103_is_declared_at_its_canonical_source_with_its_toolchain" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_an_absent_trust_request_is_refused_by_the_policy" },
+  { kind = "task", name = "check" },
+]
