@@ -1935,3 +1935,16 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_checkout.py::test_an_absent_trust_request_is_refused_by_the_policy" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.186"
+title = "sibling:checkout sets a trusted sibling up by its own setup task in the cleaned environment, and every declared tool is a name in mise's registry"
+thread = "A"
+depends_on = ["A.185"]
+because = { "A.185" = "the sibling it checks out and trusts, which is not workable until it is set up" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_every_declared_tool_is_a_name_in_the_mise_registry" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_a_trusted_sibling_is_set_up_by_its_own_setup_task" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_a_failed_setup_is_refused_by_name" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_cscie103_is_declared_at_its_canonical_source_with_its_toolchain" },
+  { kind = "task", name = "check" },
+]

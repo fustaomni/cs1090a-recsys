@@ -172,4 +172,5 @@ issued = [
   { id = "A.184", first_title = "upstream:checkout names each clone by its normalized source's digest, and refuses an existing clone whose origin is another source" },
   { id = "A.183", first_title = "Tracked references name cscie103 at fustaomni, where it lives, never relying on GitHub's redirect from its old location" },
   { id = "A.185", first_title = "sibling:checkout clones a declared sibling from its canonical source beside this repository, gives it a FAS mode through an excluded mise.local.toml, and trusts it only unmodified at a commit on its develop" },
+  { id = "A.186", first_title = "sibling:checkout sets a trusted sibling up by its own setup task in the cleaned environment, and every declared tool is a name in mise's registry" },
 ]
