@@ -87,12 +87,60 @@ def checkout(sibling: Sibling, parent: Path) -> Path:
             cloned = git(*command, cwd=parent)
         if cloned.returncode != 0:
             raise SystemExit(f"clone of {sibling.source} failed: {cloned.stderr.strip()}")
+    _verify_origin(target, sibling)
+    _onto_branch(target, sibling)
+    return target
+
+
+def _verify_origin(target: Path, sibling: Sibling) -> None:
+    """The clone's origin reads back as the declared source, or it is refused, named (A.184)."""
     origin = git("remote", "get-url", "origin", cwd=target)
     found = origin.stdout.strip() if origin.returncode == 0 else "no origin"
     if normalized(found) != normalized(sibling.source):
         raise SystemExit(f"{target} was cloned from {found}, not {sibling.source}; remove it")
-    _onto_branch(target, sibling)
-    return target
+
+
+OVERRIDE_COMMAND = "sibling:override"
+OVERRIDE_SUBJECT = "sibling_override"
+OVERRIDE_POLICY = ROOT / "policies" / "runs" / "sibling_override"
+OVERRIDE_ENTRYPOINT = "data.runs.sibling_override.deny"
+
+
+class SiblingOverride(Contract):
+    """sibling-override/v1: what was observed of a clone before its FAS mode is rewritten."""
+
+    contract: Literal["sibling-override/v1"] = "sibling-override/v1"
+    name: str
+    clone: str
+    clone_exists: bool
+    origin: str
+    origin_matches: bool
+
+
+def override_request(sibling: Sibling, parent: Path) -> SiblingOverride:
+    """The clone as observed: whether it exists, and where its origin points (A.189)."""
+    target = parent / sibling.name
+    exists = (target / ".git").exists()
+    found = "no clone"
+    if exists:
+        origin = git("remote", "get-url", "origin", cwd=target)
+        found = origin.stdout.strip() if origin.returncode == 0 else "no origin"
+    return SiblingOverride(
+        name=sibling.name,
+        clone=str(target),
+        clone_exists=exists,
+        origin=found,
+        origin_matches=exists and normalized(found) == normalized(sibling.source),
+    )
+
+
+def refresh_override(sibling: Sibling, parent: Path) -> Path:
+    """The declared FAS mode, written into a clone on whatever branch it is, once judged."""
+    request = override_request(sibling, parent)
+    found = evaluate(request, OVERRIDE_SUBJECT, OVERRIDE_POLICY, OVERRIDE_ENTRYPOINT)
+    if decide(found).action != "proceed":
+        raise SystemExit(reasons(found))
+    return write_override(Path(request.clone), sibling)
 
 
 def _onto_branch(clone: Path, sibling: Sibling) -> None:
@@ -209,12 +257,27 @@ def _siblings_parent() -> Path:
 def main(argv: Sequence[str] | None = None) -> int:
     """sibling:checkout <name> -- clone, give a FAS mode, judge, then trust both files."""
     args = list(sys.argv[1:] if argv is None else argv)
+    override_only = args[:1] == ["--override"]
+    args = args[1:] if override_only else args
     known = {sibling.name: sibling for sibling in declared()}
     if len(args) != 1 or args[0] not in known:
-        usage = f"usage: mise run run sibling:checkout <name>, one of {sorted(known)}"
+        command = OVERRIDE_COMMAND if override_only else COMMAND
+        usage = f"usage: mise run run {command} <name>, one of {sorted(known)}"
         stopped = halted(SUBJECT, ENTRYPOINT, POLICY, usage)
-        return enforce(announce(COMMAND, stopped, "usage", usage, {}))
+        return enforce(announce(command, stopped, "usage", usage, {}))
     sibling = known[args[0]]
+    if override_only:
+        request = override_request(sibling, _siblings_parent())
+        observed = request.model_dump(mode="json")
+        judged = evaluate(request, OVERRIDE_SUBJECT, OVERRIDE_POLICY, OVERRIDE_ENTRYPOINT)
+        verdict = decide(judged)
+        if verdict.action != "proceed":
+            code = refusal_code(verdict, "sibling_override_refused")
+            return enforce(announce(OVERRIDE_COMMAND, verdict, code, reasons(judged), observed))
+        written = write_override(Path(request.clone), sibling)
+        note = f"{written}: the declared FAS mode, written on the branch the clone is on"
+        written_code = "sibling_override_written"
+        return enforce(announce(OVERRIDE_COMMAND, verdict, written_code, note, observed))
     clone = checkout(sibling, _siblings_parent())
     write_override(clone, sibling)
     evidence = observe(clone, sibling)

@@ -935,3 +935,18 @@ severity = "error"
 code = "ERR_SIBLING_TOOLCHAIN_STALE"
 title = "The sibling's flake.lock still pins the nixpkgs its FAS mode was read from"
 severity = "error"
+
+[[problems]]
+code = "ERR_SIBLING_OVERRIDE_FOREIGN"
+title = "The clone's origin is the declared source"
+severity = "error"
+
+[[problems]]
+code = "ERR_SIBLING_OVERRIDE_INPUT_MISSING"
+title = "The override request is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_SIBLING_OVERRIDE_NO_CLONE"
+title = "The sibling is already cloned"
+severity = "error"

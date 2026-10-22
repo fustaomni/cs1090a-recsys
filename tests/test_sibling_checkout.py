@@ -283,6 +283,58 @@ def test_a_stale_toolchain_is_not_trusted() -> None:
     _refused_only_when_broken("toolchain_current", "ERR_SIBLING_TOOLCHAIN_STALE")
 
 
+def test_the_override_is_rewritten_on_a_clone_mid_feature(tmp_path: Path) -> None:
+    """A.189: the declared FAS mode lands; the branch and the uncommitted work stay as they are."""
+    subject = _subject()
+    assert hasattr(subject, "refresh_override"), "no override can be written without a checkout"
+    source = _origin(tmp_path, "demo")
+    clone = subject.checkout(_sibling(subject, source), tmp_path / "siblings")
+    _git(clone, "switch", "--quiet", "-c", "feature/wip")
+    (clone / "mise.toml").write_text("# work in progress\\n")
+    (clone / "mise.local.toml").write_text("# an older FAS mode\\n")
+    repinned = subject.Sibling(name="demo", source=str(source), tools={"uv": "0.12.22"})
+    subject.refresh_override(repinned, tmp_path / "siblings")
+    assert (clone / "mise.local.toml").read_text() == subject.override_text(repinned)
+    assert _git(clone, "symbolic-ref", "--short", "HEAD") == "feature/wip"
+    assert (clone / "mise.toml").read_text() == "# work in progress\\n"
+
+
+def test_an_override_is_never_written_into_another_sources_clone(tmp_path: Path) -> None:
+    """A.189: a directory cloned from elsewhere is refused, and nothing is written into it."""
+    subject = _subject()
+    assert hasattr(subject, "refresh_override"), "no override can be written without a checkout"
+    source = _origin(tmp_path, "demo")
+    other = _origin(tmp_path / "elsewhere", "demo")
+    _plain_clone(other, tmp_path / "siblings" / "demo")
+    with pytest.raises(SystemExit) as refused:
+        subject.refresh_override(_sibling(subject, source), tmp_path / "siblings")
+    assert str(other) in str(refused.value), refused.value
+    assert not (tmp_path / "siblings" / "demo" / "mise.local.toml").exists()
+
+
+def test_an_override_needs_an_existing_clone(tmp_path: Path) -> None:
+    """A.189: with no clone there is nothing to write into; sibling:checkout makes one."""
+    subject = _subject()
+    assert hasattr(subject, "refresh_override"), "no override can be written without a checkout"
+    with pytest.raises(SystemExit) as refused:
+        subject.refresh_override(_sibling(subject, tmp_path), tmp_path / "siblings")
+    assert "sibling:checkout" in str(refused.value), refused.value
+
+
+def test_an_absent_override_request_is_refused_by_the_policy() -> None:
+    """A.189: with no observation supplied, the override is refused, never read as allowed."""
+    subject = _subject()
+    assert hasattr(subject, "OVERRIDE_POLICY"), "no policy judges an override"
+    evidence = subject.SiblingOverride(
+        name="demo", clone="/c", clone_exists=True, origin="/o", origin_matches=True
+    )
+    found = spine.evaluate(
+        evidence, "not_sibling_override", subject.OVERRIDE_POLICY, subject.OVERRIDE_ENTRYPOINT
+    )
+    codes = [rule.code for rule in found.rules if rule.outcome == "fail"]
+    assert "ERR_SIBLING_OVERRIDE_INPUT_MISSING" in codes, found
+
+
 def test_cscie103_declares_where_its_toolchain_comes_from() -> None:
     """A.188: the nixpkgs revision its flake.lock pins, and each tool's nixpkgs file."""
     subject = _subject()
