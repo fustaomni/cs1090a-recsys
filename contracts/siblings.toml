@@ -1,22 +1,34 @@
 # contracts/siblings.toml
 # siblings/v1 (A.185): each sibling repository worked on from here, at its canonical source, with
 # the tools its FAS mode pins in place of the Nix devshell it otherwise runs every task inside.
-# Pins predate this repository's release floor: databricks 1.15.0 (2026-09-03), osv-scanner
-# 2.5.1 (2026-08-17), Temurin 17.0.19+10 (2026-05); the other six are this repository's own.
+# Each pin is the version the sibling's flake.lock resolves: nixpkgs at the recorded revision,
+# read from the file [siblings.packages] names, proven live by tests/integration (A.188).
 contract = "siblings/v1"
 
 [[siblings]]
 name = "cscie103-data-engineering"
 source = "https://github.com/fustaomni/cscie103-data-engineering"
 branch = "develop"
+nixpkgs = "39ad350a0602fa0a58a544344e3e9187526ea45c"
 
 [siblings.tools]
 betterleaks = "1.9.0"
-databricks-cli = "1.15.0"
-java = "temurin-17.0.19+10"
-lefthook = "2.2.0"
-opa = "1.21.1"
+databricks-cli = "1.18.0"
+java = "temurin-17.0.20+101"
+lefthook = "2.1.15"
+opa = "1.19.1"
 osv-scanner = "2.5.1"
-regal = "0.43.0"
-uv = "0.12.23"
+regal = "0.42.0"
+uv = "0.12.22"
 zizmor = "1.30.1"
+
+[siblings.packages]
+betterleaks = "pkgs/by-name/be/betterleaks/package.nix"
+databricks-cli = "pkgs/by-name/da/databricks-cli/package.nix"
+java = "pkgs/development/compilers/temurin-bin/sources.json#hotspot.linux.jdk.openjdk17.x86_64.version"
+lefthook = "pkgs/by-name/le/lefthook/package.nix"
+opa = "pkgs/by-name/op/open-policy-agent/package.nix"
+osv-scanner = "pkgs/by-name/os/osv-scanner/package.nix"
+regal = "pkgs/by-name/re/regal/package.nix"
+uv = "pkgs/by-name/uv/uv/package.nix"
+zizmor = "pkgs/by-name/zi/zizmor/package.nix"
