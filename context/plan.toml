@@ -1948,3 +1948,17 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_checkout.py::test_cscie103_is_declared_at_its_canonical_source_with_its_toolchain" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.187"
+title = "sibling:checkout puts a sibling on its declared branch at that branch's remote tip, switching and fast-forwarding only when clean, and trusts it only there"
+thread = "A"
+depends_on = ["A.186"]
+because = { "A.186" = "the sibling it sets up must first be on the branch its imports are made from" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_a_sibling_is_cloned_on_its_declared_branch" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_an_existing_clone_on_another_branch_is_moved_to_its_own" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_a_stale_clone_is_fast_forwarded_to_its_branch_tip" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_a_dirty_clone_off_its_branch_is_refused" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_a_clone_behind_its_branch_tip_is_not_trusted" },
+  { kind = "task", name = "check" },
+]
