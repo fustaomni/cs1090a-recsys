@@ -781,3 +781,10 @@ run = "uv sync --locked"
 description = "Clone a declared sibling beside this repository, give it a FAS mode, trust it as merged"
 usage = 'arg "<name>" help="A sibling contracts/siblings.toml declares"'
 run = 'uv run --no-sync python scripts/sibling_checkout.py "${usage_name?}"'
+
+# This repository's own (plan A.189): the declared FAS mode, rewritten into a sibling clone on
+# whatever branch it is, so corrected pins reach a clone in the middle of its own work.
+[tasks."sibling:override"]
+description = "Rewrite a sibling clone's FAS mode to the declared one, on whatever branch it is"
+usage = 'arg "<name>" help="A sibling contracts/siblings.toml declares"'
+run = 'uv run --no-sync python scripts/sibling_checkout.py --override "${usage_name?}"'
