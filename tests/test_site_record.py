@@ -7,6 +7,7 @@ import datetime as dt
 import pytest
 from pydantic import ValidationError
 
+from nonvacuous import nonempty
 from site_record import ROOT, Estimate, Metrics, load, recorded
 
 TODAY = dt.date(2026, 11, 30)
@@ -30,7 +31,7 @@ def test_a_measured_row_is_recorded_with_its_run() -> None:
     row = next(row for row in updated.rows if row.key == "baseline:bias")
     assert (row.status, row.run_id, row.metrics) == ("measured", "run-123", _metrics())
     assert updated.updated == "2026-11-30"
-    assert all(other.status == "pending" for other in updated.rows if other is not row)
+    assert all(other.status == "pending" for other in nonempty(updated.rows) if other is not row)
 
 
 def test_an_unknown_row_is_refused() -> None:
