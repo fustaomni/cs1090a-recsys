@@ -1748,13 +1748,14 @@ done_when = [
 ]
 [[steps]]
 id = "A.164"
-title = "Every run record binds the task definition that ran, by the digest of its resolved definition and the commit it came from"
+title = "Every run record binds what it ran under: the task definition by the digest of its resolved definition and the commit it came from, and the digests of provenance.toml, the policy bundle and the dependency and tool locks"
 thread = "A"
 depends_on = ["A.153"]
 because = { "A.153" = "a step's recorded inputs include the definition of the task it ran" }
 done_when = [
   { kind = "proof", test = "tests/test_run_definition.py::test_a_run_records_its_task_definition_digest_and_commit" },
   { kind = "proof", test = "tests/test_run_definition.py::test_a_changed_definition_changes_the_recorded_digest" },
+  { kind = "proof", test = "tests/test_run_definition.py::test_a_run_records_the_provenance_policy_and_lock_digests_it_ran_under" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1800,14 +1801,16 @@ done_when = [
 ]
 [[steps]]
 id = "A.168"
-title = "A controls register maps each control to its enforcing step, its evidence over the signed ledger and its test, and a windowed report shows each control operating over a period or names the gap"
+title = "A controls register maps each control to its enforcing step, its evidence over the signed ledger and its test, and names its owner, access restriction, evidence retention, monitoring and review cadence; a windowed report shows each control operating over a period or names the gap, and the register claims evidence production, never compliance"
 thread = "A"
 depends_on = ["A.155"]
 because = { "A.155" = "a control's claim is scoped before it is mapped to the evidence that it operated" }
 done_when = [
   { kind = "proof", test = "tests/test_controls_register.py::test_every_control_maps_to_an_enforcing_step_evidence_and_test" },
+  { kind = "proof", test = "tests/test_controls_register.py::test_every_control_names_its_owner_access_retention_monitoring_and_review_cadence" },
   { kind = "proof", test = "tests/test_controls_register.py::test_a_control_without_evidence_in_the_period_is_reported" },
   { kind = "proof", test = "tests/test_controls_register.py::test_the_period_report_is_built_only_from_signed_records" },
+  { kind = "proof", test = "tests/test_controls_register.py::test_the_register_claims_evidence_production_never_compliance" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -2119,6 +2122,7 @@ because = { "A.191" = "a branch is brought current by merge, so a rebase has no 
 done_when = [
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_rebase_is_refused_before_it_starts" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_transaction_line_outside_the_contract_is_refused" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_each_hook_takes_exactly_its_documented_arguments" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_new_commit_a_merge_and_a_squash_are_kept" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_reuse_with_c_or_C_is_kept" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_an_amend_is_refused_by_ancestry_whatever_its_message_source" },
@@ -2273,5 +2277,21 @@ done_when = [
   { kind = "proof", test = "tests/test_lineage_audit.py::test_the_gateway_ingests_lineage_decisions_into_the_signed_ledger" },
   { kind = "proof", test = "tests/test_lineage_audit.py::test_ingestion_rechecks_each_recorded_ancestry_where_the_objects_exist" },
   { kind = "proof", test = "tests/test_lineage_audit.py::test_a_broken_chain_or_an_uningested_record_is_reported" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.201"
+title = "A declared sequence is journaled and resumable: an attempt marker is persisted before every write, and on resume each unfinished write is reconciled from the record it leaves, a commit by its Run-Id trailer, a push by the remote ref, a pull request by its head, a merge by its state, stopping for a person when the outcome cannot be resolved; no write is retried blind, and nothing is compensated by rewriting"
+thread = "A"
+depends_on = ["A.153", "A.159", "A.169", "A.170"]
+because = { "A.153" = "the declared sequences this journal makes durable", "A.159" = "a commit's signed Run-Id trailer is the record that proves whether it was made", "A.169" = "a step's effect class decides whether it needs an attempt marker", "A.170" = "an unresolved outcome ends in stop, never in a retried write" }
+done_when = [
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_an_attempt_marker_is_persisted_before_every_write" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_a_resumed_sequence_skips_a_write_its_record_proves_done" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_a_commit_push_pull_request_and_merge_are_each_reconciled_by_observation" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_an_unresolvable_outcome_stops_for_a_person" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_no_write_is_ever_retried_without_reconciliation" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_reusing_a_sequence_id_with_different_inputs_is_refused" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_a_sequence_killed_at_every_step_boundary_resumes_to_the_same_end_state" },
   { kind = "task", name = "check" },
 ]
