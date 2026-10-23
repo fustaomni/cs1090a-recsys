@@ -975,3 +975,43 @@ severity = "error"
 code = "ERR_CONCLUDE_NO_MERGE"
 title = "A merge is in progress"
 severity = "error"
+
+[[problems]]
+code = "ERR_DATA_CHECKSUM_MISMATCH"
+title = "The archive matches the checksum its publisher published"
+severity = "error"
+
+[[problems]]
+code = "ERR_DATA_FILES_MISSING"
+title = "Every required file is in the archive"
+severity = "error"
+
+[[problems]]
+code = "ERR_DATA_INPUT_MISSING"
+title = "The fetch record is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_MODEL_DATA_UNDECLARED"
+title = "A fit reads exactly the declared data"
+severity = "error"
+
+[[problems]]
+code = "ERR_MODEL_FEATURE_NOT_POINT_IN_TIME"
+title = "Every feature uses only data from before each row's time"
+severity = "error"
+
+[[problems]]
+code = "ERR_MODEL_FEATURE_UNDECLARED"
+title = "A fit reads only declared features"
+severity = "error"
+
+[[problems]]
+code = "ERR_MODEL_FIT_PAST_CUTOFF"
+title = "A fit reads only rows before the validation cutoff"
+severity = "error"
+
+[[problems]]
+code = "ERR_MODEL_INPUT_MISSING"
+title = "The fit record is supplied, never assumed"
+severity = "error"

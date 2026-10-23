@@ -6,6 +6,7 @@ import hashlib
 from pathlib import Path
 
 from model_run import BASELINE, FitRecord, fit_from, load, run
+from nonvacuous import nonempty
 
 # Planted text is joined with chr(10): no escape sequence crosses a layer (M60).
 NEWLINE = chr(10)
@@ -49,7 +50,7 @@ def _declaration(tmp_path: Path, data_sha256: str) -> Path:
 def test_the_baseline_declaration_loads_pinned_to_the_verified_data() -> None:
     declaration = load(BASELINE)
     assert declaration.data_sha256 == VERIFIED
-    assert all(feature.point_in_time for feature in declaration.features)
+    assert all(feature.point_in_time for feature in nonempty(declaration.features))
     assert declaration.cutoffs.validation < declaration.cutoffs.test
 
 
