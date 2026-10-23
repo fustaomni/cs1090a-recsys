@@ -62,12 +62,29 @@ class DataFetch(Contract):
 Download = Callable[[str, Path], None]
 
 
+def _https_only() -> urllib.request.OpenerDirector:
+    """An opener that speaks HTTPS alone: no file, ftp or plain-http handler is installed.
+
+    urlopen's default opener also serves file: and ftp: URLs, which is why ruff's S310 flags
+    every call to it. An OpenerDirector built from the HTTPS handler alone refuses any other
+    scheme itself, a redirect to plain http included, so no suppression is needed (A.100).
+    """
+    opener = urllib.request.OpenerDirector()
+    for handler in (
+        urllib.request.HTTPSHandler(),
+        urllib.request.HTTPRedirectHandler(),
+        urllib.request.HTTPErrorProcessor(),
+        urllib.request.HTTPDefaultErrorHandler(),
+    ):
+        opener.add_handler(handler)
+    return opener
+
+
 def _download(url: str, target: Path) -> None:
     """The bytes at an https URL, written to target; every other scheme is refused."""
     if not url.startswith(SCHEME):
         raise SystemExit(f"data_fetch: refusing to download from {url}")
-    # S310 cannot see the scheme check above (ruff issue 7918); only https reaches here.
-    with urllib.request.urlopen(url, timeout=120) as response:  # noqa: S310
+    with _https_only().open(url, timeout=120) as response:
         body: bytes = response.read()
     target.write_bytes(body)
 

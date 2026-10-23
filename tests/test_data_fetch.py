@@ -10,6 +10,7 @@ import pytest
 
 import spine
 from data_fetch import ENTRYPOINT, POLICY, REQUIRED, _download, fetch, observe
+from nonvacuous import nonempty
 
 # Planted text is joined with chr(10): no escape sequence crosses a layer (M60).
 NEWLINE = chr(10)
@@ -40,7 +41,7 @@ def test_a_matching_archive_is_extracted_with_every_file_fingerprinted(tmp_path:
     assert refusals == []
     assert record.md5_observed == record.md5_published
     assert {entry.name for entry in record.files} == set(REQUIRED)
-    for entry in record.files:
+    for entry in nonempty(record.files):
         written = (destination / entry.name).read_bytes()
         assert hashlib.sha256(written).hexdigest() == entry.sha256
 
