@@ -1796,6 +1796,8 @@ done_when = [
   { kind = "proof", test = "tests/test_run_receipt.py::test_a_run_receipt_verifies_from_published_keys_alone" },
   { kind = "proof", test = "tests/test_run_receipt.py::test_a_receipt_names_its_schema_definition_and_trace" },
   { kind = "proof", test = "tests/test_run_receipt.py::test_a_tampered_receipt_fails_verification" },
+  { kind = "proof", test = "tests/test_run_receipt.py::test_a_valid_signature_on_a_claim_policy_rejects_fails_verification" },
+  { kind = "proof", test = "tests/test_run_receipt.py::test_a_verification_that_cannot_complete_is_unknown_never_pass" },
   { kind = "proof", test = "tests/test_run_receipt.py::test_records_are_queryable_by_run_task_and_verdict" },
   { kind = "task", name = "check" },
 ]
@@ -2281,11 +2283,14 @@ done_when = [
 ]
 [[steps]]
 id = "A.201"
-title = "A declared sequence is journaled and resumable: an attempt marker is persisted before every write, and on resume each unfinished write is reconciled from the record it leaves, a commit by its Run-Id trailer, a push by the remote ref, a pull request by its head, a merge by its state, stopping for a person when the outcome cannot be resolved; no write is retried blind, and nothing is compensated by rewriting"
+title = "A declared sequence is journaled and resumable through closed step states, pending, authorized, running, observed, evaluated, then succeeded, refused, failed or stopped, each transition persisted before the next and an illegal one refused; an attempt marker precedes every write, each unfinished write is reconciled on resume from the record it leaves, and an outcome that cannot be resolved is stopped for a person; no write is retried blind, and nothing is compensated by rewriting"
 thread = "A"
 depends_on = ["A.153", "A.159", "A.169", "A.170"]
 because = { "A.153" = "the declared sequences this journal makes durable", "A.159" = "a commit's signed Run-Id trailer is the record that proves whether it was made", "A.169" = "a step's effect class decides whether it needs an attempt marker", "A.170" = "an unresolved outcome ends in stop, never in a retried write" }
 done_when = [
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_every_step_moves_through_the_closed_states_and_an_illegal_transition_is_refused" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_each_transition_is_persisted_before_the_next" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_an_unknowable_outcome_is_stopped_never_failed_and_retried" },
   { kind = "proof", test = "tests/test_sequence_journal.py::test_an_attempt_marker_is_persisted_before_every_write" },
   { kind = "proof", test = "tests/test_sequence_journal.py::test_a_resumed_sequence_skips_a_write_its_record_proves_done" },
   { kind = "proof", test = "tests/test_sequence_journal.py::test_a_commit_push_pull_request_and_merge_are_each_reconciled_by_observation" },
@@ -2293,5 +2298,24 @@ done_when = [
   { kind = "proof", test = "tests/test_sequence_journal.py::test_no_write_is_ever_retried_without_reconciliation" },
   { kind = "proof", test = "tests/test_sequence_journal.py::test_reusing_a_sequence_id_with_different_inputs_is_refused" },
   { kind = "proof", test = "tests/test_sequence_journal.py::test_a_sequence_killed_at_every_step_boundary_resumes_to_the_same_end_state" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.202"
+title = "A delivery is a typed agent-workflow/v1 graph, validated before it runs, acyclic, each step a registered capability declaring input and output schemas, effect class, authorization requirement and idempotency policy; the gateway runs it through the journaled step states, and a completed workflow is an in-toto statement signed by the ledger key binding its commit, artifact, policy, test-verdict and decision digests, its identity and its authorizing key, verified by signature and by policy over the claim"
+thread = "A"
+depends_on = ["A.153", "A.162", "A.163", "A.169", "A.201", "A.152"]
+because = { "A.153" = "declared sequences, which this generalises from a line to a graph", "A.162" = "each capability's input and output schemas validate a step before it runs", "A.163" = "each capability's authorization requirement names the key a step needs", "A.169" = "each capability's effect class and idempotency policy decide how a step is journaled", "A.201" = "the journal and reconciliation that let a workflow resume without repeating a write", "A.152" = "decision attestations, whose digests a workflow statement binds" }
+done_when = [
+  { kind = "proof", test = "tests/test_workflows.py::test_a_workflow_is_validated_before_any_step_runs" },
+  { kind = "proof", test = "tests/test_workflows.py::test_a_cycle_an_unregistered_capability_or_an_invalid_input_is_refused" },
+  { kind = "proof", test = "tests/test_workflows.py::test_every_capability_declares_its_five_facets" },
+  { kind = "proof", test = "tests/test_workflows.py::test_a_workflow_identity_is_its_id_plan_step_and_spec_digest" },
+  { kind = "proof", test = "tests/test_workflows.py::test_a_resumed_workflow_never_reruns_a_succeeded_write" },
+  { kind = "proof", test = "tests/test_workflow_attestation.py::test_a_completed_workflow_is_a_signed_in_toto_statement" },
+  { kind = "proof", test = "tests/test_workflow_attestation.py::test_the_statement_binds_commit_artifacts_policy_tests_decisions_identity_and_key" },
+  { kind = "proof", test = "tests/test_workflow_attestation.py::test_a_valid_signature_over_the_wrong_source_fails_verification" },
+  { kind = "proof", test = "tests/test_workflow_attestation.py::test_a_verification_that_cannot_complete_is_unknown" },
+  { kind = "proof", test = "tests/test_workflow_attestation.py::test_the_ci_gate_emits_an_artifact_attestation_inside_an_environment" },
   { kind = "task", name = "check" },
 ]
