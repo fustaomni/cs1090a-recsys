@@ -7,8 +7,7 @@
 #   commit-msg  every commit names the plan steps it serves
 #   pre-push    the offline gate
 #
-# cscie103's pre-commit also runs audit:workflows; it returns with this repository's first
-# workflow, since a hook calling a task that does not exist would refuse every commit.
+# pre-commit runs audit:workflows too, restored with the workflow audit and the first workflow.
 
 pre-commit:
   # Not parallel: the formatter rewrites files, so it finishes before any check reads them.
@@ -22,6 +21,10 @@ pre-commit:
       stage_fixed: true
     - name: lint
       run: mise run lint
+    # EVERY COMMIT, NOT ONLY ONES TOUCHING A WORKFLOW (M38, D.95): offline and about a second, so
+    # a token widening refused here never exists as a commit. CI's required gate is the backstop.
+    - name: workflows
+      run: mise run audit:workflows
 
 commit-msg:
   jobs:

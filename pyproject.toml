@@ -26,6 +26,7 @@ dev = [
   "pyyaml>=6.0.2",
   "types-pyyaml>=6.0.12.20260906",
   "types-defusedxml==0.7.0.20260504",
+  "copier>=9.17",
 ]
 
 [tool.ruff]
@@ -69,11 +70,12 @@ testpaths = ["tests"]
 markers = [
   "unit: hermetic and fast; the default run on every push",
   "integration: requires network access; excluded from the default run",
+  "machine: a claim about this developer machine; its hooks and gates run it, CI's runner never",
   "acceptance: drives the real gateway in a sandboxed copy of this repository, faults at the OS boundary",
 ]
 # Fail closed: a typo'd marker or unknown option is an error, every non-pass reports its
 # reason, and the default run is hermetic so the pre-push hook needs no network.
-addopts = ["--strict-markers", "--strict-config", "-ra", "-m", "not integration"]
+addopts = ["--strict-markers", "--strict-config", "-ra", "-m", "not integration and not machine"]
 xfail_strict = true
 # scripts/ is importable by tests, declared rather than hacked, so tests exercise the real code.
 pythonpath = ["scripts"]

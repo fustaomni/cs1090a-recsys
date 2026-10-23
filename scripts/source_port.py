@@ -16,13 +16,16 @@ from __future__ import annotations
 import hashlib
 import json
 import sys
+import tomllib
 from pathlib import Path
+
+from gitenv import git
 
 ROOT = Path(__file__).resolve().parent.parent
 PROVENANCE = "contracts/provenance.toml"
 LINE_LIMIT = 100
 EVIDENCE = ".artifacts"
-USAGE = "usage: source_port.py [--out <file under .artifacts>] <source-checkout> <path>..."
+USAGE = "usage: source_port.py [--out <file under .artifacts>] <source-checkout> <path[=local]>..."
 
 
 def _string(text: str) -> str:
@@ -34,12 +37,28 @@ def _inside(path: Path, root: Path) -> bool:
     return path.resolve().is_relative_to(root.resolve())
 
 
+def _head(source: Path) -> str | None:
+    """The commit a git checkout is at, or None for a plain directory."""
+    if not (source / ".git").exists():
+        return None
+    found = git("rev-parse", "HEAD", cwd=source)
+    return found.stdout.strip() if found.returncode == 0 else None
+
+
 def build(source: Path, paths: list[str], here: Path = ROOT) -> str:
     """The spec's text, or SystemExit naming the first refusal."""
     operations: list[str] = []
     entries: list[str] = []
-    for path in paths:
-        origin, target = source / path, here / path
+    record = (here / PROVENANCE).read_text(encoding="utf-8")
+    pinned = tomllib.loads(record).get("commit")
+    head = _head(source)
+    # A FILE READ AT ANOTHER COMMIT SAYS SO (A.136); the record's own commit stays the default.
+    at = f'commit = "{head}"\n' if head is not None and head != pinned else ""
+    for spec in paths:
+        # A PORT MAY LAND ELSEWHERE (A.123): upstream=local records the path it came from.
+        upstream_path, _, local = spec.partition("=")
+        path = local or upstream_path
+        origin, target = source / upstream_path, here / path
         if not (_inside(origin, source) and _inside(target, here)):
             raise SystemExit(f"{path}: outside a checkout")
         if target.exists():
@@ -55,8 +74,8 @@ def build(source: Path, paths: list[str], here: Path = ROOT) -> str:
             f'[[operations]]\nop = "create"\npath = {_string(path)}\ncontent = {_string(text)}\n'
         )
         digest = hashlib.sha256(data).hexdigest()
-        entries.append(f'\n[[files]]\npath = {_string(path)}\nsha256 = "{digest}"\n')
-    record = (here / PROVENANCE).read_text(encoding="utf-8")
+        moved = f"upstream_path = {_string(upstream_path)}\n" if path != upstream_path else ""
+        entries.append(f'\n[[files]]\npath = {_string(path)}\n{moved}sha256 = "{digest}"\n{at}')
     operations.append(
         f'[[operations]]\nop = "replace"\npath = "{PROVENANCE}"\n'
         f"anchor = {_string(record)}\nreplacement = {_string(record + ''.join(entries))}\n"

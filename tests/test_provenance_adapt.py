@@ -7,12 +7,14 @@ from upstream to the working file, proves it reverses, and plans both writes as 
 from __future__ import annotations
 
 import hashlib
+import re
 import tomllib
 from pathlib import Path
 
 import pytest
 
 import provenance_adapt
+from nonvacuous import nonempty
 
 UPSTREAM = "def answer() -> int:\n    return 41\n"
 LOCAL = "def answer() -> int:\n    return 42\n"
@@ -69,7 +71,7 @@ def test_an_adaptation_recorded_twice_is_consolidated_into_one(tmp_path: Path) -
     record.write_text(record.read_text(encoding="utf-8") + "\n" + blocks, encoding="utf-8")
     text = record.read_text(encoding="utf-8")
     spec = tomllib.loads(provenance_adapt.plan(root, upstream, "scripts/answer.py", "why"))
-    for op in spec["operations"]:
+    for op in nonempty(spec["operations"]):
         if op["path"] == "contracts/provenance.toml":
             assert text.count(op["anchor"]) == 1
             text = text.replace(op["anchor"], op["replacement"])
@@ -77,3 +79,43 @@ def test_an_adaptation_recorded_twice_is_consolidated_into_one(tmp_path: Path) -
     mine = [entry for entry in adapted if entry["path"] == "scripts/answer.py"]
     assert [entry["sha256"] for entry in mine] == [_digest(LOCAL)]
     assert [entry["path"] for entry in adapted].count("scripts/other.py") == 1
+
+
+def test_a_patch_holding_a_triple_single_quote_is_planned(tmp_path: Path) -> None:
+    """A patch is text, and text may hold any delimiter, three single quotes included (A.124)."""
+    quote = "'" * 3
+    upstream_text = f"value = {quote}old{quote}\n"
+    local_text = f"value = {quote}new{quote}\n"
+    root, upstream = tmp_path / "root", tmp_path / "upstream"
+    for base, text in ((root, local_text), (upstream, upstream_text)):
+        (base / "scripts").mkdir(parents=True)
+        (base / "scripts" / "answer.py").write_text(text, encoding="utf-8")
+    record = (
+        'contract = "provenance/v1"\n\n[[files]]\npath = "scripts/answer.py"\n'
+        f'sha256 = "{_digest(upstream_text)}"\n'
+    )
+    (root / "contracts").mkdir()
+    (root / "contracts" / "provenance.toml").write_text(record, encoding="utf-8")
+    spec = tomllib.loads(provenance_adapt.plan(root, upstream, "scripts/answer.py", "why"))
+    patch = spec["operations"][0]["content"]
+    assert quote in patch
+    local = local_text.encode("utf-8")
+    assert provenance_adapt.reverses_to_upstream(
+        "scripts/answer.py", patch, local, _digest(upstream_text)
+    )
+
+
+def test_a_missing_upstream_file_is_refused_not_raised(tmp_path: Path) -> None:
+    """A checkout without the file is refused by name, never as a traceback (A.125)."""
+    root, upstream = _setup(tmp_path, UPSTREAM)
+    (upstream / "scripts" / "answer.py").unlink()
+    with pytest.raises(SystemExit, match=re.escape("answer.py cannot be read")):
+        provenance_adapt.plan(root, upstream, "scripts/answer.py", "why")
+
+
+def test_a_missing_working_file_is_refused_not_raised(tmp_path: Path) -> None:
+    """The working file the patch is built from is refused the same way (A.125)."""
+    root, upstream = _setup(tmp_path, UPSTREAM)
+    (root / "scripts" / "answer.py").unlink()
+    with pytest.raises(SystemExit, match=re.escape("answer.py cannot be read")):
+        provenance_adapt.plan(root, upstream, "scripts/answer.py", "why")

@@ -1,6 +1,6 @@
 --- a/lefthook.yml
 +++ b/lefthook.yml
-@@ -1,63 +1,30 @@
+@@ -1,51 +1,23 @@
  # lefthook.yml
 -# Git hooks, committed so they belong to the repo rather than to one laptop.
 +# Git hooks, committed so they belong to the repository rather than to one machine.
@@ -35,8 +35,7 @@
 -# SYNTAX: `jobs:`, not `commands:`. `commands:` is lefthook 1.x; this repo's
 -# lefthook comes from the flake and is 2.x. The exact version is not restated
 -# here: a number copied into prose is the one that drifted.
-+# cscie103's pre-commit also runs audit:workflows; it returns with this repository's first
-+# workflow, since a hook calling a task that does not exist would refuse every commit.
++# pre-commit runs audit:workflows too, restored with the workflow audit and the first workflow.
  
  pre-commit:
 -  # NOT parallel. The formatter REWRITES files, so it must finish before any
@@ -62,10 +61,7 @@
        stage_fixed: true
      - name: lint
        run: mise run lint
--    # EVERY COMMIT, NOT ONLY ONES TOUCHING A WORKFLOW (M38, D.95): offline and about a second, so
--    # a token widening refused here never exists as a commit. CI's required gate is the backstop.
--    - name: workflows
--      run: mise run audit:workflows
+@@ -56,8 +28,6 @@
  
  commit-msg:
    jobs:

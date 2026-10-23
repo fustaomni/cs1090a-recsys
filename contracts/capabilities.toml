@@ -40,6 +40,12 @@ implementation = "scripts/check_all.py"
 emits = "text"
 
 [[capabilities]]
+task = "check:ci"
+version = "1.0.0"
+implementation = "scripts/check_all.py"
+emits = "text"
+
+[[capabilities]]
 task = "setup"
 version = "1.0.0"
 implementation = "mise.toml"
@@ -65,6 +71,12 @@ emits = "text"
 
 [[capabilities]]
 task = "start:here"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "start:switch"
 version = "1.0.0"
 implementation = "mise.toml"
 emits = "text"
@@ -356,3 +368,219 @@ task = "deps:install"
 version = "1.0.0"
 implementation = "mise.toml"
 emits = "text"
+
+[[capabilities]]
+task = "audit:workflows"
+version = "1.0.0"
+implementation = "scripts/workflow_audit.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "pr"
+version = "1.0.0"
+implementation = "scripts/pr.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "tools:lock"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "tools:install"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "check:ruleset"
+version = "1.0.0"
+implementation = "scripts/check_ruleset.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "repo:configure"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "audit:exemptions"
+version = "1.0.0"
+implementation = "scripts/exemptions.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "audit:suppressions"
+version = "1.0.0"
+implementation = "scripts/suppression_audit.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "audit:problems"
+version = "1.0.0"
+implementation = "scripts/problem_codes.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "problems:register"
+version = "1.0.0"
+implementation = "scripts/problem_codes.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "audit:assertions"
+version = "1.0.0"
+implementation = "scripts/assertion_audit.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "audit:evidence"
+version = "1.0.0"
+implementation = "scripts/evidence_audit.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "audit:models"
+version = "1.0.0"
+implementation = "scripts/model_audit.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "mutation:check"
+version = "1.0.0"
+implementation = "scripts/mutation_check.py"
+emits = "text"
+
+[[capabilities]]
+task = "sync"
+version = "1.0.0"
+implementation = "scripts/sync.py"
+emits = "text"
+
+[[capabilities]]
+task = "repo:state"
+version = "1.0.0"
+implementation = "scripts/repo_report.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "pr:logs"
+version = "1.0.0"
+implementation = "scripts/pr_logs.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "repo:history"
+version = "1.0.0"
+implementation = "scripts/repo_history.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "source:restore"
+version = "1.0.0"
+implementation = "scripts/source_restore.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "upstream:copies"
+version = "1.0.0"
+implementation = "scripts/upstream_copies.py"
+emits = "text"
+
+[[capabilities]]
+task = "worktree:conflicts"
+version = "1.0.0"
+implementation = "scripts/rebase_state.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "worktree:conclude"
+version = "1.0.0"
+implementation = "scripts/rebase_state.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "worktree:abort"
+version = "1.0.0"
+implementation = "scripts/rebase_state.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "worktree:continue"
+version = "1.0.0"
+implementation = "scripts/rebase_state.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "worktree:skip"
+version = "1.0.0"
+implementation = "scripts/rebase_skip.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "identity:set"
+version = "1.0.0"
+implementation = "scripts/project_identity.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "template:new"
+version = "1.0.0"
+implementation = "scripts/template_new.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "template:init"
+version = "1.0.0"
+implementation = "scripts/template_init.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "template:identity"
+version = "1.0.0"
+implementation = "scripts/template_identity.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "template:publish"
+version = "1.0.0"
+implementation = "scripts/template_publish.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "template:discard"
+version = "1.0.0"
+implementation = "scripts/template_discard.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "template:update"
+version = "1.0.0"
+implementation = "scripts/template_update.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "branches:prune"
+version = "1.0.0"
+implementation = "scripts/branches_prune.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "branches:retire"
+version = "1.0.0"
+implementation = "scripts/branches_retire.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "sibling:checkout"
+version = "1.0.0"
+implementation = "scripts/sibling_checkout.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "sibling:override"
+version = "1.0.0"
+implementation = "scripts/sibling_checkout.py"
+emits = "command-outcome/v1"

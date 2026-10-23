@@ -1,0 +1,22 @@
+--- a/tests/test_copier_template.py
++++ b/tests/test_copier_template.py
+@@ -49,12 +49,17 @@
+     """A scratch template repository, committed; it and its commit."""
+     for name in nonempty(TEMPLATE_FILES):
+         assert (REPO / name).is_file(), f"{name} missing: not yet a Copier template"
+-    for name in (PLATFORM, *COURSEWORK, *SOURCE_PLAN):
++    for name in (PLATFORM, *SOURCE_PLAN):
+         assert (REPO / name).is_file(), f"{name} missing: the fixture names a file not here"
+     source = tmp_path / "template"
+-    for name in (*TEMPLATE_FILES, PLATFORM, *COURSEWORK, *SOURCE_PLAN):
++    for name in (*TEMPLATE_FILES, PLATFORM, *SOURCE_PLAN):
+         (source / name).parent.mkdir(parents=True, exist_ok=True)
+         shutil.copyfile(REPO / name, source / name)
++    # THIS REPOSITORY HOLDS NO COURSEWORK, so the fixture writes it: each path is one that
++    # copier.yml excludes, and the proof is that none reaches a generated project (A.121).
++    for name in COURSEWORK:
++        (source / name).parent.mkdir(parents=True, exist_ok=True)
++        (source / name).write_text("coursework\n", encoding="utf-8")
+     _git(source, "init", "-q", "-b", "main")
+     _git(source, "add", "-A")
+     _git(source, "commit", "-q", "-m", "template")

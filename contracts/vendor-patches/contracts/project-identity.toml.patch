@@ -1,0 +1,56 @@
+--- a/contracts/project-identity.toml
++++ b/contracts/project-identity.toml
+@@ -6,42 +6,28 @@
+ # rewrites exactly those lines, so a generated project takes its own identity in one
+ # recorded operation -- and policies/identity refuses any copy that lives anywhere else.
+ contract = "project-identity/v1"
+-name = "cscie103-data-engineering"
+-catalog = "cscie103_catalog"
+-reader_group = "cscie103_readers"
+-ci_principal = "cscie103-ci"
+-default_schema = "assignment_01"
+-repository = "https://github.com/ltphongssvn/cscie103-data-engineering"
+-workspace_host = "https://dbc-c7e8aa56-e393.cloud.databricks.com"
+-account_id = "a0144c7d-8847-4012-b4c2-3880901a4a1c"
+-ci_client_id = "223db154-8528-4bdb-b579-866010b8fc1c"
++name = "cs1090a-recsys"
++repository = "https://github.com/fustaomni/cs1090a-recsys"
+ 
+-# Paths whose identity is derived, quoted verbatim, or coursework rather than declared.
++# Paths whose identity is derived, quoted verbatim, or this repository's own history.
+ exempt = [
+   "contracts/project-identity.toml",
+   "uv.lock",
+   "tests/",
+   "context/",
+-  "assignments/",
+-  "resources/assignment_",
+-  "resources/unity_catalog.yml",
+-  # coursework: loads the assignment volumes resources/unity_catalog.yml declares
+-  "scripts/load_assignment_data.py",
++  # the founding's hash-locked bootstrap: its own record of the project it founded
++  "bootstrap/",
++  # this repository's own run-ledger anchor: a generated project starts its own ledger
++  "contracts/ledger-anchor.toml",
+   # derived provenance: _src_path names the template a project was generated from (D.61)
+   ".copier-answers.yml",
++  # quoted verbatim: a vendor patch reproduces the identity lines it changes (A.121)
++  "contracts/vendor-patches/",
+ ]
+ 
+ # Lines that cannot read this file. Each renders exactly as the file holds it.
+ slots = [
+   { path = "pyproject.toml", line = 'name = "{name}"' },
+-  { path = "databricks.yml", line = "  name: {name}" },
+-  { path = "databricks.yml", line = "    default: {catalog}" },
+-  { path = "databricks.yml", line = "    default: {reader_group}" },
+-  { path = "databricks.yml", line = "    default: {default_schema}" },
+-  { path = "flake.nix", line = '  description = "{name} toolchain";' },
+-  { path = "contracts/environment-versions.json", line = '  "$id": "{repository}/contracts/environment-versions.json",' },
+-  { path = "mise.toml", line = "    if r.get('displayName') == '{ci_principal}':" },
+-  { path = "mise.toml", line = '''  echo "{ci_principal} not found; run 'mise run bootstrap:identity' first" >&2''' },
+-  { path = ".github/workflows/ci.yml", line = "          DATABRICKS_HOST: {workspace_host}" },
+-  { path = ".github/workflows/ci.yml", line = "          DATABRICKS_CLIENT_ID: {ci_client_id}" },
++  # uv.lock records the project's own package: its root line is renamed with pyproject.toml's (A.129)
++  { path = "uv.lock", line = 'name = "{name}"' },
+ ]

@@ -84,3 +84,14 @@ def test_zizmor_is_pinned_and_its_provenance_verified() -> None:
     lock = tomllib.loads((ROOT / "mise.lock").read_text(encoding="utf-8"))["tools"]
     platform = lock["zizmor"][0]["platforms.linux-x64"]
     assert platform.get("provenance") == "github-attestations", platform
+
+
+def test_gh_is_pinned_and_its_provenance_verified() -> None:
+    """A.102: pr's GitHub CLI is pinned once, locked by tools:lock, and verified by mise."""
+    founding = ROOT / "policies" / "founding" / "data.json"
+    tools = json.loads(founding.read_text(encoding="utf-8"))["founding"]["pins"]["tools"]
+    assert tools.get("gh") == "2.102.0", "gh 2.102.0 is not pinned"
+    lock = tomllib.loads((ROOT / "mise.lock").read_text(encoding="utf-8"))["tools"]
+    assert "gh" in lock, "gh is not locked"
+    platform = lock["gh"][0]["platforms.linux-x64"]
+    assert platform.get("provenance") == "github-attestations", platform
