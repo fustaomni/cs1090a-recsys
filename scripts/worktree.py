@@ -26,6 +26,7 @@ Neither is a limitation to route around; both are the check.
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -203,7 +204,7 @@ def cmd_list() -> int:
 def _settle_environment(path: Path, before: str) -> None:
     """THE ENVIRONMENT FOLLOWS THE LOCK, as sync's does after a pull (D.38, D.103).
 
-    Called only once a rebase FINISHES: mid-rebase the lock may hold conflict markers. A lock
+    Called only once a merge FINISHES: mid-merge the lock may hold conflict markers. A lock
     that changed but would not install fails the refresh, since success would then describe an
     environment that no longer matches its lock. follow_lock is read from env_sync at call time,
     so sync and refresh share one function and one point of proof.
@@ -213,31 +214,42 @@ def _settle_environment(path: Path, before: str) -> None:
     synced = env_sync.follow_lock(path, before)
     if synced.lock_changed and not synced.installed:
         raise SystemExit(
-            f"rebased {path}, but uv.lock changed and uv sync --locked exited "
+            f"merged into {path}, but uv.lock changed and uv sync --locked exited "
             f"{synced.install_exit_code}: the environment no longer matches the lock"
         )
 
 
-def cmd_refresh(slug: str) -> int:
-    """Rebase the worktree's branch onto current origin/develop.
+def _merge_message(branch: str, step: str) -> str:
+    """The merge commit's message; its Plan-Step trailer is what commit-msg checks (cscie103)."""
+    return (
+        f"chore(merge): bring origin/develop into {branch}\n\n"
+        "A merge commit records the integration, so every commit the branch published keeps its\n"
+        "hash: history is added to, never rewritten (A.191).\n\n"
+        f"Plan-Step: {step}"
+    )
+
+
+def cmd_refresh(slug: str, step: str) -> int:
+    """Bring the worktree's branch current by merging origin/develop into it, never by a rebase.
+
+    LINEAGE IS NEVER REWRITTEN (A.191). A rebase replaces every commit of the branch, so one
+    already pushed would have to be forced; a merge commit adds the integration and keeps every
+    commit's hash. The merge names the plan step it serves, which commit-msg requires.
 
     Run from INSIDE the worktree, which is the documented pattern; objects are
-    shared with the main clone so no network round-trip is needed. Rebase labels
-    are worktree-local refs, so this cannot interfere with a rebase running in
-    another worktree.
+    shared with the main clone so no network round-trip is needed.
 
-    REFUSES ON A DIRTY TREE rather than using --autostash. git's manual warns
-    that the stash application after a successful rebase "might result in
-    non-trivial conflicts", and rebase.autoStash defaults to false for that
-    reason. Autostash hides work in a stash nobody created.
+    REFUSES ON A DIRTY TREE rather than stashing: a stash nobody created hides the work.
     """
+    if not re.fullmatch(r"[A-Z]\.[0-9]+", step):
+        raise SystemExit(f"refusing: {step!r} is not a plan step id, such as A.95")
     path = sibling_path(slug)
     if not path.exists():
         raise SystemExit(f"{path} does not exist")
 
     branch = f"feature/{slug}"
     if branch in {"feature/develop", "feature/main"} or slug in {"develop", "main"}:
-        # Never rebase an integration branch. Unreachable via the slug form, and
+        # Never merge into an integration branch. Unreachable via the slug form, and
         # stated so the constraint is a rule rather than an accident of naming.
         raise SystemExit(f"refusing: {branch} is an integration branch, not a feature branch")
 
@@ -245,9 +257,8 @@ def cmd_refresh(slug: str) -> int:
     if status.stdout.strip(b"\0"):
         raise SystemExit(
             f"refusing: {path} has uncommitted changes.\n"
-            "Commit or discard them first -- rebasing over a dirty tree either "
-            "refuses, or with --autostash hides the work in a stash you did not "
-            "create and may not look for."
+            "Commit or discard them first -- merging over a dirty tree mixes "
+            "uncommitted work into the merge, and a stash hides it where nobody looks."
         )
 
     _git("fetch", "origin", "--prune", "--quiet")
@@ -266,32 +277,34 @@ def cmd_refresh(slug: str) -> int:
     # is plumbing, and it cannot describe something that did not happen.
     before = git_run("rev-parse", "HEAD", cwd=path).stdout.strip()
 
-    result = git_run("rebase", "origin/develop", cwd=path)
+    message = _merge_message(branch, step)
+    result = git_run("merge", "--no-ff", "-m", message, "origin/develop", cwd=path)
     if result.returncode != 0:
         print((result.stdout + result.stderr).strip(), file=sys.stderr)
         raise SystemExit(
-            f"rebase stopped in {path}. Read the conflicts with "
+            f"merge stopped in {path}. Read the conflicts with "
             f"`mise run run worktree:conflicts {slug}`, resolve them, then "
-            f"`mise run run worktree:continue {slug}`; or abandon with `git rebase --abort`."
+            f"`mise run run worktree:conclude {slug}`; or abandon with "
+            f"`mise run run worktree:abort {slug}`."
         )
 
     after = git_run("rev-parse", "HEAD", cwd=path).stdout.strip()
     target = git_run("rev-parse", "origin/develop", cwd=path).stdout.strip()
     _settle_environment(path, before)
 
-    # MISE BINDS TRUST TO CONTENT (A.122): a rebase that rewrote mise.toml left this checkout
+    # MISE BINDS TRUST TO CONTENT (A.122): a merge that changed mise.toml left this checkout
     # untrusted, and every task in it refused. It is re-trusted as a new worktree is, or fails.
     rewritten = git_run("diff", "--quiet", before, after, "--", "mise.toml", cwd=path)
     if before != after and rewritten.returncode != 0 and not _trust(path).trusted:
         raise SystemExit(
-            f"rebased {path}, but its changed mise.toml was not trusted: the founding policy "
+            f"merged into {path}, but its changed mise.toml was not trusted: the founding policy "
             "refused it or mise could not trust it"
         )
 
     if before == after:
-        print(f"{path} was already on origin/develop ({target[:12]})")
+        print(f"{path} already contained origin/develop ({target[:12]})")
     else:
-        print(f"{path}: {before[:12]} -> {after[:12]} (onto {target[:12]})")
+        print(f"{path}: {before[:12]} -> {after[:12]} (merging {target[:12]})")
     return 0
 
 
@@ -366,12 +379,15 @@ def main() -> int:
             return cmd_add(slug)
         case ["add", slug, base]:
             return cmd_add(slug, base)
-        case ["refresh", slug]:
-            return cmd_refresh(slug)
+        case ["refresh", slug, step]:
+            return cmd_refresh(slug, step)
         case ["remove", slug]:
             return cmd_remove(slug)
         case other:
-            usage = "usage: worktree.py add <slug> [base] | list | refresh <slug> | remove <slug>"
+            usage = (
+                "usage: worktree.py add <slug> [base] | list | "
+                "refresh <slug> <step> | remove <slug>"
+            )
             raise SystemExit(f"{usage}  (got {other})")
 
 

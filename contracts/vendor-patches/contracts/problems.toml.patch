@@ -1509,7 +1509,7 @@
  
  [[problems]]
  code = "ERR_TEMPLATE_UNPINNED"
-@@ -1086,151 +797,156 @@
+@@ -1086,151 +797,181 @@
  severity = "error"
  
  [[problems]]
@@ -1813,4 +1813,29 @@
 +[[problems]]
 +code = "ERR_SIBLING_OVERRIDE_NO_CLONE"
 +title = "The sibling is already cloned"
++severity = "error"
++
++[[problems]]
++code = "ERR_ABORT_INPUT_MISSING"
++title = "The abort plan is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_ABORT_NOTHING_IN_PROGRESS"
++title = "A rebase or merge is in progress"
++severity = "error"
++
++[[problems]]
++code = "ERR_CONCLUDE_INPUT_MISSING"
++title = "The conclude plan is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_CONCLUDE_MARKERS"
++title = "No conflict marker remains"
++severity = "error"
++
++[[problems]]
++code = "ERR_CONCLUDE_NO_MERGE"
++title = "A merge is in progress"
 +severity = "error"
