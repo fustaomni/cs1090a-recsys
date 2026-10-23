@@ -2333,3 +2333,45 @@ done_when = [
   { kind = "proof", test = "tests/test_upstream_tip.py::test_an_unreachable_source_is_refused_without_a_prompt" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.203"
+title = "sibling:pin writes a sibling's FAS pins from its own flake.lock: each pin is the one version mise lists that matches what nixpkgs ships at the locked revision, and --check refuses a stale pin by name"
+thread = "A"
+depends_on = ["A.188"]
+because = { "A.188" = "the recorded revision, the pins and the live proofs this step generates rather than retypes" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_pins.py::test_a_source_without_a_version_is_refused_not_written" },
+  { kind = "proof", test = "tests/test_sibling_pins.py::test_the_java_pin_is_the_one_temurin_release_nixpkgs_matches" },
+  { kind = "proof", test = "tests/test_sibling_pins.py::test_a_version_mise_does_not_list_is_refused" },
+  { kind = "proof", test = "tests/test_sibling_pins.py::test_an_ambiguous_match_is_refused" },
+  { kind = "proof", test = "tests/test_sibling_pins.py::test_check_names_each_stale_pin" },
+  { kind = "proof", test = "tests/test_sibling_pins.py::test_check_passes_when_every_pin_is_current" },
+  { kind = "proof", test = "tests/test_sibling_checkout.py::test_the_stale_toolchain_refusal_names_sibling_pin" },
+  { kind = "proof", test = "tests/integration/test_sibling_toolchain.py::test_every_pin_is_the_version_nixpkgs_ships" },
+  { kind = "proof", test = "tests/integration/test_sibling_toolchain.py::test_every_pin_resolves_in_mise" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.205"
+title = "Every task and script this repository has that cscie103 lacks at its resolved develop tip is listed by a recorded task, and each is classified in contracts/centralization.toml as generic or project-specific with its reason; an unclassified one is refused"
+thread = "A"
+depends_on = ["A.204", "A.113"]
+because = { "A.204" = "cscie103 is read at the commit its develop resolves to, never at a typed sha", "A.113" = "the tree at that commit is listed from trees alone, without running cscie103" }
+done_when = [
+  { kind = "path", path = "contracts/centralization.toml" },
+  { kind = "proof", test = "tests/test_centralization.py::test_a_capability_absent_from_the_source_is_listed" },
+  { kind = "proof", test = "tests/test_centralization.py::test_a_capability_present_in_the_source_is_not_listed" },
+  { kind = "proof", test = "tests/test_centralization.py::test_an_unclassified_absent_capability_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.206"
+title = "Every generic capability in contracts/centralization.toml names the cscie103 step and commit that carry it, so a capability born here is centralized, and a generic entry without them is refused by the gate"
+thread = "A"
+depends_on = ["A.205", "A.203"]
+because = { "A.205" = "the classified inventory this gate holds to account", "A.203" = "cscie103 set up on FAS, so its own tasks record each port in its plan, trace and ledger" }
+done_when = [
+  { kind = "proof", test = "tests/test_centralization.py::test_a_generic_capability_without_its_central_step_is_refused" },
+  { kind = "proof", test = "tests/test_centralization.py::test_a_project_specific_capability_needs_its_reason" },
+  { kind = "task", name = "check" },
+]
