@@ -1565,6 +1565,7 @@ done_when = [
   { kind = "proof", test = "tests/test_run_noninteractive.py::test_a_task_that_prompts_fails_closed_with_a_code" },
   { kind = "proof", test = "tests/test_run_noninteractive.py::test_every_gui_and_askpass_prompt_vector_is_suppressed" },
   { kind = "proof", test = "tests/test_run_noninteractive.py::test_opening_dev_tty_fails_without_a_controlling_terminal" },
+  { kind = "proof", test = "tests/test_run_noninteractive.py::test_no_caller_export_is_needed_for_a_noninteractive_run" },
   { kind = "proof", test = "tests/test_run_supervision.py::test_a_task_past_its_deadline_is_killed_with_its_whole_process_tree" },
   { kind = "proof", test = "tests/test_run_supervision.py::test_a_silent_task_past_its_idle_deadline_is_stopped" },
   { kind = "proof", test = "tests/test_run_supervision.py::test_a_cancelled_run_leaves_no_descendant_running" },
@@ -2177,5 +2178,37 @@ done_when = [
   { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_a_rewritten_develop_is_detected_naming_the_lost_tip" },
   { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_a_checkpoint_is_signed_and_a_forged_one_is_refused" },
   { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_an_unreadable_checkpoint_is_unknown_and_fails_the_gate" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.196"
+title = "worktree:add takes only a lowercase kebab-case ASCII slug within a length bound whose feature branch passes git check-ref-format, and refuses a branch that exists locally or on origin, a path or branch a registered worktree holds, an existing path, and any path not beside the repository"
+thread = "A"
+depends_on = ["A.93"]
+because = { "A.93" = "worktree:add cuts every worktree, and its slug check accepts more than its message promises" }
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_slug.py::test_only_a_lowercase_kebab_ascii_slug_is_taken" },
+  { kind = "proof", test = "tests/test_worktree_slug.py::test_a_leading_dash_uppercase_non_ascii_or_overlong_slug_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_slug.py::test_the_branch_name_passes_git_check_ref_format" },
+  { kind = "proof", test = "tests/test_worktree_slug.py::test_a_branch_that_exists_locally_or_on_origin_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_slug.py::test_a_path_or_branch_a_registered_worktree_holds_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_slug.py::test_an_existing_path_or_one_not_beside_the_repository_is_refused" },
+  { kind = "task", name = "worktree:add" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.197"
+title = "Credentials are controlled apart from prompt suppression: every git the gateway starts uses an explicit helper chain, reset then gh auth git-credential alone, with credential.interactive never; credential:audit observes the effective chain and the token's scopes, branch:push and pr refuse a chain or scope outside the declared allowlist, and authorization stays with the server rulesets"
+thread = "A"
+depends_on = ["A.150", "A.105", "A.155"]
+because = { "A.150" = "the gateway builds every child's environment, where the helper chain is pinned", "A.105" = "authorization is enforced server-side by rulesets kept as code", "A.155" = "prompt suppression and credential control are scoped claims that name their limits" }
+done_when = [
+  { kind = "proof", test = "tests/test_credentials.py::test_every_gateway_git_resets_the_helper_chain_to_gh_alone" },
+  { kind = "proof", test = "tests/test_credentials.py::test_credential_interactive_is_never_for_every_gateway_git" },
+  { kind = "proof", test = "tests/test_credentials.py::test_the_audit_reports_the_effective_helper_chain_with_its_origins" },
+  { kind = "proof", test = "tests/test_credentials.py::test_a_push_with_an_undeclared_helper_or_scope_is_refused" },
+  { kind = "proof", test = "tests/test_credentials.py::test_an_unreadable_scope_set_is_unknown_and_refuses_a_push" },
+  { kind = "proof", test = "tests/test_lineage_claims.py::test_prompt_suppression_is_not_claimed_as_a_security_boundary" },
+  { kind = "task", name = "credential:audit" },
   { kind = "task", name = "check" },
 ]
