@@ -2111,15 +2111,16 @@ done_when = [
 ]
 [[steps]]
 id = "A.192"
-title = "git refuses every lineage rewrite and every unpreserved deletion at its own hooks: pre-rebase refuses a rebase, prepare-commit-msg an amend even under --no-verify, and reference-transaction judges each local branch update against the ref's current tip, resolved with rev-parse when git passes the all-zero old value, refusing an orphaning update or a deletion whose tip no preserved ref reaches; a symbolic-ref update is not lineage, and a tip git cannot read refuses as unknown"
+title = "git refuses every local lineage rewrite and every unpreserved deletion at its own hooks: pre-rebase refuses a rebase early, and reference-transaction judges every ref write against the ref's current tip, refusing an orphaning branch update (every amend, whatever its message source, a forced reset, branch -f, update-ref), an unpreserved deletion, a moved tag and any refs/replace write, behind typed contracts; a symbolic-ref update is not lineage, and a tip git cannot read refuses as unknown"
 thread = "A"
 depends_on = ["A.191", "A.71", "A.166"]
 because = { "A.191" = "a branch is brought current by merge, so a rebase has no remaining use", "A.71" = "the guard emits the registered command-outcome/v1, never a second envelope model", "A.166" = "an ancestry git cannot read is unknown, which refuses and is never reported as a rewrite" }
 done_when = [
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_rebase_is_refused_before_it_starts" },
-  { kind = "proof", test = "tests/test_lineage_guard.py::test_an_amend_is_refused_even_under_no_verify" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_transaction_line_outside_the_contract_is_refused" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_new_commit_a_merge_and_a_squash_are_kept" },
-  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_hook_argument_outside_the_contract_is_refused" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_reuse_with_c_or_C_is_kept" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_an_amend_is_refused_by_ancestry_whatever_its_message_source" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_branch_update_that_orphans_its_old_tip_is_refused" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_fast_forward_and_a_merge_keep_the_old_tip_and_pass" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_forced_update_passed_as_all_zero_is_judged_against_the_current_tip" },
@@ -2129,9 +2130,10 @@ done_when = [
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_deletion_whose_tip_a_preserved_ref_reaches_passes" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_an_unreadable_tip_or_ancestry_is_unknown_and_refused" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_tag_is_never_moved" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_replace_ref_is_never_written" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_remote_tracking_ref_is_left_to_its_upstream" },
-  { kind = "proof", test = "tests/test_lineage_guard.py::test_lefthook_runs_the_guard_on_all_three_hooks" },
-  { kind = "proof", test = "tests/test_lineage_guard.py::test_git_refuses_a_rebase_an_amend_a_forced_reset_and_an_unpreserved_deletion" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_lefthook_runs_the_guard_on_pre_rebase_and_reference_transaction" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_git_refuses_a_rebase_every_amend_a_forced_reset_and_an_unpreserved_deletion" },
   { kind = "task", name = "lineage:guard" },
   { kind = "task", name = "check" },
 ]
@@ -2149,15 +2151,31 @@ done_when = [
 ]
 [[steps]]
 id = "A.194"
-title = "Force-push is refused server-side on every branch and tag, and archive tags are never updated or deleted, applied by repo:configure and verified by check:ruleset; every lineage layer is a scoped claim stating exactly what it guarantees and what bypasses it"
+title = "Force-push is refused server-side on every branch and tag by a ruleset that is active with an empty bypass list, and archive tags are never updated or deleted, applied by repo:configure and verified by check:ruleset; every lineage layer is a scoped claim stating exactly what it prevents, what bypasses it, and which layer detects that bypass"
 thread = "A"
 depends_on = ["A.105", "A.192", "A.155"]
 because = { "A.105" = "the ruleset kept as code and verified that this step widens", "A.192" = "the local hooks this layer stands behind, bypassable as they are", "A.155" = "a mechanism's claim names what it does not guarantee" }
 done_when = [
   { kind = "proof", test = "tests/test_check_ruleset.py::test_force_push_is_refused_on_every_branch_and_tag" },
   { kind = "proof", test = "tests/test_check_ruleset.py::test_archive_tags_are_never_updated_or_deleted" },
+  { kind = "proof", test = "tests/test_check_ruleset.py::test_the_lineage_ruleset_is_active_with_no_bypass_actor" },
   { kind = "proof", test = "tests/test_lineage_claims.py::test_each_lineage_layer_states_what_it_guarantees_and_what_bypasses_it" },
   { kind = "task", name = "repo:configure" },
   { kind = "task", name = "check:ruleset" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.195"
+title = "Lineage threats are a reviewed register, each naming the layer that prevents it, the layer that detects it and its residual risk, and a signed checkpoint of every observed develop and main tip is verified as still an ancestor at every check, so a rewrite that reaches GitHub past a disabled ruleset, a bypass actor or an unhooked clone is detected naming the commit it lost"
+thread = "A"
+depends_on = ["A.192", "A.194", "A.87"]
+because = { "A.192" = "the local layer whose bypasses the register names", "A.194" = "the server layer an administrator can disable or bypass", "A.87" = "the ledger anchor whose signed-checkpoint pattern the lineage checkpoint follows" }
+done_when = [
+  { kind = "proof", test = "tests/test_lineage_threats.py::test_every_lineage_threat_names_its_prevention_detection_and_residual_risk" },
+  { kind = "proof", test = "tests/test_lineage_threats.py::test_no_threat_is_left_without_a_detecting_layer" },
+  { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_every_recorded_tip_is_still_an_ancestor" },
+  { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_a_rewritten_develop_is_detected_naming_the_lost_tip" },
+  { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_a_checkpoint_is_signed_and_a_forged_one_is_refused" },
+  { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_an_unreadable_checkpoint_is_unknown_and_fails_the_gate" },
   { kind = "task", name = "check" },
 ]
