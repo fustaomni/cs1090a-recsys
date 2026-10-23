@@ -2111,7 +2111,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.192"
-title = "git refuses every lineage rewrite at its own hooks: pre-rebase refuses a rebase, prepare-commit-msg an amend even under --no-verify, and reference-transaction any local branch update whose old tip is not an ancestor of its new one, behind typed contracts"
+title = "git refuses every lineage rewrite and every unpreserved deletion at its own hooks: pre-rebase refuses a rebase, prepare-commit-msg an amend even under --no-verify, and reference-transaction judges each local branch update against the ref's current tip, resolved with rev-parse when git passes the all-zero old value, refusing an orphaning update or a deletion whose tip no preserved ref reaches; a symbolic-ref update is not lineage, and a tip git cannot read refuses as unknown"
 thread = "A"
 depends_on = ["A.191", "A.71", "A.166"]
 because = { "A.191" = "a branch is brought current by merge, so a rebase has no remaining use", "A.71" = "the guard emits the registered command-outcome/v1, never a second envelope model", "A.166" = "an ancestry git cannot read is unknown, which refuses and is never reported as a rewrite" }
@@ -2122,11 +2122,16 @@ done_when = [
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_hook_argument_outside_the_contract_is_refused" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_branch_update_that_orphans_its_old_tip_is_refused" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_fast_forward_and_a_merge_keep_the_old_tip_and_pass" },
-  { kind = "proof", test = "tests/test_lineage_guard.py::test_an_unreadable_ancestry_is_unknown_and_refused" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_forced_update_passed_as_all_zero_is_judged_against_the_current_tip" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_genuinely_new_branch_passes" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_symbolic_ref_update_is_not_lineage_and_passes" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_deletion_whose_tip_no_preserved_ref_reaches_is_refused" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_deletion_whose_tip_a_preserved_ref_reaches_passes" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_an_unreadable_tip_or_ancestry_is_unknown_and_refused" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_tag_is_never_moved" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_remote_tracking_ref_is_left_to_its_upstream" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_lefthook_runs_the_guard_on_all_three_hooks" },
-  { kind = "proof", test = "tests/test_lineage_guard.py::test_git_refuses_a_rebase_an_amend_and_a_reset_through_its_hooks" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_git_refuses_a_rebase_an_amend_a_forced_reset_and_an_unpreserved_deletion" },
   { kind = "task", name = "lineage:guard" },
   { kind = "task", name = "check" },
 ]
@@ -2144,13 +2149,14 @@ done_when = [
 ]
 [[steps]]
 id = "A.194"
-title = "Force-push is refused server-side on every branch and tag, applied by repo:configure and verified by check:ruleset, and every lineage layer is a scoped claim naming what bypasses it"
+title = "Force-push is refused server-side on every branch and tag, and archive tags are never updated or deleted, applied by repo:configure and verified by check:ruleset; every lineage layer is a scoped claim stating exactly what it guarantees and what bypasses it"
 thread = "A"
 depends_on = ["A.105", "A.192", "A.155"]
 because = { "A.105" = "the ruleset kept as code and verified that this step widens", "A.192" = "the local hooks this layer stands behind, bypassable as they are", "A.155" = "a mechanism's claim names what it does not guarantee" }
 done_when = [
   { kind = "proof", test = "tests/test_check_ruleset.py::test_force_push_is_refused_on_every_branch_and_tag" },
-  { kind = "proof", test = "tests/test_lineage_claims.py::test_each_lineage_layer_names_what_bypasses_it" },
+  { kind = "proof", test = "tests/test_check_ruleset.py::test_archive_tags_are_never_updated_or_deleted" },
+  { kind = "proof", test = "tests/test_lineage_claims.py::test_each_lineage_layer_states_what_it_guarantees_and_what_bypasses_it" },
   { kind = "task", name = "repo:configure" },
   { kind = "task", name = "check:ruleset" },
   { kind = "task", name = "check" },
