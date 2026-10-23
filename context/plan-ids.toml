@@ -184,4 +184,7 @@ issued = [
   { id = "A.189", first_title = "sibling:override writes the declared FAS mode into an existing clone, its origin verified, on whatever branch it is, without switching, merging or touching tracked files" },
   { id = "A.190", first_title = "sibling:override trusts the override it wrote, by path, as sibling:checkout does, and refuses rather than report a write mise will not load" },
   { id = "A.191", first_title = "A worktree is brought current by merging origin/develop into it with a merge commit naming its plan step, a stopped merge is concluded by that commit, and a stopped rebase or merge is aborted by task, so lineage is never rewritten" },
+  { id = "A.192", first_title = "git refuses every lineage rewrite at its own hooks: pre-rebase refuses a rebase, prepare-commit-msg an amend even under --no-verify, and reference-transaction any local branch update whose old tip is not an ancestor of its new one, behind typed contracts" },
+  { id = "A.193", first_title = "The rewrite tools retire: worktree:skip, the rebase path of worktree:continue and commit --amend, with their policies, safeguards and codes retired and the plan recording why A.120, A.127 and A.132 change" },
+  { id = "A.194", first_title = "Force-push is refused server-side on every branch and tag, applied by repo:configure and verified by check:ruleset, and every lineage layer is a scoped claim naming what bypasses it" },
 ]

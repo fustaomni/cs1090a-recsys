@@ -2109,3 +2109,49 @@ done_when = [
   { kind = "proof", test = "tests/test_worktree_lineage.py::test_an_absent_conclude_plan_is_refused_by_the_policy" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.192"
+title = "git refuses every lineage rewrite at its own hooks: pre-rebase refuses a rebase, prepare-commit-msg an amend even under --no-verify, and reference-transaction any local branch update whose old tip is not an ancestor of its new one, behind typed contracts"
+thread = "A"
+depends_on = ["A.191", "A.71", "A.166"]
+because = { "A.191" = "a branch is brought current by merge, so a rebase has no remaining use", "A.71" = "the guard emits the registered command-outcome/v1, never a second envelope model", "A.166" = "an ancestry git cannot read is unknown, which refuses and is never reported as a rewrite" }
+done_when = [
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_rebase_is_refused_before_it_starts" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_an_amend_is_refused_even_under_no_verify" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_new_commit_a_merge_and_a_squash_are_kept" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_hook_argument_outside_the_contract_is_refused" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_branch_update_that_orphans_its_old_tip_is_refused" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_fast_forward_and_a_merge_keep_the_old_tip_and_pass" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_an_unreadable_ancestry_is_unknown_and_refused" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_tag_is_never_moved" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_remote_tracking_ref_is_left_to_its_upstream" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_lefthook_runs_the_guard_on_all_three_hooks" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_git_refuses_a_rebase_an_amend_and_a_reset_through_its_hooks" },
+  { kind = "task", name = "lineage:guard" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.193"
+title = "The rewrite tools retire: worktree:skip, the rebase path of worktree:continue and commit --amend, with their policies, safeguards and codes retired and the plan recording why A.120, A.127 and A.132 change"
+thread = "A"
+depends_on = ["A.192"]
+because = { "A.192" = "once git refuses every rebase and amend, the tools that drive them are dead code" }
+done_when = [
+  { kind = "proof", test = "tests/test_lineage_retired.py::test_no_task_offers_a_rewrite" },
+  { kind = "proof", test = "tests/test_lineage_retired.py::test_commit_takes_no_amend" },
+  { kind = "proof", test = "tests/test_lineage_retired.py::test_every_retired_code_stays_registered_as_retired" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.194"
+title = "Force-push is refused server-side on every branch and tag, applied by repo:configure and verified by check:ruleset, and every lineage layer is a scoped claim naming what bypasses it"
+thread = "A"
+depends_on = ["A.105", "A.192", "A.155"]
+because = { "A.105" = "the ruleset kept as code and verified that this step widens", "A.192" = "the local hooks this layer stands behind, bypassable as they are", "A.155" = "a mechanism's claim names what it does not guarantee" }
+done_when = [
+  { kind = "proof", test = "tests/test_check_ruleset.py::test_force_push_is_refused_on_every_branch_and_tag" },
+  { kind = "proof", test = "tests/test_lineage_claims.py::test_each_lineage_layer_names_what_bypasses_it" },
+  { kind = "task", name = "repo:configure" },
+  { kind = "task", name = "check:ruleset" },
+  { kind = "task", name = "check" },
+]
