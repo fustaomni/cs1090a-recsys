@@ -67,7 +67,7 @@ def test_a_refresh_that_changes_mise_toml_retrusts_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     trusts = _setup(monkeypatch, tmp_path, changed=True, trusted=True)
-    assert worktree.cmd_refresh("probe") == 0
+    assert worktree.cmd_refresh("probe", "A.1") == 0
     assert trusts == [tmp_path], trusts
 
 
@@ -75,7 +75,7 @@ def test_a_refresh_that_leaves_mise_toml_alone_trusts_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     trusts = _setup(monkeypatch, tmp_path, changed=False, trusted=True)
-    assert worktree.cmd_refresh("probe") == 0
+    assert worktree.cmd_refresh("probe", "A.1") == 0
     assert trusts == [], trusts
 
 
@@ -85,5 +85,5 @@ def test_a_refused_retrust_fails_the_refresh(
     """A checkout left untrusted refuses every task, so the refresh says so instead of passing."""
     trusts = _setup(monkeypatch, tmp_path, changed=True, trusted=False)
     with pytest.raises(SystemExit, match="not trusted"):
-        worktree.cmd_refresh("probe")
+        worktree.cmd_refresh("probe", "A.1")
     assert trusts == [tmp_path], trusts

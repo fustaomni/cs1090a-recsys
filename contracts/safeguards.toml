@@ -706,6 +706,51 @@ mutant = "\tsome path in input.worktree_continue.with_markers\n\tfalse\n"
 proof = "tests/test_worktree_continue.py::test_a_remaining_marker_is_refused"
 
 [[safeguards]]
+id = "CONCLUDE.INPUT_MISSING"
+engine = "worktree:conclude"
+guard = "ERR_CONCLUDE_INPUT_MISSING"
+path = "policies/runs/worktree_conclude/worktree_conclude.rego"
+anchor = "\tnot input.worktree_conclude\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_lineage.py::test_an_absent_conclude_plan_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "CONCLUDE.NO_MERGE"
+engine = "worktree:conclude"
+guard = "ERR_CONCLUDE_NO_MERGE"
+path = "policies/runs/worktree_conclude/worktree_conclude.rego"
+anchor = "\tinput.worktree_conclude.operation != \"merge\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_lineage.py::test_conclude_without_a_merge_is_refused"
+
+[[safeguards]]
+id = "CONCLUDE.MARKERS"
+engine = "worktree:conclude"
+guard = "ERR_CONCLUDE_MARKERS"
+path = "policies/runs/worktree_conclude/worktree_conclude.rego"
+anchor = "\tsome path in input.worktree_conclude.with_markers\n"
+mutant = "\tsome path in input.worktree_conclude.with_markers\n\tfalse\n"
+proof = "tests/test_worktree_lineage.py::test_a_merge_with_a_marker_left_is_not_concluded"
+
+[[safeguards]]
+id = "ABORT.INPUT_MISSING"
+engine = "worktree:abort"
+guard = "ERR_ABORT_INPUT_MISSING"
+path = "policies/runs/worktree_abort/worktree_abort.rego"
+anchor = "\tnot input.worktree_abort\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_lineage.py::test_an_absent_abort_plan_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "ABORT.NOTHING_IN_PROGRESS"
+engine = "worktree:abort"
+guard = "ERR_ABORT_NOTHING_IN_PROGRESS"
+path = "policies/runs/worktree_abort/worktree_abort.rego"
+anchor = "\tinput.worktree_abort.operation == \"none\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_lineage.py::test_an_abort_with_nothing_in_progress_is_refused"
+
+[[safeguards]]
 id = "SKIP.INPUT_MISSING"
 engine = "worktree:skip"
 guard = "ERR_SKIP_INPUT_MISSING"
