@@ -1,0 +1,27 @@
+# The baseline model run (A.100): what a fit may read and how it is made, declared before
+# any fit exists. runs.model_run holds every fit to this file: the data must be these exact
+# bytes (ratings.dat as verified by data:fetch against the MD5 GroupLens publishes), the
+# features must be declared and point in time, and no row at or after the validation cutoff
+# may be read. Changing any value here declares a different run.
+contract = "model-run-declaration/v1"
+model = "baseline"
+method = "regularised user and movie biases"
+scaler = "none"
+seed = 0
+data_sha256 = "506d64ca44484487c11dc2d9a28de5c54948213e6b96285e298afe28d6ea4e0f"
+
+[cutoffs]
+validation = 0.8
+test = 0.9
+
+[hyperparameters]
+shrink_user = 10.0
+shrink_movie = 25.0
+
+[[features]]
+name = "user"
+point_in_time = true
+
+[[features]]
+name = "movie"
+point_in_time = true

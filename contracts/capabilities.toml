@@ -220,6 +220,84 @@ implementation = "scripts/worktree.py"
 emits = "text"
 
 [[capabilities]]
+task = "site:lock"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "site:build"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "site:railway-login"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "site:deploy"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "site:domain"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "site:status"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "site:record"
+version = "1.0.0"
+implementation = "scripts/site_record.py"
+emits = "text"
+
+[[capabilities]]
+task = "site:test"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "site:config-pull"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "site:config-plan"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "data:fetch"
+version = "1.0.0"
+implementation = "scripts/data_fetch.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "model:fit"
+version = "1.0.0"
+implementation = "scripts/model_run.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "site:movielens"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
 task = "capabilities:list"
 version = "1.0.0"
 implementation = "scripts/capabilities.py"

@@ -445,9 +445,9 @@ patch = "contracts/vendor-patches/tests/test_commit.py.patch"
 sha256 = "8e9612d1b3f1fdee95e664819ac4dcb187900ef428c50b0d5cd991737d9d5e2f"
 [[adapted]]
 path = ".gitignore"
-reason = ".cache/ is ignored: mise.toml points uv at it, and it is regenerable (founding F4b)"
+reason = "data ignored only at the repository root, so a nested data directory is never hidden; A.95"
 patch = "contracts/vendor-patches/.gitignore.patch"
-sha256 = "6989ece4fd552419385c146173d68e66debeb42b96ea1ba827f4e43eb58c92e1"
+sha256 = "7510fa70ceb99fd8ce6eeae1b43d45de2a50cb14167222f0a91a9c1d524e7cc8"
 [[adapted]]
 path = "lefthook.yml"
 reason = "the header is rewritten for recsys; pre-commit runs audit:workflows again, restored with the workflow audit (A.23)"
@@ -807,7 +807,7 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 path = "contracts/problems.toml"
 reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "4beb63acc18d15704e5a6986bbf4203e04e89aaa3cf8553b6f7f233f0adc5aec"
+sha256 = "0001b591a5461fe7977a386a5f60541fa44f4a3bbc49f09bc72fb5e523d24789"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
