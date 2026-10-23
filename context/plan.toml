@@ -2262,12 +2262,16 @@ because = { "A.166" = "an ancestry git could not read is unknown, never pass", "
 done_when = [
   { kind = "proof", test = "tests/test_lineage_policy.py::test_every_ref_update_falls_in_exactly_one_closed_class" },
   { kind = "proof", test = "tests/test_lineage_policy.py::test_the_evidence_holds_observations_and_no_conclusion" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_lineage_contracts_are_strict_and_refuse_a_coerced_value" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_every_reason_code_is_registered_never_a_free_string" },
   { kind = "proof", test = "tests/test_lineage_policy.py::test_each_rule_records_its_own_verdict" },
   { kind = "proof", test = "tests/test_lineage_policy.py::test_an_unknown_or_undefined_result_never_allows" },
   { kind = "proof", test = "tests/test_lineage_policy.py::test_a_refusal_needing_review_names_its_reviewed_route" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_an_ancestry_two_probes_disagree_on_is_unknown" },
   { kind = "proof", test = "tests/test_lineage_audit.py::test_every_decision_is_appended_to_a_hash_chained_audit_file" },
   { kind = "proof", test = "tests/test_lineage_audit.py::test_a_decision_record_names_the_policy_digest_and_how_it_was_reached" },
   { kind = "proof", test = "tests/test_lineage_audit.py::test_the_gateway_ingests_lineage_decisions_into_the_signed_ledger" },
+  { kind = "proof", test = "tests/test_lineage_audit.py::test_ingestion_rechecks_each_recorded_ancestry_where_the_objects_exist" },
   { kind = "proof", test = "tests/test_lineage_audit.py::test_a_broken_chain_or_an_uningested_record_is_reported" },
   { kind = "task", name = "check" },
 ]
