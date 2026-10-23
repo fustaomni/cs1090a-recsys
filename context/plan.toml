@@ -2137,7 +2137,10 @@ done_when = [
   { kind = "proof", test = "tests/test_lineage_hooks.py::test_a_hook_without_a_needed_tool_or_with_unexpected_input_refuses" },
   { kind = "proof", test = "tests/test_lineage_hooks.py::test_the_shell_hooks_and_the_typed_reference_decide_every_case_alike" },
   { kind = "proof", test = "tests/test_lineage_hooks.py::test_lefthook_install_leaves_the_lineage_hooks_in_place" },
-  { kind = "proof", test = "tests/test_lineage_hooks.py::test_git_refuses_a_rebase_every_amend_a_forced_reset_and_an_unpreserved_deletion" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_every_refusal_is_one_contract_line_on_stderr" },
+  { kind = "proof", test = "tests/acceptance/test_lineage_acceptance.py::test_every_rewrite_is_refused_through_the_installed_hooks_with_its_code_and_state_unchanged" },
+  { kind = "proof", test = "tests/acceptance/test_lineage_acceptance.py::test_every_allowed_operation_passes_through_the_installed_hooks" },
+  { kind = "proof", test = "tests/acceptance/test_lineage_acceptance.py::test_each_refusal_is_attributable_because_the_same_operation_succeeds_unguarded" },
   { kind = "task", name = "lineage:guard" },
   { kind = "task", name = "hooks:install" },
   { kind = "task", name = "check" },
@@ -2231,5 +2234,20 @@ done_when = [
   { kind = "proof", test = "tests/test_hooks_verify.py::test_setup_worktree_add_and_sync_verify_after_installing" },
   { kind = "proof", test = "tests/test_hooks_verify.py::test_status_reports_the_hook_verdict" },
   { kind = "task", name = "hooks:verify" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.199"
+title = "Every git-behaviour proof runs in one hermetic git fixture, global and system config off, an empty template directory, no env-injected config or repository-locating variable, fixed identity and stdin closed, and every refusal proof is differential: the operation succeeds unguarded, fails guarded with its refusal read as a contract, and leaves refs, HEAD and the index unchanged"
+thread = "A"
+depends_on = ["A.173", "A.192"]
+because = { "A.173" = "a proof declares its layer, and acceptance through the installed path is the layer this step requires", "A.192" = "the lineage proofs are the first that must show why git refused" }
+done_when = [
+  { kind = "proof", test = "tests/test_git_fixture.py::test_a_hostile_global_or_system_config_is_hidden" },
+  { kind = "proof", test = "tests/test_git_fixture.py::test_env_injected_config_and_repository_locating_variables_are_removed" },
+  { kind = "proof", test = "tests/test_git_fixture.py::test_an_exported_git_dir_cannot_redirect_a_proof_onto_the_real_repository" },
+  { kind = "proof", test = "tests/test_git_fixture.py::test_init_copies_no_template_hook" },
+  { kind = "proof", test = "tests/test_git_fixture.py::test_a_refusal_proof_fails_when_the_unguarded_operation_also_fails" },
+  { kind = "proof", test = "tests/test_git_fixture.py::test_every_git_spawning_proof_uses_the_fixture" },
   { kind = "task", name = "check" },
 ]
