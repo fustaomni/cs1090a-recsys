@@ -2112,7 +2112,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.192"
-title = "git refuses every local lineage rewrite and every unpreserved deletion at its own hooks: pre-rebase refuses a rebase early, and reference-transaction judges every ref write against the ref's current tip, refusing an orphaning branch update (every amend, whatever its message source, a forced reset, branch -f, update-ref), an unpreserved deletion, a moved tag and any refs/replace write, behind typed contracts; a symbolic-ref update is not lineage, and a tip git cannot read refuses as unknown"
+title = "git refuses every local lineage rewrite and every unpreserved deletion at its own hooks, pre-rebase and reference-transaction, which are standalone POSIX sh executables depending on git alone, installed by hooks:install outside lefthook and failing closed on any missing tool or unexpected input; each ref write is judged against the ref's current tip, refusing an orphaning update (every amend, a forced reset, branch -f, update-ref), an unpreserved deletion, a moved tag and any refs/replace write; a symbolic-ref update is not lineage; the typed lineage:guard is the reference both hooks conform to"
 thread = "A"
 depends_on = ["A.191", "A.71", "A.166"]
 because = { "A.191" = "a branch is brought current by merge, so a rebase has no remaining use", "A.71" = "the guard emits the registered command-outcome/v1, never a second envelope model", "A.166" = "an ancestry git cannot read is unknown, which refuses and is never reported as a rewrite" }
@@ -2133,9 +2133,13 @@ done_when = [
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_tag_is_never_moved" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_replace_ref_is_never_written" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_remote_tracking_ref_is_left_to_its_upstream" },
-  { kind = "proof", test = "tests/test_lineage_guard.py::test_lefthook_runs_the_guard_on_pre_rebase_and_reference_transaction" },
-  { kind = "proof", test = "tests/test_lineage_guard.py::test_git_refuses_a_rebase_every_amend_a_forced_reset_and_an_unpreserved_deletion" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_the_installed_hooks_depend_on_git_alone" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_a_hook_without_a_needed_tool_or_with_unexpected_input_refuses" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_the_shell_hooks_and_the_typed_reference_decide_every_case_alike" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_lefthook_install_leaves_the_lineage_hooks_in_place" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_git_refuses_a_rebase_every_amend_a_forced_reset_and_an_unpreserved_deletion" },
   { kind = "task", name = "lineage:guard" },
+  { kind = "task", name = "hooks:install" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -2174,6 +2178,7 @@ because = { "A.192" = "the local layer whose bypasses the register names", "A.19
 done_when = [
   { kind = "proof", test = "tests/test_lineage_threats.py::test_every_lineage_threat_names_its_prevention_detection_and_residual_risk" },
   { kind = "proof", test = "tests/test_lineage_threats.py::test_no_threat_is_left_without_a_detecting_layer" },
+  { kind = "proof", test = "tests/test_lineage_threats.py::test_a_rewritten_copy_published_under_a_new_name_is_detected_by_patch_identity" },
   { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_every_recorded_tip_is_still_an_ancestor" },
   { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_a_rewritten_develop_is_detected_naming_the_lost_tip" },
   { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_a_checkpoint_is_signed_and_a_forged_one_is_refused" },
@@ -2210,5 +2215,21 @@ done_when = [
   { kind = "proof", test = "tests/test_credentials.py::test_an_unreadable_scope_set_is_unknown_and_refuses_a_push" },
   { kind = "proof", test = "tests/test_lineage_claims.py::test_prompt_suppression_is_not_claimed_as_a_security_boundary" },
   { kind = "task", name = "credential:audit" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.198"
+title = "Hooks are evidence only once observed: lefthook fails closed with assert_lefthook_installed, and hooks:verify observes the effective hooks directory, core.hooksPath with its origin in every config scope, and each required hook present, executable and current, in check, after setup, worktree:add and sync, and in status"
+thread = "A"
+depends_on = ["A.93", "A.155"]
+because = { "A.93" = "setup installs the hooks every worktree shares", "A.155" = "a hook's claim is scoped to clones where it is observed installed" }
+done_when = [
+  { kind = "proof", test = "tests/test_hooks_verify.py::test_a_hook_run_without_lefthook_on_path_fails_closed" },
+  { kind = "proof", test = "tests/test_hooks_verify.py::test_the_effective_hooks_directory_is_observed" },
+  { kind = "proof", test = "tests/test_hooks_verify.py::test_a_core_hooks_path_in_any_scope_is_refused_with_its_origin" },
+  { kind = "proof", test = "tests/test_hooks_verify.py::test_a_missing_non_executable_or_stale_hook_is_refused" },
+  { kind = "proof", test = "tests/test_hooks_verify.py::test_setup_worktree_add_and_sync_verify_after_installing" },
+  { kind = "proof", test = "tests/test_hooks_verify.py::test_status_reports_the_hook_verdict" },
+  { kind = "task", name = "hooks:verify" },
   { kind = "task", name = "check" },
 ]
