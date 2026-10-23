@@ -585,6 +585,16 @@ description = "Continue a worktree's resolved rebase, refused while any marker r
 # D.31: continue-plan/v1 judged by runs.worktree_continue before anything is staged.
 run = "uv run --no-sync python scripts/rebase_state.py continue"
 
+# This repository's own (plan A.191): a merge is concluded and a stopped operation aborted by
+# task, so a branch is brought current by merge and its lineage is never rewritten.
+[tasks."worktree:conclude"]
+description = "Conclude a worktree's resolved merge by its merge commit, refused while a marker remains"
+run = "uv run --no-sync python scripts/rebase_state.py conclude"
+
+[tasks."worktree:abort"]
+description = "Abort a worktree's stopped rebase or merge, returning its branch to its own tip"
+run = "uv run --no-sync python scripts/rebase_state.py abort"
+
 # This repository's own (plan A.127): cscie103's rebase_state.py has no skip at the pin.
 [tasks."worktree:skip"]
 description = "Drop a worktree's stopped rebase commit, only when another named ref preserves it"

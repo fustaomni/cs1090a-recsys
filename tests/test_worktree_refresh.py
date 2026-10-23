@@ -44,7 +44,7 @@ def _setup(
             return _done(0, next(heads))
         if args == ("rev-parse", "origin/develop"):
             return _done(0, TARGET)
-        return _done(rebase if args[0] == "rebase" else 0)
+        return _done(rebase if args[0] == "merge" else 0)
 
     def follow(path: Path, before: str) -> EnvironmentSync:
         calls.append((path, before))
@@ -66,7 +66,7 @@ def test_a_finished_refresh_follows_the_lock(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     calls = _setup(monkeypatch, tmp_path, rebase=0, synced=CHANGED)
-    assert worktree.cmd_refresh("probe") == 0
+    assert worktree.cmd_refresh("probe", "A.1") == 0
     assert calls == [(tmp_path, BEFORE)], calls
 
 
@@ -76,7 +76,7 @@ def test_a_stopped_refresh_never_touches_the_environment(
     """Mid-rebase, the lock may hold conflict markers: nothing is installed from it."""
     calls = _setup(monkeypatch, tmp_path, rebase=1, synced=CHANGED)
     with pytest.raises(SystemExit):
-        worktree.cmd_refresh("probe")
+        worktree.cmd_refresh("probe", "A.1")
     assert calls == [], calls
 
 
@@ -86,7 +86,7 @@ def test_a_lock_that_will_not_install_fails_the_refresh(
     """Reporting success with an environment that no longer matches the lock is the defect."""
     _setup(monkeypatch, tmp_path, rebase=0, synced=BROKEN)
     with pytest.raises(SystemExit) as stopped:
-        worktree.cmd_refresh("probe")
+        worktree.cmd_refresh("probe", "A.1")
     assert "uv sync --locked exited 1" in str(stopped.value.code), stopped.value.code
 
 
@@ -94,4 +94,4 @@ def test_an_unchanged_lock_leaves_the_refresh_succeeding(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     _setup(monkeypatch, tmp_path, rebase=0, synced=UNCHANGED)
-    assert worktree.cmd_refresh("probe") == 0
+    assert worktree.cmd_refresh("probe", "A.1") == 0

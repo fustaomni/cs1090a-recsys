@@ -539,9 +539,9 @@ sha256 = "fa7e99480e9c10832ce0c93b9a74fd82d741846bf1c94a8ce2a4544e6e5e005d"
 
 [[adapted]]
 path = "scripts/worktree.py"
-reason = "cut from an optional base with --no-track; trusted through machine_trust; -z listings through gitenv.git_bytes; A.93; one _trust helper serves a new worktree and a refresh that rewrote mise.toml, which is re-trusted or fails the refresh; A.122; a branch is deleted only once origin/develop contains it, and a kept branch sends the reader to branches:retire, never git branch -D, as cscie103 D.229 and D.228 do; A.138; a present worktree whose branch is already gone is reported so, as an absent one is; A.139"
+reason = "A.191: refresh merges origin/develop with a merge commit naming its plan step, never a rebase, so a published branch keeps every commit"
 patch = "contracts/vendor-patches/scripts/worktree.py.patch"
-sha256 = "cc301e666b03bfa0d4f193f2e9c898a720919eafebae34c382d54112fa1cdd1b"
+sha256 = "7f89494142e995d7563fb8e1e6d47d7167b12cdfcad441f60cf41bd2380f6b39"
 
 [[files]]
 path = "policies/machine/setup/setup_env.rego"
@@ -564,6 +564,12 @@ sha256 = "14c1688fb310abe90b5724406081ec3c705ebc7a1c653d6b903149273e49ee3d"
 [[files]]
 path = "tests/test_worktree_refresh.py"
 sha256 = "7a7c2b8900df46055d005cd78d67e4da1637cba0ddea2de0b6e56fdfda844f4d"
+
+[[adapted]]
+path = "tests/test_worktree_refresh.py"
+reason = "A.191: refresh merges and takes a plan step, so its proofs fake a merge and pass one"
+patch = "contracts/vendor-patches/tests/test_worktree_refresh.py.patch"
+sha256 = "0f7838b9752fe9081929f29796daddc537324ba0aa7dffd32f96450e4edd2ad3"
 
 [[files]]
 path = "tests/test_worktree_remove.py"
@@ -801,7 +807,7 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 path = "contracts/problems.toml"
 reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "9db4f0129ed92d658d679a112ea6fab1db1dd73fa638f1ce756a2a88cc48b7b2"
+sha256 = "4beb63acc18d15704e5a6986bbf4203e04e89aaa3cf8553b6f7f233f0adc5aec"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
@@ -934,6 +940,12 @@ sha256 = "7e0f8a890a93ea1b3dca777c9e96133e4edbcc010232eb8eb9278c7388a264bd"
 [[files]]
 path = "scripts/rebase_state.py"
 sha256 = "0171d0cebace533becb7f8c922a9b98ba76b2f3ef27c9a6c9f32f9778b9cc615"
+
+[[adapted]]
+path = "scripts/rebase_state.py"
+reason = "A.191: a merge is concluded by its merge commit and a stopped rebase or merge aborted, each by task under its own policy, so lineage is never rewritten"
+patch = "contracts/vendor-patches/scripts/rebase_state.py.patch"
+sha256 = "c51e864591fda9361a8ad23f9e7498d8ef97e0622113dd27aa3852f1bc13156d"
 
 [[files]]
 path = "policies/runs/worktree_continue/worktree_continue.rego"

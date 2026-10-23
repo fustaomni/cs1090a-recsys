@@ -418,6 +418,18 @@ implementation = "scripts/rebase_state.py"
 emits = "command-outcome/v1"
 
 [[capabilities]]
+task = "worktree:conclude"
+version = "1.0.0"
+implementation = "scripts/rebase_state.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "worktree:abort"
+version = "1.0.0"
+implementation = "scripts/rebase_state.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
 task = "worktree:continue"
 version = "1.0.0"
 implementation = "scripts/rebase_state.py"

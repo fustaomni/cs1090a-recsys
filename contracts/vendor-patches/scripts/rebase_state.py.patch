@@ -1,0 +1,148 @@
+--- a/scripts/rebase_state.py
++++ b/scripts/rebase_state.py
+@@ -37,7 +37,14 @@
+ OURS, BASE, SEPARATOR, THEIRS = "<<<<<<<", "|||||||", "=======", ">>>>>>>"
+ MARKERS = (OURS, BASE, SEPARATOR, THEIRS)
+ CONTEXT = 3
+-USAGE = "usage: mise run run worktree:conflicts <slug> | worktree:continue <slug>"
++USAGE = "usage: mise run run worktree:conflicts|continue|conclude|abort <slug>"
++VERBS = ("conflicts", "continue", "conclude", "abort")
++CONCLUDE_SUBJECT = "worktree_conclude"
++CONCLUDE_POLICY = ROOT / "policies" / "runs" / "worktree_conclude"
++CONCLUDE_ENTRYPOINT = "data.runs.worktree_conclude.deny"
++ABORT_SUBJECT = "worktree_abort"
++ABORT_POLICY = ROOT / "policies" / "runs" / "worktree_abort"
++ABORT_ENTRYPOINT = "data.runs.worktree_abort.deny"
+ Operation = Literal["rebase", "merge", "none"]
+ 
+ 
+@@ -223,12 +230,102 @@
+     )
+ 
+ 
++class AbortPlan(_Frozen):
++    """abort-plan/v1: the operation an abort would stop, observed before it acts (A.191)."""
++
++    contract: Literal["abort-plan/v1"] = "abort-plan/v1"
++    operation: Operation
++
++
++class AbortResult(_Frozen):
++    outcome: Literal["aborted", "refused", "failed"]
++    message: str
++    plan: AbortPlan
++    after: ConflictReport
++    decision: Decision
++
++
++def conclude_merge(path: Path) -> ContinueResult:
++    """Commit a resolved merge with the message it prepared; refuse markers or no merge (A.191).
++
++    The merge commit records the integration and keeps every commit of the branch, so nothing
++    is rewritten. --cleanup=strip drops git's commented conflict list, which would otherwise
++    follow the Plan-Step trailer that commit-msg reads in the message's last paragraph.
++    """
++    plan = plan_continue(path)
++    found = evaluate(plan, CONCLUDE_SUBJECT, CONCLUDE_POLICY, CONCLUDE_ENTRYPOINT)
++    decision = decide(found)
++    if decision.action != "proceed":
++        after = conflicts(path)
++        message = reasons(found)
++        return ContinueResult(
++            outcome="refused", message=message, plan=plan, after=after, decision=decision
++        )
++    if plan.unmerged:
++        staged = git("add", "--", *plan.unmerged, cwd=path)
++        if staged.returncode != 0:
++            failure = staged.stderr.strip() or "git add failed"
++            stopped = halted(CONCLUDE_SUBJECT, CONCLUDE_ENTRYPOINT, CONCLUDE_POLICY, failure)
++            after = conflicts(path)
++            return ContinueResult(
++                outcome="failed", message=failure, plan=plan, after=after, decision=stopped
++            )
++    committed = subprocess.run(
++        ["git", "commit", "--no-edit", "--cleanup=strip"],
++        cwd=path,
++        env={**scrubbed_env(), "GIT_EDITOR": "true"},
++        capture_output=True,
++        text=True,
++        check=False,
++    )
++    after = conflicts(path)
++    if committed.returncode != 0 or after.operation != "none":
++        failure = (committed.stderr or committed.stdout).strip() or "the merge did not conclude"
++        stopped = halted(CONCLUDE_SUBJECT, CONCLUDE_ENTRYPOINT, CONCLUDE_POLICY, failure)
++        return ContinueResult(
++            outcome="failed", message=failure, plan=plan, after=after, decision=stopped
++        )
++    return ContinueResult(
++        outcome="finished", message="merge concluded", plan=plan, after=after, decision=decision
++    )
++
++
++def abort_operation(path: Path) -> AbortResult:
++    """Abort a stopped rebase or merge back to the branch's own tip; refuse when none (A.191)."""
++    plan = AbortPlan(operation=_operation(path))
++    found = evaluate(plan, ABORT_SUBJECT, ABORT_POLICY, ABORT_ENTRYPOINT)
++    decision = decide(found)
++    if decision.action != "proceed":
++        after = conflicts(path)
++        message = reasons(found)
++        return AbortResult(
++            outcome="refused", message=message, plan=plan, after=after, decision=decision
++        )
++    stopped = subprocess.run(
++        ["git", plan.operation, "--abort"],
++        cwd=path,
++        env={**scrubbed_env(), "GIT_EDITOR": "true"},
++        capture_output=True,
++        text=True,
++        check=False,
++    )
++    after = conflicts(path)
++    if stopped.returncode != 0 or after.operation != "none":
++        failure = (stopped.stderr or stopped.stdout).strip() or f"{plan.operation} not aborted"
++        halt = halted(ABORT_SUBJECT, ABORT_ENTRYPOINT, ABORT_POLICY, failure)
++        return AbortResult(outcome="failed", message=failure, plan=plan, after=after, decision=halt)
++    message = f"{plan.operation} aborted: the branch is back at its own tip"
++    return AbortResult(
++        outcome="aborted", message=message, plan=plan, after=after, decision=decision
++    )
++
++
+ def main(argv: Sequence[str] | None = None) -> int:
+-    """worktree:conflicts <slug> | worktree:continue <slug>."""
++    """worktree:conflicts | worktree:continue | worktree:conclude | worktree:abort <slug>."""
+     from worktree import sibling_path
+ 
+     args = list(sys.argv[1:] if argv is None else argv)
+-    if len(args) != 2 or args[0] not in ("conflicts", "continue"):
++    if len(args) != 2 or args[0] not in VERBS:
+         stopped = halted(SUBJECT, ENTRYPOINT, POLICY, USAGE)
+         return enforce(announce("worktree:continue", stopped, "usage", USAGE, {}))
+     verb, slug = args
+@@ -245,11 +342,21 @@
+         message = f"{report.operation}: {count} block(s) in {len(report.files)} file(s)"
+         data = report.model_dump(mode="json")
+         return enforce(announce(command, read, "conflicts_read", message, data))
+-    result = continue_rebase(path)
++    if verb == "abort":
++        aborted = abort_operation(path)
++        abort_code = (
++            refusal_code(aborted.decision, "abort_refused")
++            if aborted.outcome == "refused"
++            else f"abort_{aborted.outcome}"
++        )
++        abort_data = aborted.model_dump(mode="json")
++        return enforce(announce(command, aborted.decision, abort_code, aborted.message, abort_data))
++    noun = "merge" if verb == "conclude" else "rebase"
++    result = conclude_merge(path) if verb == "conclude" else continue_rebase(path)
+     code = (
+-        refusal_code(result.decision, "rebase_refused")
++        refusal_code(result.decision, f"{noun}_refused")
+         if result.outcome == "refused"
+-        else f"rebase_{result.outcome}"
++        else f"{noun}_{result.outcome}"
+     )
+     data = result.model_dump(mode="json")
+     return enforce(announce(command, result.decision, code, result.message, data))
