@@ -8,6 +8,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from nonvacuous import nonempty
 from run_task import main
 
 TASK = "probe"
@@ -32,8 +33,8 @@ def test_two_concurrent_runs_never_share_an_evidence_path(tmp_path: Path) -> Non
     assert codes == [0, 0]
     folders = sorted((tmp_path / "evidence").iterdir())
     assert len(folders) == 2
-    assert all((folder / "stdout").is_file() for folder in folders)
-    assert all((folder / "stderr").is_file() for folder in folders)
+    assert all((folder / "stdout").is_file() for folder in nonempty(folders))
+    assert all((folder / "stderr").is_file() for folder in nonempty(folders))
 
 
 def test_both_streams_are_retained_with_their_digests(tmp_path: Path) -> None:

@@ -83,6 +83,12 @@ description = "The gate minus anything needing network or Databricks auth (git h
 # gate; that is the layer where a bypass is caught.
 run = "uv run --no-sync python scripts/check_all.py --offline"
 
+[tasks."check:ci"]
+description = "The gate minus claims about the developer machine, for CI's runner"
+# SAME LIST, FILTERED, as check:offline is: a gate declaring runs_in_ci = false is a claim
+# about the developer machine (A.104), which GitHub's runner is not. ci.yml runs this task.
+run = "uv run --no-sync python scripts/check_all.py --ci"
+
 [tasks.setup]
 description = "One-command onboarding: dependencies and git hooks"
 # `lefthook install` writes into .git/hooks, which is NOT version controlled. A
@@ -229,6 +235,9 @@ description = "Cut a feature branch from origin/develop in THIS shell"
 #
 # Uncommitted work carries across automatically: `git switch -c` keeps the
 # working tree, so a modified file on develop lands on the new branch.
+#
+# --no-track (A.131): a branch started from origin/develop otherwise tracks it, and a bare
+# `git push` then publishes to develop with no review. worktree:add cuts the same way (A.93).
 usage = '''
 arg "<slug>" help="Short kebab-case description, e.g. assignment-01-spark-api"
 '''
@@ -240,9 +249,44 @@ case "$slug" in
   *[!a-z0-9-]*|"")
     echo "echo 'slug must be lowercase kebab-case: $slug' >&2; false" ;;
   *)
-    echo "git fetch origin --prune --quiet && git switch -c feature/$slug origin/develop" ;;
+    echo "git fetch origin --prune --quiet && git switch --no-track -c feature/$slug origin/develop" ;;
 esac
 '''
+
+[tasks."start:switch"]
+description = "Move THIS shell's checkout to an existing branch, e.g. back to develop"
+# This repository's own (plan A.140), restored from its earlier tooling. PRINTS the command,
+# as start:here does, because a task cannot change the invoking shell's checkout:
+#
+#   eval "$(mise run -q start:switch develop)"
+#
+# Refused as a printed `false` for a branch that does not exist, or that another worktree
+# holds, since git allows a branch in one worktree only. The listing is read before grep, so
+# pipefail cannot turn grep's early exit into a missed match.
+usage = """
+arg "<branch>" help="An existing local branch, e.g. develop"
+"""
+run = """
+set -euo pipefail
+branch="$usage_branch"
+current="$(git symbolic-ref --quiet --short HEAD || true)"
+listing="$(git worktree list --porcelain)"
+
+case "$branch" in
+  *[!A-Za-z0-9._/-]*|"")
+    echo "echo 'not a plain branch name' >&2; false" ;;
+  "$current")
+    echo "echo 'already on $branch'" ;;
+  *)
+    if ! git rev-parse --verify --quiet "refs/heads/$branch" >/dev/null; then
+      echo "echo 'no local branch $branch' >&2; false"
+    elif grep -Fqx "branch refs/heads/$branch" <<<"$listing"; then
+      echo "echo '$branch is checked out in another worktree' >&2; false"
+    else
+      echo "git switch $branch"
+    fi ;;
+esac
+"""
 
 # --- Planning -----------------------------------------------------------------
 
@@ -332,6 +376,7 @@ run = "uv run --no-sync python scripts/signing.py"
 
 [tools]
 betterleaks = "1.9.0"
+gh = "2.102.0"
 lefthook = "2.2.0"
 opa = "1.21.1"
 regal = "0.43.0"
@@ -339,6 +384,7 @@ uv = "0.12.23"
 zizmor = "1.30.1"
 
 [settings]
+auto_install = false
 lockfile = true
 minimum_release_age = "2026-10-08T00:00:00Z"
 
@@ -359,8 +405,10 @@ description = "Prove every listed safeguard: its proof passes, then fails once i
 run = "uv run --no-sync python scripts/safeguards.py"
 
 [tasks."machine:trust"]
-description = "Trust this checkout's mise.toml by its own path, only after the founding policy allows it"
-run = "uv run --no-sync python scripts/machine_trust.py"
+description = "Trust a checkout's mise.toml by its own path, only after the founding policy allows it"
+# A.122: [checkout] names another one, so a trusted worktree trusts it without loading it.
+usage = 'arg "[checkout]" help="Another checkout to trust; this one when omitted"'
+run = 'uv run --no-sync python scripts/machine_trust.py ${usage_checkout:-}'
 
 [tasks."policies:admit"]
 description = "Refuse any policy domain the manifest declares but cannot admit, or plan one's admission"
@@ -476,7 +524,7 @@ description = "Search tracked source for a pattern, returning each match as data
 run = "uv run --no-sync python scripts/source_search.py"
 
 [tasks."upstream:checkout"]
-description = "Check out another repository at a pinned 40-character commit, blobless, under .artifacts/upstream"
+description = "Check out another repository at a pinned 40-character commit, blobless, under .artifacts/upstream, or list its tree at that commit"
 run = "uv run --no-sync python scripts/upstream.py"
 
 [tasks."provenance:adapt"]
@@ -493,6 +541,296 @@ description = "Create and edit source from a declarative spec, judged by policy,
 # edit logic is written at execution time; runs.source_apply judges every operation.
 run = "uv run --no-sync python scripts/source_apply.py"
 
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.23).
+[tasks."audit:workflows"]
+description = "Refuse any zizmor finding or suppression, and any workflow grant the allow-list omits"
+# M38 (D.95): zizmor cannot judge job-level grants in general and honours inline ignores, so a
+# closed allow-list decides every grant. Runs on every commit, on push, and in CI's required gate.
+run = "uv run --no-sync python scripts/workflow_audit.py"
+
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.19).
+[tasks.pr]
+description = "Open a PR and block until it is merged"
+# BLOCKS, HAVING ORIGINALLY NOT. The first version enabled auto-merge and
+# returned with state BLOCKED, moving the cost to the person -- who watched the
+# Actions tab and confirmed the merge by hand on twelve pull requests.
+#
+# Three phases, because waiting for checks to APPEAR and waiting for them to
+# FINISH are different problems. Each is bounded: an unbounded wait hangs when
+# something upstream never resolves, teaching the person nothing.
+run = "uv run --no-sync python scripts/pr.py"
+
+# recsys (plan A.26): the founding locked and installed tools by hand, and neither run left a
+# record. Both are tasks, so each runs through the gateway and is recorded like any other.
+[tasks."tools:lock"]
+description = "Lock every [tools] pin for linux-x64, keeping versions already locked; installs nothing"
+# mise lock writes the lockfile without installing, and keeps a locked version unless --bump is
+# given, which this task never passes. linux-x64 is the one platform mise.lock records.
+run = "mise lock --platform linux-x64"
+
+[tasks."tools:install"]
+description = "Install exactly the tools mise.lock records, refusing any it does not"
+# --locked: a tool missing from the lock fails instead of resolving a version from the network.
+run = "mise install --locked"
+
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.121); the spec help names this
+# repository's identity fields, name and repository.
+[tasks."identity:set"]
+description = "Set the project identity from a spec: every declared slot and the declaration, all or nothing"
+# THE FIRST OPERATION A GENERATED PROJECT RUNS: every slot is rewritten, or none is.
+usage = 'arg "<spec>" help="TOML spec: name, repository"'
+run = 'uv run --no-sync python scripts/project_identity.py "${usage_spec?}"'
+
+[tasks."template:new"]
+description = "Generate a new project from this template on GitHub, pinned to a commit, or refuse"
+# THE SOURCE IS THE DECLARED REPOSITORY AND THE REF A FULL SHA: no laptop path, no HEAD.
+usage = '''
+arg "<destination>" help="An absent or empty directory outside this repository"
+arg "<ref>" help="A full 40-character commit sha of this template"
+'''
+run = 'uv run --no-sync python scripts/template_new.py "${usage_destination?}" "${usage_ref?}"'
+
+[tasks."template:init"]
+description = "Make a generated project a git repository: the template as one commit on main, and develop"
+# THE BASELINE copier update DIFFS AGAINST: refused unless generated, new to git, and outside.
+usage = 'arg "<destination>" help="A directory template:new generated, not yet a repository"'
+run = 'uv run --no-sync python scripts/template_init.py "${usage_destination?}"'
+
+[tasks."template:identity"]
+description = "Give a fresh generated project its identity from a spec, as its second commit"
+# ONE COMMIT AND NO REMOTE, OR REFUSED: identity is taken once, before publishing.
+usage = '''
+arg "<destination>" help="A project template:init made: one commit, no remote"
+arg "<spec>" help="TOML spec: name, repository"
+'''
+run = 'uv run --no-sync python scripts/template_identity.py "${usage_destination?}" "${usage_spec?}"'
+
+[tasks."template:publish"]
+description = "Publish a generated project: create it on GitHub, push main and develop, default develop"
+# RIGHT AFTER template:init: everything later arrives through a pull request.
+usage = '''
+arg "<destination>" help="A project template:init made: clean, with no remote"
+arg "<repository>" help="owner/name on GitHub"
+arg "<visibility>" help="public or private"
+'''
+run = 'uv run --no-sync python scripts/template_publish.py "${usage_destination?}" "${usage_repository?}" "${usage_visibility?}"'
+
+[tasks."template:discard"]
+description = "Remove an unpublished generated project that holds only its generated commit"
+# IRREVERSIBLE, SO EVERY REFUSAL IS OBSERVED FIRST: generated, no symlink, no remote,
+# one commit, clean, not this repository or home, rmtree resistant to symlink attacks.
+usage = '''
+arg "<destination>" help="A project template:init made that nothing has touched since"
+'''
+run = 'uv run --no-sync python scripts/template_discard.py "${usage_destination?}"'
+
+# This repository's own (plan A.134): cscie103's pipeline built every precondition for copier
+# update and stopped short of the operation. A full sha, a clean tree, a feature branch, this
+# template; Copier's conflicts are left as .rej files and reported by path, never as success.
+[tasks."template:update"]
+description = "Bring a generated project to a later commit of this template, on a feature branch, or refuse"
+usage = """
+arg "<destination>" help="A project this template generated: clean, on a feature branch"
+arg "<ref>" help="A full 40-character commit sha of this template, later than the recorded one"
+"""
+run = 'uv run --no-sync python scripts/template_update.py "${usage_destination?}" "${usage_ref?}"'
+
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.120).
+[tasks."worktree:conflicts"]
+description = "Read a worktree's rebase conflicts as data: each block's sides and context"
+# D.30: what a stopped refresh left, as data, so a resolution is never guessed.
+run = "uv run --no-sync python scripts/rebase_state.py conflicts"
+
+[tasks."worktree:continue"]
+description = "Continue a worktree's resolved rebase, refused while any marker remains"
+# D.31: continue-plan/v1 judged by runs.worktree_continue before anything is staged.
+run = "uv run --no-sync python scripts/rebase_state.py continue"
+
+# This repository's own (plan A.191): a merge is concluded and a stopped operation aborted by
+# task, so a branch is brought current by merge and its lineage is never rewritten.
+[tasks."worktree:conclude"]
+description = "Conclude a worktree's resolved merge by its merge commit, refused while a marker remains"
+run = "uv run --no-sync python scripts/rebase_state.py conclude"
+
+[tasks."worktree:abort"]
+description = "Abort a worktree's stopped rebase or merge, returning its branch to its own tip"
+run = "uv run --no-sync python scripts/rebase_state.py abort"
+
+# This repository's own (plan A.127): cscie103's rebase_state.py has no skip at the pin.
+[tasks."worktree:skip"]
+description = "Drop a worktree's stopped rebase commit, only when another named ref preserves it"
+# skip-plan/v1 judged by runs.worktree_skip before git skips anything. raw_args passes
+# <slug> <preserving-ref> <reason> untouched, so a reason with spaces arrives whole.
+raw_args = true
+run = "uv run --no-sync python scripts/rebase_skip.py"
+
+# Ported from cscie103-data-engineering at 25061c1 (plan A.137): cscie103 built it after this
+# repository's pin, and provenance records each of its files at that commit (A.136).
+[tasks."branches:prune"]
+description = "Delete a merged branch left behind, locally or on origin, once proven merged; a dry run unless --yes"
+run = "uv run --no-sync python scripts/branches_prune.py"
+
+# Ported from cscie103-data-engineering at 25061c1 (plan A.138), as branches:prune was (A.137).
+[tasks."branches:retire"]
+description = "Retire a superseded unmerged branch for a plan step: archive its tip, then delete it; a dry run unless --yes"
+run = "uv run --no-sync python scripts/branches_retire.py"
+
+# This repository's own (plan A.114): cscie103 has no copy verifier; the shape follows
+# upstream:checkout, and the checkout is named so it runs against one whose tasks predate it.
+[tasks."upstream:copies"]
+description = "Remove a checkout's untracked copies of an upstream only where they match its pinned tree"
+raw_args = true
+run = "uv run --no-sync python scripts/upstream_copies.py"
+
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.118).
+[tasks."source:restore"]
+description = "Discard changes to tracked paths, back to HEAD; a dry run unless --yes, refusing untracked paths"
+# NEVER DROPS A NEW FILE: a path HEAD has never seen is refused. raw_args passes --yes.
+raw_args = true
+run = "uv run --no-sync python scripts/source_restore.py"
+
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.142): pr_logs.py and its proof
+# came with A.19, but the task that runs them did not, so a failed CI run could not be read.
+[tasks."pr:logs"]
+description = "Read the current branch's latest failed CI run as typed data, and record the run"
+run = "uv run --no-sync python scripts/pr_logs.py"
+
+[tasks."repo:history"]
+description = "Read commit history as data: subject, authored time, trailers and files, newest first"
+# NUL- AND CONTROL-BYTE-SEPARATED, as git's own %(trailers) options allow: nothing can break the parse.
+raw_args = true
+run = "uv run --no-sync python scripts/repo_history.py"
+
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.101).
+[tasks.sync]
+description = "Return to develop, pull, and remove branches that are safe to remove"
+# STATE-DRIVEN, NOT A PIPELINE. This piped `git for-each-ref` through awk and
+# deleted whatever reported [gone]. It worked until a worktree held one of those
+# branches: git refused -- correctly -- and the task ABORTED after the pull had
+# succeeded, leaving the sync half done.
+#
+# Cleanup had no model of what it was cleaning. scripts/repo_state.py answers
+# protection, merge status and worktree ownership at once, and reports what it
+# did NOT remove and why.
+run = "uv run --no-sync python scripts/sync.py"
+
+[tasks."repo:state"]
+description = "Observe every worktree and long-lived branch as typed evidence, and record the run"
+# EVIDENCE AS DATA: repository-state/v1, verdicts as booleans, never console prose.
+run = "uv run --no-sync python scripts/repo_report.py"
+
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.116).
+# The <spec> help names the mutation spec, as cscie103 corrected it after the pin (D.225); at the
+# pin it carried plan:add's text, "[[steps]] and one [trace]".
+[tasks."mutation:check"]
+description = "Fail unless every named killer kills its mutant, one killer at a time"
+usage = 'arg "<spec>" help="TOML spec: [[mutants]], each with id, file, before, after and killers"'
+run = 'uv run --no-sync python scripts/mutation_check.py "${usage_spec?}"'
+
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.107).
+[tasks."audit:assertions"]
+description = "Refuse any test assertion over a collection it has not proven non-empty"
+# M40 (D.107): all() and not any() over nothing are True, and a loop over nothing asserts nothing.
+# Each such claim must range over a non-empty literal or nonempty(...). Runs in check and in CI.
+run = "uv run --no-sync python scripts/assertion_audit.py"
+
+[tasks."audit:evidence"]
+description = "Refuse any evidence contract holding a conclusion, and any evaluate() argument unresolved"
+# D.142, C17: evidence is what was observed; what policy decides is recorded apart from it.
+run = "uv run --no-sync python scripts/evidence_audit.py"
+
+[tasks."audit:models"]
+description = "Refuse any model deriving from BaseModel directly unless the shrinking baseline lists it"
+# D.147: every model derives from Contract or Reading; the baseline may only shrink (M61).
+run = "uv run --no-sync python scripts/model_audit.py"
+
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.108).
+[tasks."audit:exemptions"]
+description = "Refuse an expired exemption, or one naming a path that no longer exists"
+# D.174, R55.4: contracts/exemptions.toml is the only place an exemption exists, and each lapses.
+run = "uv run --no-sync python scripts/exemptions.py"
+
+[tasks."audit:suppressions"]
+description = "Refuse an inline suppression that no live exemption registers"
+# D.219, R55.4: a suppression is a permission, kept as data in contracts/exemptions.toml.
+run = "uv run --no-sync python scripts/suppression_audit.py"
+
+[tasks."audit:problems"]
+description = "Refuse an unregistered, undeclared or repurposed problem code, and any branch on prose"
+# D.177, R60: one registry of stable problem codes, read both ways and against origin/develop.
+run = "uv run --no-sync python scripts/problem_codes.py"
+
+[tasks."problems:register"]
+description = "Register every declared problem code not yet in contracts/problems.toml"
+# D.177: appends only; an entry once registered is never rewritten.
+run = "uv run --no-sync python scripts/problem_codes.py --register"
+
+# Ported from cscie103-data-engineering at 58af9d3 (plan A.105).
+[tasks."check:ruleset"]
+description = "Judge the server's ruleset: the gate required, pinned to its app, strict, unbypassable"
+# Checks the ruleset's CONTENTS, not its existence: one edited to require
+# nothing is the failure mode that looks like success.
+#
+# NOT a dependency of `check` -- that runs on every commit and this needs
+# network plus gh auth, and a local commit cannot weaken a server-side ruleset.
+# Not a scheduled workflow either: GitHub disables those after 60 days of
+# repository inactivity, and a check that silently stops is worse than none.
+run = "uv run --no-sync python scripts/check_ruleset.py"
+
+# --- Repository configuration -------------------------------------------------
+
+[tasks."repo:configure"]
+description = "Apply repository settings and branch ruleset (idempotent)"
+# REPOSITORY SETTINGS ARE INFRASTRUCTURE. Clicked in a web UI they are invisible
+# to the repo, unreviewable and unreproducible. Found the hard way: `mise run
+# pr` failed with "Auto merge is not allowed for this repository" AFTER pushing
+# and creating the PR.
+#
+# TWO HALVES, AND THE SECOND MAKES THE FIRST MEAN ANYTHING:
+#   settings  allow auto-merge, merge commits only, delete branch on merge
+#   ruleset   protect develop and main, and REQUIRE the quality gate
+#
+# Without a REQUIRED status check, auto-merge has nothing to wait for and fires
+# immediately -- worse than no auto-merge, because it looks like a gate.
+#
+# MERGE COMMITS ONLY: GitFlow depends on merge topology, and squashing would
+# collapse commits whose reasoning is the most valuable thing here.
+#
+# required_approving_review_count IS 0 because this is a solo repository.
+# Requiring a review nobody can give would block every merge; the gate is CI.
+run = '''
+set -euo pipefail
+
+gh api -X PATCH "repos/{owner}/{repo}" \
+  -F allow_auto_merge=true \
+  -F allow_merge_commit=true \
+  -F allow_squash_merge=false \
+  -F allow_rebase_merge=false \
+  -F delete_branch_on_merge=true \
+  > /dev/null
+echo "settings applied"
+
+name="develop-and-main-protection"
+existing="$(gh api "repos/{owner}/{repo}/rulesets" --jq \
+  ".[] | select(.name == \"$name\") | .id" || true)"
+
+if [ -n "$existing" ]; then
+  gh api -X PUT "repos/{owner}/{repo}/rulesets/$existing" \
+    --input contracts/ruleset-develop-and-main.json > /dev/null
+  echo "ruleset updated (id $existing)"
+else
+  gh api -X POST "repos/{owner}/{repo}/rulesets" \
+    --input contracts/ruleset-develop-and-main.json > /dev/null
+  echo "ruleset created"
+fi
+
+echo "--- readback ---"
+gh api "repos/{owner}/{repo}" \
+  --jq '{auto_merge:.allow_auto_merge, merge_commit:.allow_merge_commit, squash:.allow_squash_merge, rebase:.allow_rebase_merge, delete_on_merge:.delete_branch_on_merge}'
+gh api "repos/{owner}/{repo}/rulesets" \
+  --jq '.[] | {id, name, enforcement}'
+'''
+
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.20).
 [tasks."deps:add"]
 description = "Add a dependency with uv and its lock, refusing any change to packages already locked"
@@ -507,3 +845,17 @@ description = "Install exactly what uv.lock pins, refusing a lock that no longer
 # lets a later `uv run` fail for it under another step's name. --locked never
 # rewrites uv.lock, so starting this task cannot dirty the lockfile (D.9).
 run = "uv sync --locked"
+
+# This repository's own (plan A.185): the reference repository runs every task inside nix develop,
+# which FAS OnDemand cannot run, so a sibling is cloned here with a FAS mode and trusted as merged.
+[tasks."sibling:checkout"]
+description = "Clone a declared sibling beside this repository, give it a FAS mode, trust it as merged"
+usage = 'arg "<name>" help="A sibling contracts/siblings.toml declares"'
+run = 'uv run --no-sync python scripts/sibling_checkout.py "${usage_name?}"'
+
+# This repository's own (plan A.189): the declared FAS mode, rewritten into a sibling clone on
+# whatever branch it is, so corrected pins reach a clone in the middle of its own work.
+[tasks."sibling:override"]
+description = "Rewrite a sibling clone's FAS mode to the declared one, on whatever branch it is"
+usage = 'arg "<name>" help="A sibling contracts/siblings.toml declares"'
+run = 'uv run --no-sync python scripts/sibling_checkout.py --override "${usage_name?}"'

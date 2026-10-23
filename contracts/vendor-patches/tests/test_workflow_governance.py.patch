@@ -1,0 +1,22 @@
+--- a/tests/test_workflow_governance.py
++++ b/tests/test_workflow_governance.py
+@@ -118,3 +118,19 @@
+     found = spine.evaluate(observe(ROOT), "workflows", POLICY, ENTRYPOINT)
+     denied = [rule for rule in found.rules if rule.outcome == "fail"]
+     assert denied == [], denied
++
++
++def test_an_audit_zizmor_did_not_complete_is_refused() -> None:
++    """recsys: zizmor's exit 3, no inputs collected, is a failed audit and never a clean one."""
++    unfinished = WorkflowInventory(
++        workflows=(), grants=(), allow_list=(), findings=(), suppressions=(), zizmor_ok=False
++    )
++    found = spine.evaluate(unfinished, "workflows", POLICY, ENTRYPOINT)
++    codes = {rule.code for rule in found.rules if rule.outcome == "fail"}
++    assert "ERR_WORKFLOW_ZIZMOR_UNAVAILABLE" in codes, found
++
++
++def test_a_workflow_declaring_no_permissions_is_refused(tmp_path: Path) -> None:
++    """recsys: a workflow with no permissions block inherits the repository default token."""
++    codes = _codes(tmp_path, _workflow(top=("# no permissions block",)), CONTENTS_READ)
++    assert "ERR_WORKFLOW_DEFAULT_PERMISSIONS" in codes, codes

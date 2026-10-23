@@ -1,0 +1,22 @@
+--- a/copier.yml
++++ b/copier.yml
+@@ -29,9 +29,18 @@
+   - "context/plan.toml"
+   - "context/plan-ids.toml"
+   - "context/plan-trace.toml"
++  # THIS REPOSITORY'S RUN LEDGER IS ITS OWN, as its plan is: a generated project starts its own.
++  - "contracts/ledger-anchor.toml"
++  # THIS REPOSITORY'S PORT HISTORY IS ITS OWN, as its plan and ledger are: its record, its
++  # patches and the proofs that verify them describe this repository, never a project (A.123).
++  - "contracts/provenance.toml"
++  - "contracts/vendor-patches"
++  - "tests/test_provenance.py"
++  - "tests/test_provenance_record.py"
++  - "tests/test_canonical_sources.py"
+   # TESTS OF THE TEMPLATE BELONG WHERE THE TEMPLATE IS: a generated project has no
+   # copier.yml to render (D.61).
+   - "tests/test_copier_template.py"
+-  - "tests/test_generated_gate.py"
++  - "tests/integration/test_generated_gate.py"
+   # THIS COURSE'S OWN RESOURCES: a project has its own schema (D.64).
+   - "resources/coursework.yml"

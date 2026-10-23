@@ -48,6 +48,8 @@ class GateSpec(Contract):
     timeout_seconds: float = Field(gt=0)
     # A LANE MAY DECLARE ITSELF EMPTY (A.90): only then is pytest's exit 5 nothing to run.
     may_be_empty: bool = False
+    # A CLAIM ABOUT THE DEVELOPER MACHINE (A.104) is declared out of CI: the runner is not it.
+    runs_in_ci: bool = True
 
 
 class GateRun(Contract):
@@ -114,8 +116,8 @@ class GateReport(Contract):
 # WITHDRAWN IN THE PORT (recsys founding F7, plan A.3): cscie103's registry named gates whose
 # script, task or tool recsys does not have, so the pre-push gate failed closed on gates that
 # could never run. Each returns with its script or tool; until then it is named, not skipped.
-# Hooks: policy, policy decisions, repo hygiene, workflows,
-# assertions, evidence, models, exemptions, suppressions, problems, mutation anchors,
+# Hooks: policy, policy decisions,
+# mutation anchors,
 # schemas, nix contract. CI-only: pii, fixtures, prereqs, env-parity, nix flake.
 GATES: tuple[GateSpec, ...] = (
     GateSpec(
@@ -166,9 +168,74 @@ GATES: tuple[GateSpec, ...] = (
     #
     # --redact keeps any finding out of CI logs, where it would become a second
     # leak in the process of reporting the first.
+    # DEBRIS, alongside the secret and PII scans. Those ask what a file
+    # CONTAINS; this asks whether a tracked file looks like an accident at all.
+    #
+    # A zero-byte `nix_contract` -- a mistyped shell redirect -- was swept into
+    # a commit by `git add -A` and no gate saw it. Offline and instant, so it
+    # belongs in the hooks where the mistake is made.
+    GateSpec(
+        name="repo hygiene",
+        command=("uv", "run", "python", "scripts/check_repo_hygiene.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
     GateSpec(
         name="secrets (history)",
         command=("betterleaks", "git", "--redact", "--no-banner"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    # THE WORKFLOW'S OWN CLAIMS, ENFORCED (D.84). ci.yml pins every action to a commit
+    # SHA and grants the token contents: read; zizmor sat in the devShell and no gate
+    # ran it, so nothing stopped an edit from making either claim false. PEDANTIC,
+    # OBSERVED: the default persona suppressed a write-all probe ("3 suppressed"),
+    # pedantic flagged it, and this repository's workflows are clean under it.
+    # Offline and sub-second, so the hooks run it too.
+    GateSpec(
+        name="workflows",
+        command=("uv", "run", "python", "scripts/workflow_audit.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    GateSpec(
+        name="assertions",
+        command=("uv", "run", "python", "scripts/assertion_audit.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    # EVIDENCE HOLDS OBSERVATIONS ONLY (D.142). Offline and sub-second, so the hooks run it.
+    GateSpec(
+        name="evidence",
+        command=("uv", "run", "python", "scripts/evidence_audit.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    # THE MODEL RATCHET (D.147): a new direct BaseModel subclass, or a stale entry, fails.
+    GateSpec(
+        name="models",
+        command=("uv", "run", "python", "scripts/model_audit.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    # EXEMPTIONS LAPSE (D.174, R55.4): an expired one, or one naming a path that is gone, fails.
+    GateSpec(
+        name="exemptions",
+        command=("uv", "run", "python", "scripts/exemptions.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    # INLINE SUPPRESSIONS ARE PERMISSIONS (D.219, R55.4): one with no live exemption fails.
+    GateSpec(
+        name="suppressions",
+        command=("uv", "run", "python", "scripts/suppression_audit.py"),
+        runs_in_hooks=True,
+        timeout_seconds=300.0,
+    ),
+    # ONE REGISTRY OF PROBLEM CODES (D.177, R60): unregistered, repurposed or prose fails.
+    GateSpec(
+        name="problems",
+        command=("uv", "run", "python", "scripts/problem_codes.py"),
         runs_in_hooks=True,
         timeout_seconds=300.0,
     ),
@@ -180,12 +247,24 @@ GATES: tuple[GateSpec, ...] = (
         may_be_empty=True,
         timeout_seconds=1200.0,
     ),
+    # CLAIMS ABOUT THIS MACHINE (A.104): A.8's proofs that its mise state and new files are
+    # owner-only. The hooks and the snapshot before every publication run them here; CI's
+    # runner is not this machine, so the gate is declared out of CI, never detected there.
+    GateSpec(
+        name="test (machine)",
+        command=("uv", "run", "pytest", "-m", "machine"),
+        runs_in_hooks=True,
+        runs_in_ci=False,
+        timeout_seconds=300.0,
+    ),
 )
 
 
-def selected(specs: tuple[GateSpec, ...], *, hooks: bool) -> tuple[GateSpec, ...]:
-    """The gates to run: all of them, or in the hooks only those that run there (R2)."""
-    return tuple(spec for spec in specs if spec.runs_in_hooks or not hooks)
+def selected(specs: tuple[GateSpec, ...], *, hooks: bool, ci: bool = False) -> tuple[GateSpec, ...]:
+    """The gates to run: all, the hooks' own, or on CI all but claims about this machine (R2)."""
+    return tuple(
+        spec for spec in specs if (spec.runs_in_hooks or not hooks) and (spec.runs_in_ci or not ci)
+    )
 
 
 def run_gate(spec: GateSpec) -> GateRun:
@@ -218,7 +297,11 @@ def _report_path(argv: list[str]) -> Path | None:
 
 def main() -> int:
     offline = "--offline" in sys.argv
-    gates = selected(GATES, hooks=offline)
+    on_ci = "--ci" in sys.argv
+    gates = selected(GATES, hooks=offline, ci=on_ci)
+    if on_ci:
+        omitted = ", ".join(spec.name for spec in GATES if not spec.runs_in_ci)
+        print(f"not run on CI, by declaration: {omitted}", flush=True)
 
     if offline:
         skipped = [spec.name for spec in GATES if not spec.runs_in_hooks]

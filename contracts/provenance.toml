@@ -2,8 +2,9 @@
 # EVERY FILE PORTED FROM cscie103-data-engineering, at the commit it was read, with the
 # SHA-256 of the bytes ported. A later diff against these digests shows exactly what this
 # repository changed; mirrored, not reinvented, is then checkable rather than claimed.
+# An entry naming its own commit was read there; any other was read at the commit below (A.136).
 contract = "provenance/v1"
-source = "https://github.com/ltphongssvn/cscie103-data-engineering"
+source = "https://github.com/fustaomni/cscie103-data-engineering"
 commit = "58af9d32a9972d6abb5a18acd94ee1235843da66"
 
 [[files]]
@@ -105,6 +106,12 @@ sha256 = "35de7db337fc9e191c6bc6f6fc2b5b660e075bede2ec5caab5e3f36a22a57aa2"
 [[files]]
 path = "scripts/plan_edit.py"
 sha256 = "b52e795a1ba2e6aaff5bc3834325f9e82d7ec693b04f6c4fdbca2ad81a4be4ea"
+
+[[adapted]]
+path = "scripts/plan_edit.py"
+reason = "every verb reads its spec through one reader, as plan:retract alone did: an invalid spec is refused as spec_invalid and an unreadable or unparseable one as spec_unreadable, never a traceback, and every refusal names each field (A.128)"
+patch = "contracts/vendor-patches/scripts/plan_edit.py.patch"
+sha256 = "75c50e5fa7a4625dead6a82218111fa38e252c627b651980ad7ec0df0c4f1b1a"
 
 [[files]]
 path = "scripts/plan_files.py"
@@ -342,15 +349,21 @@ sha256 = "8596f67209845fda0607bda524b7917ab966f84abe1fb8d36cb6f1f7908f3662"
 
 [[adapted]]
 path = "tests/test_source_apply.py"
-reason = "killing proofs for three source:apply guards that had none; A.52"
+reason = "killing proofs for three source:apply guards that had none (A.52); the four delete proofs A.24 is done when (A.24)"
 patch = "contracts/vendor-patches/tests/test_source_apply.py.patch"
-sha256 = "cc3c7dae25bed4981dd852f1c8bbeb0fd741cea1a444283e2d3d78d9a41fae82"
+sha256 = "1e883d33334bd612f87a3c0fac736f75e866a72a3bd310a093f74b6af482680e"
 [[files]]
 path = "scripts/source_apply.py"
 sha256 = "f0e4fd1311a4cb251c19dff76c4378354842fab783274e3bd6dec3fe48fbfa3c"
 [[files]]
 path = "policies/runs/source_apply/source_apply.rego"
 sha256 = "784ab2aad5854721af32074d5405b77d2b5dfe8dee73ae1eefa67ffacd19790a"
+
+[[adapted]]
+path = "policies/runs/source_apply/source_apply.rego"
+reason = "a delete of a file that does not exist is refused as DELETE_MISSING; A.24"
+patch = "contracts/vendor-patches/policies/runs/source_apply/source_apply.rego.patch"
+sha256 = "6dc61b921e6507ae6d14876cec5243655b5f2525bda4bd5830bfcf2a76e421a7"
 [[files]]
 path = "contracts/schemas/contracts/source_apply.ApplySpec.json"
 sha256 = "6faa29b447723c585550198e481ed39e3ce83c7fe35fd57f74edbdfc25989173"
@@ -368,9 +381,9 @@ path = "contracts/schemas/contracts/deps_add.DepsChange.json"
 sha256 = "73dbed77bfee4919c1be1c5199c0cc8ca6f6139ed4311120812d7b35fd72a92d"
 [[adapted]]
 path = "tests/conftest.py"
-reason = "every test takes its level from its directory, or is refused; A.39"
+reason = "every test takes its level from its directory, or is refused (A.39); the publication guards return with pr and publish_push (A.19)"
 patch = "contracts/vendor-patches/tests/conftest.py.patch"
-sha256 = "d7cb7ca8ce3e1db4ce0c73f68f9b72b2c0d9a85a922b7b4f1fb237a316dc356e"
+sha256 = "5aa127d1d57e9d21f5fd18b999d0cc71251b800d9436f4663e74809420be9094"
 
 [[adapted]]
 path = "tests/test_plan_status.py"
@@ -386,21 +399,15 @@ sha256 = "bcbcf81b839c521bd70c27eb0a560d2bc9c5c9ce9992d786e7bb317e2826674d"
 
 [[adapted]]
 path = "contracts/task-effects.toml"
-reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification"
+reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification; check:ci, recsys's own, is read-only as check:offline is (A.104); pr:logs returns read-only with its task, as cscie103 classifies it (A.142)"
 patch = "contracts/vendor-patches/contracts/task-effects.toml.patch"
-sha256 = "9c274e7818bb18726f895c4c7cf98f29739742a1af62c2dae551ed1104e0bc90"
+sha256 = "eba845d14db2a979f35058ac59d56c0571db057dca4becce389d17bd08c00789"
 
 [[adapted]]
 path = "tests/test_run_gateway.py"
 reason = "registry assertion names plan:trace instead of the cscie103 task audit:assertions"
 patch = "contracts/vendor-patches/tests/test_run_gateway.py.patch"
 sha256 = "5e42c5e892a6f5d791dc560f823a9ac0e93f2bbeb21a88753046e880807854ab"
-
-[[adapted]]
-path = "tests/test_git_subprocesses.py"
-reason = "real-tree spawn set asserted empty; planted tests are its paired negative controls"
-patch = "contracts/vendor-patches/tests/test_git_subprocesses.py.patch"
-sha256 = "b23a62e991e380f23fc281f114fa668765d797d69b3939143c86f78e9c659e55"
 [[adapted]]
 path = "tests/acceptance/acceptance_sandbox.py"
 reason = "no Nix in recsys; .cache excluded from the copy; the path-trust exception stated"
@@ -423,9 +430,9 @@ patch = "contracts/vendor-patches/tests/test_signing.py.patch"
 sha256 = "e79583063db873058c6af6a2e3129fbee985d965f177bc249940cf2f0bb0b62d"
 [[adapted]]
 path = "scripts/check_all.py"
-reason = "a lane that may be empty reports nothing to run instead of failing; A.90"
+reason = "a lane that may be empty reports nothing to run instead of failing (A.90); the workflows gate returns with the workflow audit (A.23); claims about the developer machine are a hooks lane declared out of CI (A.104); exemptions, suppressions and problems return with their audits (A.108); repo hygiene, assertions, evidence and models return with their audits (A.107)"
 patch = "contracts/vendor-patches/scripts/check_all.py.patch"
-sha256 = "571f44a4b2af09bfbc5c46a1baddcf781e32c8ad984d3fcf6df01c57079a3154"
+sha256 = "8a96e99e694d2bb0508ed2858df0a848e3a4449bea8b05d69ef3dd9977da60f7"
 [[adapted]]
 path = "scripts/commit.py"
 reason = "the root commit names its branch (A.5); nothing staged is refused and git reasons kept (A.12)"
@@ -443,9 +450,9 @@ patch = "contracts/vendor-patches/.gitignore.patch"
 sha256 = "7510fa70ceb99fd8ce6eeae1b43d45de2a50cb14167222f0a91a9c1d524e7cc8"
 [[adapted]]
 path = "lefthook.yml"
-reason = "pre-commit omits cscie103's audit:workflows until recsys has a workflow to audit"
+reason = "the header is rewritten for recsys; pre-commit runs audit:workflows again, restored with the workflow audit (A.23)"
 patch = "contracts/vendor-patches/lefthook.yml.patch"
-sha256 = "acb4c0aaddb4c80cf4c30ab69af99a4dc0f5622b72b1a18f5734cecd7bb829a7"
+sha256 = "6170e339ffbc747f0c0d11765a5c831846b48089bc617aafd33f6839cb9d2501"
 [[adapted]]
 path = "tests/test_commit_execution.py"
 reason = "FakeGit reports the stage; A.12's proofs that nothing staged never commits"
@@ -458,9 +465,9 @@ patch = "contracts/vendor-patches/tests/test_commit_amend.py.patch"
 sha256 = "bb48b746c596b2f55358430c9d9ca3b79b74bfc63ec8ad6333117e8c47e05661"
 [[adapted]]
 path = "scripts/source_apply.py"
-reason = "a staged mise.toml is gated by the founding policy and re-trusted after writing; A.27"
+reason = "a staged mise.toml is gated by the founding policy and re-trusted after writing (A.27); a delete is judged by policy, read back as absent, and a claim names only what exists (A.24)"
 patch = "contracts/vendor-patches/scripts/source_apply.py.patch"
-sha256 = "3669dc93e6922b3ae925492f179d491564c0bf0dccdbd9cd3bbe4303c536ebd8"
+sha256 = "323f2bcc176a761639e1c84a99c5aaa070269e734073d5f7eb7e51efab6308e5"
 [[withdrawn]]
 path = "tests/test_policy_inputs.py"
 sha256 = "20b42d632e5a2534b5767966722b8909157723f5e93e768d3c35c0a66ed4d8f6"
@@ -532,9 +539,9 @@ sha256 = "fa7e99480e9c10832ce0c93b9a74fd82d741846bf1c94a8ce2a4544e6e5e005d"
 
 [[adapted]]
 path = "scripts/worktree.py"
-reason = "cut from an optional base with --no-track; trusted through machine_trust; -z listings through gitenv.git_bytes; A.93"
+reason = "A.191: refresh merges origin/develop with a merge commit naming its plan step, never a rebase, so a published branch keeps every commit"
 patch = "contracts/vendor-patches/scripts/worktree.py.patch"
-sha256 = "5a24d7260e003d2dc680c06de293b05c1cfab841f0b65a80085cebf7352cb3fd"
+sha256 = "7f89494142e995d7563fb8e1e6d47d7167b12cdfcad441f60cf41bd2380f6b39"
 
 [[files]]
 path = "policies/machine/setup/setup_env.rego"
@@ -558,6 +565,782 @@ sha256 = "14c1688fb310abe90b5724406081ec3c705ebc7a1c653d6b903149273e49ee3d"
 path = "tests/test_worktree_refresh.py"
 sha256 = "7a7c2b8900df46055d005cd78d67e4da1637cba0ddea2de0b6e56fdfda844f4d"
 
+[[adapted]]
+path = "tests/test_worktree_refresh.py"
+reason = "A.191: refresh merges and takes a plan step, so its proofs fake a merge and pass one"
+patch = "contracts/vendor-patches/tests/test_worktree_refresh.py.patch"
+sha256 = "0f7838b9752fe9081929f29796daddc537324ba0aa7dffd32f96450e4edd2ad3"
+
 [[files]]
 path = "tests/test_worktree_remove.py"
 sha256 = "446e49bce584d01a264e808c500b11e6d5a0df18f76c63d9b7bf8e43604636e8"
+
+[[files]]
+path = "scripts/workflow_audit.py"
+sha256 = "dba230fd19753f8f72d59b3128f48cd5fb86f813eabae647fa4884e77bf22772"
+
+[[files]]
+path = "policies/runs/workflows/workflows.rego"
+sha256 = "b9e251b989fae22fe1048ace24c4eb08f28e76ecf95ba8c01a9626423d51771a"
+
+[[files]]
+path = "contracts/workflow-permissions.toml"
+sha256 = "d6e534a4091cefa206708ec9981a06c2d40ea066aaa78c562b1a920815cabfd8"
+
+[[files]]
+path = "tests/test_workflow_audit.py"
+sha256 = "349d0a4ae598c942a04a50b5ad77b4b2067373f836c122cf4d44d0e741fe369b"
+
+[[files]]
+path = ".github/workflows/ci.yml"
+sha256 = "22c10f70b698536b6fc10465c989a31a2fbeeeeab6cdbba5b6200f0d63cee225"
+
+[[adapted]]
+path = ".github/workflows/ci.yml"
+reason = "recsys has no Nix or Databricks: tools come from mise.toml's lock through mise-action, and the gate needs no workspace credentials (A.20); it runs check:ci, the gate without claims about the developer machine (A.104); verify branch protection returns with check:ruleset (A.105)"
+patch = "contracts/vendor-patches/.github/workflows/ci.yml.patch"
+sha256 = "b5a62bcaa59648e5b9996de4b12b93ba792c2df9098dc627a722351d78a24b7d"
+
+[[files]]
+path = "contracts/expected-checks.toml"
+sha256 = "e8d953eb0f91078955bed803caa9910d9e7c5442caf6dfda74278849a343e5df"
+
+[[adapted]]
+path = "contracts/expected-checks.toml"
+reason = "only the quality gate this repository's own CI runs is expected, until pr sees another app's check register here (A.20)"
+patch = "contracts/vendor-patches/contracts/expected-checks.toml.patch"
+sha256 = "c199669f7b02582883a026919a7a459a9173f53864bf80a727921efce39a9208"
+
+[[files]]
+path = "tests/test_workflow_governance.py"
+sha256 = "c8386a6e5cce26eef4d09d7e1c0640bfc80eec8abb7436e62a630ced3f028f96"
+
+[[adapted]]
+path = "tests/test_workflow_governance.py"
+reason = "killing proofs for the two runs.workflows guards that had none: zizmor not completing its audit, and a workflow declaring no permissions (A.23)"
+patch = "contracts/vendor-patches/tests/test_workflow_governance.py.patch"
+sha256 = "2854cbb1fa9d13d81c112954387d685a8760f75ddf0887bb424a728cb2f7031f"
+
+[[files]]
+path = "scripts/pr.py"
+sha256 = "cf3aca92233688c323867340b5dba36f8fc3917990ef62cb0da586c919890f5f"
+
+[[files]]
+path = "scripts/publish_push.py"
+sha256 = "031c2c50a60fd2bf6cff3529cce5b9c75d732326e0f3e8a4772fe2dd4809ddb5"
+
+[[files]]
+path = "scripts/publish_policy.py"
+sha256 = "77a76df3b380003022457e82d94867fc8985a9cbc420f17ce3b9408b2da88d76"
+
+[[files]]
+path = "scripts/publish_states.py"
+sha256 = "52ab206c621bd2aaa9e8e4c2b8e2254f2527daef346715ba959d6718095f9738"
+
+[[files]]
+path = "scripts/publish_lock.py"
+sha256 = "683f7a081c5cd4f400e3fb6aa690bd0036ae116a939e154506d6b6d638436b39"
+
+[[files]]
+path = "scripts/snapshot_gate.py"
+sha256 = "097665e69c5b56f5a41abc597a040193d8b56f7cb9fc6f910cd355e02f32a783"
+
+[[files]]
+path = "scripts/git_observe.py"
+sha256 = "00fa52f9d8e0a8afb1b0b050e46fc402cc430d7122d928737513f9c00a579cba"
+
+[[files]]
+path = "scripts/exemptions.py"
+sha256 = "8adcff74b0568ed81129ff285daaa8e163d836f4a15def71599a3e0516f57596"
+
+[[files]]
+path = "policies/merge/readiness/readiness.rego"
+sha256 = "cf54985ed2bbcf1b61f34743913abb89d51bdeeb1cddde2c2f12200bdd1602c6"
+
+[[files]]
+path = "policies/runs/publish/publish.rego"
+sha256 = "6059f2d18cd7f6ed9a1615b808e3fd6b8f6099af4dae66ffa980b5da17b1c68d"
+
+[[files]]
+path = "policies/runs/exemptions/exemptions.rego"
+sha256 = "013c9f119a3b813ddd8582b6f755f2ad5a9c08d30943487e561a6ac9bc85e932"
+
+[[files]]
+path = "contracts/publish-expectations.toml"
+sha256 = "f4e1a57ca255e37c01c54b25f12b486313b60ad6b276cf7520ccb6ab3337056a"
+
+[[adapted]]
+path = "contracts/publish-expectations.toml"
+reason = "publication expects exactly this repository's hook gates; five of the twelve cscie103 gates the founding withdrew are absent, not skipped (A.19), exemptions, suppressions and problems having returned (A.108), and repo hygiene, assertions, evidence and models (A.107); test (machine) among them, so this machine's claims are proven before every publication (A.104)"
+patch = "contracts/vendor-patches/contracts/publish-expectations.toml.patch"
+sha256 = "29f06d09c97e8508f6ef58357c99d1b2d8cf22b17eed0f89f5e24f30f37784c8"
+
+[[files]]
+path = "contracts/exemptions.toml"
+sha256 = "51ebe69320ef6b6f3f4db802c08afc79218127ed702cdf9cded91c927b105731"
+
+[[files]]
+path = "tests/test_pr.py"
+sha256 = "8773606c9bf50000576591b846b853b4692be21f7bf90fe49f9797560e6f7ed7"
+
+[[files]]
+path = "tests/test_pr_push_failure.py"
+sha256 = "8102e92bb6e4df7af2e89e3405ef82f7de2510a4c9eeb369e649e25c084c79d4"
+
+[[files]]
+path = "tests/test_pr_push.py"
+sha256 = "79d60857896ee19e3f469f0bba7e2b4a630f3c9804859d9278ad38cfdc380b89"
+
+[[files]]
+path = "tests/test_pr_keepalive.py"
+sha256 = "df5b7b14d16786de3ab23241be60189f54579b333bfeb47b3d44df5e2514a8aa"
+
+[[files]]
+path = "tests/test_pr_progress.py"
+sha256 = "1ee4f9c6b3c4771880ac0ebd6538a18d45b391150abdc0fdf0c7a0b60b853cef"
+
+[[files]]
+path = "tests/test_pr_settling.py"
+sha256 = "f804b0d9c7a4cceaee4297a5741e261dbfe0bfa66a4d53ee500a0c68693ba156"
+
+[[files]]
+path = "tests/test_merge_readiness.py"
+sha256 = "6a7213557c6b1e1fbd5bbc663bc62a8c4ce6cbf8dd82e8dde3ed09986ae10a32"
+
+[[adapted]]
+path = "tests/test_merge_readiness.py"
+reason = "killing proofs for the three merge.readiness guards that had none: behind, draft and unstable (A.19)"
+patch = "contracts/vendor-patches/tests/test_merge_readiness.py.patch"
+sha256 = "bd7b43d062a2390b4058fc794cca745da49623fc2322413d48fab1d476ddf3e4"
+
+[[files]]
+path = "tests/test_publish_push.py"
+sha256 = "a078020192267efc1bc702bfdf95801dd6d1d66538965faf0d3a5fcd48cea848"
+
+[[files]]
+path = "tests/test_publish_policy.py"
+sha256 = "5fe027ee7a3643ee68e635ad76e8c1502e7e1a70c139ddb919bef09cfe2e4899"
+
+[[adapted]]
+path = "tests/test_publish_policy.py"
+reason = "killing proofs for the runs.publish guards that had none: a failed gate by its own rule, nothing declared, and an absent record (A.19)"
+patch = "contracts/vendor-patches/tests/test_publish_policy.py.patch"
+sha256 = "fc44ea1db9ce3105f17693306f6f574fad0129c99177b02619662c5c62047284"
+
+[[files]]
+path = "tests/test_publish_states.py"
+sha256 = "ae290f523dde5720d7e711899e987c7d982296e9142cfb8bd4187f9f8a80ad39"
+
+[[files]]
+path = "tests/test_publish_lock.py"
+sha256 = "062a7f20a78198718c8553581fbe9538941d776f48396180567413c99a080a83"
+
+[[files]]
+path = "tests/test_snapshot_gate.py"
+sha256 = "edc6c492cfa054dcf2c68a3f31c977002ed4600cdcfa06d3203809aff9b82d5f"
+
+[[files]]
+path = "tests/test_git_observe.py"
+sha256 = "52b5e27d68b99d727c477831e32333ecd53223f7880015a092ca75e13ceb33a8"
+
+[[files]]
+path = "tests/test_exemptions.py"
+sha256 = "9faa7ce23589ea825168ad56b7dc21ba9fea6d77926c73f499c56b4b3eaf6412"
+
+[[files]]
+path = "scripts/check_ruleset.py"
+sha256 = "4464950c2e76a388813f0113942f1b121bc5cab89ce7608458b01df44dd0e55c"
+
+[[files]]
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+sha256 = "982e1e3f6e373b14fdc78d5fcf0e7dd6201f4cddedee6fe322220444d51d5dc2"
+
+[[files]]
+path = "contracts/ruleset-develop-and-main.json"
+sha256 = "b15fee39f837f675d8e7894150072df56b806da1f933d8090a4b1c90e4dcaf57"
+
+[[files]]
+path = "tests/test_check_ruleset.py"
+sha256 = "8e874937a9782b29a21296fdec0f68e55b640bd27b0a583aa8d409fad06b148f"
+
+[[adapted]]
+path = "tests/test_check_ruleset.py"
+reason = "killing proofs for the six runs.check_ruleset guards that had none: an unobserved state, evaluate mode, a missing rule, main unprotected, another check required, and squash allowed (A.105)"
+patch = "contracts/vendor-patches/tests/test_check_ruleset.py.patch"
+sha256 = "a7307d9bc886868359f71648955150c6ea623760d143666c99582dc4c8f395e0"
+
+[[files]]
+path = "scripts/suppression_audit.py"
+sha256 = "cdc96b2a1313cb4e78d0ce2cc38abdd2c535121afad4faa2057423db7ec4208c"
+
+[[files]]
+path = "scripts/problem_codes.py"
+sha256 = "b93307f2dcda25f0d32bd0ec824fb4733a2a0b4e1bbc9754ec74abb2265c586e"
+
+[[files]]
+path = "policies/runs/suppressions/suppressions.rego"
+sha256 = "d8503d3c765347ba14e957b3f76ea53ddc233cacb43aacfba40a85323232c121"
+
+[[files]]
+path = "policies/runs/problems/problems.rego"
+sha256 = "d42336710e9373deaa9aa68ff10f1377bfc8a50510a576b221663ccd0a87bb85"
+
+[[files]]
+path = "tests/test_suppression_audit.py"
+sha256 = "b48a19460be5872e173ce9f2015b087ca2e42443b035e67d7b2a8a7431e9c1db"
+
+[[files]]
+path = "tests/test_problem_codes.py"
+sha256 = "949ee4d3c2f5a8a910c480bf6aa073af621d4fc3006e72bbfa9409529ba3c1e5"
+
+[[adapted]]
+path = "tests/test_problem_codes.py"
+reason = "test_a_missing_repository_is_read_from_the_error_type and its template_publish import are removed: the proof judges template:publish, which is not ported here, and returns with it (A.108); killing proofs for the four runs.problems guards that had none: an unobserved inventory, no declared code read, a code registered twice, and an unread base (A.108); a hermetic killer for UNDECLARED, since test_registry_and_emitters_agree_both_ways judges the live repository and a trial's copy has no origin/develop (A.108)"
+patch = "contracts/vendor-patches/tests/test_problem_codes.py.patch"
+sha256 = "1518b75068f149209b3372175fd6a3852ca092910206aaa1b8606ccfbf6ed211"
+
+[[files]]
+path = "contracts/problems.toml"
+sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
+
+[[adapted]]
+path = "contracts/problems.toml"
+reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108)"
+patch = "contracts/vendor-patches/contracts/problems.toml.patch"
+sha256 = "4beb63acc18d15704e5a6986bbf4203e04e89aaa3cf8553b6f7f233f0adc5aec"
+
+[[files]]
+path = "scripts/check_repo_hygiene.py"
+sha256 = "d8cf8d90db440560bfaa3ff37e8746cdbad09bb57e60057d18dc8c4a12d6ff37"
+
+[[files]]
+path = "scripts/assertion_audit.py"
+sha256 = "bd8be24e62099a77880570203388e5753f9c6a3e59bbd39d8aace84a4dc28ae5"
+
+[[files]]
+path = "scripts/evidence_audit.py"
+sha256 = "2dbc8ff201cd7242806c88aeadcc0c2a50e23c78020d8afd2c9d1d7d207d336c"
+
+[[files]]
+path = "scripts/model_audit.py"
+sha256 = "13de734be7f49168081d824f5d6fa670e28b1c5528a393e6e88312f4985b9132"
+
+[[files]]
+path = "policies/runs/assertions/assertions.rego"
+sha256 = "aa05840ed3831659be26c6582c980f16dc403410d63bb84e9c2d7936a8ce1414"
+
+[[files]]
+path = "policies/runs/evidence/evidence.rego"
+sha256 = "dd5f3e5b2cbff6fc69e845b4808c3a37b61c624a581e55948c37670478873f6d"
+
+[[files]]
+path = "policies/runs/models/models.rego"
+sha256 = "52e2271f5eee2c2b730978f5f953cf56067359bc5f96013308e8a2f424ed5833"
+
+[[files]]
+path = "tests/test_repo_hygiene.py"
+sha256 = "e50c3021b295d9b36d30a8cd052e80e88e9746d35e9bbc04621f9eb961ccc34a"
+
+[[files]]
+path = "tests/test_assertion_audit.py"
+sha256 = "1abe0b04f12b3dd134e5cd1eb83fc98d0285efc47773c38e6780e1588e8b269c"
+
+[[files]]
+path = "tests/test_evidence_audit.py"
+sha256 = "abed900d58eff260d2fd47ddbfbccafed7dc924725c3d4f44f6cd6087f3812f5"
+
+[[files]]
+path = "tests/test_model_audit.py"
+sha256 = "82177c9508604a3e07bbc8fcdfcd7b9b12dfc4611b27a91710a76b716c4db556"
+
+[[files]]
+path = "contracts/model-baseline.toml"
+sha256 = "224ac3d443553f449463428500501bd173b4c6eabb421e964cf8d8f1d1b5f2e4"
+
+[[adapted]]
+path = "contracts/model-baseline.toml"
+reason = "cscie103's ratchet had shrunk to nothing at the pin; this repository's begins at A.107 with its own eleven direct BaseModel subclasses, in claims_audit, green_verify, red_verify and safeguards, each migrated to Contract or Reading by a later step (A.107)"
+patch = "contracts/vendor-patches/contracts/model-baseline.toml.patch"
+sha256 = "f3c824c961c8b3cfe8e3140442179cb03cf1a2023ae00eb65a064472c7667e08"
+
+[[files]]
+path = "scripts/mutation_check.py"
+sha256 = "a9dde504c0e1f2aa3630c496438f0c4f630f0f42acb7a10aac39992b0a7e605c"
+
+[[files]]
+path = "policies/runs/mutation/mutation.rego"
+sha256 = "0123c29273e4911d73a9070879f5f87e764eb75078eec574c1e981f757cc6816"
+
+[[files]]
+path = "tests/test_mutation_check.py"
+sha256 = "27cb0ab5840c1114a417a300a0c9063069df778483ef203b88a973a7b5d137eb"
+
+[[adapted]]
+path = "tests/test_mutation_check.py"
+reason = "test_a_run_policy_is_not_queried_by_the_repository_gate is removed: it imports evaluate_policies, the repository gate A.106 ports, and returns with it (A.116)"
+patch = "contracts/vendor-patches/tests/test_mutation_check.py.patch"
+sha256 = "764494a34a82163d5a6086eef643d65b58d6eede2561b6bddf6e1e08c61c78c7"
+
+[[files]]
+path = "scripts/sync.py"
+sha256 = "eab028694420f9dc536717b8f8f34b77b3fc0d033f6230c23b10c405df311333"
+
+[[adapted]]
+path = "scripts/sync.py"
+reason = "a pull that rewrote mise.toml re-trusts it through worktree's _trust and the founding gate, or sync fails naming the refusal, since paranoid mode binds trust to a config's content (A.126)"
+patch = "contracts/vendor-patches/scripts/sync.py.patch"
+sha256 = "0ae2c795c14a56645e4c224cabd1814791395905df646d5b6683f71502517dda"
+
+[[files]]
+path = "scripts/repo_report.py"
+sha256 = "8809e4a245c12c8827b27ab91d891ffa6420840d0bab167a821d819a9e180832"
+
+[[files]]
+path = "policies/machine/branches/branches.rego"
+sha256 = "90811a6ea275038694cb5009cac0e24b2edfd1ebb7d1b1d825bbdba0dd4003a5"
+
+[[files]]
+path = "tests/test_sync_branches.py"
+sha256 = "331a4d2077e1081f81fda6b42259ded0296761e061097d4e6bbbec23999fdb21"
+
+[[files]]
+path = "tests/test_repo_state_task.py"
+sha256 = "7102a6b8d97bb19b947f095b531805f755231e2a1bece497e08b3a53baac4067"
+
+[[files]]
+path = "tests/test_sync_environment.py"
+sha256 = "b4acc2fcce36ac4321b7ae2b8b0d3b94391b1b9f3745896f5d3ab31cdc8580a3"
+
+[[files]]
+path = "scripts/repo_history.py"
+sha256 = "65d7c05962af709e9e45397fe2af652782d5979050706eb74f273ea0c5859307"
+
+[[adapted]]
+path = "scripts/repo_history.py"
+reason = "--repository reads a clone upstream:checkout made under .artifacts/upstream, and nothing else outside this checkout, so another repository's history is read through a recorded task (A.135)"
+patch = "contracts/vendor-patches/scripts/repo_history.py.patch"
+sha256 = "63e49b62efac30d523c051f5c7e240539e01eb9fb89dc34e8383b0dc02f16c2b"
+
+[[files]]
+path = "scripts/source_restore.py"
+sha256 = "d74601d71bb95cb9c4883da5248756bb9c5d37d230e326f38aebdd9aa0184842"
+
+[[files]]
+path = "policies/source/restore/restore.rego"
+sha256 = "ec08509c6e28631f78531217ebc16edb9bbddd17eec5bfb974c98bd7fc16fea2"
+
+[[files]]
+path = "tests/test_repo_history.py"
+sha256 = "ba8bacf20bf8e188cdc905908acf4093c96e8151aa3fc2b753118ae6d96cc0c1"
+
+[[files]]
+path = "tests/test_source_restore.py"
+sha256 = "7e0f8a890a93ea1b3dca777c9e96133e4edbcc010232eb8eb9278c7388a264bd"
+
+[[files]]
+path = "scripts/rebase_state.py"
+sha256 = "0171d0cebace533becb7f8c922a9b98ba76b2f3ef27c9a6c9f32f9778b9cc615"
+
+[[adapted]]
+path = "scripts/rebase_state.py"
+reason = "A.191: a merge is concluded by its merge commit and a stopped rebase or merge aborted, each by task under its own policy, so lineage is never rewritten"
+patch = "contracts/vendor-patches/scripts/rebase_state.py.patch"
+sha256 = "c51e864591fda9361a8ad23f9e7498d8ef97e0622113dd27aa3852f1bc13156d"
+
+[[files]]
+path = "policies/runs/worktree_continue/worktree_continue.rego"
+sha256 = "010d8347fddbdfb1696ea2ba2339f621e49a9e136f701cbce5de0a2f7bc4cdfc"
+
+[[files]]
+path = "tests/test_worktree_conflicts.py"
+sha256 = "a39faa15d7ffe5ac220dd82b6c30a44098e7aa5b3299531d8a023347056a4c14"
+
+[[files]]
+path = "tests/test_worktree_continue.py"
+sha256 = "8e204c0ec67bc9b2c934994471f7d0e62fefa0c4751258a4b1ac43563711dfde"
+
+[[files]]
+path = "copier.yml"
+sha256 = "48cb399c2caa9ffac9db7a5c53b2f9c2cb0da1d169b7988243866d88e3e5e1c4"
+
+[[adapted]]
+path = "copier.yml"
+reason = "the run-ledger anchor is excluded, since a generated project starts its own ledger as it starts its own plan (A.121); the provenance record of this repository, its vendor patches and the two proofs that verify them are excluded as its own port history, and the generated-project gate is excluded where it now lives, at tests/integration (A.123); the proof that tracked references name cscie103 where it lives is excluded with that record, since a generated project has none (A.183)"
+patch = "contracts/vendor-patches/copier.yml.patch"
+sha256 = "be410035f21bda29d5cc6e2e081cb560d6354a8731decd5e7ea1eb3c8c806986"
+
+[[files]]
+path = "contracts/project-identity.toml"
+sha256 = "83f723e72a23bb4a4783e7354bd4101b3c8284e5fb6e225d4266d69f41e0989f"
+
+[[adapted]]
+path = "contracts/project-identity.toml"
+reason = "this repository's own identity and repository, with slots in pyproject.toml and in uv.lock's root package line, so a generated project's lock takes its name with its identity (A.129); exempt adds bootstrap/, the ledger anchor and contracts/vendor-patches/, whose diffs quote identity lines verbatim, and the coursework paths are dropped (A.121)"
+patch = "contracts/vendor-patches/contracts/project-identity.toml.patch"
+sha256 = "861240f18e56b3df0e37983877c1889260b3e01c3e1f7a431aa302d5b45617a1"
+
+[[files]]
+path = "scripts/project_identity.py"
+sha256 = "a7444ad736650f3e27e7a9a9223b870e1fa2d1629304e4992b19594d080eefb8"
+
+[[adapted]]
+path = "scripts/project_identity.py"
+reason = "identity keeps name and repository: the seven Databricks values are withdrawn from the model and from _values, as the founding withdrew Databricks (A.121); a refused spec names every validation error by its field, never the error's count line alone (A.130)"
+patch = "contracts/vendor-patches/scripts/project_identity.py.patch"
+sha256 = "91d9b35565b64ee8157a5889d16155677ddbfff8f2f68bf54349967f559c8bcb"
+
+[[files]]
+path = "scripts/template_new.py"
+sha256 = "50fd91741632ac4d6c650b1a751ec2cd21498d817e4319bcb737abeb1bf79db7"
+
+[[adapted]]
+path = "scripts/template_new.py"
+reason = "the clone runs over HTTPS through gh's credential helper, with prompts still off, since FAS OnDemand blocks SSH to GitHub; the SSH address and its URL rewrite are removed (A.121)"
+patch = "contracts/vendor-patches/scripts/template_new.py.patch"
+sha256 = "4e7aa36302983c754bad119f9bb1cff64172d3e854cd522feb26ef40ca4b0683"
+
+[[files]]
+path = "scripts/template_init.py"
+sha256 = "792edf3c8298efa540846241f993b7e73ed30614dcd20967f0e2338211a56867"
+
+[[files]]
+path = "scripts/template_identity.py"
+sha256 = "38fa77e4d0809facd60750e29127df670fe4e9ecca2108d26fc94a02c978af5d"
+
+[[adapted]]
+path = "scripts/template_identity.py"
+reason = "a refused spec names every validation error by its field, through project_identity's refusal_reason, never the error's count line alone (A.130); its commit carries Plan-Step: A.1, as template:init's does, since A.1's done_when lists identity:set and a commit naming no step is refused by the project's own matrix (A.145)"
+patch = "contracts/vendor-patches/scripts/template_identity.py.patch"
+sha256 = "601b42f19e410c4987e3e5662fc54e3b4d20b87aa8c6497dd91b91907876c01d"
+
+[[files]]
+path = "scripts/template_publish.py"
+sha256 = "59bf212b5d60341cc14b3fc718b0d6367e842dad45721aa07a8c8ee88c92d502"
+
+[[adapted]]
+path = "scripts/template_publish.py"
+reason = "origin is added over HTTPS through gh's credential helper, since FAS OnDemand blocks SSH to GitHub; ssh_url becomes https_url (A.121)"
+patch = "contracts/vendor-patches/scripts/template_publish.py.patch"
+sha256 = "6bc03374360469ef7bbe2d86eba920e5c36f4fe310893bc08af302cd5323e2bc"
+
+[[files]]
+path = "scripts/template_discard.py"
+sha256 = "bfa4037692ef455f65ab5801641194ab9905d911de922968616674e71df928c8"
+
+[[files]]
+path = "policies/identity/identity.rego"
+sha256 = "51297d551df93a1b652acf21aa22e94709545f6bf19a6a3995cdc6ee06b69441"
+
+[[files]]
+path = "policies/runs/template/new/new.rego"
+sha256 = "77ec29221b7a2544d211cfff06b85e408e886b031d60634d80a4221c9aad3c7f"
+
+[[adapted]]
+path = "policies/runs/template/new/new.rego"
+reason = "the SSH transport rule becomes ERR_TEMPLATE_SOURCE_NOT_HTTPS: the transport must start with https://github.com/, since FAS OnDemand blocks SSH to GitHub (A.121)"
+patch = "contracts/vendor-patches/policies/runs/template/new/new.rego.patch"
+sha256 = "bfab638444f6818ed4f50286bb2c44a2c26bb2bef497150d007473f4d110c139"
+
+[[files]]
+path = "policies/runs/template/init/init.rego"
+sha256 = "61159fd2f38ccdb24f3f75b87c57d5a32bb7b7bef4c36936b2570b8e1f3fa8f3"
+
+[[files]]
+path = "policies/runs/template/identity/identity.rego"
+sha256 = "133caa2a2b8074579f506f77e27b126f55ee6df12e11c4b198475f913620fbba"
+
+[[files]]
+path = "policies/runs/template/publish/publish.rego"
+sha256 = "001ebc732764bbdd7aa18508acc5c4cc4026384228baa1d519c7d5dbad25df8c"
+
+[[files]]
+path = "policies/runs/template/discard/discard.rego"
+sha256 = "6c19414eefde9aac895bfdd2f55e299b9b95ff7a1c8d13aefd59f4871cbc0a75"
+
+[[files]]
+path = "tests/test_project_identity.py"
+sha256 = "4ddca5985a8fc10436fc4cfa3bb1e6c0d1df1484c8fc30692a4e3caffe0f2e96"
+
+[[adapted]]
+path = "tests/test_project_identity.py"
+reason = "the Databricks provisioning proof and its two imports are withdrawn, and the probes use this repository's two identity values and its own literal (A.121)"
+patch = "contracts/vendor-patches/tests/test_project_identity.py.patch"
+sha256 = "1a29858a99c558687fa2ad3519f1c57ea1f1e554d42286a2388480eb7c9f1c06"
+
+[[files]]
+path = "tests/test_template_new.py"
+sha256 = "6ccc199425d42aff8d9ca6f64cdde20f2248aafcc54a165ee70df1d8ee6862d7"
+
+[[adapted]]
+path = "tests/test_template_new.py"
+reason = "the transport proofs assert HTTPS: the declared repository over HTTPS, an SSH transport refused, and the source recorded and cloned with no rewrite (A.121)"
+patch = "contracts/vendor-patches/tests/test_template_new.py.patch"
+sha256 = "8bda82bb38591f741c64450adbd1a0c59503c5d7fce1b3e07360ef2a268f56e3"
+
+[[files]]
+path = "tests/test_template_init.py"
+sha256 = "b7b3305fd3ff489b71a7bc34479bc9f4ce8e84022b82b379c65a9cb178123d27"
+
+[[files]]
+path = "tests/test_template_identity.py"
+sha256 = "38c135e5624bbd3fce2b0b2cb90f4d4d4e3cea8a3186357591f36a2e358a7d3e"
+
+[[adapted]]
+path = "tests/test_template_identity.py"
+reason = "the identity spec probe holds name and repository only, the two values IdentitySpec accepts here (A.121)"
+patch = "contracts/vendor-patches/tests/test_template_identity.py.patch"
+sha256 = "f2010de3db539d51abdbec070f4a8202437ad8a3e5353ee2731090fdd4f9a6e9"
+
+[[files]]
+path = "tests/test_template_publish.py"
+sha256 = "d8cc61ffefec1d5fa7181d6585286d8c6f53c1d69d4f6779474e6545d31883f3"
+
+[[adapted]]
+path = "tests/test_template_publish.py"
+reason = "a proof that the default remote is HTTPS and holds no user-at-host string, since every other proof injects its own remote (A.121)"
+patch = "contracts/vendor-patches/tests/test_template_publish.py.patch"
+sha256 = "cc38bd01a81f2b7e6fd6c1517970af52e355e6efaeb174b8fca38c100e56b4d7"
+
+[[files]]
+path = "tests/test_template_discard.py"
+sha256 = "713c4f6231c7f2b72c77805a657759527c184aeb7038df6ea95b59ea8e58ad54"
+
+[[files]]
+path = "tests/test_copier_template.py"
+sha256 = "eae07a411ff50b67aad1241353fee3571cff6258ab4c2c3fb938f443ddc5d389"
+
+[[adapted]]
+path = "tests/test_copier_template.py"
+reason = "the coursework fixture writes its three paths into the scratch template, since this repository holds no coursework (A.121)"
+patch = "contracts/vendor-patches/tests/test_copier_template.py.patch"
+sha256 = "095c58e9968c719a516151198a2614fef01ee399bd45094f5ad9798ef4af4977"
+
+[[withdrawn]]
+path = "tests/test_generated_gate.py"
+sha256 = "4e8420974bca55572933817771f2353de77b2f2b0f82975e9bea06a2ac4cf652"
+reason = "its three proofs are integration-level, and this repository declares a test's level by its directory (A.39) while provenance records a file only at its upstream path; it returns at tests/integration once provenance records a relocation (A.123)"
+
+[[files]]
+path = "{{ _copier_conf.answers_file }}.jinja"
+sha256 = "3b3aaae43448091c81e1a75ef97c6c9caabd2c4931b2bed39907839e1cde70c7"
+
+[[withdrawn]]
+path = "assignments/assignment-01/notebooks/assignment_01_spark_api.py"
+reason = "cscie103 coursework: course content, not a capability"
+[[withdrawn]]
+path = "assignments/assignment-02/notebooks/assignment_02_etl.py"
+reason = "cscie103 coursework: course content, not a capability"
+[[withdrawn]]
+path = "context/review-d168.toml"
+reason = "cscie103's own plan review: plan data belongs to the project it plans"
+[[withdrawn]]
+path = "contracts/schemas/contracts/export_copy.ExportCopy.json"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "contracts/schemas/nix-contract-output.schema.json"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "databricks.yml"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "flake.lock"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "flake.nix"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "policies/bundle/bundle.rego"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "policies/bundle/bundle_test.rego"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "policies/export/copy/copy.rego"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "policies/machine/nix/helpers.rego"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "policies/machine/nix/nix.rego"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "policies/machine/nix/nix_test.rego"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "policies/machine/nix/problems.rego"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "policies/machine/nix/warnings.rego"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "policies/runs/nix_lock/nix_lock.rego"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "resources/assignment_01_job.yml"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "resources/assignment_02_job.yml"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "resources/coursework.yml"
+reason = "cscie103 coursework: course content, not a capability"
+[[withdrawn]]
+path = "resources/unity_catalog.yml"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "scripts/databricks_cli.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "scripts/export_copy.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "scripts/load_assignment_data.py"
+reason = "cscie103 coursework: course content, not a capability"
+[[withdrawn]]
+path = "scripts/nix_contract.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_evidence.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_ledger.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_lock_update.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_models.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_observability.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_output.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_policy.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_request.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/nix_system.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "scripts/verify_export.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "tests/fixtures/bundle-resolved-fixture-target.json"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "tests/fixtures/release/bundle-with-a-job.json"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "tests/test_assignment_02.py"
+reason = "cscie103 coursework: course content, not a capability"
+[[withdrawn]]
+path = "tests/test_bundle_tasks.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "tests/test_databricks_cli.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "tests/test_export_copy.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+[[withdrawn]]
+path = "tests/test_nix_contract.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_errors.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_evidence.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_ledger_binding.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_lock_update.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_observe.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_output_contract.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_policy_inputs.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_project_flake.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_report_invariants.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_run.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_nix_schemas.py"
+reason = "Nix toolchain: recsys's toolchain is mise, founded and gated in F1-F4 (FAS OnDemand has no Nix)"
+[[withdrawn]]
+path = "tests/test_verify_export.py"
+reason = "Databricks bundle and export: recsys has no Databricks workspace"
+
+[upstream_tree]
+commit = "58af9d32a9972d6abb5a18acd94ee1235843da66"
+paths = 492
+sha256 = "3fc90cf97b28133d551b8313b214189f404dcba19c87cf3dd53dbc042d44c810"
+note = "every path here is in [[files]] or [[withdrawn]]; tests/test_provenance.py proves it (A.13)"
+
+[[files]]
+path = "scripts/repo_state.py"
+sha256 = "3e75a456c9db060822e1200ae6694874473122a6585736fbcb3e3245b1faf0e5"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "tests/test_repo_state.py"
+sha256 = "88664542556050e3cbea3e0aacdfa669bae9fa0e9e73669111fe3cca75215a40"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "scripts/branches_prune.py"
+sha256 = "1c81b636160d0575e01b4cc1a95896eba055c81abcd6547a08d641d40974db74"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "policies/runs/branches_prune/branches_prune.rego"
+sha256 = "04c8d56523dfd825aff21dc088d6d9d1a8dc29c94721efb39d99d24fafe24370"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "tests/test_branches_prune.py"
+sha256 = "57f800e5d4e382d3c31e82fb2066f8fbbfc8f1ebc1c2d7eca2a6002d214b49df"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "scripts/branches_retire.py"
+sha256 = "79b77100d01c0960451cac6770bab30543c7fe2585d6e339530572db220d40af"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "policies/runs/branches_retire/branches_retire.rego"
+sha256 = "9a0fe7be86242f93e1b02abd3ab51fcfa488b0521fa2dae7e667f536800abbb6"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "tests/test_branches_retire.py"
+sha256 = "20eb17b9db3e196d2af64f61ca357dde5120d354745fa9895cc6e11c5630f0c0"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[files]]
+path = "tests/integration/test_generated_gate.py"
+upstream_path = "tests/test_generated_gate.py"
+sha256 = "4e8420974bca55572933817771f2353de77b2f2b0f82975e9bea06a2ac4cf652"
+commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[adapted]]
+path = "tests/integration/test_generated_gate.py"
+reason = "at tests/integration, where this repository declares the integration level (A.39); git through gitenv's scrubbed environment; a two-field identity, as this repository declares one; the bundle-fixture refresh, the PII gate and the policy-decision proof dropped, since this repository has no update_fixtures.py, check_pii.py or evaluate_policies.py; origin reads as the project's declared GitHub repository while its pushes reach a local bare one through pushInsteadOf, since source:apply reads the repository from origin; the nested gate runs --offline --ci, judging the project and never the developer machine, whose claims are declared out of CI (A.104); the project's own tests run as its test task runs them, selected by its own addopts, since an -m would replace that filter and run its claims about the machine (A.104); A.123; a project renamed by identity:set keeps a consistent lock, proven by uv lock --check --offline in cscie103 D.263's form (A.146)"
+patch = "contracts/vendor-patches/tests/integration/test_generated_gate.py.patch"
+sha256 = "772a9806711eab1f84c1159c87e0f2ddc00034d0c83214d70adb97f14b2986f6"

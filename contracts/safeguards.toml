@@ -35,9 +35,1188 @@ id = "SA.REPLACE_MISSING"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_REPLACE_MISSING"
 path = "policies/runs/source_apply/source_apply.rego"
-anchor = "\tnot operation.exists_before\n"
-mutant = "\tfalse\n"
+anchor = "\toperation.op == \"replace\"\n\tnot operation.exists_before\n"
+mutant = "\toperation.op == \"replace\"\n\tfalse\n"
 proof = "tests/test_source_apply.py::test_replacing_in_a_missing_file_is_refused"
+
+[[safeguards]]
+id = "SA.DELETE_MISSING"
+engine = "source:apply"
+guard = "ERR_SOURCE_APPLY_DELETE_MISSING"
+path = "policies/runs/source_apply/source_apply.rego"
+anchor = "\toperation.op == \"delete\"\n\tnot operation.exists_before\n"
+mutant = "\toperation.op == \"delete\"\n\tfalse\n"
+proof = "tests/test_source_apply.py::test_deleting_a_missing_file_is_refused"
+
+[[safeguards]]
+id = "WORKFLOW.INPUT_MISSING"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_INPUT_MISSING"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tnot input.workflows\n"
+mutant = "\tfalse\n"
+proof = "tests/test_workflow_governance.py::test_an_absent_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "WORKFLOW.ZIZMOR_UNAVAILABLE"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_ZIZMOR_UNAVAILABLE"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tnot input.workflows.zizmor_ok\n"
+mutant = "\tfalse\n"
+proof = "tests/test_workflow_governance.py::test_an_audit_zizmor_did_not_complete_is_refused"
+
+[[safeguards]]
+id = "WORKFLOW.ZIZMOR_FINDING"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_ZIZMOR_FINDING"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tsome finding in input.workflows.findings\n"
+mutant = "\tsome finding in input.workflows.findings\n\tfalse\n"
+proof = "tests/test_workflow_audit.py::test_an_action_pinned_by_tag_is_refused"
+
+[[safeguards]]
+id = "WORKFLOW.SUPPRESSION_PRESENT"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_SUPPRESSION_PRESENT"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tsome suppression in input.workflows.suppressions\n"
+mutant = "\tsome suppression in input.workflows.suppressions\n\tfalse\n"
+proof = "tests/test_workflow_governance.py::test_an_inline_zizmor_ignore_is_refused"
+
+[[safeguards]]
+id = "WORKFLOW.DEFAULT_PERMISSIONS"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_DEFAULT_PERMISSIONS"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tnot workflow.declares_permissions\n"
+mutant = "\tfalse\n"
+proof = "tests/test_workflow_governance.py::test_a_workflow_declaring_no_permissions_is_refused"
+
+[[safeguards]]
+id = "WORKFLOW.WRITE_ALL"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_WRITE_ALL"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tgrant.scope == \"*\"\n"
+mutant = "\tgrant.scope == \"*\"\n\tfalse\n"
+proof = "tests/test_workflow_audit.py::test_a_write_all_token_is_refused"
+
+[[safeguards]]
+id = "WORKFLOW.PERMISSION_UNLISTED"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_PERMISSION_UNLISTED"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tnot _listed(grant)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_workflow_governance.py::test_a_job_level_id_token_not_in_the_allow_list_is_refused"
+
+[[safeguards]]
+id = "WORKFLOW.ID_TOKEN_WITHOUT_ENVIRONMENT"
+engine = "audit:workflows"
+guard = "ERR_WORKFLOW_ID_TOKEN_WITHOUT_ENVIRONMENT"
+path = "policies/runs/workflows/workflows.rego"
+anchor = "\tgrant.environment == null\n"
+mutant = "\tfalse\n"
+proof = "tests/test_workflow_governance.py::test_an_allowed_id_token_without_its_environment_is_refused"
+
+[[safeguards]]
+id = "MERGE.CHECK_FAILED"
+engine = "pr"
+guard = "ERR_MERGE_CHECK_FAILED"
+path = "policies/merge/readiness/readiness.rego"
+anchor = "\tsome name in failed\n"
+mutant = "\tsome name in failed\n\tfalse\n"
+proof = "tests/test_merge_readiness.py::test_a_failed_check_refuses_naming_it"
+
+[[safeguards]]
+id = "MERGE.CONFLICTING"
+engine = "pr"
+guard = "ERR_MERGE_CONFLICTING"
+path = "policies/merge/readiness/readiness.rego"
+anchor = "\tinput.pull_request.merge_state == \"DIRTY\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_merge_readiness.py::test_a_conflicting_pr_refuses"
+
+[[safeguards]]
+id = "MERGE.BEHIND"
+engine = "pr"
+guard = "ERR_MERGE_BEHIND"
+path = "policies/merge/readiness/readiness.rego"
+anchor = "\tinput.pull_request.merge_state == \"BEHIND\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_merge_readiness.py::test_a_pr_behind_its_base_refuses"
+
+[[safeguards]]
+id = "MERGE.DRAFT"
+engine = "pr"
+guard = "ERR_MERGE_DRAFT"
+path = "policies/merge/readiness/readiness.rego"
+anchor = "\tinput.pull_request.merge_state == \"DRAFT\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_merge_readiness.py::test_a_draft_pr_refuses"
+
+[[safeguards]]
+id = "MERGE.UNSTABLE"
+engine = "pr"
+guard = "ERR_MERGE_UNSTABLE"
+path = "policies/merge/readiness/readiness.rego"
+anchor = "\tinput.pull_request.merge_state == \"UNSTABLE\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_merge_readiness.py::test_an_unstable_pr_refuses"
+
+[[safeguards]]
+id = "MERGE.EXPECTATIONS_MISSING"
+engine = "pr"
+guard = "ERR_MERGE_EXPECTATIONS_MISSING"
+path = "policies/merge/readiness/readiness.rego"
+anchor = "\tnot input.expected_checks\n"
+mutant = "\tfalse\n"
+proof = "tests/test_merge_readiness.py::test_a_pull_request_judged_without_expectations_is_refused"
+
+[[safeguards]]
+id = "PUBLISH.INPUT_MISSING"
+engine = "pr"
+guard = "ERR_PUBLICATION_INPUT_MISSING"
+path = "policies/runs/publish/publish.rego"
+anchor = "\tnot input.publish\n"
+mutant = "\tfalse\n"
+proof = "tests/test_publish_policy.py::test_an_absent_publication_record_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "PUBLISH.NOTHING_EXPECTED"
+engine = "pr"
+guard = "ERR_PUBLICATION_NOTHING_EXPECTED"
+path = "policies/runs/publish/publish.rego"
+anchor = "\tcount(input.publish.expected) == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_publish_policy.py::test_nothing_declared_is_refused"
+
+[[safeguards]]
+id = "PUBLISH.GATE_UNOBSERVED"
+engine = "pr"
+guard = "ERR_PUBLICATION_GATE_UNOBSERVED"
+path = "policies/runs/publish/publish.rego"
+anchor = "\tnot name in _ran\n"
+mutant = "\tfalse\n"
+proof = "tests/test_publish_policy.py::test_a_missing_declared_gate_is_unknown"
+
+[[safeguards]]
+id = "PUBLISH.GATE_FAILED"
+engine = "pr"
+guard = "ERR_PUBLICATION_GATE_FAILED"
+path = "policies/runs/publish/publish.rego"
+anchor = "\tsome name in input.publish.failed_tests\n"
+mutant = "\tsome name in input.publish.failed_tests\n\tfalse\n"
+proof = "tests/test_publish_policy.py::test_a_failed_gate_is_refused_by_its_own_rule"
+
+[[safeguards]]
+id = "PUBLISH.PASSED_SET_MISMATCH"
+engine = "pr"
+guard = "ERR_PUBLICATION_PASSED_SET_MISMATCH"
+path = "policies/runs/publish/publish.rego"
+anchor = "\t_passed != _expected\n"
+mutant = "\tfalse\n"
+proof = "tests/test_publish_policy.py::test_the_passed_set_must_equal_the_declared_gates"
+
+[[safeguards]]
+id = "EXEMPTION.INPUT_MISSING"
+engine = "pr"
+guard = "ERR_EXEMPTION_INPUT_MISSING"
+path = "policies/runs/exemptions/exemptions.rego"
+anchor = "\tnot input.exemptions\n"
+mutant = "\tfalse\n"
+proof = "tests/test_exemptions.py::test_an_absent_inventory_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "EXEMPTION.EXPIRED"
+engine = "pr"
+guard = "ERR_EXEMPTION_EXPIRED"
+path = "policies/runs/exemptions/exemptions.rego"
+anchor = "\texemption.expires < input.exemptions.today\n"
+mutant = "\tfalse\n"
+proof = "tests/test_exemptions.py::test_an_expired_exemption_fails"
+
+[[safeguards]]
+id = "EXEMPTION.PATH_MISSING"
+engine = "pr"
+guard = "ERR_EXEMPTION_PATH_MISSING"
+path = "policies/runs/exemptions/exemptions.rego"
+anchor = "\tnot exemption.path_exists\n"
+mutant = "\tfalse\n"
+proof = "tests/test_exemptions.py::test_an_exemption_for_a_missing_path_fails"
+
+[[safeguards]]
+id = "RULESET.INPUT_MISSING"
+engine = "check:ruleset"
+guard = "ERR_RULESET_INPUT_MISSING"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tnot state.contract\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_an_unobserved_state_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "RULESET.MISSING"
+engine = "check:ruleset"
+guard = "ERR_RULESET_MISSING"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tnot state.found\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_missing_ruleset_is_refused"
+
+[[safeguards]]
+id = "RULESET.NOT_ACTIVE"
+engine = "check:ruleset"
+guard = "ERR_RULESET_NOT_ACTIVE"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tstate.enforcement != \"active\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_ruleset_in_evaluate_mode_is_refused"
+
+[[safeguards]]
+id = "RULESET.RULE_MISSING"
+engine = "check:ruleset"
+guard = "ERR_RULESET_RULE_MISSING"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tnot kind in state.rule_types\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_missing_protecting_rule_is_refused"
+
+[[safeguards]]
+id = "RULESET.REF_UNPROTECTED"
+engine = "check:ruleset"
+guard = "ERR_RULESET_REF_UNPROTECTED"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tnot ref in state.refs\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_main_left_unprotected_is_refused"
+
+[[safeguards]]
+id = "RULESET.CHECK_NOT_REQUIRED"
+engine = "check:ruleset"
+guard = "ERR_RULESET_CHECK_NOT_REQUIRED"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tcount([check | some check in state.required_checks; check.context == required_check]) == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_another_required_check_is_refused"
+
+[[safeguards]]
+id = "RULESET.CHECK_UNPINNED"
+engine = "check:ruleset"
+guard = "ERR_RULESET_CHECK_UNPINNED"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tcheck.integration_id != pinned_app\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_check_required_by_name_only_is_refused"
+
+[[safeguards]]
+id = "RULESET.NOT_STRICT"
+engine = "check:ruleset"
+guard = "ERR_RULESET_NOT_STRICT"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tnot state.strict\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_ruleset_that_is_not_strict_is_refused"
+
+[[safeguards]]
+id = "RULESET.BYPASS_PRESENT"
+engine = "check:ruleset"
+guard = "ERR_RULESET_BYPASS_PRESENT"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tstate.bypass_actor_count > 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_bypass_actor_is_refused"
+
+[[safeguards]]
+id = "RULESET.BYPASS_UNOBSERVED"
+engine = "check:ruleset"
+guard = "ERR_RULESET_BYPASS_UNOBSERVED"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tis_null(state.bypass_actor_count)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_an_unreadable_bypass_count_is_refused"
+
+[[safeguards]]
+id = "RULESET.MERGE_METHODS"
+engine = "check:ruleset"
+guard = "ERR_RULESET_MERGE_METHODS"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tstate.merge_methods != [\"merge\"]\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_squash_merge_method_is_refused"
+
+[[safeguards]]
+id = "RULESET.PRODUCER_MISMATCH"
+engine = "check:ruleset"
+guard = "ERR_RULESET_PRODUCER_MISMATCH"
+path = "policies/runs/check_ruleset/check_ruleset.rego"
+anchor = "\tstate.producer_app_id != pinned_app\n"
+mutant = "\tfalse\n"
+proof = "tests/test_check_ruleset.py::test_a_gate_from_another_app_is_refused"
+
+[[safeguards]]
+id = "SUPPRESSION.INPUT_MISSING"
+engine = "audit:suppressions"
+guard = "ERR_SUPPRESSION_INPUT_MISSING"
+path = "policies/runs/suppressions/suppressions.rego"
+anchor = "\tnot input.suppressions\n"
+mutant = "\tfalse\n"
+proof = "tests/test_suppression_audit.py::test_an_absent_inventory_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SUPPRESSION.UNREGISTERED"
+engine = "audit:suppressions"
+guard = "ERR_SUPPRESSION_UNREGISTERED"
+path = "policies/runs/suppressions/suppressions.rego"
+anchor = "\tnot found.registered\n"
+mutant = "\tfalse\n"
+proof = "tests/test_suppression_audit.py::test_an_unregistered_inline_suppression_is_refused"
+
+[[safeguards]]
+id = "PROBLEMS.INPUT_MISSING"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_INPUT_MISSING"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tnot input.problems\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_an_unobserved_inventory_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "PROBLEMS.DECLARATIONS_UNREAD"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_DECLARATIONS_UNREAD"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tcount(input.problems.declared) == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_no_declared_code_read_is_refused"
+
+[[safeguards]]
+id = "PROBLEMS.UNREGISTERED"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_UNREGISTERED"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tnot code in _registered\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_an_unregistered_code_is_refused"
+
+[[safeguards]]
+id = "PROBLEMS.UNDECLARED"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_UNDECLARED"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tnot code in _declared\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_a_registered_code_no_rule_declares_is_refused"
+
+[[safeguards]]
+id = "PROBLEMS.DUPLICATE"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_DUPLICATE"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tcount([entry | some entry in input.problems.registry; entry.code == code]) > 1\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_a_code_registered_twice_is_refused"
+
+[[safeguards]]
+id = "PROBLEMS.BASE_UNREAD"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_BASE_UNREAD"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tinput.problems.base == null\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_an_unread_base_is_refused"
+
+[[safeguards]]
+id = "PROBLEMS.REPURPOSED"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_REPURPOSED"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tnot _kept(old)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_problem_codes.py::test_a_registered_code_is_never_repurposed"
+
+[[safeguards]]
+id = "PROBLEMS.PROSE_DISPATCH"
+engine = "audit:problems"
+guard = "ERR_PROBLEMS_PROSE_DISPATCH"
+path = "policies/runs/problems/problems.rego"
+anchor = "\tsome found in input.problems.prose\n"
+mutant = "\tsome found in input.problems.prose\n\tfalse\n"
+proof = "tests/test_problem_codes.py::test_a_branch_on_message_text_fails_the_audit"
+
+[[safeguards]]
+id = "MODELS.INPUT_MISSING"
+engine = "audit:models"
+guard = "ERR_MODELS_INPUT_MISSING"
+path = "policies/runs/models/models.rego"
+anchor = "\tnot input.models\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_an_unobserved_model_inventory_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MODELS.NOTHING_SCANNED"
+engine = "audit:models"
+guard = "ERR_MODELS_NOTHING_SCANNED"
+path = "policies/runs/models/models.rego"
+anchor = "\tinput.models.files_scanned == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_a_model_audit_that_scanned_nothing_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MODELS.UNBASELINED"
+engine = "audit:models"
+guard = "ERR_MODELS_UNBASELINED"
+path = "policies/runs/models/models.rego"
+anchor = "\tfinding.kind == \"unbaselined\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_an_unbaselined_model_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MODELS.STALE"
+engine = "audit:models"
+guard = "ERR_MODELS_STALE"
+path = "policies/runs/models/models.rego"
+anchor = "\tfinding.kind == \"stale\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_a_stale_baseline_entry_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "ASSERTION.INPUT_MISSING"
+engine = "audit:assertions"
+guard = "ERR_ASSERTION_INPUT_MISSING"
+path = "policies/runs/assertions/assertions.rego"
+anchor = "\tnot input.assertions\n"
+mutant = "\tfalse\n"
+proof = "tests/test_assertion_audit.py::test_an_absent_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "ASSERTION.NOTHING_SCANNED"
+engine = "audit:assertions"
+guard = "ERR_ASSERTION_NOTHING_SCANNED"
+path = "policies/runs/assertions/assertions.rego"
+anchor = "\tinput.assertions.files_scanned == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_assertion_audit.py::test_an_audit_that_scanned_nothing_is_refused"
+
+[[safeguards]]
+id = "ASSERTION.VACUOUS"
+engine = "audit:assertions"
+guard = "ERR_ASSERTION_VACUOUS"
+path = "policies/runs/assertions/assertions.rego"
+anchor = "\tsome finding in input.assertions.findings\n"
+mutant = "\tsome finding in input.assertions.findings\n\tfalse\n"
+proof = "tests/test_assertion_audit.py::test_an_unpinned_all_is_refused"
+
+[[safeguards]]
+id = "EVIDENCE.INPUT_MISSING"
+engine = "audit:evidence"
+guard = "ERR_EVIDENCE_INPUT_MISSING"
+path = "policies/runs/evidence/evidence.rego"
+anchor = "\tnot input.evidence\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_an_unobserved_evidence_inventory_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "EVIDENCE.NONE_FOUND"
+engine = "audit:evidence"
+guard = "ERR_EVIDENCE_NONE_FOUND"
+path = "policies/runs/evidence/evidence.rego"
+anchor = "\tcount(input.evidence.contracts) == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_an_evidence_audit_that_found_no_contract_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "EVIDENCE.CONCLUSION"
+engine = "audit:evidence"
+guard = "ERR_EVIDENCE_CONCLUSION"
+path = "policies/runs/evidence/evidence.rego"
+anchor = "\tfinding.kind == \"conclusion\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_evidence_audit.py::test_the_audit_refuses_a_conclusion_through_its_policy"
+
+[[safeguards]]
+id = "EVIDENCE.UNRESOLVED"
+engine = "audit:evidence"
+guard = "ERR_EVIDENCE_UNRESOLVED"
+path = "policies/runs/evidence/evidence.rego"
+anchor = "\tfinding.kind == \"unresolved\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_audit_policies.py::test_an_unresolved_evidence_argument_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MUTATION.INPUT_MISSING"
+engine = "mutation:check"
+guard = "ERR_MUTATION_INPUT_MISSING"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\tnot input.mutation\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_policy.py::test_an_unobserved_mutation_run_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MUTATION.TREE_UNLISTED"
+engine = "mutation:check"
+guard = "ERR_MUTATION_TREE_UNLISTED"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\tinput.mutation.tree_listed == false\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_policy.py::test_an_unlisted_tree_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MUTATION.BASELINE_FAILED"
+engine = "mutation:check"
+guard = "ERR_MUTATION_BASELINE_FAILED"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\trun.exit_code != 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_check.py::test_a_failing_baseline_halts_instead_of_counting_every_mutant_killed"
+
+[[safeguards]]
+id = "MUTATION.ANCHOR_NOT_ONCE"
+engine = "mutation:check"
+guard = "ERR_MUTATION_ANCHOR_NOT_ONCE"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\tnot mutant.anchor_found_once\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_check.py::test_an_anchor_not_found_once_is_unknown_not_survived"
+
+[[safeguards]]
+id = "MUTATION.SURVIVED_ITS_KILLER"
+engine = "mutation:check"
+guard = "ERR_MUTATION_SURVIVED_ITS_KILLER"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\trun.exit_code == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_check.py::test_a_mutant_its_named_killer_misses_is_refused_even_if_another_test_kills_it"
+
+[[safeguards]]
+id = "MUTATION.KILLER_UNJUDGED"
+engine = "mutation:check"
+guard = "ERR_MUTATION_KILLER_UNJUDGED"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\tnot _judged(run.exit_code)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_policy.py::test_an_unjudged_killer_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "MUTATION.TREE_TOUCHED"
+engine = "mutation:check"
+guard = "ERR_MUTATION_TREE_TOUCHED"
+path = "policies/runs/mutation/mutation.rego"
+anchor = "\tinput.mutation.tree_untouched == false\n"
+mutant = "\tfalse\n"
+proof = "tests/test_mutation_policy.py::test_a_touched_tree_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "BRANCH.UNOBSERVED"
+engine = "sync"
+guard = "ERR_BRANCH_UNOBSERVED"
+path = "policies/machine/branches/branches.rego"
+anchor = "\tnot observed\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_policy.py::test_an_unobserved_state_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "BRANCH.BEHIND"
+engine = "sync"
+guard = "ERR_BRANCH_BEHIND"
+path = "policies/machine/branches/branches.rego"
+anchor = "\tbranch.position == \"behind\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_policy.py::test_a_long_lived_branch_behind_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "BRANCH.AHEAD"
+engine = "sync"
+guard = "ERR_BRANCH_AHEAD"
+path = "policies/machine/branches/branches.rego"
+anchor = "\tbranch.position == \"ahead\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_policy.py::test_a_long_lived_branch_ahead_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "BRANCH.DIVERGED"
+engine = "sync"
+guard = "ERR_BRANCH_DIVERGED"
+path = "policies/machine/branches/branches.rego"
+anchor = "\tbranch.position == \"diverged\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_policy.py::test_a_long_lived_branch_diverged_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "RESTORE.NO_PATHS"
+engine = "source:restore"
+guard = "ERR_RESTORE_NO_PATHS"
+path = "policies/source/restore/restore.rego"
+anchor = "\tinput.restore_plan.paths == []\n"
+mutant = "\tfalse\n"
+proof = "tests/test_source_restore.py::test_naming_no_path_is_refused"
+
+[[safeguards]]
+id = "RESTORE.UNTRACKED"
+engine = "source:restore"
+guard = "ERR_RESTORE_UNTRACKED"
+path = "policies/source/restore/restore.rego"
+anchor = "\tnot state.in_head\n"
+mutant = "\tfalse\n"
+proof = "tests/test_source_restore.py::test_an_untracked_path_is_refused"
+
+[[safeguards]]
+id = "COPIES.INPUT_MISSING"
+engine = "upstream:copies"
+guard = "ERR_COPIES_INPUT_MISSING"
+path = "policies/runs/upstream_copies/upstream_copies.rego"
+anchor = "\tnot input.upstream_copies\n"
+mutant = "\tfalse\n"
+proof = "tests/test_upstream_copies.py::test_an_absent_inventory_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "COPIES.UNVERIFIED"
+engine = "upstream:copies"
+guard = "ERR_COPIES_UNVERIFIED"
+path = "policies/runs/upstream_copies/upstream_copies.rego"
+anchor = "\tcopy.local_blob != copy.upstream_blob\n"
+mutant = "\tfalse\n"
+proof = "tests/test_upstream_copies.py::test_only_the_copy_matching_the_pin_is_verified"
+
+[[safeguards]]
+id = "CONTINUE.INPUT_MISSING"
+engine = "worktree:continue"
+guard = "ERR_CONTINUE_INPUT_MISSING"
+path = "policies/runs/worktree_continue/worktree_continue.rego"
+anchor = "\tnot input.worktree_continue\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_continue_policy.py::test_an_absent_plan_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "CONTINUE.NO_REBASE"
+engine = "worktree:continue"
+guard = "ERR_CONTINUE_NO_REBASE"
+path = "policies/runs/worktree_continue/worktree_continue.rego"
+anchor = "\tinput.worktree_continue.operation != \"rebase\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_continue.py::test_continue_without_a_rebase_is_refused"
+
+[[safeguards]]
+id = "CONTINUE.MARKERS"
+engine = "worktree:continue"
+guard = "ERR_CONTINUE_MARKERS"
+path = "policies/runs/worktree_continue/worktree_continue.rego"
+anchor = "\tsome path in input.worktree_continue.with_markers\n"
+mutant = "\tsome path in input.worktree_continue.with_markers\n\tfalse\n"
+proof = "tests/test_worktree_continue.py::test_a_remaining_marker_is_refused"
+
+[[safeguards]]
+id = "CONCLUDE.INPUT_MISSING"
+engine = "worktree:conclude"
+guard = "ERR_CONCLUDE_INPUT_MISSING"
+path = "policies/runs/worktree_conclude/worktree_conclude.rego"
+anchor = "\tnot input.worktree_conclude\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_lineage.py::test_an_absent_conclude_plan_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "CONCLUDE.NO_MERGE"
+engine = "worktree:conclude"
+guard = "ERR_CONCLUDE_NO_MERGE"
+path = "policies/runs/worktree_conclude/worktree_conclude.rego"
+anchor = "\tinput.worktree_conclude.operation != \"merge\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_lineage.py::test_conclude_without_a_merge_is_refused"
+
+[[safeguards]]
+id = "CONCLUDE.MARKERS"
+engine = "worktree:conclude"
+guard = "ERR_CONCLUDE_MARKERS"
+path = "policies/runs/worktree_conclude/worktree_conclude.rego"
+anchor = "\tsome path in input.worktree_conclude.with_markers\n"
+mutant = "\tsome path in input.worktree_conclude.with_markers\n\tfalse\n"
+proof = "tests/test_worktree_lineage.py::test_a_merge_with_a_marker_left_is_not_concluded"
+
+[[safeguards]]
+id = "ABORT.INPUT_MISSING"
+engine = "worktree:abort"
+guard = "ERR_ABORT_INPUT_MISSING"
+path = "policies/runs/worktree_abort/worktree_abort.rego"
+anchor = "\tnot input.worktree_abort\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_lineage.py::test_an_absent_abort_plan_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "ABORT.NOTHING_IN_PROGRESS"
+engine = "worktree:abort"
+guard = "ERR_ABORT_NOTHING_IN_PROGRESS"
+path = "policies/runs/worktree_abort/worktree_abort.rego"
+anchor = "\tinput.worktree_abort.operation == \"none\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_lineage.py::test_an_abort_with_nothing_in_progress_is_refused"
+
+[[safeguards]]
+id = "SKIP.INPUT_MISSING"
+engine = "worktree:skip"
+guard = "ERR_SKIP_INPUT_MISSING"
+path = "policies/runs/worktree_skip/worktree_skip.rego"
+anchor = "\tnot input.worktree_skip\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_skip_policy.py::test_an_absent_plan_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SKIP.NO_REBASE"
+engine = "worktree:skip"
+guard = "ERR_SKIP_NO_REBASE"
+path = "policies/runs/worktree_skip/worktree_skip.rego"
+anchor = "\tinput.worktree_skip.operation != \"rebase\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_skip.py::test_skip_without_a_rebase_is_refused"
+
+[[safeguards]]
+id = "SKIP.NO_STOPPED"
+engine = "worktree:skip"
+guard = "ERR_SKIP_NO_STOPPED"
+path = "policies/runs/worktree_skip/worktree_skip.rego"
+anchor = "\tinput.worktree_skip.stopped == \"\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_skip_policy.py::test_a_rebase_with_no_stopped_commit_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SKIP.UNPRESERVED"
+engine = "worktree:skip"
+guard = "ERR_SKIP_UNPRESERVED"
+path = "policies/runs/worktree_skip/worktree_skip.rego"
+anchor = "\tnot input.worktree_skip.preserved\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_skip.py::test_an_unpreserved_commit_is_refused"
+
+[[safeguards]]
+id = "SKIP.SAME_BRANCH"
+engine = "worktree:skip"
+guard = "ERR_SKIP_SAME_BRANCH"
+path = "policies/runs/worktree_skip/worktree_skip.rego"
+anchor = "\tinput.worktree_skip.preserving == input.worktree_skip.rebasing\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_skip.py::test_the_rebasing_branch_cannot_preserve_its_own_commit"
+
+[[safeguards]]
+id = "SKIP.NO_REASON"
+engine = "worktree:skip"
+guard = "ERR_SKIP_NO_REASON"
+path = "policies/runs/worktree_skip/worktree_skip.rego"
+anchor = "\ttrim_space(input.worktree_skip.reason) == \"\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_worktree_skip.py::test_a_skip_without_a_reason_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_NEW.INPUT_MISSING"
+engine = "template:new"
+guard = "ERR_TEMPLATE_INPUT_MISSING"
+path = "policies/runs/template/new/new.rego"
+anchor = "\tnot input.template_request\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_policy_inputs.py::test_an_absent_new_request_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_NEW.UNPINNED"
+engine = "template:new"
+guard = "ERR_TEMPLATE_UNPINNED"
+path = "policies/runs/template/new/new.rego"
+anchor = "\tnot regex.match(`^[0-9a-f]{40}$`, input.template_request.ref)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_new.py::test_an_unpinned_ref_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_NEW.DESTINATION_OCCUPIED"
+engine = "template:new"
+guard = "ERR_TEMPLATE_DESTINATION_OCCUPIED"
+path = "policies/runs/template/new/new.rego"
+anchor = "\tnot input.template_request.destination_empty\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_new.py::test_an_occupied_destination_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_NEW.DESTINATION_INSIDE"
+engine = "template:new"
+guard = "ERR_TEMPLATE_DESTINATION_INSIDE"
+path = "policies/runs/template/new/new.rego"
+anchor = "\tinput.template_request.inside_source\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_new.py::test_a_destination_inside_the_source_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_NEW.SOURCE_NOT_HTTPS"
+engine = "template:new"
+guard = "ERR_TEMPLATE_SOURCE_NOT_HTTPS"
+path = "policies/runs/template/new/new.rego"
+anchor = "\tnot startswith(input.template_request.transport, \"https://github.com/\")\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_new.py::test_a_source_that_is_not_https_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_INIT.INPUT_MISSING"
+engine = "template:init"
+guard = "ERR_INIT_INPUT_MISSING"
+path = "policies/runs/template/init/init.rego"
+anchor = "\tnot input.template_init\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_policy_inputs.py::test_an_absent_init_request_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_INIT.NOT_GENERATED"
+engine = "template:init"
+guard = "ERR_INIT_NOT_GENERATED"
+path = "policies/runs/template/init/init.rego"
+anchor = "\tnot input.template_init.answers_present\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_init.py::test_a_directory_that_was_not_generated_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_INIT.ALREADY_REPOSITORY"
+engine = "template:init"
+guard = "ERR_INIT_ALREADY_REPOSITORY"
+path = "policies/runs/template/init/init.rego"
+anchor = "\tinput.template_init.already_repository\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_init.py::test_a_directory_that_is_already_a_repository_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_INIT.INSIDE_SOURCE"
+engine = "template:init"
+guard = "ERR_INIT_INSIDE_SOURCE"
+path = "policies/runs/template/init/init.rego"
+anchor = "\tinput.template_init.inside_source\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_init.py::test_a_destination_inside_the_source_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_IDENTITY.REQUEST_MISSING"
+engine = "template:identity"
+guard = "ERR_IDENTITY_REQUEST_MISSING"
+path = "policies/runs/template/identity/identity.rego"
+anchor = "\tnot input.template_identity\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_policy_inputs.py::test_an_absent_identity_request_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_IDENTITY.NOT_GENERATED"
+engine = "template:identity"
+guard = "ERR_IDENTITY_NOT_GENERATED"
+path = "policies/runs/template/identity/identity.rego"
+anchor = "\tnot input.template_identity.answers_present\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_identity.py::test_a_directory_that_was_not_generated_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_IDENTITY.NOT_FRESH"
+engine = "template:identity"
+guard = "ERR_IDENTITY_NOT_FRESH"
+path = "policies/runs/template/identity/identity.rego"
+anchor = "\trequest.commits != 1\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_identity.py::test_a_project_with_history_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_IDENTITY.HAS_REMOTE"
+engine = "template:identity"
+guard = "ERR_IDENTITY_HAS_REMOTE"
+path = "policies/runs/template/identity/identity.rego"
+anchor = "\tinput.template_identity.has_remote\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_identity.py::test_a_project_with_a_remote_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.INPUT_MISSING"
+engine = "template:publish"
+guard = "ERR_PUBLISH_INPUT_MISSING"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tnot input.template_publish\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_policy_inputs.py::test_an_absent_publish_request_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.NOT_GENERATED"
+engine = "template:publish"
+guard = "ERR_PUBLISH_NOT_GENERATED"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tnot input.template_publish.answers_present\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_publish.py::test_a_directory_that_was_not_generated_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.DIRTY"
+engine = "template:publish"
+guard = "ERR_PUBLISH_DIRTY"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tnot input.template_publish.clean\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_publish.py::test_a_dirty_destination_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.HAS_REMOTE"
+engine = "template:publish"
+guard = "ERR_PUBLISH_HAS_REMOTE"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tinput.template_publish.has_remote\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_publish.py::test_a_destination_with_a_remote_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.HOOKS_INSTALLED"
+engine = "template:publish"
+guard = "ERR_PUBLISH_HOOKS_INSTALLED"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tinput.template_publish.hooks_installed\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_publish.py::test_a_destination_with_hooks_installed_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.REMOTE_POPULATED"
+engine = "template:publish"
+guard = "ERR_PUBLISH_REMOTE_POPULATED"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tinput.template_publish.remote == \"populated\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_publish.py::test_a_populated_remote_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_PUBLISH.REMOTE_UNKNOWN"
+engine = "template:publish"
+guard = "ERR_PUBLISH_REMOTE_UNKNOWN"
+path = "policies/runs/template/publish/publish.rego"
+anchor = "\tinput.template_publish.remote == \"unknown\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_policy_inputs.py::test_a_remote_that_could_not_be_observed_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.INPUT_MISSING"
+engine = "template:discard"
+guard = "ERR_DISCARD_INPUT_MISSING"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tnot input.template_discard\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_policy_inputs.py::test_an_absent_discard_request_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.NOT_GENERATED"
+engine = "template:discard"
+guard = "ERR_DISCARD_NOT_GENERATED"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tnot input.template_discard.answers_present\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_a_directory_that_was_not_generated_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.SYMLINK"
+engine = "template:discard"
+guard = "ERR_DISCARD_SYMLINK"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tinput.template_discard.is_symlink\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_a_symlink_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.PUBLISHED"
+engine = "template:discard"
+guard = "ERR_DISCARD_PUBLISHED"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tinput.template_discard.has_remote\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_a_published_project_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.AUTHORED"
+engine = "template:discard"
+guard = "ERR_DISCARD_AUTHORED"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tinput.template_discard.commits != 1\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_a_project_with_authored_commits_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.DIRTY"
+engine = "template:discard"
+guard = "ERR_DISCARD_DIRTY"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tnot input.template_discard.clean\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_a_dirty_project_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.PROTECTED"
+engine = "template:discard"
+guard = "ERR_DISCARD_PROTECTED"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tinput.template_discard.protected\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_this_repository_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_DISCARD.UNSAFE"
+engine = "template:discard"
+guard = "ERR_DISCARD_UNSAFE"
+path = "policies/runs/template/discard/discard.rego"
+anchor = "\tnot input.template_discard.safe_removal\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_discard.py::test_a_removal_that_does_not_resist_symlink_attacks_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_UPDATE.INPUT_MISSING"
+engine = "template:update"
+guard = "ERR_TEMPLATE_UPDATE_INPUT_MISSING"
+path = "policies/runs/template/update/update.rego"
+anchor = "\tnot input.template_update\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_update_policy.py::test_an_absent_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "TEMPLATE_UPDATE.NOT_GENERATED"
+engine = "template:update"
+guard = "ERR_TEMPLATE_UPDATE_NOT_GENERATED"
+path = "policies/runs/template/update/update.rego"
+anchor = "\tnot input.template_update.answers_present\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_update_policy.py::test_a_destination_that_was_not_generated_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_UPDATE.UNPINNED"
+engine = "template:update"
+guard = "ERR_TEMPLATE_UPDATE_UNPINNED"
+path = "policies/runs/template/update/update.rego"
+anchor = "\tnot regex.match(`^[0-9a-f]{40}$`, input.template_update.ref)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_update_policy.py::test_an_unpinned_ref_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_UPDATE.FOREIGN"
+engine = "template:update"
+guard = "ERR_TEMPLATE_UPDATE_FOREIGN"
+path = "policies/runs/template/update/update.rego"
+anchor = "\trequest.source != request.template\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_update_policy.py::test_a_project_from_another_template_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_UPDATE.DIRTY"
+engine = "template:update"
+guard = "ERR_TEMPLATE_UPDATE_DIRTY"
+path = "policies/runs/template/update/update.rego"
+anchor = "\tnot input.template_update.clean\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_update_policy.py::test_a_dirty_project_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_UPDATE.PROTECTED"
+engine = "template:update"
+guard = "ERR_TEMPLATE_UPDATE_PROTECTED"
+path = "policies/runs/template/update/update.rego"
+anchor = "\trequest.branch in _protected\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_update_policy.py::test_a_protected_or_detached_branch_is_refused"
+
+[[safeguards]]
+id = "TEMPLATE_UPDATE.CURRENT"
+engine = "template:update"
+guard = "ERR_TEMPLATE_UPDATE_CURRENT"
+path = "policies/runs/template/update/update.rego"
+anchor = "\tstartswith(request.ref, request.recorded)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_template_update_policy.py::test_a_project_already_at_the_ref_is_refused"
+
+[[safeguards]]
+id = "BRANCHES_PRUNE.INPUT_MISSING"
+engine = "branches:prune"
+guard = "ERR_BRANCHES_PRUNE_INPUT_MISSING"
+path = "policies/runs/branches_prune/branches_prune.rego"
+anchor = "\tnot input.branches_prune\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_prune.py::test_an_absent_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "BRANCHES_PRUNE.PROTECTED"
+engine = "branches:prune"
+guard = "ERR_BRANCHES_PRUNE_PROTECTED"
+path = "policies/runs/branches_prune/branches_prune.rego"
+anchor = "\tcandidate.name in input.branches_prune.protected\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_prune.py::test_a_protected_branch_is_never_deleted"
+
+[[safeguards]]
+id = "BRANCHES_PRUNE.HELD"
+engine = "branches:prune"
+guard = "ERR_BRANCHES_PRUNE_HELD"
+path = "policies/runs/branches_prune/branches_prune.rego"
+anchor = "\tcandidate.held_by != null\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_prune.py::test_a_branch_a_worktree_holds_is_never_deleted"
+
+[[safeguards]]
+id = "BRANCHES_PRUNE.UNMERGED"
+engine = "branches:prune"
+guard = "ERR_BRANCHES_PRUNE_UNMERGED"
+path = "policies/runs/branches_prune/branches_prune.rego"
+anchor = "\tcandidate.merged == false\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_prune.py::test_only_a_proven_merged_branch_is_deleted"
+
+[[safeguards]]
+id = "BRANCHES_RETIRE.INPUT_MISSING"
+engine = "branches:retire"
+guard = "ERR_BRANCHES_RETIRE_INPUT_MISSING"
+path = "policies/runs/branches_retire/branches_retire.rego"
+anchor = "\tnot input.branches_retire\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_retire.py::test_an_absent_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "BRANCHES_RETIRE.PROTECTED"
+engine = "branches:retire"
+guard = "ERR_BRANCHES_RETIRE_PROTECTED"
+path = "policies/runs/branches_retire/branches_retire.rego"
+anchor = "\tinput.branches_retire.branch in input.branches_retire.protected\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_retire.py::test_a_protected_branch_is_never_retired"
+
+[[safeguards]]
+id = "BRANCHES_RETIRE.HELD"
+engine = "branches:retire"
+guard = "ERR_BRANCHES_RETIRE_HELD"
+path = "policies/runs/branches_retire/branches_retire.rego"
+anchor = "\tinput.branches_retire.held_by != null\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_retire.py::test_a_branch_a_worktree_holds_is_never_retired"
+
+[[safeguards]]
+id = "BRANCHES_RETIRE.STEP_UNKNOWN"
+engine = "branches:retire"
+guard = "ERR_BRANCHES_RETIRE_STEP_UNKNOWN"
+path = "policies/runs/branches_retire/branches_retire.rego"
+anchor = "\tinput.branches_retire.step_known == false\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_retire.py::test_a_step_the_plan_does_not_know_is_refused"
+
+[[safeguards]]
+id = "BRANCHES_RETIRE.ARCHIVED"
+engine = "branches:retire"
+guard = "ERR_BRANCHES_RETIRE_ARCHIVED"
+path = "policies/runs/branches_retire/branches_retire.rego"
+anchor = "\tinput.branches_retire.archived == true\n"
+mutant = "\tfalse\n"
+proof = "tests/test_branches_retire.py::test_an_existing_archive_is_never_overwritten"
+
+[[safeguards]]
+id = "IDENTITY.INPUT_MISSING"
+engine = "identity:set"
+guard = "ERR_IDENTITY_INPUT_MISSING"
+path = "policies/identity/identity.rego"
+anchor = "\tnot input.identity_inventory\n"
+mutant = "\tfalse\n"
+proof = "tests/test_project_identity.py::test_a_stray_identity_literal_is_refused"
+
+[[safeguards]]
+id = "IDENTITY.LITERAL"
+engine = "identity:set"
+guard = "ERR_IDENTITY_LITERAL"
+path = "policies/identity/identity.rego"
+anchor = "\tnot occurrence.slot\n"
+mutant = "\tfalse\n"
+proof = "tests/test_project_identity.py::test_a_stray_identity_literal_is_refused"
 
 [[safeguards]]
 id = "SA.ANCHOR_COUNT"
@@ -560,3 +1739,74 @@ path = "policies/runs/data_fetch/data_fetch.rego"
 anchor = "\tnot name in present\n"
 mutant = "\tfalse\n"
 proof = "tests/test_data_fetch.py::test_an_archive_missing_a_required_file_is_refused"
+[[safeguards]]
+id = "SIBLING.INPUT_MISSING"
+engine = "sibling:checkout"
+guard = "ERR_SIBLING_TRUST_INPUT_MISSING"
+path = "policies/runs/sibling_trust/sibling_trust.rego"
+anchor = "\tnot input.sibling_trust\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_an_absent_trust_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SIBLING.HEAD_NOT_ON_DEVELOP"
+engine = "sibling:checkout"
+guard = "ERR_SIBLING_HEAD_NOT_ON_DEVELOP"
+path = "policies/runs/sibling_trust/sibling_trust.rego"
+anchor = "\tnot evidence.head_on_develop\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_a_sibling_head_off_its_develop_is_not_trusted"
+
+[[safeguards]]
+id = "SIBLING.CONFIG_MODIFIED"
+engine = "sibling:checkout"
+guard = "ERR_SIBLING_CONFIG_MODIFIED"
+path = "policies/runs/sibling_trust/sibling_trust.rego"
+anchor = "\tnot evidence.config_unmodified\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_a_modified_sibling_config_is_not_trusted"
+
+[[safeguards]]
+id = "SIBLING.OVERRIDE_MISMATCH"
+engine = "sibling:checkout"
+guard = "ERR_SIBLING_OVERRIDE_MISMATCH"
+path = "policies/runs/sibling_trust/sibling_trust.rego"
+anchor = "\tnot evidence.override_matches\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_a_mismatched_override_is_not_trusted"
+
+[[safeguards]]
+id = "SIBLING.TOOLCHAIN_STALE"
+engine = "sibling:checkout"
+guard = "ERR_SIBLING_TOOLCHAIN_STALE"
+path = "policies/runs/sibling_trust/sibling_trust.rego"
+anchor = "\tnot evidence.toolchain_current\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_a_stale_toolchain_is_not_trusted"
+
+[[safeguards]]
+id = "SIBLING_OVERRIDE.INPUT_MISSING"
+engine = "sibling:override"
+guard = "ERR_SIBLING_OVERRIDE_INPUT_MISSING"
+path = "policies/runs/sibling_override/sibling_override.rego"
+anchor = "\tnot input.sibling_override\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_an_absent_override_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SIBLING_OVERRIDE.NO_CLONE"
+engine = "sibling:override"
+guard = "ERR_SIBLING_OVERRIDE_NO_CLONE"
+path = "policies/runs/sibling_override/sibling_override.rego"
+anchor = "\tnot evidence.clone_exists\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_an_override_needs_an_existing_clone"
+
+[[safeguards]]
+id = "SIBLING_OVERRIDE.FOREIGN"
+engine = "sibling:override"
+guard = "ERR_SIBLING_OVERRIDE_FOREIGN"
+path = "policies/runs/sibling_override/sibling_override.rego"
+anchor = "\tnot evidence.origin_matches\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_checkout.py::test_an_override_is_never_written_into_another_sources_clone"

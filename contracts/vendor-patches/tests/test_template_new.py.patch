@@ -1,0 +1,87 @@
+--- a/tests/test_template_new.py
++++ b/tests/test_template_new.py
+@@ -21,8 +21,8 @@
+ from template_new import TemplateRequest, main, request
+ 
+ ENTRYPOINT = "data.runs.template.new.deny"
+-# COMPOSED, NOT WRITTEN: the PII gate reads any user-at-host literal as an email (D.57).
+-GITHUB_SSH = "git" + "@" + "github.com:"
++# THIS MACHINE REACHES GITHUB ONLY OVER HTTPS, answered by gh's credential helper (A.121).
++GITHUB_HTTPS = "https://github.com/"
+ SHA = "0123456789abcdef0123456789abcdef01234567"
+ REPO = Path(__file__).resolve().parent.parent
+ 
+@@ -51,7 +51,7 @@
+ 
+ def test_a_pinned_request_to_an_empty_destination_is_allowed(tmp_path: Path) -> None:
+     made = request(tmp_path / "new", SHA)
+-    assert made.transport.startswith(GITHUB_SSH), made.transport
++    assert made.transport.startswith(GITHUB_HTTPS), made.transport
+     assert _decide(made) == []
+ 
+ 
+@@ -74,17 +74,18 @@
+     assert not destination.exists()
+ 
+ 
+-def test_the_source_is_the_declared_repository_over_ssh(tmp_path: Path) -> None:
+-    """Every clone from this machine goes over SSH; HTTPS stopped at a prompt (D.57)."""
+-    declared = load(REPO).repository.removeprefix("https://github.com/")
+-    assert request(tmp_path / "new", SHA).transport == f"{GITHUB_SSH}{declared}.git"
++def test_the_source_is_the_declared_repository_over_https(tmp_path: Path) -> None:
++    """Every clone from this machine goes over HTTPS, through gh's credential helper (A.121)."""
++    declared = load(REPO).repository
++    assert request(tmp_path / "new", SHA).transport == f"{declared}.git"
+ 
+ 
+-def test_a_source_that_is_not_ssh_is_refused(tmp_path: Path) -> None:
++def test_a_source_that_is_not_https_is_refused(tmp_path: Path) -> None:
+     made = request(tmp_path / "new", SHA)
+-    https = made.model_copy(update={"transport": "https://github.com/example/template.git"})
+-    found = _decide(https)
+-    assert any("ERR_TEMPLATE_SOURCE_NOT_SSH" in denial for denial in found), found
++    # COMPOSED, NOT WRITTEN: the PII gate reads any user-at-host literal as an email (D.57).
++    ssh = made.model_copy(update={"transport": "git" + "@" + "github.com:example/template.git"})
++    found = _decide(ssh)
++    assert any("ERR_TEMPLATE_SOURCE_NOT_HTTPS" in denial for denial in found), found
+ 
+ 
+ def test_generation_runs_without_any_prompt(
+@@ -122,31 +123,24 @@
+     assert "publickey" in outcome["message"], outcome
+ 
+ 
+-def test_the_source_is_recorded_over_https_and_cloned_over_ssh(
++def test_the_source_is_recorded_and_cloned_over_https(
+     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+ ) -> None:
+-    """Copier records what it is given, so it is given HTTPS; git rewrites it to SSH (D.64).
++    """Copier records what it is given, and the clone uses that same HTTPS URL (A.121).
+ 
+-    An SSH source in .copier-answers.yml is a user-at-host string the PII gate refuses in
+-    every generated project. The rewrite comes from the environment, for this call only.
++    No user-at-host string reaches .copier-answers.yml, and no rewrite is set: this
++    machine reaches GitHub only over HTTPS, answered by gh's credential helper.
+     """
+     seen: dict[str, object] = {}
+ 
+     def record(src_path: str, *_: object, **__: object) -> None:
+         seen["src_path"] = src_path
+-        count = int(os.environ.get("GIT_CONFIG_COUNT", "0"))
+-        seen["rewrites"] = {
+-            os.environ[f"GIT_CONFIG_KEY_{i}"]: os.environ[f"GIT_CONFIG_VALUE_{i}"]
+-            for i in range(count)
+-        }
++        seen["count"] = os.environ.get("GIT_CONFIG_COUNT", "0")
+ 
+     monkeypatch.delenv("GIT_CONFIG_COUNT", raising=False)
+     monkeypatch.setattr(template_new, "run_copy", record)
+     assert main([str(tmp_path / "new"), SHA]) == 0
+     declared = load(REPO).repository
+-    owner_repo = declared.removeprefix("https://github.com/")
+     assert seen["src_path"] == f"{declared}.git", seen
+     assert "@" not in str(seen["src_path"]), seen
+-    ssh = f"{GITHUB_SSH}{owner_repo}.git"
+-    assert seen["rewrites"] == {f"url.{ssh}.insteadOf": f"{declared}.git"}, seen
+-    assert "GIT_CONFIG_COUNT" not in os.environ, "the rewrite leaked past the call"
++    assert seen["count"] == "0", seen

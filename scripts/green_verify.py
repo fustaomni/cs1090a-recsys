@@ -132,13 +132,19 @@ def _arguments(argv: list[str]) -> tuple[Scope, str | None, tuple[str, ...], tup
     return scope, explanation, tuple(required), tuple(targets)
 
 
+def pytest_argv(report: Path, targets: tuple[str, ...]) -> list[str]:
+    """A full run keeps addopts' level filter; a named selection lifts it with -m "" (A.141)."""
+    argv = [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider"]
+    argv += ["--junitxml", str(report)]
+    return [*argv, *targets, "-m", ""] if targets else argv
+
+
 def main() -> int:
     scope, explanation, required, targets = _arguments(sys.argv[1:])
     REPORTS.mkdir(parents=True, exist_ok=True)
     report = REPORTS / f"{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}-{scope}.xml"
     started = filesystem_now(REPORTS)
-    argv = [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider"]
-    ran = subprocess.run([*argv, "--junitxml", str(report), *targets], cwd=ROOT, check=False)
+    ran = subprocess.run(pytest_argv(report, targets), cwd=ROOT, check=False)
     result = judge(ran.returncode, report, started, scope, explanation, required)
     print(result.model_dump_json(indent=2))
     return 0 if result.is_green else 2

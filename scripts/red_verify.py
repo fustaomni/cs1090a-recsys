@@ -127,6 +127,12 @@ def judge_set(exit_code: int, report: Path, nodes: tuple[str, ...], started: flo
     return verdict("RED_BEHAVIOURAL", "; ".join(messages), "behavioural")
 
 
+def pytest_argv(report: Path, files: list[str]) -> list[str]:
+    """The run for named proofs: -m "" last, so a level addopts filters out still runs (A.141)."""
+    argv = [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider"]
+    return [*argv, "--junitxml", str(report), *files, "-m", ""]
+
+
 def main() -> int:
     match sys.argv[1:]:
         case [*nodes] if nodes and all("::" in node for node in nodes):
@@ -135,9 +141,7 @@ def main() -> int:
             report = REPORTS / f"{stamp}-{nodes[0].split('::')[-1]}.xml"
             started = filesystem_now(REPORTS)
             files = list(dict.fromkeys(node.split("::")[0] for node in nodes))
-            argv = [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider"]
-            argv += ["--junitxml", str(report), *files]
-            ran = subprocess.run(argv, cwd=ROOT, check=False)
+            ran = subprocess.run(pytest_argv(report, files), cwd=ROOT, check=False)
             result = judge_set(ran.returncode, report, tuple(nodes), started)
             print(result.model_dump_json(indent=2))
             return 0 if result.satisfies_red_verified else 2

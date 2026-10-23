@@ -59,6 +59,20 @@ deny contains denial if {
 }
 
 # METADATA
+# title: A deleted file exists
+# custom:
+#   code: ERR_SOURCE_APPLY_DELETE_MISSING
+deny contains denial if {
+	some operation in input.source_apply.operations
+	operation.op == "delete"
+	not operation.exists_before
+	denial := {
+		"code": rego.metadata.rule().custom.code,
+		"message": sprintf("%s: does not exist, so nothing can be deleted", [operation.path]),
+	}
+}
+
+# METADATA
 # title: Every anchor is found exactly as often as expected
 # custom:
 #   code: ERR_SOURCE_APPLY_ANCHOR_COUNT
