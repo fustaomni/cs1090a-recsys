@@ -2319,3 +2319,17 @@ done_when = [
   { kind = "proof", test = "tests/test_workflow_attestation.py::test_the_ci_gate_emits_an_artifact_attestation_inside_an_environment" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.204"
+title = "upstream:tip resolves a source's branch to its full commit by ls-remote, without cloning, so a read is pinned to a recorded resolution; a missing, ambiguous or unreachable ref and an option-shaped argument are each refused by name"
+thread = "A"
+depends_on = ["A.28"]
+because = { "A.28" = "reads another repository at a pinned commit, and nothing resolved a branch to that commit by a recorded task" }
+done_when = [
+  { kind = "proof", test = "tests/test_upstream_tip.py::test_a_branch_resolves_to_its_full_commit" },
+  { kind = "proof", test = "tests/test_upstream_tip.py::test_a_missing_branch_is_refused_by_name" },
+  { kind = "proof", test = "tests/test_upstream_tip.py::test_a_tag_or_longer_branch_is_not_taken_for_the_branch" },
+  { kind = "proof", test = "tests/test_upstream_tip.py::test_an_option_shaped_argument_is_refused" },
+  { kind = "proof", test = "tests/test_upstream_tip.py::test_an_unreachable_source_is_refused_without_a_prompt" },
+  { kind = "task", name = "check" },
+]
