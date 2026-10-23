@@ -2000,3 +2000,23 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_checkout.py::test_an_override_mise_will_not_trust_is_refused" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.191"
+title = "A worktree is brought current by merging origin/develop into it with a merge commit naming its plan step, a stopped merge is concluded by that commit, and a stopped rebase or merge is aborted by task, so lineage is never rewritten"
+thread = "A"
+depends_on = ["A.120", "A.122"]
+because = { "A.120" = "the conflicts reader that already recognises a merge in progress", "A.122" = "refresh's re-trust of a changed mise.toml, kept for a merge" }
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_lineage.py::test_a_refresh_merges_develop_and_never_rebases" },
+  { kind = "proof", test = "tests/test_worktree_lineage.py::test_the_merge_commit_names_its_plan_step" },
+  { kind = "proof", test = "tests/test_worktree_lineage.py::test_a_refresh_without_a_plan_step_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_lineage.py::test_a_concluded_merge_keeps_every_commit_of_the_branch" },
+  { kind = "proof", test = "tests/test_worktree_lineage.py::test_a_merge_with_a_marker_left_is_not_concluded" },
+  { kind = "proof", test = "tests/test_worktree_lineage.py::test_conclude_without_a_merge_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_lineage.py::test_a_stopped_merge_is_aborted_back_to_its_tip" },
+  { kind = "proof", test = "tests/test_worktree_lineage.py::test_a_stopped_rebase_is_aborted_back_to_its_tip" },
+  { kind = "proof", test = "tests/test_worktree_lineage.py::test_an_abort_with_nothing_in_progress_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_lineage.py::test_an_absent_abort_plan_is_refused_by_the_policy" },
+  { kind = "proof", test = "tests/test_worktree_lineage.py::test_an_absent_conclude_plan_is_refused_by_the_policy" },
+  { kind = "task", name = "check" },
+]
