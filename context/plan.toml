@@ -1565,6 +1565,7 @@ done_when = [
   { kind = "proof", test = "tests/test_run_noninteractive.py::test_a_task_that_prompts_fails_closed_with_a_code" },
   { kind = "proof", test = "tests/test_run_noninteractive.py::test_every_gui_and_askpass_prompt_vector_is_suppressed" },
   { kind = "proof", test = "tests/test_run_noninteractive.py::test_opening_dev_tty_fails_without_a_controlling_terminal" },
+  { kind = "proof", test = "tests/test_run_noninteractive.py::test_no_caller_export_is_needed_for_a_noninteractive_run" },
   { kind = "proof", test = "tests/test_run_supervision.py::test_a_task_past_its_deadline_is_killed_with_its_whole_process_tree" },
   { kind = "proof", test = "tests/test_run_supervision.py::test_a_silent_task_past_its_idle_deadline_is_stopped" },
   { kind = "proof", test = "tests/test_run_supervision.py::test_a_cancelled_run_leaves_no_descendant_running" },
@@ -1747,13 +1748,14 @@ done_when = [
 ]
 [[steps]]
 id = "A.164"
-title = "Every run record binds the task definition that ran, by the digest of its resolved definition and the commit it came from"
+title = "Every run record binds what it ran under: the task definition by the digest of its resolved definition and the commit it came from, and the digests of provenance.toml, the policy bundle and the dependency and tool locks"
 thread = "A"
 depends_on = ["A.153"]
 because = { "A.153" = "a step's recorded inputs include the definition of the task it ran" }
 done_when = [
   { kind = "proof", test = "tests/test_run_definition.py::test_a_run_records_its_task_definition_digest_and_commit" },
   { kind = "proof", test = "tests/test_run_definition.py::test_a_changed_definition_changes_the_recorded_digest" },
+  { kind = "proof", test = "tests/test_run_definition.py::test_a_run_records_the_provenance_policy_and_lock_digests_it_ran_under" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -1794,19 +1796,23 @@ done_when = [
   { kind = "proof", test = "tests/test_run_receipt.py::test_a_run_receipt_verifies_from_published_keys_alone" },
   { kind = "proof", test = "tests/test_run_receipt.py::test_a_receipt_names_its_schema_definition_and_trace" },
   { kind = "proof", test = "tests/test_run_receipt.py::test_a_tampered_receipt_fails_verification" },
+  { kind = "proof", test = "tests/test_run_receipt.py::test_a_valid_signature_on_a_claim_policy_rejects_fails_verification" },
+  { kind = "proof", test = "tests/test_run_receipt.py::test_a_verification_that_cannot_complete_is_unknown_never_pass" },
   { kind = "proof", test = "tests/test_run_receipt.py::test_records_are_queryable_by_run_task_and_verdict" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
 id = "A.168"
-title = "A controls register maps each control to its enforcing step, its evidence over the signed ledger and its test, and a windowed report shows each control operating over a period or names the gap"
+title = "A controls register maps each control to its enforcing step, its evidence over the signed ledger and its test, and names its owner, access restriction, evidence retention, monitoring and review cadence; a windowed report shows each control operating over a period or names the gap, and the register claims evidence production, never compliance"
 thread = "A"
 depends_on = ["A.155"]
 because = { "A.155" = "a control's claim is scoped before it is mapped to the evidence that it operated" }
 done_when = [
   { kind = "proof", test = "tests/test_controls_register.py::test_every_control_maps_to_an_enforcing_step_evidence_and_test" },
+  { kind = "proof", test = "tests/test_controls_register.py::test_every_control_names_its_owner_access_retention_monitoring_and_review_cadence" },
   { kind = "proof", test = "tests/test_controls_register.py::test_a_control_without_evidence_in_the_period_is_reported" },
   { kind = "proof", test = "tests/test_controls_register.py::test_the_period_report_is_built_only_from_signed_records" },
+  { kind = "proof", test = "tests/test_controls_register.py::test_the_register_claims_evidence_production_never_compliance" },
   { kind = "task", name = "check" },
 ]
 [[steps]]
@@ -2107,5 +2113,209 @@ done_when = [
   { kind = "proof", test = "tests/test_worktree_lineage.py::test_an_abort_with_nothing_in_progress_is_refused" },
   { kind = "proof", test = "tests/test_worktree_lineage.py::test_an_absent_abort_plan_is_refused_by_the_policy" },
   { kind = "proof", test = "tests/test_worktree_lineage.py::test_an_absent_conclude_plan_is_refused_by_the_policy" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.192"
+title = "git refuses every local lineage rewrite and every unpreserved deletion at its own hooks, pre-rebase and reference-transaction, standalone POSIX sh executables depending on git and the pinned OPA binary alone, at an install-baked path verified by SHA-256, installed by hooks:install outside lefthook; each ref write is decided by runs.lineage (A.200) and git proceeds only on an explicit allow, so a deny, an unknown, an undefined result, a missing or altered OPA binary or any error refuses; the typed lineage:guard is the reference both hooks conform to"
+thread = "A"
+depends_on = ["A.191", "A.71", "A.166", "A.200"]
+because = { "A.191" = "a branch is brought current by merge, so a rebase has no remaining use", "A.71" = "the guard emits the registered command-outcome/v1, never a second envelope model", "A.166" = "an ancestry git cannot read is unknown, which refuses and is never reported as a rewrite", "A.200" = "the hooks enforce the decision the lineage policy makes, and nothing else" }
+done_when = [
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_rebase_is_refused_before_it_starts" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_transaction_line_outside_the_contract_is_refused" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_each_hook_takes_exactly_its_documented_arguments" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_new_commit_a_merge_and_a_squash_are_kept" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_reuse_with_c_or_C_is_kept" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_an_amend_is_refused_by_ancestry_whatever_its_message_source" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_branch_update_that_orphans_its_old_tip_is_refused" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_fast_forward_and_a_merge_keep_the_old_tip_and_pass" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_forced_update_passed_as_all_zero_is_judged_against_the_current_tip" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_genuinely_new_branch_passes" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_symbolic_ref_update_is_not_lineage_and_passes" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_deletion_whose_tip_no_preserved_ref_reaches_is_refused" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_deletion_whose_tip_a_preserved_ref_reaches_passes" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_an_unreadable_tip_or_ancestry_is_unknown_and_refused" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_tag_is_never_moved" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_replace_ref_is_never_written" },
+  { kind = "proof", test = "tests/test_lineage_guard.py::test_a_remote_tracking_ref_is_left_to_its_upstream" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_the_installed_hooks_depend_on_git_and_the_pinned_opa_alone" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_a_hook_without_a_needed_tool_or_with_unexpected_input_refuses" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_a_missing_or_altered_opa_binary_refuses" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_the_hook_proceeds_only_on_an_explicit_allow" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_the_shell_hooks_and_the_typed_reference_decide_every_case_alike" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_lefthook_install_leaves_the_lineage_hooks_in_place" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_every_refusal_is_one_contract_line_on_stderr" },
+  { kind = "proof", test = "tests/acceptance/test_lineage_acceptance.py::test_every_rewrite_is_refused_through_the_installed_hooks_with_its_code_and_state_unchanged" },
+  { kind = "proof", test = "tests/acceptance/test_lineage_acceptance.py::test_every_allowed_operation_passes_through_the_installed_hooks" },
+  { kind = "proof", test = "tests/acceptance/test_lineage_acceptance.py::test_each_refusal_is_attributable_because_the_same_operation_succeeds_unguarded" },
+  { kind = "task", name = "lineage:guard" },
+  { kind = "task", name = "hooks:install" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.193"
+title = "The rewrite tools retire: worktree:skip, the rebase path of worktree:continue and commit --amend, with their policies, safeguards and codes retired and the plan recording why A.120, A.127 and A.132 change"
+thread = "A"
+depends_on = ["A.192"]
+because = { "A.192" = "once git refuses every rebase and amend, the tools that drive them are dead code" }
+done_when = [
+  { kind = "proof", test = "tests/test_lineage_retired.py::test_no_task_offers_a_rewrite" },
+  { kind = "proof", test = "tests/test_lineage_retired.py::test_commit_takes_no_amend" },
+  { kind = "proof", test = "tests/test_lineage_retired.py::test_every_retired_code_stays_registered_as_retired" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.194"
+title = "Force-push is refused server-side on every branch and tag by a ruleset that is active with an empty bypass list, and archive tags are never updated or deleted, applied by repo:configure and verified by check:ruleset; every lineage layer is a scoped claim stating exactly what it prevents, what bypasses it, and which layer detects that bypass"
+thread = "A"
+depends_on = ["A.105", "A.192", "A.155"]
+because = { "A.105" = "the ruleset kept as code and verified that this step widens", "A.192" = "the local hooks this layer stands behind, bypassable as they are", "A.155" = "a mechanism's claim names what it does not guarantee" }
+done_when = [
+  { kind = "proof", test = "tests/test_check_ruleset.py::test_force_push_is_refused_on_every_branch_and_tag" },
+  { kind = "proof", test = "tests/test_check_ruleset.py::test_archive_tags_are_never_updated_or_deleted" },
+  { kind = "proof", test = "tests/test_check_ruleset.py::test_the_lineage_ruleset_is_active_with_no_bypass_actor" },
+  { kind = "proof", test = "tests/test_lineage_claims.py::test_each_lineage_layer_states_what_it_guarantees_and_what_bypasses_it" },
+  { kind = "task", name = "repo:configure" },
+  { kind = "task", name = "check:ruleset" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.195"
+title = "Lineage threats are a reviewed register, each naming the layer that prevents it, the layer that detects it and its residual risk, and a signed checkpoint of every observed develop and main tip is verified as still an ancestor at every check, so a rewrite that reaches GitHub past a disabled ruleset, a bypass actor or an unhooked clone is detected naming the commit it lost"
+thread = "A"
+depends_on = ["A.192", "A.194", "A.87"]
+because = { "A.192" = "the local layer whose bypasses the register names", "A.194" = "the server layer an administrator can disable or bypass", "A.87" = "the ledger anchor whose signed-checkpoint pattern the lineage checkpoint follows" }
+done_when = [
+  { kind = "proof", test = "tests/test_lineage_threats.py::test_every_lineage_threat_names_its_prevention_detection_and_residual_risk" },
+  { kind = "proof", test = "tests/test_lineage_threats.py::test_no_threat_is_left_without_a_detecting_layer" },
+  { kind = "proof", test = "tests/test_lineage_threats.py::test_a_rewritten_copy_published_under_a_new_name_is_detected_by_patch_identity" },
+  { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_every_recorded_tip_is_still_an_ancestor" },
+  { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_a_rewritten_develop_is_detected_naming_the_lost_tip" },
+  { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_a_checkpoint_is_signed_and_a_forged_one_is_refused" },
+  { kind = "proof", test = "tests/test_lineage_checkpoint.py::test_an_unreadable_checkpoint_is_unknown_and_fails_the_gate" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.196"
+title = "worktree:add takes only a lowercase kebab-case ASCII slug within a length bound whose feature branch passes git check-ref-format, and refuses a branch that exists locally or on origin, a path or branch a registered worktree holds, an existing path, and any path not beside the repository"
+thread = "A"
+depends_on = ["A.93"]
+because = { "A.93" = "worktree:add cuts every worktree, and its slug check accepts more than its message promises" }
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_slug.py::test_only_a_lowercase_kebab_ascii_slug_is_taken" },
+  { kind = "proof", test = "tests/test_worktree_slug.py::test_a_leading_dash_uppercase_non_ascii_or_overlong_slug_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_slug.py::test_the_branch_name_passes_git_check_ref_format" },
+  { kind = "proof", test = "tests/test_worktree_slug.py::test_a_branch_that_exists_locally_or_on_origin_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_slug.py::test_a_path_or_branch_a_registered_worktree_holds_is_refused" },
+  { kind = "proof", test = "tests/test_worktree_slug.py::test_an_existing_path_or_one_not_beside_the_repository_is_refused" },
+  { kind = "task", name = "worktree:add" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.197"
+title = "Credentials are controlled apart from prompt suppression: every git the gateway starts uses an explicit helper chain, reset then gh auth git-credential alone, with credential.interactive never; credential:audit observes the effective chain and the token's scopes, branch:push and pr refuse a chain or scope outside the declared allowlist, and authorization stays with the server rulesets"
+thread = "A"
+depends_on = ["A.150", "A.105", "A.155"]
+because = { "A.150" = "the gateway builds every child's environment, where the helper chain is pinned", "A.105" = "authorization is enforced server-side by rulesets kept as code", "A.155" = "prompt suppression and credential control are scoped claims that name their limits" }
+done_when = [
+  { kind = "proof", test = "tests/test_credentials.py::test_every_gateway_git_resets_the_helper_chain_to_gh_alone" },
+  { kind = "proof", test = "tests/test_credentials.py::test_credential_interactive_is_never_for_every_gateway_git" },
+  { kind = "proof", test = "tests/test_credentials.py::test_the_audit_reports_the_effective_helper_chain_with_its_origins" },
+  { kind = "proof", test = "tests/test_credentials.py::test_a_push_with_an_undeclared_helper_or_scope_is_refused" },
+  { kind = "proof", test = "tests/test_credentials.py::test_an_unreadable_scope_set_is_unknown_and_refuses_a_push" },
+  { kind = "proof", test = "tests/test_lineage_claims.py::test_prompt_suppression_is_not_claimed_as_a_security_boundary" },
+  { kind = "task", name = "credential:audit" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.198"
+title = "Hooks are evidence only once observed: lefthook fails closed with assert_lefthook_installed, and hooks:verify observes the effective hooks directory, core.hooksPath with its origin in every config scope, and each required hook present, executable and current, in check, after setup, worktree:add and sync, and in status"
+thread = "A"
+depends_on = ["A.93", "A.155"]
+because = { "A.93" = "setup installs the hooks every worktree shares", "A.155" = "a hook's claim is scoped to clones where it is observed installed" }
+done_when = [
+  { kind = "proof", test = "tests/test_hooks_verify.py::test_a_hook_run_without_lefthook_on_path_fails_closed" },
+  { kind = "proof", test = "tests/test_hooks_verify.py::test_the_effective_hooks_directory_is_observed" },
+  { kind = "proof", test = "tests/test_hooks_verify.py::test_a_core_hooks_path_in_any_scope_is_refused_with_its_origin" },
+  { kind = "proof", test = "tests/test_hooks_verify.py::test_a_missing_non_executable_or_stale_hook_is_refused" },
+  { kind = "proof", test = "tests/test_hooks_verify.py::test_setup_worktree_add_and_sync_verify_after_installing" },
+  { kind = "proof", test = "tests/test_hooks_verify.py::test_status_reports_the_hook_verdict" },
+  { kind = "task", name = "hooks:verify" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.199"
+title = "Every git-behaviour proof runs in one hermetic git fixture, global and system config off, an empty template directory, no env-injected config or repository-locating variable, fixed identity and stdin closed, and every refusal proof is differential: the operation succeeds unguarded, fails guarded with its refusal read as a contract, and leaves refs, HEAD and the index unchanged"
+thread = "A"
+depends_on = ["A.173", "A.192"]
+because = { "A.173" = "a proof declares its layer, and acceptance through the installed path is the layer this step requires", "A.192" = "the lineage proofs are the first that must show why git refused" }
+done_when = [
+  { kind = "proof", test = "tests/test_git_fixture.py::test_a_hostile_global_or_system_config_is_hidden" },
+  { kind = "proof", test = "tests/test_git_fixture.py::test_env_injected_config_and_repository_locating_variables_are_removed" },
+  { kind = "proof", test = "tests/test_git_fixture.py::test_an_exported_git_dir_cannot_redirect_a_proof_onto_the_real_repository" },
+  { kind = "proof", test = "tests/test_git_fixture.py::test_init_copies_no_template_hook" },
+  { kind = "proof", test = "tests/test_git_fixture.py::test_a_refusal_proof_fails_when_the_unguarded_operation_also_fails" },
+  { kind = "proof", test = "tests/test_git_fixture.py::test_every_git_spawning_proof_uses_the_fixture" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.200"
+title = "A lineage decision passes the governance spine: each ref update is classified into a closed set and recorded as lineage-evidence/v1 observations, runs.lineage judges it per rule as pass, fail or unknown, the decision allows only on an explicit allow with review routed as a named deny, and every decision is appended to a hash-chained audit file the gateway ingests into the signed ledger"
+thread = "A"
+depends_on = ["A.166", "A.170", "A.152"]
+because = { "A.166" = "an ancestry git could not read is unknown, never pass", "A.170" = "the decision is one action from the closed set, deny overriding, unknown never allowing", "A.152" = "an ingested lineage decision is attested as every recorded decision is" }
+done_when = [
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_every_ref_update_falls_in_exactly_one_closed_class" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_the_evidence_holds_observations_and_no_conclusion" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_lineage_contracts_are_strict_and_refuse_a_coerced_value" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_every_reason_code_is_registered_never_a_free_string" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_each_rule_records_its_own_verdict" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_an_unknown_or_undefined_result_never_allows" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_a_refusal_needing_review_names_its_reviewed_route" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_an_ancestry_two_probes_disagree_on_is_unknown" },
+  { kind = "proof", test = "tests/test_lineage_audit.py::test_every_decision_is_appended_to_a_hash_chained_audit_file" },
+  { kind = "proof", test = "tests/test_lineage_audit.py::test_a_decision_record_names_the_policy_digest_and_how_it_was_reached" },
+  { kind = "proof", test = "tests/test_lineage_audit.py::test_the_gateway_ingests_lineage_decisions_into_the_signed_ledger" },
+  { kind = "proof", test = "tests/test_lineage_audit.py::test_ingestion_rechecks_each_recorded_ancestry_where_the_objects_exist" },
+  { kind = "proof", test = "tests/test_lineage_audit.py::test_a_broken_chain_or_an_uningested_record_is_reported" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.201"
+title = "A declared sequence is journaled and resumable through closed step states, pending, authorized, running, observed, evaluated, then succeeded, refused, failed or stopped, each transition persisted before the next and an illegal one refused; an attempt marker precedes every write, each unfinished write is reconciled on resume from the record it leaves, and an outcome that cannot be resolved is stopped for a person; no write is retried blind, and nothing is compensated by rewriting"
+thread = "A"
+depends_on = ["A.153", "A.159", "A.169", "A.170"]
+because = { "A.153" = "the declared sequences this journal makes durable", "A.159" = "a commit's signed Run-Id trailer is the record that proves whether it was made", "A.169" = "a step's effect class decides whether it needs an attempt marker", "A.170" = "an unresolved outcome ends in stop, never in a retried write" }
+done_when = [
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_every_step_moves_through_the_closed_states_and_an_illegal_transition_is_refused" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_each_transition_is_persisted_before_the_next" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_an_unknowable_outcome_is_stopped_never_failed_and_retried" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_an_attempt_marker_is_persisted_before_every_write" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_a_resumed_sequence_skips_a_write_its_record_proves_done" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_a_commit_push_pull_request_and_merge_are_each_reconciled_by_observation" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_an_unresolvable_outcome_stops_for_a_person" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_no_write_is_ever_retried_without_reconciliation" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_reusing_a_sequence_id_with_different_inputs_is_refused" },
+  { kind = "proof", test = "tests/test_sequence_journal.py::test_a_sequence_killed_at_every_step_boundary_resumes_to_the_same_end_state" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.202"
+title = "A delivery is a typed agent-workflow/v1 graph, validated before it runs, acyclic, each step a registered capability declaring input and output schemas, effect class, authorization requirement and idempotency policy; the gateway runs it through the journaled step states, and a completed workflow is an in-toto statement signed by the ledger key binding its commit, artifact, policy, test-verdict and decision digests, its identity and its authorizing key, verified by signature and by policy over the claim"
+thread = "A"
+depends_on = ["A.153", "A.162", "A.163", "A.169", "A.201", "A.152"]
+because = { "A.153" = "declared sequences, which this generalises from a line to a graph", "A.162" = "each capability's input and output schemas validate a step before it runs", "A.163" = "each capability's authorization requirement names the key a step needs", "A.169" = "each capability's effect class and idempotency policy decide how a step is journaled", "A.201" = "the journal and reconciliation that let a workflow resume without repeating a write", "A.152" = "decision attestations, whose digests a workflow statement binds" }
+done_when = [
+  { kind = "proof", test = "tests/test_workflows.py::test_a_workflow_is_validated_before_any_step_runs" },
+  { kind = "proof", test = "tests/test_workflows.py::test_a_cycle_an_unregistered_capability_or_an_invalid_input_is_refused" },
+  { kind = "proof", test = "tests/test_workflows.py::test_every_capability_declares_its_five_facets" },
+  { kind = "proof", test = "tests/test_workflows.py::test_a_workflow_identity_is_its_id_plan_step_and_spec_digest" },
+  { kind = "proof", test = "tests/test_workflows.py::test_a_resumed_workflow_never_reruns_a_succeeded_write" },
+  { kind = "proof", test = "tests/test_workflow_attestation.py::test_a_completed_workflow_is_a_signed_in_toto_statement" },
+  { kind = "proof", test = "tests/test_workflow_attestation.py::test_the_statement_binds_commit_artifacts_policy_tests_decisions_identity_and_key" },
+  { kind = "proof", test = "tests/test_workflow_attestation.py::test_a_valid_signature_over_the_wrong_source_fails_verification" },
+  { kind = "proof", test = "tests/test_workflow_attestation.py::test_a_verification_that_cannot_complete_is_unknown" },
+  { kind = "proof", test = "tests/test_workflow_attestation.py::test_the_ci_gate_emits_an_artifact_attestation_inside_an_environment" },
   { kind = "task", name = "check" },
 ]
