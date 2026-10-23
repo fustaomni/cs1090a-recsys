@@ -2112,10 +2112,10 @@ done_when = [
 ]
 [[steps]]
 id = "A.192"
-title = "git refuses every local lineage rewrite and every unpreserved deletion at its own hooks, pre-rebase and reference-transaction, which are standalone POSIX sh executables depending on git alone, installed by hooks:install outside lefthook and failing closed on any missing tool or unexpected input; each ref write is judged against the ref's current tip, refusing an orphaning update (every amend, a forced reset, branch -f, update-ref), an unpreserved deletion, a moved tag and any refs/replace write; a symbolic-ref update is not lineage; the typed lineage:guard is the reference both hooks conform to"
+title = "git refuses every local lineage rewrite and every unpreserved deletion at its own hooks, pre-rebase and reference-transaction, standalone POSIX sh executables depending on git and the pinned OPA binary alone, at an install-baked path verified by SHA-256, installed by hooks:install outside lefthook; each ref write is decided by runs.lineage (A.200) and git proceeds only on an explicit allow, so a deny, an unknown, an undefined result, a missing or altered OPA binary or any error refuses; the typed lineage:guard is the reference both hooks conform to"
 thread = "A"
-depends_on = ["A.191", "A.71", "A.166"]
-because = { "A.191" = "a branch is brought current by merge, so a rebase has no remaining use", "A.71" = "the guard emits the registered command-outcome/v1, never a second envelope model", "A.166" = "an ancestry git cannot read is unknown, which refuses and is never reported as a rewrite" }
+depends_on = ["A.191", "A.71", "A.166", "A.200"]
+because = { "A.191" = "a branch is brought current by merge, so a rebase has no remaining use", "A.71" = "the guard emits the registered command-outcome/v1, never a second envelope model", "A.166" = "an ancestry git cannot read is unknown, which refuses and is never reported as a rewrite", "A.200" = "the hooks enforce the decision the lineage policy makes, and nothing else" }
 done_when = [
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_rebase_is_refused_before_it_starts" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_transaction_line_outside_the_contract_is_refused" },
@@ -2133,8 +2133,10 @@ done_when = [
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_tag_is_never_moved" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_replace_ref_is_never_written" },
   { kind = "proof", test = "tests/test_lineage_guard.py::test_a_remote_tracking_ref_is_left_to_its_upstream" },
-  { kind = "proof", test = "tests/test_lineage_hooks.py::test_the_installed_hooks_depend_on_git_alone" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_the_installed_hooks_depend_on_git_and_the_pinned_opa_alone" },
   { kind = "proof", test = "tests/test_lineage_hooks.py::test_a_hook_without_a_needed_tool_or_with_unexpected_input_refuses" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_a_missing_or_altered_opa_binary_refuses" },
+  { kind = "proof", test = "tests/test_lineage_hooks.py::test_the_hook_proceeds_only_on_an_explicit_allow" },
   { kind = "proof", test = "tests/test_lineage_hooks.py::test_the_shell_hooks_and_the_typed_reference_decide_every_case_alike" },
   { kind = "proof", test = "tests/test_lineage_hooks.py::test_lefthook_install_leaves_the_lineage_hooks_in_place" },
   { kind = "proof", test = "tests/test_lineage_hooks.py::test_every_refusal_is_one_contract_line_on_stderr" },
@@ -2249,5 +2251,23 @@ done_when = [
   { kind = "proof", test = "tests/test_git_fixture.py::test_init_copies_no_template_hook" },
   { kind = "proof", test = "tests/test_git_fixture.py::test_a_refusal_proof_fails_when_the_unguarded_operation_also_fails" },
   { kind = "proof", test = "tests/test_git_fixture.py::test_every_git_spawning_proof_uses_the_fixture" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.200"
+title = "A lineage decision passes the governance spine: each ref update is classified into a closed set and recorded as lineage-evidence/v1 observations, runs.lineage judges it per rule as pass, fail or unknown, the decision allows only on an explicit allow with review routed as a named deny, and every decision is appended to a hash-chained audit file the gateway ingests into the signed ledger"
+thread = "A"
+depends_on = ["A.166", "A.170", "A.152"]
+because = { "A.166" = "an ancestry git could not read is unknown, never pass", "A.170" = "the decision is one action from the closed set, deny overriding, unknown never allowing", "A.152" = "an ingested lineage decision is attested as every recorded decision is" }
+done_when = [
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_every_ref_update_falls_in_exactly_one_closed_class" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_the_evidence_holds_observations_and_no_conclusion" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_each_rule_records_its_own_verdict" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_an_unknown_or_undefined_result_never_allows" },
+  { kind = "proof", test = "tests/test_lineage_policy.py::test_a_refusal_needing_review_names_its_reviewed_route" },
+  { kind = "proof", test = "tests/test_lineage_audit.py::test_every_decision_is_appended_to_a_hash_chained_audit_file" },
+  { kind = "proof", test = "tests/test_lineage_audit.py::test_a_decision_record_names_the_policy_digest_and_how_it_was_reached" },
+  { kind = "proof", test = "tests/test_lineage_audit.py::test_the_gateway_ingests_lineage_decisions_into_the_signed_ledger" },
+  { kind = "proof", test = "tests/test_lineage_audit.py::test_a_broken_chain_or_an_uningested_record_is_reported" },
   { kind = "task", name = "check" },
 ]
