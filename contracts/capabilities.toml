@@ -256,7 +256,7 @@ implementation = "mise.toml"
 emits = "text"
 
 [[capabilities]]
-task = "site:config-migrate"
+task = "site:config-pull"
 version = "1.0.0"
 implementation = "mise.toml"
 emits = "text"
