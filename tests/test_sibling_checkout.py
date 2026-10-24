@@ -284,6 +284,21 @@ def test_a_stale_toolchain_is_not_trusted() -> None:
     _refused_only_when_broken("toolchain_current", "ERR_SIBLING_TOOLCHAIN_STALE")
 
 
+def test_the_stale_toolchain_refusal_names_sibling_pin() -> None:
+    """A.203: the refusal says how to regenerate the pins, so nobody retypes them."""
+    subject = _subject()
+    evidence = subject.SiblingTrust(
+        name="demo",
+        head_on_develop=True,
+        config_unmodified=True,
+        override_matches=True,
+        toolchain_current=False,
+    )
+    found = spine.evaluate(evidence, "sibling_trust", subject.POLICY, subject.ENTRYPOINT)
+    text = spine.reasons(found)
+    assert "sibling:pin demo" in text, text
+
+
 def test_the_override_is_rewritten_on_a_clone_mid_feature(tmp_path: Path) -> None:
     """A.189: the declared FAS mode lands; the branch and the uncommitted work stay as they are."""
     subject = _subject()
