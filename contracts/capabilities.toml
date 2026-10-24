@@ -592,6 +592,12 @@ implementation = "scripts/sibling_checkout.py"
 emits = "command-outcome/v1"
 
 [[capabilities]]
+task = "sibling:pin"
+version = "1.0.0"
+implementation = "scripts/sibling_pins.py"
+emits = "text"
+
+[[capabilities]]
 task = "sibling:override"
 version = "1.0.0"
 implementation = "scripts/sibling_checkout.py"

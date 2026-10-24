@@ -867,3 +867,7 @@ run = 'uv run --no-sync python scripts/sibling_checkout.py "${usage_name?}"'
 description = "Rewrite a sibling clone's FAS mode to the declared one, on whatever branch it is"
 usage = 'arg "<name>" help="A sibling contracts/siblings.toml declares"'
 run = 'uv run --no-sync python scripts/sibling_checkout.py --override "${usage_name?}"'
+
+[tasks."sibling:pin"]
+description = "Generate a sibling's FAS pins from its own flake.lock: plan them with --out, or name stale ones with --check"
+run = "uv run --no-sync python scripts/sibling_pins.py"
