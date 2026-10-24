@@ -2412,3 +2412,28 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_refresh.py::test_a_named_ref_is_merged_and_one_origin_lacks_is_refused" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.210"
+title = "sibling:conclude finishes a stopped sibling merge: the clone's own plan-file resolver runs first, the merge is refused while any path stays unmerged or any conflict marker remains, its mise.toml is trusted only when byte-identical to a reviewed commit, and the merge commit names the plan step"
+thread = "A"
+depends_on = ["A.209"]
+because = { "A.209" = "the merge that stops on conflicts and leaves them for a governed conclusion" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_conclude.py::test_plan_files_are_resolved_by_the_clones_resolver_then_committed" },
+  { kind = "proof", test = "tests/test_sibling_conclude.py::test_an_unmerged_path_left_is_refused_and_nothing_committed" },
+  { kind = "proof", test = "tests/test_sibling_conclude.py::test_a_conflict_marker_left_is_refused_and_nothing_committed" },
+  { kind = "proof", test = "tests/test_sibling_conclude.py::test_no_merge_in_progress_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.211"
+title = "sibling:trust shows a sibling clone's edited mise.toml against its commit and trusts it only at the digest its reviewer names, recording the decision; any other content is refused, and an unmodified config needs no review"
+thread = "A"
+depends_on = ["A.208"]
+because = { "A.208" = "trust of a sibling's own mise.toml, which holds only for content a commit reviewed" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_trust.py::test_the_named_digest_is_trusted_after_the_change_is_shown" },
+  { kind = "proof", test = "tests/test_sibling_trust.py::test_a_different_digest_is_refused_and_nothing_trusted" },
+  { kind = "proof", test = "tests/test_sibling_trust.py::test_an_unmodified_config_is_refused_as_needing_no_review" },
+  { kind = "task", name = "check" },
+]
