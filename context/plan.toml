@@ -2387,3 +2387,15 @@ done_when = [
   { kind = "proof", test = "tests/test_worktree_refresh_trust.py::test_a_merge_that_leaves_mise_toml_alone_commits_without_a_trust" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.208"
+title = "sibling:override trusts the clone's own mise.toml too, once judged unmodified at the commit the clone is at, so a sibling on a feature branch runs its own tasks"
+thread = "A"
+depends_on = ["A.190"]
+because = { "A.190" = "the override trust, which trusts only the mise.local.toml it writes" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_override_config.py::test_an_unmodified_config_is_trusted_with_the_override" },
+  { kind = "proof", test = "tests/test_sibling_override_config.py::test_a_modified_config_is_refused_and_not_trusted" },
+  { kind = "proof", test = "tests/test_sibling_override_config.py::test_a_config_mise_will_not_trust_is_refused" },
+  { kind = "task", name = "check" },
+]
