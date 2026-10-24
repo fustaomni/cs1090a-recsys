@@ -314,3 +314,13 @@ reason = "this project public site and its labs (A.95, A.98, A.99)"
 id = "task:site:test"
 class = "project"
 reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "script:scripts/sibling_pins.py"
+class = "generic"
+reason = "a sibling's FAS pins are generated from its own flake.lock and checked, never retyped (A.203)"
+
+[[capabilities]]
+id = "task:sibling:pin"
+class = "generic"
+reason = "a sibling's FAS pins are generated from its own flake.lock and checked, never retyped (A.203)"
