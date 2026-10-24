@@ -29,4 +29,5 @@ read_only = [
     "status",
     "test",
     "types",
+    "upstream:tip",
 ]
