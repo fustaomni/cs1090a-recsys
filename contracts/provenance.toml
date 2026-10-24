@@ -539,9 +539,9 @@ sha256 = "fa7e99480e9c10832ce0c93b9a74fd82d741846bf1c94a8ce2a4544e6e5e005d"
 
 [[adapted]]
 path = "scripts/worktree.py"
-reason = "A.191: refresh merges origin/develop with a merge commit naming its plan step, never a rebase, so a published branch keeps every commit"
+reason = "A.191: refresh merges origin/develop with a merge commit naming its plan step, never a rebase, so a published branch keeps every commit; A.207: the merge is staged without committing, a changed mise.toml is gated and trusted, and only then is the merge committed, so its hooks run against a trusted config"
 patch = "contracts/vendor-patches/scripts/worktree.py.patch"
-sha256 = "7f89494142e995d7563fb8e1e6d47d7167b12cdfcad441f60cf41bd2380f6b39"
+sha256 = "e490ff5dd94f03f0e2a55c58e1783c320ac8567b32765c74325a2f10415e93a5"
 
 [[files]]
 path = "policies/machine/setup/setup_env.rego"

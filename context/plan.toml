@@ -2375,3 +2375,15 @@ done_when = [
   { kind = "proof", test = "tests/test_centralization.py::test_a_project_specific_capability_needs_its_reason" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.207"
+title = "worktree:refresh merges without committing, gates and trusts a merged mise.toml that changed, and only then commits the merge, so the merge commit's own hooks run against a trusted config; a refused config is never committed"
+thread = "A"
+depends_on = ["A.191"]
+because = { "A.191" = "the merge-based refresh, which made the merge commit before it re-trusted a changed mise.toml" }
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_refresh_trust.py::test_a_merge_that_changes_mise_toml_is_trusted_before_it_is_committed" },
+  { kind = "proof", test = "tests/test_worktree_refresh_trust.py::test_a_merged_mise_toml_the_founding_policy_refuses_is_not_committed" },
+  { kind = "proof", test = "tests/test_worktree_refresh_trust.py::test_a_merge_that_leaves_mise_toml_alone_commits_without_a_trust" },
+  { kind = "task", name = "check" },
+]

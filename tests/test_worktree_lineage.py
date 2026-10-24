@@ -114,7 +114,9 @@ def test_the_merge_commit_names_its_plan_step(
 ) -> None:
     seen = _refresh(monkeypatch, tmp_path, "A.95")
     merge = next(args for args in seen if args[0] == "merge")
-    message = merge[merge.index("-m") + 1]
+    assert "--no-commit" in merge, merge
+    commit = next(args for args in seen if args[0] == "commit")
+    message = commit[commit.index("-m") + 1]
     assert message.endswith("Plan-Step: A.95"), message
 
 
