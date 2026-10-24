@@ -65,6 +65,6 @@ deny contains denial if {
 	not evidence.toolchain_current
 	denial := {
 		"code": rego.metadata.rule().custom.code,
-		"message": sprintf("%s's flake.lock has moved past the nixpkgs its pins were read at", [evidence.name]),
+		"message": sprintf("%s's flake.lock moved past its pins' nixpkgs; run sibling:pin %s", [evidence.name, evidence.name]),
 	}
 }
