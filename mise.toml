@@ -876,6 +876,10 @@ run = "uv run --no-sync python scripts/sibling_checkout.py --refresh"
 description = "Conclude a sibling merge that stopped on conflicts: the clone resolver first, refused while anything stays unmerged or marked, then a commit naming the step"
 run = "uv run --no-sync python scripts/sibling_checkout.py --conclude"
 
+[tasks."sibling:conflicts"]
+description = "Read a sibling clone's stopped merge as data: each conflicted file with both sides of every block"
+run = "uv run --no-sync python scripts/sibling_checkout.py --conflicts"
+
 [tasks."sibling:pin"]
 description = "Generate a sibling's FAS pins from its own flake.lock: plan them with --out, or name stale ones with --check"
 run = "uv run --no-sync python scripts/sibling_pins.py"
