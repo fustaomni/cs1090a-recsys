@@ -1,0 +1,316 @@
+# contracts/centralization.toml
+# centralization/v1 (A.205): every task and script this repository has that cscie103 lacks at
+# its resolved develop tip, classified. generic: a family capability, centralized into cscie103
+# so siblings and generated projects port it from there (A.206). project: this repository's own,
+# or retiring here, with its reason. centralization:inventory refuses an unclassified one.
+contract = "centralization/v1"
+
+[[capabilities]]
+id = "script:scripts/branch_push.py"
+class = "generic"
+reason = "a feature branch reaches GitHub only through branch:push, never a protected ref (A.91)"
+
+[[capabilities]]
+id = "task:branch:push"
+class = "generic"
+reason = "a feature branch reaches GitHub only through branch:push, never a protected ref (A.91)"
+
+[[capabilities]]
+id = "script:scripts/capabilities.py"
+class = "generic"
+reason = "every task is a discoverable, versioned capability contract joined with its effect (A.44)"
+
+[[capabilities]]
+id = "task:capabilities:list"
+class = "generic"
+reason = "every task is a discoverable, versioned capability contract joined with its effect (A.44)"
+
+[[capabilities]]
+id = "script:scripts/centralization.py"
+class = "generic"
+reason = "a capability born in a sibling is listed and classified until centralized (A.205)"
+
+[[capabilities]]
+id = "task:centralization:inventory"
+class = "generic"
+reason = "a capability born in a sibling is listed and classified until centralized (A.205)"
+
+[[capabilities]]
+id = "script:scripts/claims_audit.py"
+class = "generic"
+reason = "claims are credited only with contract, task, proof and run evidence (A.36)"
+
+[[capabilities]]
+id = "task:claims:audit"
+class = "generic"
+reason = "claims are credited only with contract, task, proof and run evidence (A.36)"
+
+[[capabilities]]
+id = "script:scripts/contract_registry.py"
+class = "generic"
+reason = "one contract per concept: a second model for a registered contract is refused (A.71)"
+
+[[capabilities]]
+id = "script:scripts/expectations.py"
+class = "generic"
+reason = "every declared expectation has its runtime record type and producer (A.65)"
+
+[[capabilities]]
+id = "script:scripts/green_verify.py"
+class = "generic"
+reason = "GREEN is a verdict from the runner report with its scope (A.32)"
+
+[[capabilities]]
+id = "task:test:green"
+class = "generic"
+reason = "GREEN is a verdict from the runner report with its scope (A.32)"
+
+[[capabilities]]
+id = "script:scripts/red_verify.py"
+class = "generic"
+reason = "RED is a behavioural verdict over a set of named proofs from the JUnit report (A.31, A.83)"
+
+[[capabilities]]
+id = "task:test:red"
+class = "generic"
+reason = "RED is a behavioural verdict over a set of named proofs from the JUnit report (A.31, A.83)"
+
+[[capabilities]]
+id = "script:scripts/junit_report.py"
+class = "generic"
+reason = "the JUnit reader both verdicts judge from (A.31, A.32)"
+
+[[capabilities]]
+id = "script:scripts/levels.py"
+class = "generic"
+reason = "every test declares its level by directory; an unclassified one is refused (A.39)"
+
+[[capabilities]]
+id = "script:scripts/ledger_anchor.py"
+class = "generic"
+reason = "cutting the run ledger newest records is detected by a signed checkpoint (A.87)"
+
+[[capabilities]]
+id = "task:ledger:anchor"
+class = "generic"
+reason = "cutting the run ledger newest records is detected by a signed checkpoint (A.87)"
+
+[[capabilities]]
+id = "script:scripts/machine_trust.py"
+class = "generic"
+reason = "the founding gate and the re-trust of a named checkout are one machine task (A.122)"
+
+[[capabilities]]
+id = "task:machine:trust"
+class = "generic"
+reason = "the founding gate and the re-trust of a named checkout are one machine task (A.122)"
+
+[[capabilities]]
+id = "script:scripts/policy_admission.py"
+class = "generic"
+reason = "a policy set is admitted only by its manifest of files, digests and roots (A.30)"
+
+[[capabilities]]
+id = "task:policies:admit"
+class = "generic"
+reason = "a policy set is admitted only by its manifest of files, digests and roots (A.30)"
+
+[[capabilities]]
+id = "script:scripts/provenance_adapt.py"
+class = "generic"
+reason = "a change to a ported file is planned as its recorded, reversible patch (A.85)"
+
+[[capabilities]]
+id = "task:provenance:adapt"
+class = "generic"
+reason = "a change to a ported file is planned as its recorded, reversible patch (A.85)"
+
+[[capabilities]]
+id = "script:scripts/safeguards.py"
+class = "generic"
+reason = "engine safeguards are listed as data and each proven by a killing proof (A.52)"
+
+[[capabilities]]
+id = "task:safeguards:prove"
+class = "generic"
+reason = "engine safeguards are listed as data and each proven by a killing proof (A.52)"
+
+[[capabilities]]
+id = "script:scripts/sibling_checkout.py"
+class = "generic"
+reason = "a declared sibling is cloned, given its FAS mode, trusted and set up (A.185 to A.190)"
+
+[[capabilities]]
+id = "task:sibling:checkout"
+class = "generic"
+reason = "a declared sibling is cloned, given its FAS mode, trusted and set up (A.185 to A.190)"
+
+[[capabilities]]
+id = "task:sibling:override"
+class = "generic"
+reason = "the declared FAS mode is written into an existing clone and trusted by path (A.189, A.190)"
+
+[[capabilities]]
+id = "script:scripts/source_port.py"
+class = "generic"
+reason = "spec building: an upstream file becomes a measured source:apply spec (A.29)"
+
+[[capabilities]]
+id = "task:source:port"
+class = "generic"
+reason = "spec building: an upstream file becomes a measured source:apply spec (A.29)"
+
+[[capabilities]]
+id = "script:scripts/template_update.py"
+class = "generic"
+reason = "a generated project is brought to a later commit of its template, pinned (A.134)"
+
+[[capabilities]]
+id = "task:template:update"
+class = "generic"
+reason = "a generated project is brought to a later commit of its template, pinned (A.134)"
+
+[[capabilities]]
+id = "script:scripts/upstream.py"
+class = "generic"
+reason = "another repository is read at a pinned commit, its tree listed and its tip resolved (A.28, A.113, A.182, A.184, A.204)"
+
+[[capabilities]]
+id = "task:upstream:checkout"
+class = "generic"
+reason = "another repository is read at a pinned commit, blobless, named by its source (A.28, A.113, A.184)"
+
+[[capabilities]]
+id = "task:upstream:tip"
+class = "generic"
+reason = "a source branch is resolved to its full commit by ls-remote, without cloning (A.204)"
+
+[[capabilities]]
+id = "script:scripts/upstream_copies.py"
+class = "generic"
+reason = "untracked copies of an upstream are removed only where they match its pinned tree (A.114)"
+
+[[capabilities]]
+id = "task:upstream:copies"
+class = "generic"
+reason = "untracked copies of an upstream are removed only where they match its pinned tree (A.114)"
+
+[[capabilities]]
+id = "task:check:ci"
+class = "generic"
+reason = "the gate CI runs, without claims about the developer machine (A.104)"
+
+[[capabilities]]
+id = "task:start:switch"
+class = "generic"
+reason = "the switch to an existing branch is printed for this shell, refused when unsafe (A.140)"
+
+[[capabilities]]
+id = "task:tools:install"
+class = "generic"
+reason = "tools install only through the task from the lock; FAS clones run tools through mise (A.26, A.103)"
+
+[[capabilities]]
+id = "task:tools:lock"
+class = "generic"
+reason = "every tool pin is locked by a recorded task; FAS clones run tools through mise (A.26)"
+
+[[capabilities]]
+id = "task:worktree:abort"
+class = "generic"
+reason = "a stopped rebase or merge is aborted by task under its own policy (A.191)"
+
+[[capabilities]]
+id = "task:worktree:conclude"
+class = "generic"
+reason = "a merge is concluded by its merge commit, so lineage is never rewritten (A.191)"
+
+[[capabilities]]
+id = "script:scripts/rebase_skip.py"
+class = "project"
+reason = "worktree:skip rewrites lineage and retires here under A.193, so it is not centralized"
+
+[[capabilities]]
+id = "task:worktree:skip"
+class = "project"
+reason = "worktree:skip rewrites lineage and retires here under A.193, so it is not centralized"
+
+[[capabilities]]
+id = "script:scripts/data_fetch.py"
+class = "project"
+reason = "the MovieLens data this recommender is built on (A.99, A.100)"
+
+[[capabilities]]
+id = "task:data:fetch"
+class = "project"
+reason = "the MovieLens data this recommender is built on (A.99, A.100)"
+
+[[capabilities]]
+id = "script:scripts/model_run.py"
+class = "project"
+reason = "this recommender fitted model as a governed artifact (A.100)"
+
+[[capabilities]]
+id = "task:model:fit"
+class = "project"
+reason = "this recommender fitted model as a governed artifact (A.100)"
+
+[[capabilities]]
+id = "script:scripts/site_record.py"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "task:site:build"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "task:site:config-plan"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "task:site:config-pull"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "task:site:deploy"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "task:site:domain"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "task:site:lock"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "task:site:movielens"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "task:site:railway-login"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "task:site:record"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "task:site:status"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "task:site:test"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
