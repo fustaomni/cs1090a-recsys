@@ -2399,3 +2399,16 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_override_config.py::test_a_config_mise_will_not_trust_is_refused" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.209"
+title = "sibling:refresh merges a named ref of the sibling's origin, by default its declared branch, into the clone's feature branch: staged without committing, the merged mise.toml trusted only when byte-identical to a reviewed commit, then the merge commit; a conflict stops with its files named and nothing committed; a ref origin lacks is refused by name"
+thread = "A"
+depends_on = ["A.207", "A.208"]
+because = { "A.207" = "the order a merge must follow: trust, then commit, so its hooks run", "A.208" = "trust of a sibling clone's own mise.toml, judged against a commit" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_refresh.py::test_the_declared_branch_is_merged_with_a_merge_commit" },
+  { kind = "proof", test = "tests/test_sibling_refresh.py::test_a_merged_config_from_a_reviewed_commit_is_trusted_before_the_commit" },
+  { kind = "proof", test = "tests/test_sibling_refresh.py::test_a_conflict_stops_naming_its_files_and_commits_nothing" },
+  { kind = "proof", test = "tests/test_sibling_refresh.py::test_a_named_ref_is_merged_and_one_origin_lacks_is_refused" },
+  { kind = "task", name = "check" },
+]
