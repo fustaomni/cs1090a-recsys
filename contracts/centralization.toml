@@ -321,6 +321,11 @@ class = "generic"
 reason = "a sibling's FAS pins are generated from its own flake.lock and checked, never retyped (A.203)"
 
 [[capabilities]]
+id = "task:sibling:refresh"
+class = "generic"
+reason = "a sibling's feature branch takes in a ref of its origin by a merge commit, its config trusted first (A.209)"
+
+[[capabilities]]
 id = "task:sibling:pin"
 class = "generic"
 reason = "a sibling's FAS pins are generated from its own flake.lock and checked, never retyped (A.203)"

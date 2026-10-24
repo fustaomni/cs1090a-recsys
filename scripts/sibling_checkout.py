@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import tomllib
@@ -104,6 +105,7 @@ OVERRIDE_COMMAND = "sibling:override"
 OVERRIDE_SUBJECT = "sibling_override"
 OVERRIDE_POLICY = ROOT / "policies" / "runs" / "sibling_override"
 OVERRIDE_ENTRYPOINT = "data.runs.sibling_override.deny"
+REFRESH_COMMAND = "sibling:refresh"
 
 
 class SiblingOverride(Contract):
@@ -169,6 +171,81 @@ def refresh_override(sibling: Sibling, parent: Path, *, trust: Trust = _mise_tru
     if decide(found).action != "proceed":
         raise SystemExit(reasons(found))
     return _write_and_trust(Path(request.clone), sibling, trust)
+
+
+def refresh(
+    sibling: Sibling,
+    parent: Path,
+    step: str,
+    ref: str | None = None,
+    *,
+    trust: Trust = _mise_trust,
+) -> str:
+    """A ref of the sibling's origin merged into the clone's feature branch by commit (A.209).
+
+    LINEAGE IS NEVER REWRITTEN (A.191): a merge commit adds the integration. The merge is staged
+    without committing; a merged mise.toml byte-identical to a reviewed commit, the clone's or
+    the merged tip's, is trusted, and only then is the merge committed, so the clone's own hooks
+    run against a trusted config (A.207, A.208). A conflict stops with its files named.
+    """
+    if not re.fullmatch(r"[A-Z]\.[0-9]+", step):
+        raise SystemExit(f"refusing: {step!r} is not a plan step id, such as D.277")
+    clone = parent / sibling.name
+    if not (clone / ".git").exists():
+        raise SystemExit(f"{clone} is not a clone yet; sibling:checkout makes it first")
+    _verify_origin(clone, sibling)
+    target = ref or sibling.branch
+    with _non_interactive():
+        fetched = git("fetch", "--quiet", "--prune", "origin", cwd=clone)
+    if fetched.returncode != 0:
+        raise SystemExit(f"{clone}: fetching origin failed: {fetched.stderr.strip()}")
+    tip = git("rev-parse", "--verify", "--quiet", f"refs/remotes/origin/{target}", cwd=clone)
+    if tip.returncode != 0:
+        raise SystemExit(f"{sibling.source} has no branch {target!r}; nothing was merged")
+    theirs = tip.stdout.strip()
+    branch = git("symbolic-ref", "--quiet", "--short", "HEAD", cwd=clone).stdout.strip()
+    if branch in {"", "develop", "main", sibling.branch}:
+        where = branch or "a detached HEAD"
+        raise SystemExit(f"{clone} is on {where}, not a feature branch; nothing was merged")
+    if git("status", "--porcelain", "--untracked-files=no", cwd=clone).stdout.strip():
+        raise SystemExit(f"{clone} has uncommitted changes; nothing was merged")
+    before = git("rev-parse", "HEAD", cwd=clone).stdout.strip()
+    merged = git("merge", "--no-ff", "--no-commit", theirs, cwd=clone)
+    if merged.returncode != 0:
+        listed = git("diff", "--name-only", "--diff-filter=U", cwd=clone).stdout.split()
+        named = ", ".join(listed) or "no file git named"
+        raise SystemExit(
+            f"merging origin/{target} into {clone} stopped on conflicts in {named}; "
+            "nothing was committed"
+        )
+    if git("rev-parse", "-q", "--verify", "MERGE_HEAD", cwd=clone).returncode == 0:
+        config = clone / "mise.toml"
+        reviewed = [
+            git("diff", "--cached", "--quiet", commit, "--", "mise.toml", cwd=clone).returncode
+            for commit in (before, theirs)
+        ]
+        if 0 not in reviewed:
+            git("merge", "--abort", cwd=clone)
+            raise SystemExit(
+                f"{config} as merged matches neither {before[:12]} nor {theirs[:12]}, so it "
+                "is not trusted; the merge was aborted and nothing was committed"
+            )
+        if trust(config) != 0:
+            git("merge", "--abort", cwd=clone)
+            raise SystemExit(f"mise trust {config} failed; the merge was aborted")
+        message = (
+            f"chore(merge): bring origin/{target} into {branch}\n\n"
+            "A merge commit records the integration, so every commit the branch published "
+            "keeps its hash (A.191, A.209).\n\n"
+            f"Plan-Step: {step}"
+        )
+        committed = git("commit", "--quiet", "-m", message, cwd=clone)
+        if committed.returncode != 0:
+            raise SystemExit(
+                f"the merge into {clone} was staged, but its commit was refused: "
+                f"{(committed.stdout + committed.stderr).strip()}"
+            )
+    return git("rev-parse", "HEAD", cwd=clone).stdout.strip()
 
 
 def _onto_branch(clone: Path, sibling: Sibling) -> None:
@@ -282,9 +359,39 @@ def _siblings_parent() -> Path:
     return Path(common.stdout.strip()).parent.parent
 
 
+def _refresh_main(args: list[str]) -> int:
+    """sibling:refresh <name> <step> [ref], judged by the override policy first (A.209)."""
+    known = {sibling.name: sibling for sibling in declared()}
+    if len(args) not in (2, 3) or args[0] not in known:
+        usage = f"usage: mise run run {REFRESH_COMMAND} <name> <step> [ref], one of {sorted(known)}"
+        stopped = halted(SUBJECT, ENTRYPOINT, POLICY, usage)
+        return enforce(announce(REFRESH_COMMAND, stopped, "usage", usage, {}))
+    sibling = known[args[0]]
+    ref = args[2] if len(args) == 3 else None
+    request = override_request(sibling, _siblings_parent())
+    observed = request.model_dump(mode="json")
+    judged = evaluate(request, OVERRIDE_SUBJECT, OVERRIDE_POLICY, OVERRIDE_ENTRYPOINT)
+    verdict = decide(judged)
+    if verdict.action != "proceed":
+        code = refusal_code(verdict, "sibling_refresh_refused")
+        return enforce(announce(REFRESH_COMMAND, verdict, code, reasons(judged), observed))
+    try:
+        after = refresh(sibling, _siblings_parent(), args[1], ref)
+    except SystemExit as refused:
+        reason = str(refused.code)
+        stopped = halted(OVERRIDE_SUBJECT, OVERRIDE_ENTRYPOINT, OVERRIDE_POLICY, reason)
+        refusal = "sibling_refresh_refused"
+        return enforce(announce(REFRESH_COMMAND, stopped, refusal, reason, observed))
+    merged = ref or sibling.branch
+    note = f"{sibling.name}: origin/{merged} merged into its feature branch, now {after[:12]}"
+    return enforce(announce(REFRESH_COMMAND, verdict, "sibling_refreshed", note, observed))
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """sibling:checkout <name> -- clone, give a FAS mode, judge, then trust both files."""
     args = list(sys.argv[1:] if argv is None else argv)
+    if args[:1] == ["--refresh"]:
+        return _refresh_main(args[1:])
     override_only = args[:1] == ["--override"]
     args = args[1:] if override_only else args
     known = {sibling.name: sibling for sibling in declared()}
