@@ -527,6 +527,10 @@ run = "uv run --no-sync python scripts/source_search.py"
 description = "Check out another repository at a pinned 40-character commit, blobless, under .artifacts/upstream, or list its tree at that commit"
 run = "uv run --no-sync python scripts/upstream.py"
 
+[tasks."upstream:tip"]
+description = "Resolve a source's branch to its full commit by ls-remote, without cloning, so a read pins it"
+run = "uv run --no-sync python scripts/upstream.py --tip"
+
 [tasks."provenance:adapt"]
 description = "Plan a ported file's change as its recorded, reversible vendor patch and provenance entry"
 run = "uv run --no-sync python scripts/provenance_adapt.py"
