@@ -334,6 +334,18 @@ implementation = "scripts/source_search.py"
 emits = "command-outcome/v1"
 
 [[capabilities]]
+task = "centralization:inventory"
+version = "1.0.0"
+implementation = "scripts/centralization.py"
+emits = "text"
+
+[[capabilities]]
+task = "upstream:tip"
+version = "1.0.0"
+implementation = "scripts/upstream.py"
+emits = "text"
+
+[[capabilities]]
 task = "upstream:checkout"
 version = "1.0.0"
 implementation = "scripts/upstream.py"

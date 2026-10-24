@@ -399,9 +399,9 @@ sha256 = "bcbcf81b839c521bd70c27eb0a560d2bc9c5c9ce9992d786e7bb317e2826674d"
 
 [[adapted]]
 path = "contracts/task-effects.toml"
-reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification; check:ci, recsys's own, is read-only as check:offline is (A.104); pr:logs returns read-only with its task, as cscie103 classifies it (A.142)"
+reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification; check:ci, recsys's own, is read-only as check:offline is (A.104); pr:logs returns read-only with its task, as cscie103 classifies it (A.142); upstream:tip, which only resolves a ref, is read-only (A.204)"
 patch = "contracts/vendor-patches/contracts/task-effects.toml.patch"
-sha256 = "eba845d14db2a979f35058ac59d56c0571db057dca4becce389d17bd08c00789"
+sha256 = "7e0582e270ae36cc6e656ce7a0a9d7def214092a1e34093b63a51d91a3cc2822"
 
 [[adapted]]
 path = "tests/test_run_gateway.py"
@@ -539,9 +539,9 @@ sha256 = "fa7e99480e9c10832ce0c93b9a74fd82d741846bf1c94a8ce2a4544e6e5e005d"
 
 [[adapted]]
 path = "scripts/worktree.py"
-reason = "A.191: refresh merges origin/develop with a merge commit naming its plan step, never a rebase, so a published branch keeps every commit"
+reason = "A.191: refresh merges origin/develop with a merge commit naming its plan step, never a rebase, so a published branch keeps every commit; A.207: the merge is staged without committing, a changed mise.toml is gated and trusted, and only then is the merge committed, so its hooks run against a trusted config"
 patch = "contracts/vendor-patches/scripts/worktree.py.patch"
-sha256 = "7f89494142e995d7563fb8e1e6d47d7167b12cdfcad441f60cf41bd2380f6b39"
+sha256 = "e490ff5dd94f03f0e2a55c58e1783c320ac8567b32765c74325a2f10415e93a5"
 
 [[files]]
 path = "policies/machine/setup/setup_env.rego"

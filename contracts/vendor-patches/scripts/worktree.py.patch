@@ -202,13 +202,13 @@
          )
  
      _git("fetch", "origin", "--prune", "--quiet")
-@@ -231,41 +277,74 @@
+@@ -231,41 +277,88 @@
      # is plumbing, and it cannot describe something that did not happen.
      before = git_run("rev-parse", "HEAD", cwd=path).stdout.strip()
  
 -    result = git_run("rebase", "origin/develop", cwd=path)
 +    message = _merge_message(branch, step)
-+    result = git_run("merge", "--no-ff", "-m", message, "origin/develop", cwd=path)
++    result = git_run("merge", "--no-ff", "--no-commit", "origin/develop", cwd=path)
      if result.returncode != 0:
          print((result.stdout + result.stderr).strip(), file=sys.stderr)
          raise SystemExit(
@@ -216,23 +216,38 @@
 +            f"merge stopped in {path}. Read the conflicts with "
              f"`mise run run worktree:conflicts {slug}`, resolve them, then "
 -            f"`mise run run worktree:continue {slug}`; or abandon with `git rebase --abort`."
+-        )
 +            f"`mise run run worktree:conclude {slug}`; or abandon with "
 +            f"`mise run run worktree:abort {slug}`."
-         )
++        )
++
++    # MISE BINDS TRUST TO CONTENT (A.122, A.207): a merge that changes mise.toml leaves
++    # this checkout untrusted, and the merge commit runs commit-msg, whose hook calls
++    # mise. So the merge is staged without committing, a changed mise.toml is gated and
++    # trusted as a new worktree's is, and only then committed; a refused one is aborted.
++    pending = git_run("rev-parse", "-q", "--verify", "MERGE_HEAD", cwd=path)
++    if pending.returncode == 0:
++        rewritten = git_run("diff", "--cached", "--quiet", before, "--", "mise.toml", cwd=path)
++        if rewritten.returncode != 0 and not _trust(path).trusted:
++            git_run("merge", "--abort", cwd=path)
++            raise SystemExit(
++                f"refusing to commit the merge into {path}: its changed mise.toml was not "
++                "trusted, since the founding policy refused it or mise could not trust it; "
++                "the merge was aborted, so nothing was committed"
++            )
++        committed = git_run("commit", "-m", message, cwd=path)
++        if committed.returncode != 0:
++            print((committed.stdout + committed.stderr).strip(), file=sys.stderr)
++            raise SystemExit(
++                f"the merge into {path} was staged, but its commit was refused; read why above, "
++                f"then conclude it with `mise run run worktree:conclude {slug}` "
++                f"or abandon it with `mise run run worktree:abort {slug}`."
++            )
  
      after = git_run("rev-parse", "HEAD", cwd=path).stdout.strip()
      target = git_run("rev-parse", "origin/develop", cwd=path).stdout.strip()
      _settle_environment(path, before)
  
-+    # MISE BINDS TRUST TO CONTENT (A.122): a merge that changed mise.toml left this checkout
-+    # untrusted, and every task in it refused. It is re-trusted as a new worktree is, or fails.
-+    rewritten = git_run("diff", "--quiet", before, after, "--", "mise.toml", cwd=path)
-+    if before != after and rewritten.returncode != 0 and not _trust(path).trusted:
-+        raise SystemExit(
-+            f"merged into {path}, but its changed mise.toml was not trusted: the founding policy "
-+            "refused it or mise could not trust it"
-+        )
-+
      if before == after:
 -        print(f"{path} was already on origin/develop ({target[:12]})")
 +        print(f"{path} already contained origin/develop ({target[:12]})")
@@ -291,7 +306,7 @@
  
  
  def cmd_remove(slug: str) -> int:
-@@ -276,19 +355,19 @@
+@@ -276,19 +369,19 @@
          # ALREADY GONE IS THE END STATE, NOT AN ERROR (D.105). prune removes only registrations
          # whose directories are missing; the branch, if any, goes exactly as below: branch -d.
          _git("worktree", "prune")
@@ -317,7 +332,7 @@
      return _delete_branch(branch)
  
  
-@@ -298,12 +377,18 @@
+@@ -298,12 +391,18 @@
              return cmd_list()
          case ["add", slug]:
              return cmd_add(slug)
