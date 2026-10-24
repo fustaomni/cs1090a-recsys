@@ -106,6 +106,9 @@ OVERRIDE_SUBJECT = "sibling_override"
 OVERRIDE_POLICY = ROOT / "policies" / "runs" / "sibling_override"
 OVERRIDE_ENTRYPOINT = "data.runs.sibling_override.deny"
 REFRESH_COMMAND = "sibling:refresh"
+CONCLUDE_COMMAND = "sibling:conclude"
+PLAN_FILES = ("context/plan.toml", "context/plan-ids.toml", "context/plan-trace.toml")
+MARKERS = ("<<<<<<< ", ">>>>>>> ")
 
 
 class SiblingOverride(Contract):
@@ -248,6 +251,98 @@ def refresh(
     return git("rev-parse", "HEAD", cwd=clone).stdout.strip()
 
 
+Resolve = Callable[[Path], int]
+
+
+def _clone_resolver(clone: Path) -> int:
+    """The clone's own plan-file resolver (cscie103 D.129), run in the cleaned environment."""
+    command = ["uv", "run", "--no-sync", "python", "scripts/plan_conflicts.py"]
+    env = setup_environment(os.environ)
+    return subprocess.run(command, cwd=clone, env=env, check=False).returncode
+
+
+def _unmerged_paths(clone: Path) -> list[str]:
+    listed = git("diff", "--name-only", "-z", "--diff-filter=U", cwd=clone).stdout
+    return [name for name in listed.split("\x00") if name]
+
+
+def _marked(clone: Path) -> list[str]:
+    """Staged files, changed against HEAD, that still hold a conflict block's opening or close."""
+    changed = git("diff", "--cached", "--name-only", "-z", "HEAD", cwd=clone).stdout
+    marked: list[str] = []
+    for name in (entry for entry in changed.split("\x00") if entry):
+        staged = git("show", f":{name}", cwd=clone)
+        lines = staged.stdout.splitlines() if staged.returncode == 0 else []
+        if any(line.startswith(MARKERS) for line in lines):
+            marked.append(name)
+    return marked
+
+
+def conclude(
+    sibling: Sibling,
+    parent: Path,
+    step: str,
+    *,
+    trust: Trust = _mise_trust,
+    resolve: Resolve = _clone_resolver,
+) -> str:
+    """A sibling merge that stopped on conflicts, concluded by a commit naming the step (A.210).
+
+    The clone's own resolver settles its plan files first. The merge is refused while a path
+    stays unmerged or a staged file still holds a conflict marker, and its mise.toml is
+    trusted only when byte-identical to a reviewed commit, as A.209 trusts it. Every refusal
+    leaves the merge as it is, so no resolution already made is lost.
+    """
+    if not re.fullmatch(r"[A-Z]\.[0-9]+", step):
+        raise SystemExit(f"refusing: {step!r} is not a plan step id, such as D.277")
+    clone = parent / sibling.name
+    if not (clone / ".git").exists():
+        raise SystemExit(f"{clone} is not a clone yet; sibling:checkout makes it first")
+    _verify_origin(clone, sibling)
+    merging = git("rev-parse", "-q", "--verify", "MERGE_HEAD", cwd=clone)
+    if merging.returncode != 0:
+        raise SystemExit(f"{clone} has no merge in progress, so there is nothing to conclude")
+    theirs = merging.stdout.strip()
+    if set(_unmerged_paths(clone)) & set(PLAN_FILES) and resolve(clone) != 0:
+        raise SystemExit(f"the plan-file resolver in {clone} refused; nothing was committed")
+    left = _unmerged_paths(clone)
+    if left:
+        raise SystemExit(
+            f"{clone} still has unmerged paths: {', '.join(left)}; resolve and stage them, "
+            "nothing was committed"
+        )
+    marked = _marked(clone)
+    if marked:
+        raise SystemExit(f"conflict markers remain in {', '.join(marked)}; nothing was committed")
+    before = git("rev-parse", "HEAD", cwd=clone).stdout.strip()
+    config = clone / "mise.toml"
+    reviewed = [
+        git("diff", "--cached", "--quiet", commit, "--", "mise.toml", cwd=clone).returncode
+        for commit in (before, theirs)
+    ]
+    if 0 not in reviewed:
+        raise SystemExit(
+            f"{config} as merged matches neither {before[:12]} nor {theirs[:12]}, so it is "
+            "not trusted; nothing was committed"
+        )
+    if trust(config) != 0:
+        raise SystemExit(f"mise trust {config} failed; nothing was committed")
+    branch = git("symbolic-ref", "--quiet", "--short", "HEAD", cwd=clone).stdout.strip()
+    message = (
+        f"chore(merge): conclude the merge into {branch}\n\n"
+        "The merge stopped on conflicts; they were resolved and staged before this commit "
+        "(A.210).\n\n"
+        f"Plan-Step: {step}"
+    )
+    committed = git("commit", "--quiet", "-m", message, cwd=clone)
+    if committed.returncode != 0:
+        raise SystemExit(
+            f"the merge into {clone} was ready, but its commit was refused: "
+            f"{(committed.stdout + committed.stderr).strip()}"
+        )
+    return git("rev-parse", "HEAD", cwd=clone).stdout.strip()
+
+
 def _onto_branch(clone: Path, sibling: Sibling) -> None:
     """The clone on its declared branch at the remote tip: switched, fast-forwarded, only clean."""
     with _non_interactive():
@@ -359,6 +454,32 @@ def _siblings_parent() -> Path:
     return Path(common.stdout.strip()).parent.parent
 
 
+def _conclude_main(args: list[str]) -> int:
+    """sibling:conclude <name> <step>, judged by the override policy first (A.210)."""
+    known = {sibling.name: sibling for sibling in declared()}
+    if len(args) != 2 or args[0] not in known:
+        usage = f"usage: mise run run {CONCLUDE_COMMAND} <name> <step>, one of {sorted(known)}"
+        stopped = halted(SUBJECT, ENTRYPOINT, POLICY, usage)
+        return enforce(announce(CONCLUDE_COMMAND, stopped, "usage", usage, {}))
+    sibling = known[args[0]]
+    request = override_request(sibling, _siblings_parent())
+    observed = request.model_dump(mode="json")
+    judged = evaluate(request, OVERRIDE_SUBJECT, OVERRIDE_POLICY, OVERRIDE_ENTRYPOINT)
+    verdict = decide(judged)
+    if verdict.action != "proceed":
+        code = refusal_code(verdict, "sibling_conclude_refused")
+        return enforce(announce(CONCLUDE_COMMAND, verdict, code, reasons(judged), observed))
+    try:
+        after = conclude(sibling, _siblings_parent(), args[1])
+    except SystemExit as refused:
+        reason = str(refused.code)
+        stopped = halted(OVERRIDE_SUBJECT, OVERRIDE_ENTRYPOINT, OVERRIDE_POLICY, reason)
+        refusal = "sibling_conclude_refused"
+        return enforce(announce(CONCLUDE_COMMAND, stopped, refusal, reason, observed))
+    note = f"{sibling.name}: its merge concluded, now {after[:12]}"
+    return enforce(announce(CONCLUDE_COMMAND, verdict, "sibling_concluded", note, observed))
+
+
 def _refresh_main(args: list[str]) -> int:
     """sibling:refresh <name> <step> [ref], judged by the override policy first (A.209)."""
     known = {sibling.name: sibling for sibling in declared()}
@@ -390,6 +511,8 @@ def _refresh_main(args: list[str]) -> int:
 def main(argv: Sequence[str] | None = None) -> int:
     """sibling:checkout <name> -- clone, give a FAS mode, judge, then trust both files."""
     args = list(sys.argv[1:] if argv is None else argv)
+    if args[:1] == ["--conclude"]:
+        return _conclude_main(args[1:])
     if args[:1] == ["--refresh"]:
         return _refresh_main(args[1:])
     override_only = args[:1] == ["--override"]
