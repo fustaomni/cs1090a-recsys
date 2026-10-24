@@ -872,6 +872,10 @@ run = 'uv run --no-sync python scripts/sibling_checkout.py --override "${usage_n
 description = "Merge a named ref of a sibling's origin, by default its declared branch, into the clone's feature branch by a merge commit"
 run = "uv run --no-sync python scripts/sibling_checkout.py --refresh"
 
+[tasks."sibling:conclude"]
+description = "Conclude a sibling merge that stopped on conflicts: the clone resolver first, refused while anything stays unmerged or marked, then a commit naming the step"
+run = "uv run --no-sync python scripts/sibling_checkout.py --conclude"
+
 [tasks."sibling:pin"]
 description = "Generate a sibling's FAS pins from its own flake.lock: plan them with --out, or name stale ones with --check"
 run = "uv run --no-sync python scripts/sibling_pins.py"
