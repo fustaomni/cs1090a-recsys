@@ -143,16 +143,32 @@ def _mise_trust(path: Path) -> int:
     return done.returncode
 
 
+def _write_and_trust(clone: Path, sibling: Sibling, trust: Trust) -> Path:
+    """Write and trust the FAS mode, then the clone's own mise.toml once unmodified (A.208)."""
+    written = write_override(clone, sibling)
+    if trust(written) != 0:
+        raise SystemExit(f"mise trust {written} failed, so mise will not load it")
+    # THE CLONE'S OWN CONFIG (A.208): under paranoid trust each file is trusted by content,
+    # so a clone on another branch carries a mise.toml nobody trusted yet. It is measured as
+    # sibling:checkout measures it, and trusted only unmodified at the commit it is at.
+    config = clone / "mise.toml"
+    if git("diff", "--quiet", "HEAD", "--", "mise.toml", cwd=clone).returncode != 0:
+        raise SystemExit(
+            f"{config} differs from the commit the clone is at, so it is not trusted: "
+            "commit or discard that change, then run sibling:override again"
+        )
+    if trust(config) != 0:
+        raise SystemExit(f"mise trust {config} failed, so mise will not load it")
+    return written
+
+
 def refresh_override(sibling: Sibling, parent: Path, *, trust: Trust = _mise_trust) -> Path:
     """The declared FAS mode, written into a clone on whatever branch it is, judged, trusted."""
     request = override_request(sibling, parent)
     found = evaluate(request, OVERRIDE_SUBJECT, OVERRIDE_POLICY, OVERRIDE_ENTRYPOINT)
     if decide(found).action != "proceed":
         raise SystemExit(reasons(found))
-    written = write_override(Path(request.clone), sibling)
-    if trust(written) != 0:
-        raise SystemExit(f"mise trust {written} failed, so mise will not load it")
-    return written
+    return _write_and_trust(Path(request.clone), sibling, trust)
 
 
 def _onto_branch(clone: Path, sibling: Sibling) -> None:
@@ -286,9 +302,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         if verdict.action != "proceed":
             code = refusal_code(verdict, "sibling_override_refused")
             return enforce(announce(OVERRIDE_COMMAND, verdict, code, reasons(judged), observed))
-        written = write_override(Path(request.clone), sibling)
-        if _mise_trust(written) != 0:
-            reason = f"mise trust {written} failed, so mise will not load it"
+        try:
+            written = _write_and_trust(Path(request.clone), sibling, _mise_trust)
+        except SystemExit as refused:
+            reason = str(refused.code)
             stopped = halted(OVERRIDE_SUBJECT, OVERRIDE_ENTRYPOINT, OVERRIDE_POLICY, reason)
             untrusted = "sibling_override_untrusted"
             return enforce(announce(OVERRIDE_COMMAND, stopped, untrusted, reason, observed))

@@ -309,7 +309,9 @@ def test_the_override_is_rewritten_on_a_clone_mid_feature(tmp_path: Path) -> Non
     (clone / "mise.toml").write_text("# work in progress\\n")
     (clone / "mise.local.toml").write_text("# an older FAS mode\\n")
     repinned = subject.Sibling(name="demo", source=str(source), tools={"uv": "0.12.22"})
-    subject.refresh_override(repinned, tmp_path / "siblings", trust=lambda _: 0)
+    with pytest.raises(SystemExit) as refused:
+        subject.refresh_override(repinned, tmp_path / "siblings", trust=lambda _: 0)
+    assert "mise.toml" in str(refused.value), refused.value
     assert (clone / "mise.local.toml").read_text() == subject.override_text(repinned)
     assert _git(clone, "symbolic-ref", "--short", "HEAD") == "feature/wip"
     assert (clone / "mise.toml").read_text() == "# work in progress\\n"
@@ -366,7 +368,7 @@ def test_a_rewritten_override_is_trusted_again(tmp_path: Path) -> None:
         return 0
 
     subject.refresh_override(_sibling(subject, source), parent, trust=trust)
-    assert trusted == [clone / "mise.local.toml"], trusted
+    assert trusted == [clone / "mise.local.toml", clone / "mise.toml"], trusted
 
 
 def test_an_override_mise_will_not_trust_is_refused(tmp_path: Path) -> None:
