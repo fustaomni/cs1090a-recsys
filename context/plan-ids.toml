@@ -199,4 +199,5 @@ issued = [
   { id = "A.203", first_title = "sibling:pin writes a sibling's FAS pins from its own flake.lock: each pin is the one version mise lists that matches what nixpkgs ships at the locked revision, and --check refuses a stale pin by name" },
   { id = "A.205", first_title = "Every task and script this repository has that cscie103 lacks at its resolved develop tip is listed by a recorded task, and each is classified in contracts/centralization.toml as generic or project-specific with its reason; an unclassified one is refused" },
   { id = "A.206", first_title = "Every generic capability in contracts/centralization.toml names the cscie103 step and commit that carry it, so a capability born here is centralized, and a generic entry without them is refused by the gate" },
+  { id = "A.207", first_title = "worktree:refresh merges without committing, gates and trusts a merged mise.toml that changed, and only then commits the merge, so the merge commit's own hooks run against a trusted config; a refused config is never committed" },
 ]
