@@ -868,6 +868,10 @@ description = "Rewrite a sibling clone's FAS mode to the declared one, on whatev
 usage = 'arg "<name>" help="A sibling contracts/siblings.toml declares"'
 run = 'uv run --no-sync python scripts/sibling_checkout.py --override "${usage_name?}"'
 
+[tasks."sibling:refresh"]
+description = "Merge a named ref of a sibling's origin, by default its declared branch, into the clone's feature branch by a merge commit"
+run = "uv run --no-sync python scripts/sibling_checkout.py --refresh"
+
 [tasks."sibling:pin"]
 description = "Generate a sibling's FAS pins from its own flake.lock: plan them with --out, or name stale ones with --check"
 run = "uv run --no-sync python scripts/sibling_pins.py"

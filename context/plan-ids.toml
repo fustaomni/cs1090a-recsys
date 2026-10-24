@@ -201,4 +201,5 @@ issued = [
   { id = "A.206", first_title = "Every generic capability in contracts/centralization.toml names the cscie103 step and commit that carry it, so a capability born here is centralized, and a generic entry without them is refused by the gate" },
   { id = "A.207", first_title = "worktree:refresh merges without committing, gates and trusts a merged mise.toml that changed, and only then commits the merge, so the merge commit's own hooks run against a trusted config; a refused config is never committed" },
   { id = "A.208", first_title = "sibling:override trusts the clone's own mise.toml too, once judged unmodified at the commit the clone is at, so a sibling on a feature branch runs its own tasks" },
+  { id = "A.209", first_title = "sibling:refresh merges a sibling's declared branch into the clone's feature branch: staged without committing, the merged mise.toml trusted only when byte-identical to a reviewed commit, then the merge commit; a conflict stops with its files named and nothing committed" },
 ]
