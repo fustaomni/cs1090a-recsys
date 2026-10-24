@@ -20,10 +20,11 @@ from __future__ import annotations
 
 import hashlib
 import re
+import subprocess
 import sys
 from pathlib import Path
 
-from gitenv import git
+from gitenv import git, scrubbed_env
 
 ROOT = Path(__file__).resolve().parent.parent
 EVIDENCE = ROOT / ".artifacts" / "upstream"
@@ -106,8 +107,65 @@ def blobs(source: str, commit: str, root: Path = EVIDENCE) -> dict[str, str]:
     return found
 
 
+# NO TERMINAL, NO STDIN, A DEADLINE (A.204). gitenv.git scrubs routing variables only, so a
+# remote that asks for credentials would prompt and an unanswering one would hang; these are
+# the variables every recorded command here exports, and they belong in gitenv (A.150, A.197).
+NON_INTERACTIVE = {
+    "GIT_TERMINAL_PROMPT": "0",
+    "GIT_ASKPASS": "",
+    "SSH_ASKPASS": "",
+    "SSH_ASKPASS_REQUIRE": "never",
+    "GCM_INTERACTIVE": "never",
+    "GCM_GUI_PROMPT": "false",
+}
+TIP_SECONDS = 60
+
+
+def tip(source: str, branch: str) -> str:
+    """The full commit source's branch points at, by ls-remote, without cloning (A.204).
+
+    A read is pinned to a commit, never a branch, so the branch is resolved first and the
+    resolution is what the run records. ls-remote matches patterns, so its lines are kept only
+    when the ref is exactly refs/heads/<branch>: a tag, or a longer branch ending in the same
+    name, never passes. --exit-code tells a source without that branch (2) from one git could
+    not read (any other failure). An option-shaped argument never reaches git.
+    """
+    for value in (source, branch):
+        if value.startswith("-"):
+            raise SystemExit(f"{value!r}: an option-shaped argument is refused")
+    ref = f"refs/heads/{branch}"
+    command = ["git", "ls-remote", "--exit-code", "--end-of-options", source, ref]
+    try:
+        done = subprocess.run(
+            command,
+            env=scrubbed_env() | NON_INTERACTIVE,
+            stdin=subprocess.DEVNULL,
+            capture_output=True,
+            text=True,
+            timeout=TIP_SECONDS,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        raise SystemExit(f"{source} did not answer within {TIP_SECONDS}s") from None
+    if done.returncode == 2:
+        raise SystemExit(f"{source} has no branch {branch!r}")
+    if done.returncode != 0:
+        raise SystemExit(f"{source} cannot be read: {done.stderr.strip()}")
+    exact = []
+    for line in done.stdout.splitlines():
+        commit, _, name = line.partition("\t")
+        if name == ref:
+            exact.append(commit)
+    if len(exact) != 1 or not FULL_SHA.fullmatch(exact[0]):
+        raise SystemExit(f"{source} gave no single commit for {ref}: {exact}")
+    return exact[0]
+
+
 def main() -> int:
     match sys.argv[1:]:
+        case ["--tip", source, branch]:
+            print(tip(source, branch))
+            return 0
         case [source, commit]:
             print(checkout(source, commit))
             return 0
