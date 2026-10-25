@@ -2450,3 +2450,15 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_workable.py::test_a_refused_conclusion_leaves_its_reviewed_config_trusted" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.213"
+title = "sibling:conclude refuses, naming them, while any tracked file holds unstaged changes once its resolved paths are staged, so no part of a resolution is left out of the merge commit"
+thread = "A"
+depends_on = ["A.210", "A.212"]
+because = { "A.210" = "the conclusion that commits a stopped sibling merge", "A.212" = "the staging of conflicted paths resolved by hand" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_conclude_complete.py::test_an_unstaged_tracked_change_is_refused_and_nothing_committed" },
+  { kind = "proof", test = "tests/test_sibling_conclude_complete.py::test_every_unstaged_path_is_named" },
+  { kind = "proof", test = "tests/test_sibling_conclude_complete.py::test_a_fully_staged_resolution_is_concluded" },
+  { kind = "task", name = "check" },
+]
