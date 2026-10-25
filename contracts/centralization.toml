@@ -321,6 +321,11 @@ class = "generic"
 reason = "a sibling's FAS pins are generated from its own flake.lock and checked, never retyped (A.203)"
 
 [[capabilities]]
+id = "task:sibling:conflicts"
+class = "generic"
+reason = "a sibling clone stopped merge is read as data, block by block, through the one conflict reader (A.212)"
+
+[[capabilities]]
 id = "task:sibling:conclude"
 class = "generic"
 reason = "a sibling merge stopped on conflicts is concluded governed, its plan files resolved by the clone resolver (A.210)"

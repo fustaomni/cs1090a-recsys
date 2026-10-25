@@ -2437,3 +2437,16 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_trust.py::test_an_unmodified_config_is_refused_as_needing_no_review" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.212"
+title = "A stopped sibling merge stays workable: sibling:refresh and sibling:conclude trust the merged mise.toml before any refusal when a reviewed commit holds it, sibling:conflicts reads the clone's conflict blocks as data, and sibling:conclude stages an unmerged path once its file holds no marker"
+thread = "A"
+depends_on = ["A.209", "A.210"]
+because = { "A.209" = "the merge that stops on conflicts", "A.210" = "the conclusion that refuses while anything stays unmerged" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_workable.py::test_a_stopped_merge_leaves_its_reviewed_config_trusted" },
+  { kind = "proof", test = "tests/test_sibling_workable.py::test_the_conflict_blocks_are_read_as_data" },
+  { kind = "proof", test = "tests/test_sibling_workable.py::test_a_hand_resolved_path_is_staged_and_concluded" },
+  { kind = "proof", test = "tests/test_sibling_workable.py::test_a_refused_conclusion_leaves_its_reviewed_config_trusted" },
+  { kind = "task", name = "check" },
+]
