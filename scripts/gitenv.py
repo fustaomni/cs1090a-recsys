@@ -44,6 +44,7 @@ from __future__ import annotations
 
 import os
 import subprocess
+from collections.abc import Mapping
 
 
 def routing_overrides_present() -> dict[str, str]:
@@ -58,9 +59,14 @@ def routing_overrides_present() -> dict[str, str]:
     return snapshot().git_routing_overrides
 
 
-def scrubbed_env() -> dict[str, str]:
-    """A copy of the environment with git's repository-routing variables removed."""
-    environment = dict(os.environ)
+def scrubbed_env(*, base: Mapping[str, str] | None = None) -> dict[str, str]:
+    """A copy of base, or of the environment, with git's repository-routing variables removed.
+
+    A caller that has already cleaned an environment for another reason, as a sibling merge
+    commit cleans away this repository's VIRTUAL_ENV (A.214), passes it as base, so this module
+    stays the one owner of what a git child process inherits.
+    """
+    environment = dict(os.environ if base is None else base)
 
     listing = subprocess.run(
         ["git", "rev-parse", "--local-env-vars"],
