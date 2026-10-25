@@ -87,9 +87,9 @@ sha256 = "7c9c3e77a41bcba164ce41e68d95d7a13abae54b9f4f32ad7971d38ba7b93d60"
 
 [[adapted]]
 path = "scripts/gitenv.py"
-reason = "git_bytes: raw output for -z formats, so every git spawn stays in gitenv; A.93"
+reason = "git_bytes: raw output for -z formats, so every git spawn stays in gitenv; A.93. scrubbed_env(*, base=...): an environment the caller already cleaned is scrubbed here too, so a sibling merge commit runs without this repository's VIRTUAL_ENV; A.214"
 patch = "contracts/vendor-patches/scripts/gitenv.py.patch"
-sha256 = "5e9d362af2ec4b0f2933bf2adffbce9f2f4af31cbf1bed2d39e8af0bf09a145c"
+sha256 = "40d3dfd6ee9fb60489ff822b69742d5df250810d8155359798bc67356cae3e8d"
 
 [[files]]
 path = "scripts/library_errors.py"
