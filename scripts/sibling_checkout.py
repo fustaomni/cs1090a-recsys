@@ -27,7 +27,7 @@ from pydantic import Field
 
 from command_outcome import announce
 from contract_base import Contract, from_document
-from gitenv import git
+from gitenv import git, scrubbed_env
 from rebase_state import ConflictReport, conflicts
 from setup_env import setup_environment
 from spine import decide, enforce, evaluate, halted, reasons, refusal_code
@@ -248,7 +248,7 @@ def refresh(
             "keeps its hash (A.191, A.209).\n\n"
             f"Plan-Step: {step}"
         )
-        committed = git("commit", "--quiet", "-m", message, cwd=clone)
+        committed = _commit_clean(clone, message)
         if committed.returncode != 0:
             raise SystemExit(
                 f"the merge into {clone} was staged, but its commit was refused: "
@@ -321,6 +321,7 @@ def conclude(
     *,
     trust: Trust = _mise_trust,
     resolve: Resolve = _clone_resolver,
+    include: tuple[str, ...] = (),
 ) -> str:
     """A sibling merge that stopped on conflicts, concluded by a commit naming the step (A.210).
 
@@ -351,6 +352,8 @@ def conclude(
             f"{clone} still has unmerged paths: {', '.join(left)}; resolve and stage them, "
             "nothing was committed"
         )
+    for name in include:
+        _stage_included(clone, name)
     # NOTHING IS LEFT OUT (A.213): git commits only what is staged, so a tracked file edited
     # while resolving, but never staged, would be silently missing from the merge commit.
     unstaged = git("diff", "--name-only", "-z", cwd=clone).stdout
@@ -359,6 +362,13 @@ def conclude(
         raise SystemExit(
             f"{', '.join(left_out)} changed but unstaged in {clone}, so the merge commit would "
             "leave them out; stage or discard them, nothing was committed"
+        )
+    listed = git("ls-files", "--others", "--exclude-standard", "-z", cwd=clone).stdout
+    untracked = [name for name in listed.split("\x00") if name]
+    if untracked:
+        raise SystemExit(
+            f"{', '.join(untracked)} new in {clone} but not included, so the merge commit "
+            "would leave them out; include or remove them, nothing was committed"
         )
     marked = _marked(clone)
     if marked:
@@ -383,13 +393,34 @@ def conclude(
         "(A.210).\n\n"
         f"Plan-Step: {step}"
     )
-    committed = git("commit", "--quiet", "-m", message, cwd=clone)
+    committed = _commit_clean(clone, message)
     if committed.returncode != 0:
         raise SystemExit(
             f"the merge into {clone} was ready, but its commit was refused: "
             f"{(committed.stdout + committed.stderr).strip()}"
         )
     return git("rev-parse", "HEAD", cwd=clone).stdout.strip()
+
+
+def _commit_clean(clone: Path, message: str) -> subprocess.CompletedProcess[str]:
+    """A sibling merge commit in the cleaned environment: its hooks never see ours (A.214)."""
+    return subprocess.run(
+        ["git", "commit", "--quiet", "-m", message],
+        cwd=clone,
+        env=scrubbed_env(base=setup_environment(os.environ)),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def _stage_included(clone: Path, name: str) -> None:
+    """A path the resolution names, modified, deleted or new, staged into the merge (A.214)."""
+    if not (clone / name).resolve().is_relative_to(clone.resolve()):
+        raise SystemExit(f"{name} lies outside {clone}; nothing was committed")
+    if not git("status", "--porcelain", "--", name, cwd=clone).stdout.strip():
+        raise SystemExit(f"{name} has no change in {clone} to include; nothing was committed")
+    git("add", "-A", "--", name, cwd=clone)
 
 
 def _onto_branch(clone: Path, sibling: Sibling) -> None:
@@ -533,8 +564,13 @@ def _conflicts_main(args: list[str]) -> int:
 def _conclude_main(args: list[str]) -> int:
     """sibling:conclude <name> <step>, judged by the override policy first (A.210)."""
     known = {sibling.name: sibling for sibling in declared()}
-    if len(args) != 2 or args[0] not in known:
-        usage = f"usage: mise run run {CONCLUDE_COMMAND} <name> <step>, one of {sorted(known)}"
+    rest = args[2:]
+    pairs = len(rest) % 2 == 0 and all(flag == "--include" for flag in rest[::2])
+    if len(args) < 2 or args[0] not in known or not pairs:
+        usage = (
+            f"usage: mise run run {CONCLUDE_COMMAND} <name> <step> [--include <path>]..., "
+            f"one of {sorted(known)}"
+        )
         stopped = halted(SUBJECT, ENTRYPOINT, POLICY, usage)
         return enforce(announce(CONCLUDE_COMMAND, stopped, "usage", usage, {}))
     sibling = known[args[0]]
@@ -546,7 +582,7 @@ def _conclude_main(args: list[str]) -> int:
         code = refusal_code(verdict, "sibling_conclude_refused")
         return enforce(announce(CONCLUDE_COMMAND, verdict, code, reasons(judged), observed))
     try:
-        after = conclude(sibling, _siblings_parent(), args[1])
+        after = conclude(sibling, _siblings_parent(), args[1], include=tuple(rest[1::2]))
     except SystemExit as refused:
         reason = str(refused.code)
         stopped = halted(OVERRIDE_SUBJECT, OVERRIDE_ENTRYPOINT, OVERRIDE_POLICY, reason)

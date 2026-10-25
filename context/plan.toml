@@ -2462,3 +2462,16 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_conclude_complete.py::test_a_fully_staged_resolution_is_concluded" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.214"
+title = "sibling:conclude stages the paths its resolution names with --include, modified, deleted or new, refuses any new file left out and any include with no change behind it, and commits the merge in the cleaned environment"
+thread = "A"
+depends_on = ["A.213"]
+because = { "A.213" = "the refusal of unstaged tracked changes, which leaves a named resolution no governed way in" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_conclude_include.py::test_included_paths_are_staged_into_the_merge" },
+  { kind = "proof", test = "tests/test_sibling_conclude_include.py::test_an_untracked_file_left_out_is_refused" },
+  { kind = "proof", test = "tests/test_sibling_conclude_include.py::test_an_include_naming_an_unchanged_path_is_refused" },
+  { kind = "proof", test = "tests/test_sibling_conclude_include.py::test_the_merge_commit_runs_without_the_callers_virtual_env" },
+  { kind = "task", name = "check" },
+]
