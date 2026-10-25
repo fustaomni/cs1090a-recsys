@@ -351,6 +351,15 @@ def conclude(
             f"{clone} still has unmerged paths: {', '.join(left)}; resolve and stage them, "
             "nothing was committed"
         )
+    # NOTHING IS LEFT OUT (A.213): git commits only what is staged, so a tracked file edited
+    # while resolving, but never staged, would be silently missing from the merge commit.
+    unstaged = git("diff", "--name-only", "-z", cwd=clone).stdout
+    left_out = [name for name in unstaged.split("\x00") if name]
+    if left_out:
+        raise SystemExit(
+            f"{', '.join(left_out)} changed but unstaged in {clone}, so the merge commit would "
+            "leave them out; stage or discard them, nothing was committed"
+        )
     marked = _marked(clone)
     if marked:
         raise SystemExit(f"conflict markers remain in {', '.join(marked)}; nothing was committed")
