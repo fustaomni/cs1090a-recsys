@@ -339,3 +339,8 @@ reason = "a sibling's feature branch takes in a ref of its origin by a merge com
 id = "task:sibling:pin"
 class = "generic"
 reason = "a sibling's FAS pins are generated from its own flake.lock and checked, never retyped (A.203)"
+
+[[capabilities]]
+id = "task:sibling:trust"
+class = "generic"
+reason = "an edited sibling config is shown against its commit and trusted only at the digest its reviewer names (A.211)"

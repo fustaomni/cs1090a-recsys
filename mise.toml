@@ -876,6 +876,10 @@ run = "uv run --no-sync python scripts/sibling_checkout.py --refresh"
 description = "Conclude a sibling merge that stopped on conflicts: the clone resolver first, refused while anything stays unmerged or marked, then a commit naming the step"
 run = "uv run --no-sync python scripts/sibling_checkout.py --conclude"
 
+[tasks."sibling:trust"]
+description = "Show a sibling clone's edited mise.toml against its commit with its digest, and trust it only at the digest its reviewer names"
+run = "uv run --no-sync python scripts/sibling_checkout.py --trust"
+
 [tasks."sibling:conflicts"]
 description = "Read a sibling clone's stopped merge as data: each conflicted file with both sides of every block"
 run = "uv run --no-sync python scripts/sibling_checkout.py --conflicts"
