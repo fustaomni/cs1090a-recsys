@@ -598,6 +598,12 @@ implementation = "scripts/sibling_pins.py"
 emits = "text"
 
 [[capabilities]]
+task = "sibling:trust"
+version = "1.0.0"
+implementation = "scripts/sibling_checkout.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
 task = "sibling:conflicts"
 version = "1.0.0"
 implementation = "scripts/sibling_checkout.py"
