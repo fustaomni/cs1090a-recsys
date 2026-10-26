@@ -352,12 +352,14 @@ def conclude(
     if merging.returncode != 0:
         raise SystemExit(f"{clone} has no merge in progress, so there is nothing to conclude")
     theirs = merging.stdout.strip()
-    if set(_unmerged_paths(clone)) & set(PLAN_FILES) and resolve(clone) != 0:
-        raise SystemExit(f"the plan-file resolver in {clone} refused; nothing was committed")
     head = git("rev-parse", "HEAD", cwd=clone).stdout.strip()
     _trust_reviewed(clone, (head, theirs), trust)
+    # A HAND RESOLUTION IS STAGED FIRST (A.216): the resolver reads the index stages, so it
+    # would refuse a plan file already resolved in the working tree; only marked files reach it.
     for name in _unmerged_paths(clone):
         _stage_resolved(clone, name)
+    if set(_unmerged_paths(clone)) & set(PLAN_FILES) and resolve(clone) != 0:
+        raise SystemExit(f"the plan-file resolver in {clone} refused; nothing was committed")
     left = _unmerged_paths(clone)
     if left:
         raise SystemExit(
