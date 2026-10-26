@@ -155,17 +155,29 @@ def _write_and_trust(clone: Path, sibling: Sibling, trust: Trust) -> Path:
     written = write_override(clone, sibling)
     if trust(written) != 0:
         raise SystemExit(f"mise trust {written} failed, so mise will not load it")
-    # THE CLONE'S OWN CONFIG (A.208): under paranoid trust each file is trusted by content,
-    # so a clone on another branch carries a mise.toml nobody trusted yet. It is measured as
-    # sibling:checkout measures it, and trusted only unmodified at the commit it is at.
-    config = clone / "mise.toml"
-    if git("diff", "--quiet", "HEAD", "--", "mise.toml", cwd=clone).returncode != 0:
+    # THE CLONE'S OWN CONFIGS (A.208, A.215): under paranoid trust each file is trusted by
+    # content, so a clone on another branch carries configs nobody trusted yet: its mise.toml,
+    # and each tracked mise.<env>.toml that MISE_ENV selects. All are measured against the
+    # commit the clone is at before any is trusted; an untracked one is never listed.
+    tracked = git("ls-files", "-z", "--", "mise.*.toml", cwd=clone).stdout
+    environments = sorted(
+        name for name in tracked.split("\x00") if name and not name.endswith(".local.toml")
+    )
+    names = ("mise.toml", *environments)
+    modified = [
+        str(clone / name)
+        for name in names
+        if git("diff", "--quiet", "HEAD", "--", name, cwd=clone).returncode != 0
+    ]
+    if modified:
         raise SystemExit(
-            f"{config} differs from the commit the clone is at, so it is not trusted: "
-            "commit or discard that change, then run sibling:override again"
+            f"{', '.join(modified)} differ from the commit the clone is at, so none is trusted: "
+            "commit or discard those changes, then run sibling:override again"
         )
-    if trust(config) != 0:
-        raise SystemExit(f"mise trust {config} failed, so mise will not load it")
+    for name in names:
+        config = clone / name
+        if trust(config) != 0:
+            raise SystemExit(f"mise trust {config} failed, so mise will not load it")
     return written
 
 
