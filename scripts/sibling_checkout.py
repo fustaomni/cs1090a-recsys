@@ -13,6 +13,7 @@ exactly as declared, judged by policies/runs/sibling_trust before mise trusts ei
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -109,6 +110,7 @@ OVERRIDE_ENTRYPOINT = "data.runs.sibling_override.deny"
 REFRESH_COMMAND = "sibling:refresh"
 CONCLUDE_COMMAND = "sibling:conclude"
 CONFLICTS_COMMAND = "sibling:conflicts"
+TRUST_COMMAND = "sibling:trust"
 PLAN_FILES = ("context/plan.toml", "context/plan-ids.toml", "context/plan-trace.toml")
 MARKERS = ("<<<<<<< ", ">>>>>>> ")
 
@@ -634,6 +636,68 @@ def _refresh_main(args: list[str]) -> int:
     return enforce(announce(REFRESH_COMMAND, verdict, "sibling_refreshed", note, observed))
 
 
+def review(
+    sibling: Sibling, parent: Path, digest: str | None, *, trust: Trust = _mise_trust
+) -> str:
+    """Trust a sibling's edited mise.toml only at the digest its reviewer names (A.211).
+
+    SHOWN, THEN NAMED. Content a commit holds needs no review: sibling:override trusts it.
+    Edited content is refused with its diff against the commit and its sha256; the reviewer
+    reads the change and names that digest, and only content still hashing to it is trusted.
+    The decision is recorded under .artifacts/trust.
+    """
+    clone = parent / sibling.name
+    if not (clone / ".git").exists():
+        raise SystemExit(f"{clone} is not a clone yet; sibling:checkout makes it first")
+    _verify_origin(clone, sibling)
+    config = clone / "mise.toml"
+    if git("diff", "--quiet", "HEAD", "--", "mise.toml", cwd=clone).returncode == 0:
+        raise SystemExit(f"{config} is unmodified at its commit, so it needs no review")
+    actual = hashlib.sha256(config.read_bytes()).hexdigest()
+    if digest is None:
+        change = git("diff", "HEAD", "--", "mise.toml", cwd=clone).stdout
+        raise SystemExit(
+            f"{config} differs from its commit; review the change, then name its digest:\n"
+            f"{change}\nsha256 {actual}"
+        )
+    if digest != actual:
+        raise SystemExit(f"{config} hashes to {actual}, not the digest {digest}; nothing trusted")
+    if trust(config) != 0:
+        raise SystemExit(f"mise trust {config} failed, so mise will not load it")
+    head = git("rev-parse", "HEAD", cwd=clone).stdout.strip()
+    record = ROOT / ".artifacts" / "trust" / f"{sibling.name}.json"
+    record.parent.mkdir(parents=True, exist_ok=True)
+    decision = {"sibling": sibling.name, "config": "mise.toml", "commit": head, "sha256": actual}
+    record.write_text(json.dumps(decision, indent=2) + "\n", encoding="utf-8")
+    return f"{config} trusted at sha256 {actual}, reviewed against {head[:12]}"
+
+
+def _trust_main(args: list[str]) -> int:
+    """sibling:trust <name> [digest], judged by the override policy first (A.211)."""
+    known = {sibling.name: sibling for sibling in declared()}
+    if len(args) not in (1, 2) or args[0] not in known:
+        usage = f"usage: mise run run {TRUST_COMMAND} <name> [digest], one of {sorted(known)}"
+        stopped = halted(SUBJECT, ENTRYPOINT, POLICY, usage)
+        return enforce(announce(TRUST_COMMAND, stopped, "usage", usage, {}))
+    sibling = known[args[0]]
+    digest = args[1] if len(args) == 2 else None
+    request = override_request(sibling, _siblings_parent())
+    observed = request.model_dump(mode="json")
+    judged = evaluate(request, OVERRIDE_SUBJECT, OVERRIDE_POLICY, OVERRIDE_ENTRYPOINT)
+    verdict = decide(judged)
+    if verdict.action != "proceed":
+        code = refusal_code(verdict, "sibling_trust_refused")
+        return enforce(announce(TRUST_COMMAND, verdict, code, reasons(judged), observed))
+    try:
+        note = review(sibling, _siblings_parent(), digest)
+    except SystemExit as refused:
+        reason = str(refused.code)
+        stopped = halted(OVERRIDE_SUBJECT, OVERRIDE_ENTRYPOINT, OVERRIDE_POLICY, reason)
+        refusal = "sibling_trust_refused"
+        return enforce(announce(TRUST_COMMAND, stopped, refusal, reason, observed))
+    return enforce(announce(TRUST_COMMAND, verdict, "sibling_trusted", note, observed))
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """sibling:checkout <name> -- clone, give a FAS mode, judge, then trust both files."""
     args = list(sys.argv[1:] if argv is None else argv)
@@ -643,6 +707,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _conclude_main(args[1:])
     if args[:1] == ["--refresh"]:
         return _refresh_main(args[1:])
+    if args[:1] == ["--trust"]:
+        return _trust_main(args[1:])
     override_only = args[:1] == ["--override"]
     args = args[1:] if override_only else args
     known = {sibling.name: sibling for sibling in declared()}
