@@ -2497,3 +2497,15 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_conclude_order.py::test_a_hand_resolved_plan_file_never_reaches_the_resolver" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.217"
+title = "source:port plans into a named checkout with --into: judged against that tree, its plan saved under that checkout's .artifacts, and create operations only where the destination keeps no port record, as the canonical source does"
+thread = "A"
+depends_on = ["A.29"]
+because = { "A.29" = "the port planner whose destination this names" }
+done_when = [
+  { kind = "proof", test = "tests/test_source_port_into.py::test_a_port_into_a_canonical_source_creates_its_files_only" },
+  { kind = "proof", test = "tests/test_source_port_into.py::test_a_planned_spec_is_saved_under_the_destinations_artifacts" },
+  { kind = "proof", test = "tests/test_source_port_into.py::test_a_file_present_in_the_destination_is_refused" },
+  { kind = "task", name = "check" },
+]
