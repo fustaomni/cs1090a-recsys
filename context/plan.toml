@@ -2475,3 +2475,15 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_conclude_include.py::test_the_merge_commit_runs_without_the_callers_virtual_env" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.215"
+title = "sibling:override trusts every tracked environment config of the clone, mise.<env>.toml, only when unmodified at HEAD as it trusts mise.toml, refuses a modified one by name, and never trusts an untracked one"
+thread = "A"
+depends_on = ["A.208"]
+because = { "A.208" = "the clone's mise.toml trusted only as its commit holds it" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_env_config.py::test_a_tracked_env_config_unmodified_at_head_is_trusted" },
+  { kind = "proof", test = "tests/test_sibling_env_config.py::test_a_modified_env_config_is_refused_by_name" },
+  { kind = "proof", test = "tests/test_sibling_env_config.py::test_an_untracked_env_config_is_never_trusted" },
+  { kind = "task", name = "check" },
+]

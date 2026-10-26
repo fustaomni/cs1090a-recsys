@@ -207,4 +207,5 @@ issued = [
   { id = "A.212", first_title = "A stopped sibling merge stays workable: sibling:refresh trusts the merged mise.toml before reporting a conflict when a reviewed commit holds it, sibling:conflicts reads the clone's conflict blocks as data, and sibling:conclude stages an unmerged path once its file holds no marker" },
   { id = "A.213", first_title = "sibling:conclude refuses, naming them, while any tracked file holds unstaged changes once its resolved paths are staged, so no part of a resolution is left out of the merge commit" },
   { id = "A.214", first_title = "sibling:conclude stages the paths its resolution names with --include, modified, deleted or new, refuses any new file left out and any include with no change behind it, and commits the merge in the cleaned environment" },
+  { id = "A.215", first_title = "sibling:override trusts every tracked environment config of the clone, mise.<env>.toml, only when unmodified at HEAD as it trusts mise.toml, refuses a modified one by name, and never trusts an untracked one" },
 ]
