@@ -209,4 +209,5 @@ issued = [
   { id = "A.214", first_title = "sibling:conclude stages the paths its resolution names with --include, modified, deleted or new, refuses any new file left out and any include with no change behind it, and commits the merge in the cleaned environment" },
   { id = "A.215", first_title = "sibling:override trusts every tracked environment config of the clone, mise.<env>.toml, only when unmodified at HEAD as it trusts mise.toml, refuses a modified one by name, and never trusts an untracked one" },
   { id = "A.216", first_title = "sibling:conclude stages every conflicted path its resolution left without a marker before deciding whether the clone's plan-file resolver runs, so a plan file resolved by hand never reaches the resolver" },
+  { id = "A.217", first_title = "source:port plans into a named checkout with --into: judged against that tree, its plan saved under that checkout's .artifacts, and create operations only where the destination keeps no port record, as the canonical source does" },
 ]
