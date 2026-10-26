@@ -2487,3 +2487,13 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_env_config.py::test_an_untracked_env_config_is_never_trusted" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.216"
+title = "sibling:conclude stages every conflicted path its resolution left without a marker before deciding whether the clone's plan-file resolver runs, so a plan file resolved by hand never reaches the resolver"
+thread = "A"
+depends_on = ["A.210", "A.212"]
+because = { "A.210" = "the conclusion that runs the clone's resolver on unmerged plan files", "A.212" = "the staging of conflicted paths resolved by hand" }
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_conclude_order.py::test_a_hand_resolved_plan_file_never_reaches_the_resolver" },
+  { kind = "task", name = "check" },
+]
