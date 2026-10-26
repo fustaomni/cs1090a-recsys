@@ -25,7 +25,10 @@ ROOT = Path(__file__).resolve().parent.parent
 PROVENANCE = "contracts/provenance.toml"
 LINE_LIMIT = 100
 EVIDENCE = ".artifacts"
-USAGE = "usage: source_port.py [--out <file under .artifacts>] <source-checkout> <path[=local]>..."
+USAGE = (
+    "usage: source_port.py [--into <checkout>] [--out <file under .artifacts>]"
+    " <source-checkout> <path[=local]>..."
+)
 
 
 def _string(text: str) -> str:
@@ -49,8 +52,11 @@ def build(source: Path, paths: list[str], here: Path = ROOT) -> str:
     """The spec's text, or SystemExit naming the first refusal."""
     operations: list[str] = []
     entries: list[str] = []
-    record = (here / PROVENANCE).read_text(encoding="utf-8")
-    pinned = tomllib.loads(record).get("commit")
+    # THE CANONICAL SOURCE KEEPS NO PORT RECORD (A.217): its files are its own, so a port into
+    # it creates them and records nothing; a sibling's record is kept exactly as before.
+    recorded = (here / PROVENANCE).exists()
+    record = (here / PROVENANCE).read_text(encoding="utf-8") if recorded else ""
+    pinned = tomllib.loads(record).get("commit") if recorded else None
     head = _head(source)
     # A FILE READ AT ANOTHER COMMIT SAYS SO (A.136); the record's own commit stays the default.
     at = f'commit = "{head}"\n' if head is not None and head != pinned else ""
@@ -76,11 +82,23 @@ def build(source: Path, paths: list[str], here: Path = ROOT) -> str:
         digest = hashlib.sha256(data).hexdigest()
         moved = f"upstream_path = {_string(upstream_path)}\n" if path != upstream_path else ""
         entries.append(f'\n[[files]]\npath = {_string(path)}\n{moved}sha256 = "{digest}"\n{at}')
-    operations.append(
-        f'[[operations]]\nop = "replace"\npath = "{PROVENANCE}"\n'
-        f"anchor = {_string(record)}\nreplacement = {_string(record + ''.join(entries))}\n"
-    )
+    if recorded:
+        operations.append(
+            f'[[operations]]\nop = "replace"\npath = "{PROVENANCE}"\n'
+            f"anchor = {_string(record)}\nreplacement = {_string(record + ''.join(entries))}\n"
+        )
     return 'contract = "source-apply/v1"\n\n' + "\n".join(operations)
+
+
+def _save(here: Path, out: str, source: str, paths: list[str]) -> int:
+    """Save the plan under here's .artifacts, where here's own source:apply reads it."""
+    target = here / out
+    if not _inside(target, here / EVIDENCE):
+        raise SystemExit(f"--out must be under {EVIDENCE}, where evidence lives: {out}")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(build(Path(source), paths, here), encoding="utf-8")
+    print(f"planned {len(paths)} file(s) into {out}; apply it with source:apply {out}")
+    return 0
 
 
 def main() -> int:
@@ -92,14 +110,13 @@ def main() -> int:
     evidence lives and git does not look, and nowhere else.
     """
     match sys.argv[1:]:
-        case ["--out", out, source, *paths] if paths:
-            target = ROOT / out
-            if not _inside(target, ROOT / EVIDENCE):
-                raise SystemExit(f"--out must be under {EVIDENCE}, where evidence lives: {out}")
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(build(Path(source), paths, ROOT), encoding="utf-8")
-            print(f"planned {len(paths)} file(s) into {out}; apply it with source:apply {out}")
+        case ["--into", into, "--out", out, source, *paths] if paths:
+            return _save(Path(into), out, source, paths)
+        case ["--into", into, source, *paths] if paths:
+            print(build(Path(source), paths, Path(into)), end="")
             return 0
+        case ["--out", out, source, *paths] if paths:
+            return _save(ROOT, out, source, paths)
         case [source, *paths] if paths:
             print(build(Path(source), paths, ROOT), end="")
             return 0
