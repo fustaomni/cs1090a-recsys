@@ -57,6 +57,10 @@ class Sibling(Contract):
     packages: dict[str, str] = Field(default_factory=dict)
 
 
+# A.218: where sibling:trust records each review, read back by sibling:conclude.
+TRUST_RECORDS = ROOT / ".artifacts" / "trust"
+
+
 class _Siblings(Contract):
     contract: Literal["siblings/v1"]
     siblings: tuple[Sibling, ...]
@@ -328,6 +332,26 @@ def _marked(clone: Path) -> list[str]:
     return marked
 
 
+class _Review(Contract):
+    """The review sibling:trust records: the config, the commit it was read at, its digest."""
+
+    sibling: str
+    config: str
+    commit: str
+    sha256: str
+
+
+def _reviewed_merge(clone: Path, name: str, head: str) -> bool:
+    """The merged mise.toml is the content its reviewer named against this HEAD (A.218)."""
+    record = TRUST_RECORDS / f"{name}.json"
+    if not record.is_file():
+        return False
+    named = from_document(_Review, json.loads(record.read_text(encoding="utf-8")))
+    digest = hashlib.sha256((clone / "mise.toml").read_bytes()).hexdigest()
+    observed = (named.sibling, named.config, named.commit, named.sha256)
+    return observed == (name, "mise.toml", head, digest)
+
+
 def conclude(
     sibling: Sibling,
     parent: Path,
@@ -395,10 +419,10 @@ def conclude(
         git("diff", "--cached", "--quiet", commit, "--", "mise.toml", cwd=clone).returncode
         for commit in (before, theirs)
     ]
-    if 0 not in reviewed:
+    if 0 not in reviewed and not _reviewed_merge(clone, sibling.name, before):
         raise SystemExit(
             f"{config} as merged matches neither {before[:12]} nor {theirs[:12]}, so it is "
-            "not trusted; nothing was committed"
+            "not trusted, and no review names its digest; nothing was committed"
         )
     if trust(config) != 0:
         raise SystemExit(f"mise trust {config} failed; nothing was committed")
@@ -665,7 +689,7 @@ def review(
     if trust(config) != 0:
         raise SystemExit(f"mise trust {config} failed, so mise will not load it")
     head = git("rev-parse", "HEAD", cwd=clone).stdout.strip()
-    record = ROOT / ".artifacts" / "trust" / f"{sibling.name}.json"
+    record = TRUST_RECORDS / f"{sibling.name}.json"
     record.parent.mkdir(parents=True, exist_ok=True)
     decision = {"sibling": sibling.name, "config": "mise.toml", "commit": head, "sha256": actual}
     record.write_text(json.dumps(decision, indent=2) + "\n", encoding="utf-8")
