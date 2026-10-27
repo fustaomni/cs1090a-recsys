@@ -2509,3 +2509,15 @@ done_when = [
   { kind = "proof", test = "tests/test_source_port_into.py::test_a_file_present_in_the_destination_is_refused" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.218"
+title = "sibling:conclude trusts a merged mise.toml that matches neither parent only at the digest its reviewer recorded against the current HEAD, read into a contract; any other merged content, and a review against another HEAD, is still refused"
+thread = "A"
+depends_on = ["A.211", "A.212"]
+because = { "A.211" = "the recorded review this reads", "A.212" = "the conclusion whose parent-only trust this extends" }
+branch = "feature/sibling-merged-review"
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_merged_review.py::test_a_merged_config_reviewed_against_head_is_concluded" },
+  { kind = "proof", test = "tests/test_sibling_merged_review.py::test_an_unreviewed_merged_config_is_refused" },
+  { kind = "proof", test = "tests/test_sibling_merged_review.py::test_a_review_against_another_head_is_refused" },
+]
