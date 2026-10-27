@@ -210,4 +210,5 @@ issued = [
   { id = "A.215", first_title = "sibling:override trusts every tracked environment config of the clone, mise.<env>.toml, only when unmodified at HEAD as it trusts mise.toml, refuses a modified one by name, and never trusts an untracked one" },
   { id = "A.216", first_title = "sibling:conclude stages every conflicted path its resolution left without a marker before deciding whether the clone's plan-file resolver runs, so a plan file resolved by hand never reaches the resolver" },
   { id = "A.217", first_title = "source:port plans into a named checkout with --into: judged against that tree, its plan saved under that checkout's .artifacts, and create operations only where the destination keeps no port record, as the canonical source does" },
+  { id = "A.218", first_title = "sibling:conclude trusts a merged mise.toml that matches neither parent only at the digest its reviewer recorded against the current HEAD, read into a contract; any other merged content, and a review against another HEAD, is still refused" },
 ]
