@@ -2532,4 +2532,6 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_origin.py::test_an_ssh_origin_of_the_declared_repository_is_realigned" },
   { kind = "proof", test = "tests/test_sibling_origin.py::test_an_origin_already_declared_is_left_unchanged" },
   { kind = "proof", test = "tests/test_sibling_origin.py::test_an_origin_naming_another_repository_is_refused" },
+  { kind = "proof", test = "tests/test_sibling_origin.py::test_an_absent_origin_request_is_refused_by_the_policy" },
+  { kind = "proof", test = "tests/test_sibling_origin.py::test_a_sibling_not_yet_cloned_is_refused" },
 ]
