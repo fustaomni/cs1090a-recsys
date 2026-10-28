@@ -887,3 +887,10 @@ run = "uv run --no-sync python scripts/sibling_checkout.py --conflicts"
 [tasks."sibling:pin"]
 description = "Generate a sibling's FAS pins from its own flake.lock: plan them with --out, or name stale ones with --check"
 run = "uv run --no-sync python scripts/sibling_pins.py"
+
+# This repository's own (plan A.219): a clone's origin restored to its declared source, judged
+# first, so a transport another tool rewrote is repaired without a raw git command.
+[tasks."sibling:origin"]
+description = "Set a sibling clone's origin to its declared source when only the transport differs, refusing an origin naming another repository"
+usage = 'arg "<name>" help="A sibling contracts/siblings.toml declares"'
+run = 'uv run --no-sync python scripts/sibling_checkout.py --origin "${usage_name?}"' 
