@@ -2535,3 +2535,15 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_origin.py::test_an_absent_origin_request_is_refused_by_the_policy" },
   { kind = "proof", test = "tests/test_sibling_origin.py::test_a_sibling_not_yet_cloned_is_refused" },
 ]
+[[steps]]
+id = "A.220"
+title = "A declared sibling with no FAS mode is cloned only to be measured: its origin judged on the spine and nothing written, trusted or set up, so the hub can read every sibling it declares from FAS"
+thread = "A"
+depends_on = ["A.185", "A.219"]
+because = { "A.185" = "the sibling clone this stops after when no FAS mode is declared", "A.219" = "the origin policy that judges the clone instead of the trust policy" }
+branch = "feature/measured-siblings"
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_measured.py::test_a_sibling_without_tools_is_cloned_without_a_fas_mode" },
+  { kind = "proof", test = "tests/test_sibling_measured.py::test_a_sibling_with_tools_still_gets_its_fas_mode" },
+  { kind = "proof", test = "tests/test_sibling_measured.py::test_the_hubs_measured_siblings_are_declared_without_tools" },
+]
