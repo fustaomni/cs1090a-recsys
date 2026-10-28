@@ -115,6 +115,10 @@ REFRESH_COMMAND = "sibling:refresh"
 CONCLUDE_COMMAND = "sibling:conclude"
 CONFLICTS_COMMAND = "sibling:conflicts"
 TRUST_COMMAND = "sibling:trust"
+ORIGIN_COMMAND = "sibling:origin"
+ORIGIN_SUBJECT = "sibling_origin"
+ORIGIN_POLICY = ROOT / "policies" / "runs" / "sibling_origin"
+ORIGIN_ENTRYPOINT = "data.runs.sibling_origin.deny"
 PLAN_FILES = ("context/plan.toml", "context/plan-ids.toml", "context/plan-trace.toml")
 MARKERS = ("<<<<<<< ", ">>>>>>> ")
 
@@ -722,6 +726,88 @@ def _trust_main(args: list[str]) -> int:
     return enforce(announce(TRUST_COMMAND, verdict, "sibling_trusted", note, observed))
 
 
+class SiblingOrigin(Contract):
+    """sibling-origin/v1: a clone's configured origin beside its declared source (A.219)."""
+
+    contract: Literal["sibling-origin/v1"] = "sibling-origin/v1"
+    name: str
+    clone: str
+    clone_exists: bool
+    configured: str
+    declared: str
+    same_repository: bool
+    already_declared: bool
+
+
+def _repository(url: str) -> str:
+    """host/owner/name for an HTTPS or SSH address, so only the transport may differ."""
+    text = normalized(url).lower()
+    for prefix in ("https://", "http://", "ssh://git@", "ssh://"):
+        if text.startswith(prefix):
+            return text.removeprefix(prefix)
+    if text.startswith("git@") and ":" in text:
+        host, _, path = text.removeprefix("git@").partition(":")
+        return f"{host}/{path}"
+    return text
+
+
+def observe_origin(sibling: Sibling, parent: Path) -> SiblingOrigin:
+    """The clone's origin as configured, never as a url.insteadOf rewrite would show it."""
+    target = parent / sibling.name
+    exists = (target / ".git").exists()
+    found = "no clone"
+    if exists:
+        read = git("config", "--get", "remote.origin.url", cwd=target)
+        found = read.stdout.strip() if read.returncode == 0 else "no origin"
+    return SiblingOrigin(
+        name=sibling.name,
+        clone=str(target),
+        clone_exists=exists,
+        configured=found,
+        declared=sibling.source,
+        same_repository=exists and _repository(found) == _repository(sibling.source),
+        already_declared=exists and normalized(found) == normalized(sibling.source),
+    )
+
+
+def align_origin(observed: SiblingOrigin) -> str:
+    """Set origin to the declared source and read it back; the policy has already judged it."""
+    clone = Path(observed.clone)
+    changed = git("remote", "set-url", "origin", observed.declared, cwd=clone)
+    if changed.returncode != 0:
+        raise SystemExit(f"origin could not be set: {changed.stderr.strip()}")
+    after = git("config", "--get", "remote.origin.url", cwd=clone).stdout.strip()
+    if normalized(after) != normalized(observed.declared):
+        raise SystemExit(f"origin reads {after}, not {observed.declared}")
+    return f"{observed.name}: origin {observed.configured} realigned to {observed.declared}"
+
+
+def _origin_main(args: list[str]) -> int:
+    """sibling:origin <name>, judged by its own policy before origin is touched (A.219)."""
+    known = {sibling.name: sibling for sibling in declared()}
+    if len(args) != 1 or args[0] not in known:
+        usage = f"usage: mise run run {ORIGIN_COMMAND} <name>, one of {sorted(known)}"
+        stopped = halted(ORIGIN_SUBJECT, ORIGIN_ENTRYPOINT, ORIGIN_POLICY, usage)
+        return enforce(announce(ORIGIN_COMMAND, stopped, "usage", usage, {}))
+    observed = observe_origin(known[args[0]], _siblings_parent())
+    data = observed.model_dump(mode="json")
+    judged = evaluate(observed, ORIGIN_SUBJECT, ORIGIN_POLICY, ORIGIN_ENTRYPOINT)
+    verdict = decide(judged)
+    if verdict.action != "proceed":
+        code = refusal_code(verdict, "sibling_origin_refused")
+        return enforce(announce(ORIGIN_COMMAND, verdict, code, reasons(judged), data))
+    if observed.already_declared:
+        note = f"{observed.name}: origin is already {observed.declared}"
+        return enforce(announce(ORIGIN_COMMAND, verdict, "sibling_origin_unchanged", note, data))
+    try:
+        note = align_origin(observed)
+    except SystemExit as refused:
+        reason = str(refused.code)
+        stopped = halted(ORIGIN_SUBJECT, ORIGIN_ENTRYPOINT, ORIGIN_POLICY, reason)
+        return enforce(announce(ORIGIN_COMMAND, stopped, "sibling_origin_refused", reason, data))
+    return enforce(announce(ORIGIN_COMMAND, verdict, "sibling_origin_aligned", note, data))
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """sibling:checkout <name> -- clone, give a FAS mode, judge, then trust both files."""
     args = list(sys.argv[1:] if argv is None else argv)
@@ -733,6 +819,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _refresh_main(args[1:])
     if args[:1] == ["--trust"]:
         return _trust_main(args[1:])
+    if args[:1] == ["--origin"]:
+        return _origin_main(args[1:])
     override_only = args[:1] == ["--override"]
     args = args[1:] if override_only else args
     known = {sibling.name: sibling for sibling in declared()}

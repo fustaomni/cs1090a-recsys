@@ -1509,7 +1509,7 @@
  
  [[problems]]
  code = "ERR_TEMPLATE_UNPINNED"
-@@ -1086,151 +797,221 @@
+@@ -1086,151 +797,236 @@
  severity = "error"
  
  [[problems]]
@@ -1878,4 +1878,19 @@
 +[[problems]]
 +code = "ERR_MODEL_INPUT_MISSING"
 +title = "The fit record is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_SIBLING_ORIGIN_FOREIGN"
++title = "Only the transport may change, never the repository"
++severity = "error"
++
++[[problems]]
++code = "ERR_SIBLING_ORIGIN_INPUT_MISSING"
++title = "The origin request is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_SIBLING_ORIGIN_NO_CLONE"
++title = "The sibling is already cloned"
 +severity = "error"
