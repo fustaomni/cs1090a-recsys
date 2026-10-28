@@ -2521,3 +2521,15 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_merged_review.py::test_an_unreviewed_merged_config_is_refused" },
   { kind = "proof", test = "tests/test_sibling_merged_review.py::test_a_review_against_another_head_is_refused" },
 ]
+[[steps]]
+id = "A.219"
+title = "sibling:origin realigns a declared sibling's origin to its declared source when only the transport differs, judged on the spine, and refuses an origin that names another repository"
+thread = "A"
+depends_on = ["A.184"]
+because = { "A.184" = "the declared source a clone's origin must read back as, which sibling:origin now restores instead of only comparing" }
+branch = "feature/sibling-origin"
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_origin.py::test_an_ssh_origin_of_the_declared_repository_is_realigned" },
+  { kind = "proof", test = "tests/test_sibling_origin.py::test_an_origin_already_declared_is_left_unchanged" },
+  { kind = "proof", test = "tests/test_sibling_origin.py::test_an_origin_naming_another_repository_is_refused" },
+]
