@@ -79,3 +79,36 @@ def test_an_origin_naming_another_repository_is_refused(
     # The command keeps its own refusal code; the rule that fired is named in the message.
     assert outcome["code"] == "sibling_origin_refused", outcome
     assert "ERR_SIBLING_ORIGIN_FOREIGN" in outcome["message"], outcome
+
+
+def test_an_absent_origin_request_is_refused_by_the_policy() -> None:
+    """With no sibling_origin input the policy refuses, never reading absence as allowed."""
+    subject = importlib.import_module("sibling_checkout")
+    evidence = subject.SiblingOrigin(
+        name="demo",
+        clone="/nowhere/demo",
+        clone_exists=False,
+        configured="no clone",
+        declared=DECLARED,
+        same_repository=False,
+        already_declared=False,
+    )
+    found = subject.evaluate(
+        evidence, "not_sibling_origin", subject.ORIGIN_POLICY, subject.ORIGIN_ENTRYPOINT
+    )
+    codes = {rule.code for rule in found.rules if rule.outcome == "fail"}
+    assert "ERR_SIBLING_ORIGIN_INPUT_MISSING" in codes, found
+
+
+def test_a_sibling_not_yet_cloned_is_refused(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """A declared sibling with no clone is refused by name before anything is touched."""
+    subject = importlib.import_module("sibling_checkout")
+    sibling = subject.Sibling(name="demo", source=DECLARED, tools={"uv": "0.12.22"})
+    monkeypatch.setattr(subject, "declared", lambda root=None: (sibling,))
+    monkeypatch.setattr(subject, "_siblings_parent", lambda: tmp_path / "siblings")
+    assert subject.main(["--origin", "demo"]) != 0
+    outcome = json.loads(capsys.readouterr().out)
+    assert outcome["code"] == "sibling_origin_refused", outcome
+    assert "ERR_SIBLING_ORIGIN_NO_CLONE" in outcome["message"], outcome

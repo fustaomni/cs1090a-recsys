@@ -1785,6 +1785,33 @@ mutant = "\tfalse\n"
 proof = "tests/test_sibling_checkout.py::test_a_stale_toolchain_is_not_trusted"
 
 [[safeguards]]
+id = "SIBLING_ORIGIN.INPUT_MISSING"
+engine = "sibling:origin"
+guard = "ERR_SIBLING_ORIGIN_INPUT_MISSING"
+path = "policies/runs/sibling_origin/sibling_origin.rego"
+anchor = "\tnot input.sibling_origin\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_origin.py::test_an_absent_origin_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SIBLING_ORIGIN.NO_CLONE"
+engine = "sibling:origin"
+guard = "ERR_SIBLING_ORIGIN_NO_CLONE"
+path = "policies/runs/sibling_origin/sibling_origin.rego"
+anchor = "\tnot evidence.clone_exists\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_origin.py::test_a_sibling_not_yet_cloned_is_refused"
+
+[[safeguards]]
+id = "SIBLING_ORIGIN.FOREIGN"
+engine = "sibling:origin"
+guard = "ERR_SIBLING_ORIGIN_FOREIGN"
+path = "policies/runs/sibling_origin/sibling_origin.rego"
+anchor = "\tnot evidence.same_repository\n"
+mutant = "\tfalse\n"
+proof = "tests/test_sibling_origin.py::test_an_origin_naming_another_repository_is_refused"
+
+[[safeguards]]
 id = "SIBLING_OVERRIDE.INPUT_MISSING"
 engine = "sibling:override"
 guard = "ERR_SIBLING_OVERRIDE_INPUT_MISSING"
