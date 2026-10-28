@@ -32,3 +32,27 @@ osv-scanner = "pkgs/by-name/os/osv-scanner/package.nix"
 regal = "pkgs/by-name/re/regal/package.nix"
 uv = "pkgs/by-name/uv/uv/package.nix"
 zizmor = "pkgs/by-name/zi/zizmor/package.nix"
+
+# MEASURED ONLY (A.220): the hub's survey reads these three, and no task runs in them from here,
+# so each is declared with its source and no FAS mode. sibling:checkout clones it and judges its
+# origin, and writes, trusts and sets up nothing.
+[[siblings]]
+name = "cs1090a-data-science"
+source = "https://github.com/ltphongssvn/cs1090a-data-science"
+branch = "develop"
+
+[siblings.tools]
+
+[[siblings]]
+name = "cs1090a-spec-driven-development"
+source = "https://github.com/ltphongssvn/cs1090a-spec-driven-development"
+branch = "develop"
+
+[siblings.tools]
+
+[[siblings]]
+name = "cscie103-olap-oltp"
+source = "https://github.com/ltphongssvn/cscie103-olap-oltp"
+branch = "develop"
+
+[siblings.tools]
