@@ -15,7 +15,9 @@ from check_repo_hygiene import tracked_files
 
 ROOT = Path(__file__).resolve().parent.parent
 CANONICAL = "https://github.com/fustaomni/cscie103-data-engineering"
-RETIRED = "ltphongssvn/cscie103"
+# THE ONE RETIRED REPOSITORY, BY ITS FULL NAME (A.220): a prefix also matched cscie103-olap-oltp,
+# a separate repository that lives at ltphongssvn.
+RETIRED = "ltphongssvn/cscie103-data-engineering"
 QUOTED = (ROOT / "contracts" / "vendor-patches", ROOT / "context" / "plan-trace.toml")
 
 
@@ -30,6 +32,14 @@ def _naming_the_retired_location() -> list[str]:
         for path in live
         if RETIRED in path.read_text(encoding="utf-8", errors="ignore")
     ]
+
+
+def test_only_cscie103s_retired_address_is_refused() -> None:
+    """The retired cscie103 address is caught in any form; a sibling living at its owner is not."""
+    assert RETIRED in "https://github.com/ltphongssvn/cscie103-data-engineering.git"
+    assert RETIRED in "git@github.com:ltphongssvn/cscie103-data-engineering"
+    assert RETIRED not in "https://github.com/ltphongssvn/cscie103-olap-oltp"
+    assert RETIRED not in "https://github.com/fustaomni/cscie103-data-engineering"
 
 
 def test_tracked_references_name_cscie103_where_it_lives() -> None:

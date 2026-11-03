@@ -808,6 +808,24 @@ def _origin_main(args: list[str]) -> int:
     return enforce(announce(ORIGIN_COMMAND, verdict, "sibling_origin_aligned", note, data))
 
 
+def _measured(sibling: Sibling) -> int:
+    """A sibling with no FAS mode, cloned only to be measured: its origin judged, nothing trusted.
+
+    The hub's survey reads such a sibling and no task runs in it from here, so no override is
+    written, nothing is trusted and its setup never runs (A.220). The clone is judged by the
+    origin policy, which refuses a missing clone or an origin naming another repository.
+    """
+    observed = observe_origin(sibling, _siblings_parent())
+    data = observed.model_dump(mode="json")
+    judged = evaluate(observed, ORIGIN_SUBJECT, ORIGIN_POLICY, ORIGIN_ENTRYPOINT)
+    verdict = decide(judged)
+    if verdict.action != "proceed":
+        code = refusal_code(verdict, "sibling_untrusted")
+        return enforce(announce(COMMAND, verdict, code, reasons(judged), data))
+    message = f"{sibling.name} at {observed.clone}: cloned to be measured; it declares no FAS mode"
+    return enforce(announce(COMMAND, verdict, "sibling_cloned", message, data))
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """sibling:checkout <name> -- clone, give a FAS mode, judge, then trust both files."""
     args = list(sys.argv[1:] if argv is None else argv)
@@ -849,6 +867,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         written_code = "sibling_override_written"
         return enforce(announce(OVERRIDE_COMMAND, verdict, written_code, note, observed))
     clone = checkout(sibling, _siblings_parent())
+    if not sibling.tools:
+        return _measured(sibling)
     write_override(clone, sibling)
     evidence = observe(clone, sibling)
     data = evidence.model_dump(mode="json")
