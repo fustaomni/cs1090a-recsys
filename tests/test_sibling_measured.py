@@ -16,6 +16,8 @@ from types import ModuleType
 
 import pytest
 
+from nonvacuous import nonempty
+
 IDENTITY = ["-c", "user.name=t", "-c", "user.email=t@example.invalid"]
 MEASURED = ("cs1090a-data-science", "cs1090a-spec-driven-development", "cscie103-olap-oltp")
 
@@ -85,7 +87,7 @@ def test_the_hubs_measured_siblings_are_declared_without_tools() -> None:
     """The three the hub's survey reads are declared, sourced over HTTPS, with no FAS mode."""
     subject = importlib.import_module("sibling_checkout")
     declared = {sibling.name: sibling for sibling in subject.declared()}
-    for name in MEASURED:
+    for name in nonempty(MEASURED):
         assert name in declared, sorted(declared)
         assert declared[name].tools == {}, declared[name]
         assert declared[name].source.startswith("https://github.com/"), declared[name]

@@ -2546,4 +2546,5 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_measured.py::test_a_sibling_without_tools_is_cloned_without_a_fas_mode" },
   { kind = "proof", test = "tests/test_sibling_measured.py::test_a_sibling_with_tools_still_gets_its_fas_mode" },
   { kind = "proof", test = "tests/test_sibling_measured.py::test_the_hubs_measured_siblings_are_declared_without_tools" },
+  { kind = "proof", test = "tests/test_canonical_sources.py::test_only_cscie103s_retired_address_is_refused" },
 ]
