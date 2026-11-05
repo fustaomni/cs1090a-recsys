@@ -173,6 +173,12 @@ sha256 = "b10e61c90cc03b210a6b83a2256c36b0b3fda324fded41ab90563154eca562ae"
 path = "scripts/spine.py"
 sha256 = "a6e8be55d549416ec912cdfb741ac1e4c733c2ba379b7df2b30717b950334b08"
 
+[[adapted]]
+path = "scripts/spine.py"
+reason = "A.241: a verdict names when it was judged, and names its policy and the evidence it judged by SHA-256, so it can be recomputed offline"
+patch = "contracts/vendor-patches/scripts/spine.py.patch"
+sha256 = "85053f0135a2d6bcb070ccc46ecfa7c584457090ae1cfe578f371f2873916c91"
+
 [[files]]
 path = "tests/conftest.py"
 sha256 = "64760fae5b9a815d95581995c7a14c363e2b59eccc9db4f2287bdff38f21efe8"

@@ -1,0 +1,82 @@
+--- a/scripts/spine.py
++++ b/scripts/spine.py
+@@ -17,12 +17,14 @@
+ 
+ import hashlib
+ import json
++import re
+ import shutil
+ import subprocess
++from datetime import UTC, datetime
+ from pathlib import Path
+ from typing import Literal
+ 
+-from pydantic import BaseModel, Field, JsonValue, ValidationError
++from pydantic import BaseModel, Field, JsonValue, ValidationError, model_validator
+ 
+ from contract_base import Contract, Reading
+ 
+@@ -32,6 +34,8 @@
+ ACTIONS: dict[Outcome, Action] = {"pass": "proceed", "fail": "refuse", "unknown": "halt"}
+ # command-outcome/v1's codes: success 0, refused 2, failed 1 -- now from a decision.
+ EXIT: dict[Action, int] = {"proceed": 0, "refuse": 2, "halt": 1}
++# A CONTENT DIGEST, NEVER A PLACEHOLDER: SHA-256 as lowercase hex (A.241).
++SHA256 = re.compile(r"[0-9a-f]{64}")
+ 
+ 
+ class _Frozen(Contract):
+@@ -61,6 +65,22 @@
+     outcome: Outcome
+     rules: tuple[RuleVerdict, ...]
+     reason: str = ""
++    judged_at: datetime
++
++    @model_validator(mode="after")
++    def _names_what_it_judged(self) -> Verdict:
++        """Its policy by content digest, and its evidence by digest whenever it judged some.
++
++        An unknown verdict judged nothing, and a schema verdict judged a request it is not yet
++        given, so only those two may name no evidence; inventing a digest would be false (A.241).
++        """
++        if not SHA256.fullmatch(self.policy_revision):
++            raise ValueError("a verdict names its policy by its content's SHA-256")
++        judged = self.outcome != "unknown" and not self.entrypoint.startswith("schema:")
++        named = SHA256.fullmatch(self.evidence_digest) is not None
++        if (judged and not named) or (self.evidence_digest and not named):
++            raise ValueError("a verdict names the evidence it judged by its SHA-256")
++        return self
+ 
+ 
+ class Decision(_Frozen):
+@@ -210,6 +230,7 @@
+             entrypoint=entrypoint,
+             policy_revision=revision,
+             evidence_digest=observed,
++            judged_at=datetime.now(UTC),
+             outcome="unknown",
+             rules=(),
+             reason=reason,
+@@ -232,6 +253,7 @@
+         entrypoint=entrypoint,
+         policy_revision=revision,
+         evidence_digest=observed,
++        judged_at=datetime.now(UTC),
+         outcome=outcome,
+         rules=tuple(rules),
+     )
+@@ -264,6 +286,7 @@
+         entrypoint=entrypoint,
+         policy_revision=policy_revision(package_dir),
+         evidence_digest="",
++        judged_at=datetime.now(UTC),
+         outcome="unknown",
+         rules=(),
+         reason=reason,
+@@ -291,6 +314,7 @@
+         entrypoint=f"schema:{model.__name__}",
+         policy_revision=hashlib.sha256(schema.encode("utf-8")).hexdigest(),
+         evidence_digest="",
++        judged_at=datetime.now(UTC),
+         outcome=rule.outcome,
+         rules=(rule,),
+     )
