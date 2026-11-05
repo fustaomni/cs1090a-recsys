@@ -1,0 +1,13 @@
+# contracts/truths.toml
+# truths/v1 (A.241): what is required, who may write it, what is observed, and the fields an
+# observation may never carry, since judging it is a verdict's work, not the observation's.
+contract = "truths/v1"
+requirements = [
+  "context/plan*.toml",
+  "contracts/design-acceptance.toml",
+  "contracts/truths.toml",
+  "site/src/data/*.json",
+]
+requirement_writers = ["plan:add", "plan:amend", "plan:record", "plan:retract", "source:apply"]
+observations = []
+verdict_fields = ["verdict", "passed", "verified", "done"]
