@@ -2693,13 +2693,12 @@ done_when = [
 ]
 [[steps]]
 id = "A.238"
-title = "The proposal and the slides are rendered from templates in which every number is a binding to an ms2-results/v1 or site-data path with a declared format rule, so 0.83427 under percent:1 renders as 83.4 percent, and every figure is a binding to a results figure entry by id; the renderer emits a claims-manifest/v1 of observations, versioned under the shared compatibility policy, naming each binding's path, value, rule, rendered text, page or slide and each output's digest, so every rendered number and figure traces through its results entry and execution id to its dataset digest; runs.document_render gives the verdict, every refusal carries a registered problem code, and it refuses a numeral in prose without a binding, a binding whose path is missing, a figure whose file digest differs from its entry or whose source fields are stale, an obsolete results contract version, results whose notebook, data or lock digest differs from the current commit's, and an output edited after it was rendered; its first acceptance test, written red before any step of the milestone is widened, carries one number from the verified archive to a rendered line"
+title = "The proposal and the slides are rendered from templates in which every number is a binding to an ms2-results/v1 or site-data path with a declared format rule, so 0.83427 under percent:1 renders as 83.4 percent, and every figure is a binding to a results figure entry by id; the renderer emits a claims-manifest/v1 of observations, versioned under the shared compatibility policy, naming each binding's path, value, rule, rendered text, page or slide and each output's digest, so every rendered number and figure traces through its results entry and execution id to its dataset digest; runs.document_render gives the verdict, every refusal carries a registered problem code, and it refuses a numeral in prose without a binding, a binding whose path is missing, a figure whose file digest differs from its entry or whose source fields are stale, an obsolete results contract version, results whose notebook, data or lock digest differs from the current commit's, and an output edited after it was rendered; it widens the walking skeleton A.244 proved"
 thread = "A"
-depends_on = ["A.225", "A.223"]
-because = { "A.225" = "the results the bindings read", "A.223" = "the site data the methods bindings read" }
+depends_on = ["A.225", "A.223", "A.244"]
+because = { "A.225" = "the results the bindings read", "A.223" = "the site data the methods bindings read", "A.244" = "the walking skeleton whose thin renderer this widens" }
 branch = "feature/document-renderer"
 done_when = [
-  { kind = "proof", test = "tests/test_document_renderer.py::test_one_number_travels_from_the_verified_archive_to_a_rendered_line" },
   { kind = "proof", test = "tests/test_document_renderer.py::test_each_rendered_number_is_its_rule_applied_to_its_value" },
   { kind = "proof", test = "tests/test_document_renderer.py::test_each_claim_traces_to_its_dataset_digest" },
   { kind = "proof", test = "tests/test_document_renderer.py::test_a_figure_whose_digest_differs_from_its_entry_is_refused" },
@@ -2896,4 +2895,15 @@ done_when = [
   { kind = "proof", test = "tests/test_plan_change.py::test_an_applied_change_is_verified_only_after_its_read_back_stages_pass" },
   { kind = "proof", test = "tests/test_plan_change.py::test_the_result_binds_the_spec_digest_to_the_resulting_plan_files" },
   { kind = "proof", test = "tests/test_plan_change.py::test_a_refused_change_leaves_develop_and_the_main_checkout_untouched" },
+]
+[[steps]]
+id = "A.244"
+title = "The walking skeleton runs Milestone 2 end to end at its thinnest before any step widens it: one number, the count of ratings, travels from an archive verified against its pinned digest, through a notebook run that records it in a results contract with its provenance, to one rendered line of the proposal, and that line's claim traces back to the archive's digest; the slice is production code, built red first and proven hermetically on an archive the test makes, and each lane-two step widens it rather than replacing it"
+thread = "A"
+depends_on = ["A.100"]
+because = { "A.100" = "the pinned data digests the skeleton's archive is verified against" }
+branch = "feature/walking-skeleton"
+done_when = [
+  { kind = "proof", test = "tests/test_walking_skeleton.py::test_one_number_travels_from_the_verified_archive_to_a_rendered_line" },
+  { kind = "proof", test = "tests/test_walking_skeleton.py::test_the_rendered_claim_traces_back_to_the_archive_digest" },
 ]
