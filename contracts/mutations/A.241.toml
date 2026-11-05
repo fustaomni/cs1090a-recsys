@@ -1,0 +1,58 @@
+# contracts/mutations/A.241.toml
+# A.241's guards, each broken once, and the proof that must notice (mutation:check).
+
+[[mutants]]
+id = "refuse-nothing"
+file = "scripts/truths.py"
+before = "        return REQUIREMENT_WRITE"
+after = "        return None"
+killers = ["tests/test_three_truths.py::test_a_task_that_writes_a_requirement_contract_is_refused"]
+
+[[mutants]]
+id = "no-writer-exemption"
+file = "scripts/truths.py"
+before = "if task in truths.requirement_writers:"
+after = "if False:"
+killers = ["tests/test_three_truths.py::test_a_task_that_writes_a_requirement_contract_is_refused"]
+
+[[mutants]]
+id = "audit-nothing"
+file = "scripts/truths.py"
+before = "if field in truths.verdict_fields"
+after = "if field in ()"
+killers = ["tests/test_three_truths.py::test_an_observation_contract_with_a_verdict_field_is_refused"]
+
+[[mutants]]
+id = "judged-at-optional"
+file = "scripts/spine.py"
+before = "    judged_at: datetime\n"
+after = "    judged_at: datetime | None = None\n"
+killers = ["tests/test_three_truths.py::test_a_verdict_without_its_policy_digest_or_observation_digest_is_refused"]
+
+[[mutants]]
+id = "policy-unchecked"
+file = "scripts/spine.py"
+before = "if not SHA256.fullmatch(self.policy_revision):"
+after = "if False:"
+killers = ["tests/test_three_truths.py::test_a_verdict_without_its_policy_digest_or_observation_digest_is_refused"]
+
+[[mutants]]
+id = "evidence-unrequired"
+file = "scripts/spine.py"
+before = "(judged and not named) or "
+after = ""
+killers = ["tests/test_three_truths.py::test_a_verdict_without_its_policy_digest_or_observation_digest_is_refused"]
+
+[[mutants]]
+id = "recompute-policy-only"
+file = "scripts/truths.py"
+before = "return reproduced and verdict.evidence_digest == digest(evidence)"
+after = "return reproduced"
+killers = ["tests/test_three_truths.py::test_a_verdict_is_recomputed_offline_from_its_pinned_policy_and_observation"]
+
+[[mutants]]
+id = "completion-from-anything"
+file = "scripts/truths.py"
+before = "if not isinstance(status, PlanStatus):"
+after = "if False:"
+killers = ["tests/test_three_truths.py::test_completion_read_from_an_observation_is_refused"]
