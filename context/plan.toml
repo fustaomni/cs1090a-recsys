@@ -2548,3 +2548,352 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_measured.py::test_the_hubs_measured_siblings_are_declared_without_tools" },
   { kind = "proof", test = "tests/test_canonical_sources.py::test_only_cscie103s_retired_address_is_refused" },
 ]
+[[steps]]
+id = "A.221"
+title = "The site data has two versioned Pydantic contracts, site-project/v1 and site-mechanisms/v1: each document names its contract, every model and technique declares its estimand, unit of analysis, prediction-time inputs, assumptions, diagnostic and limitation, unexpected fields are refused at every depth, JSON Schema and Zod are generated deterministically at build time and committed, drift is refused, golden valid and invalid fixtures get identical verdicts in Python and Zod, every rule JSON Schema cannot express is written on both sides, and one written compatibility policy, shared by every versioned contract the repository publishes, classifies each change and checks superset compatibility"
+thread = "A"
+depends_on = ["A.95"]
+because = { "A.95" = "the site and the data files it renders, which this gives versioned contracts" }
+branch = "feature/site-data-contract"
+done_when = [
+  { kind = "proof", test = "tests/test_site_contract.py::test_a_document_without_its_contract_id_is_refused_by_name" },
+  { kind = "proof", test = "tests/test_site_contract.py::test_a_method_without_its_estimand_unit_inputs_or_assumptions_is_refused" },
+  { kind = "proof", test = "tests/test_site_contract.py::test_an_unexpected_nested_field_is_refused_on_both_sides" },
+  { kind = "proof", test = "tests/test_site_contract.py::test_generating_the_schemas_twice_yields_identical_bytes" },
+  { kind = "proof", test = "tests/test_site_contract.py::test_a_committed_artifact_that_differs_from_a_fresh_generation_fails" },
+  { kind = "proof", test = "tests/test_site_contract.py::test_a_hand_edited_generated_schema_mutant_is_killed_by_the_drift_gate" },
+  { kind = "proof", test = "tests/test_site_contract.py::test_every_golden_fixture_gets_the_same_verdict_in_python_and_zod" },
+  { kind = "proof", test = "tests/test_site_contract.py::test_a_fixture_python_accepts_but_zod_rejects_fails_the_parity_gate" },
+  { kind = "proof", test = "tests/test_site_contract.py::test_each_cross_field_rule_rejects_its_fixture_on_both_sides" },
+  { kind = "proof", test = "tests/test_site_contract.py::test_a_breaking_change_without_a_major_bump_is_refused" },
+  { kind = "proof", test = "tests/test_contract_compatibility.py::test_every_versioned_contract_is_judged_by_the_one_compatibility_policy" },
+]
+[[steps]]
+id = "A.222"
+title = "Displayed counts are derived and completeness is independent: the page shows the validated arrays' lengths, a governed design-acceptance/v1 contract lists each required model and technique with its provenance and is checked against the site data, mutants that drop or renumber an entry are killed, and labs are discovered lazily by glob only as evidence for the registry, which alone declares them, refusing an extra, missing, duplicate or malformed lab"
+thread = "A"
+depends_on = ["A.221", "A.99", "A.116"]
+because = { "A.221" = "the contracts the counts are read through", "A.99" = "the labs whose registry and files this reconciles", "A.116" = "the mutation harness that measures the completeness oracle" }
+branch = "feature/site-derived-counts"
+done_when = [
+  { kind = "proof", test = "tests/test_site_derived.py::test_the_rendered_counts_equal_the_validated_arrays" },
+  { kind = "proof", test = "tests/test_site_derived.py::test_the_site_data_holds_every_required_model_and_technique" },
+  { kind = "proof", test = "tests/test_site_derived.py::test_a_commit_changing_required_ids_and_site_models_together_is_refused" },
+  { kind = "proof", test = "tests/test_site_derived.py::test_dropping_or_renumbering_an_entry_mutant_is_killed" },
+  { kind = "proof", test = "tests/test_site_derived.py::test_an_extra_or_missing_lab_file_is_refused_by_name" },
+  { kind = "proof", test = "tests/test_site_derived.py::test_a_duplicate_lab_id_is_refused" },
+  { kind = "proof", test = "tests/test_site_derived.py::test_a_malformed_lab_filename_is_refused" },
+  { kind = "proof", test = "tests/test_site_derived.py::test_labs_render_in_registry_order" },
+  { kind = "proof", test = "tests/test_site_derived.py::test_validating_the_registry_imports_no_lab_module" },
+]
+[[steps]]
+id = "A.223"
+title = "The design carries the verified additions, required first: models 13, a crossed random-effects bias model, and 14, ordinal regression as a sensitivity rung, and techniques 11, a prediction-interval coverage audit, and 12, a user-level sign-flip permutation test, enter design-acceptance/v1 with their provenance in their own commit, then the site data, each declaring its estimand, unit, prediction-time inputs, assumptions, diagnostic and limitation, with bias defined as the baseline user and movie offsets fitted on the training window, elastic net inside the ridge and lasso rung, ordinal regression out of the exclusions, and each new lab registered as planned"
+thread = "A"
+depends_on = ["A.222"]
+because = { "A.222" = "the derived counts and the acceptance contract, so the additions change data only" }
+branch = "feature/design-additions"
+done_when = [
+  { kind = "proof", test = "tests/test_design_additions.py::test_each_addition_carries_its_provenance" },
+  { kind = "proof", test = "tests/test_design_additions.py::test_every_method_states_its_estimand_and_assumptions" },
+  { kind = "proof", test = "tests/test_design_additions.py::test_every_new_model_and_technique_has_a_planned_lab" },
+  { kind = "proof", test = "tests/test_design_additions.py::test_ordinal_regression_is_a_model_not_an_exclusion" },
+]
+[[steps]]
+id = "A.241"
+title = "The three kinds of truth stay separate by audit: requirement contracts, the plan, design-acceptance, the site contracts and quality rules, change only through reviewed commits and a task that writes one is refused; observation contracts carry no verdict, pass or verified field, refused by a structural audit over every contract class; every verdict names its policy and that policy's digest, the digest of the observation it judged and its time, so it can be recomputed offline from those alone; and completion is read only from verdicts and evidence bundles"
+thread = "A"
+depends_on = ["A.1"]
+because = { "A.1" = "the governance kernel whose spine issues the verdicts this requires to name their policy" }
+branch = "feature/three-truths-audit"
+done_when = [
+  { kind = "proof", test = "tests/test_three_truths.py::test_a_task_that_writes_a_requirement_contract_is_refused" },
+  { kind = "proof", test = "tests/test_three_truths.py::test_an_observation_contract_with_a_verdict_field_is_refused" },
+  { kind = "proof", test = "tests/test_three_truths.py::test_a_verdict_without_its_policy_digest_or_observation_digest_is_refused" },
+  { kind = "proof", test = "tests/test_three_truths.py::test_a_verdict_is_recomputed_offline_from_its_pinned_policy_and_observation" },
+  { kind = "proof", test = "tests/test_three_truths.py::test_completion_read_from_an_observation_is_refused" },
+]
+[[steps]]
+id = "A.235"
+title = "data:fetch acquires MovieLens 1M as an untrusted download under a fenced per-checkout lock: its trust root is the reviewed SHA-256 pin committed in the repository, recorded with its origin URL, the date it was first fetched, the publisher's MD5 it was corroborated against and the commit that reviewed it, and never the publisher's MD5, which is checked only against accidental corruption; it fetches only from the allow-listed HTTPS origin, refusing a redirect to another host or a plain-HTTP fallback, to a staging path with a network timeout and bounded retries; it verifies the archive against the pin before opening it, extracts member by member refusing absolute paths, parent references, escaping resolutions, links and devices within size and count limits, verifies each extracted file against its pin, publishes the directory atomically only while its fence is current, does nothing when a verified copy is already published, states that a matching digest proves the bytes equal the reviewed pin and not that the source is trustworthy, and writes observations only, judged on the spine by runs.data_fetch where an unknown observation is refused and every refusal carries a registered problem code"
+thread = "A"
+depends_on = ["A.100"]
+because = { "A.100" = "the pinned file digests each extracted file is verified against" }
+branch = "feature/data-acquisition"
+done_when = [
+  { kind = "proof", test = "tests/test_data_fetch.py::test_an_archive_that_misses_its_sha256_pin_is_never_opened" },
+  { kind = "proof", test = "tests/test_data_fetch.py::test_a_matching_md5_never_admits_an_archive_that_misses_its_sha256_pin" },
+  { kind = "proof", test = "tests/test_data_fetch.py::test_the_pin_records_its_origin_date_corroborating_md5_and_reviewing_commit" },
+  { kind = "proof", test = "tests/test_data_fetch.py::test_a_redirect_to_another_host_or_a_plain_http_origin_is_refused" },
+  { kind = "proof", test = "tests/test_data_fetch.py::test_a_traversing_absolute_or_link_member_is_refused" },
+  { kind = "proof", test = "tests/test_data_fetch.py::test_an_archive_over_its_size_or_count_limit_is_refused" },
+  { kind = "proof", test = "tests/test_data_fetch.py::test_an_interrupted_download_publishes_nothing" },
+  { kind = "proof", test = "tests/test_data_fetch.py::test_a_stalled_download_times_out_and_retries_a_bounded_number_of_times" },
+  { kind = "proof", test = "tests/test_data_fetch.py::test_a_verified_published_copy_makes_a_rerun_a_no_op" },
+  { kind = "proof", test = "tests/test_data_fetch.py::test_a_concurrent_fetch_is_refused_and_a_stale_fence_cannot_publish" },
+  { kind = "proof", test = "tests/test_data_fetch.py::test_an_unknown_observation_is_refused_never_passed" },
+  { kind = "proof", test = "tests/test_data_fetch.py::test_every_refusal_carries_a_registered_problem_code" },
+]
+[[steps]]
+id = "A.224"
+title = "A teammate on FAS OnDemand reaches a working checkout in one light, non-interactive command whose every input is declared in an onboarding-manifest/v1 requirement contract changed only by reviewed commits: the canonical repository URL from the project identity and the ref with its expected commit, verified after cloning so an origin or HEAD that differs stops onboarding; the tool versions in the FAS tools lock, installed only through tools:install; uv.lock, synced with --locked; the data's origin and SHA-256, fetched through data:fetch; the allowed install locations, the checkout, the uv cache and one kernel directory, with a write anywhere else refused; and the kernel's scope, a user kernel named from the project identity that never overwrites one this checkout did not create. It records each stage only after verifying its result so a rerun resumes at the first unverified stage and a second run after success changes nothing, refuses a kernel whose kernel.json does not name this checkout's interpreter, never executes the notebook, keeps within a declared memory and disk budget, and ends in an onboarding-result/v1 of observations only, judged on the spine by runs.onboarding where an unknown observation is refused and every refusal carries a registered problem code"
+thread = "A"
+depends_on = ["A.103", "A.235"]
+because = { "A.103" = "the FAS tools this command installs only through tools:install", "A.235" = "the verified data acquisition it runs as one stage" }
+branch = "feature/fas-onboarding"
+done_when = [
+  { kind = "proof", test = "tests/test_onboarding.py::test_one_command_leaves_a_checked_checkout_with_its_kernel" },
+  { kind = "proof", test = "tests/test_onboarding.py::test_a_clone_whose_origin_or_head_differs_from_the_manifest_stops_onboarding" },
+  { kind = "proof", test = "tests/test_onboarding.py::test_a_changed_lock_is_refused_by_a_locked_sync" },
+  { kind = "proof", test = "tests/test_onboarding.py::test_a_write_outside_the_declared_install_locations_is_refused" },
+  { kind = "proof", test = "tests/test_onboarding.py::test_an_existing_kernel_this_checkout_did_not_create_is_never_overwritten" },
+  { kind = "proof", test = "tests/test_onboarding.py::test_a_rerun_after_a_partial_failure_resumes_without_repeating_a_stage" },
+  { kind = "proof", test = "tests/test_onboarding.py::test_a_second_run_after_success_changes_nothing" },
+  { kind = "proof", test = "tests/test_onboarding.py::test_without_credentials_it_fails_fast_by_name_and_never_prompts" },
+  { kind = "proof", test = "tests/test_onboarding.py::test_a_kernel_naming_another_interpreter_is_refused" },
+  { kind = "proof", test = "tests/test_onboarding.py::test_the_result_holds_observations_and_the_policy_gives_the_verdict" },
+  { kind = "proof", test = "tests/test_onboarding.py::test_onboarding_never_executes_the_notebook_and_stays_within_its_budget" },
+  { kind = "proof", test = "tests/test_onboarding.py::test_an_unknown_observation_is_refused_never_passed" },
+  { kind = "proof", test = "tests/test_onboarding.py::test_every_refusal_carries_a_registered_problem_code" },
+]
+[[steps]]
+id = "A.237"
+title = "notebook:run executes a notebook as governed evidence under a fenced per-checkout lock: papermill in a fresh kernel in an OnDemand Jupyter session, parameters injected only into a cell tagged parameters, the executed copy written, a dirty notebook, lock or data refused, and an ms2-results/v1 contract of observations, versioned under the shared compatibility policy, written only while its fence is current, in which every number is a named field with its unit and tolerance class, exact or a declared rtol and atol, every figure is an entry with its id, path, SHA-256, title, axis labels, caption and the results fields it was drawn from, rendered deterministically so its digest reproduces, and the provenance names the commit, notebook digest, data and lock digests, interpreter version, platform and installed-package digest, seed, split digest and the run's execution id; runs.notebook_run gives the verdict, every refusal carries a registered problem code, two clean runs agree exactly on exact fields and figure digests and within tolerance on the rest, a notebook that relies on hidden kernel state fails, and results bound to another revision or another data digest are refused"
+thread = "A"
+depends_on = ["A.224", "A.221"]
+because = { "A.224" = "the checkout, kernel and data the notebook is executed against", "A.221" = "the shared compatibility policy the results contract is versioned under" }
+branch = "feature/notebook-run"
+done_when = [
+  { kind = "proof", test = "tests/test_notebook_run.py::test_two_clean_runs_agree_exactly_or_within_declared_tolerance" },
+  { kind = "proof", test = "tests/test_notebook_run.py::test_two_clean_runs_produce_identical_figure_digests" },
+  { kind = "proof", test = "tests/test_notebook_run.py::test_a_figure_without_its_title_labels_or_source_fields_is_refused" },
+  { kind = "proof", test = "tests/test_notebook_run.py::test_the_results_carry_every_provenance_and_environment_field" },
+  { kind = "proof", test = "tests/test_notebook_run.py::test_a_notebook_relying_on_hidden_kernel_state_fails_under_a_fresh_kernel" },
+  { kind = "proof", test = "tests/test_notebook_run.py::test_a_notebook_without_a_parameters_tag_is_refused_not_run_on_defaults" },
+  { kind = "proof", test = "tests/test_notebook_run.py::test_a_dirty_notebook_lock_or_data_is_refused" },
+  { kind = "proof", test = "tests/test_notebook_run.py::test_a_number_without_its_unit_or_tolerance_class_is_refused" },
+  { kind = "proof", test = "tests/test_notebook_run.py::test_a_concurrent_run_is_refused_and_a_stale_fence_cannot_write" },
+  { kind = "proof", test = "tests/test_notebook_run.py::test_results_bound_to_another_revision_are_refused" },
+  { kind = "proof", test = "tests/test_notebook_run.py::test_results_from_another_data_digest_are_refused" },
+  { kind = "proof", test = "tests/test_notebook_run.py::test_every_refusal_carries_a_registered_problem_code" },
+]
+[[steps]]
+id = "A.225"
+title = "The Milestone 2 notebook gets, understands and cleans MovieLens 1M in order: the group and its members, the data's size in megabytes, what a row and each column mean with shape, types and summary statistics, cleaning driven by a ratings-quality/v1 contract whose validity, uniqueness, referential-integrity and completeness rules each produce pass, fail or unknown with its count and are judged on the spine, a temporal split before any feature is computed with no feature drawn from a rating after its prediction time, and the revised question stated so its answer can be judged, recording every number it reports into ms2-results/v1 as it computes it"
+thread = "A"
+depends_on = ["A.237"]
+because = { "A.237" = "the governed run and results contract the notebook records into" }
+branch = "feature/ms2-notebook"
+done_when = [
+  { kind = "proof", test = "tests/test_ms2_notebook.py::test_every_section_the_milestone_requires_is_present_in_order" },
+  { kind = "proof", test = "tests/test_ms2_notebook.py::test_every_number_the_milestone_requires_is_a_results_field" },
+  { kind = "proof", test = "tests/test_ms2_notebook.py::test_each_quality_rule_reports_pass_fail_or_unknown_with_its_count" },
+  { kind = "proof", test = "tests/test_ms2_notebook.py::test_a_rating_outside_one_to_five_or_an_orphan_user_fails_its_rule" },
+  { kind = "proof", test = "tests/test_ms2_notebook.py::test_a_feature_computed_from_a_later_rating_is_refused" },
+]
+[[steps]]
+id = "A.238"
+title = "The proposal and the slides are rendered from templates in which every number is a binding to an ms2-results/v1 or site-data path with a declared format rule, so 0.83427 under percent:1 renders as 83.4 percent, and every figure is a binding to a results figure entry by id; the renderer emits a claims-manifest/v1 of observations, versioned under the shared compatibility policy, naming each binding's path, value, rule, rendered text, page or slide and each output's digest, so every rendered number and figure traces through its results entry and execution id to its dataset digest; runs.document_render gives the verdict, every refusal carries a registered problem code, and it refuses a numeral in prose without a binding, a binding whose path is missing, a figure whose file digest differs from its entry or whose source fields are stale, an obsolete results contract version, results whose notebook, data or lock digest differs from the current commit's, and an output edited after it was rendered; its first acceptance test, written red before any step of the milestone is widened, carries one number from the verified archive to a rendered line"
+thread = "A"
+depends_on = ["A.225", "A.223"]
+because = { "A.225" = "the results the bindings read", "A.223" = "the site data the methods bindings read" }
+branch = "feature/document-renderer"
+done_when = [
+  { kind = "proof", test = "tests/test_document_renderer.py::test_one_number_travels_from_the_verified_archive_to_a_rendered_line" },
+  { kind = "proof", test = "tests/test_document_renderer.py::test_each_rendered_number_is_its_rule_applied_to_its_value" },
+  { kind = "proof", test = "tests/test_document_renderer.py::test_each_claim_traces_to_its_dataset_digest" },
+  { kind = "proof", test = "tests/test_document_renderer.py::test_a_figure_whose_digest_differs_from_its_entry_is_refused" },
+  { kind = "proof", test = "tests/test_document_renderer.py::test_a_numeral_without_a_binding_is_refused" },
+  { kind = "proof", test = "tests/test_document_renderer.py::test_a_binding_to_a_missing_path_is_refused" },
+  { kind = "proof", test = "tests/test_document_renderer.py::test_an_obsolete_results_contract_version_is_refused" },
+  { kind = "proof", test = "tests/test_document_renderer.py::test_stale_results_are_refused" },
+  { kind = "proof", test = "tests/test_document_renderer.py::test_a_document_edited_after_rendering_is_refused" },
+  { kind = "proof", test = "tests/test_document_renderer.py::test_altering_a_result_or_its_revision_mutant_leaves_documents_not_current" },
+  { kind = "proof", test = "tests/test_document_renderer.py::test_the_claims_manifest_lists_every_binding" },
+  { kind = "proof", test = "tests/test_document_renderer.py::test_every_refusal_carries_a_registered_problem_code" },
+]
+[[steps]]
+id = "A.226"
+title = "The revised proposal is one to two pages rendered through the document renderer: the question and how it changed, the data source with its link, the cleaned rows and columns, the findings that change the plan and the plan for features, models and evaluation with each method's estimand and assumptions, every number and method bound rather than typed, and each staff condition met if the project is conditionally approved"
+thread = "A"
+depends_on = ["A.238"]
+because = { "A.238" = "the renderer whose bindings, rules and refusals the proposal is built with" }
+branch = "feature/ms2-proposal"
+done_when = [
+  { kind = "proof", test = "tests/test_ms2_proposal.py::test_the_proposal_renders_with_every_number_in_its_claims_manifest" },
+  { kind = "proof", test = "tests/test_ms2_proposal.py::test_the_proposal_is_one_to_two_pages_with_every_required_section" },
+]
+[[steps]]
+id = "A.227"
+title = "The Milestone 2 slides are rendered through the document renderer, numbered with one point each, every number and figure bound rather than typed or pasted, every figure titled with labelled axes as its results entry records, checked from that entry and never by parsing an image, and each member's part named"
+thread = "A"
+depends_on = ["A.238", "A.226"]
+because = { "A.238" = "the renderer the slides are built with", "A.226" = "the proposal whose question and plan the slides present" }
+branch = "feature/ms2-slides"
+done_when = [
+  { kind = "proof", test = "tests/test_ms2_slides.py::test_the_slides_render_with_every_number_and_figure_in_their_claims_manifest" },
+  { kind = "proof", test = "tests/test_ms2_slides.py::test_every_slide_is_numbered_and_every_figure_entry_has_a_title_and_axis_labels" },
+]
+[[steps]]
+id = "A.228"
+title = "plan:add and source:apply are idempotent: a spec already applied is reported as already applied and writes nothing, so a rerun after a partial failure resumes instead of refusing"
+thread = "A"
+depends_on = ["A.18", "A.128"]
+because = { "A.18" = "source:apply, the one writer of repository files", "A.128" = "plan:add's validated spec, which this makes safe to repeat" }
+branch = "feature/idempotent-writes"
+done_when = [
+  { kind = "proof", test = "tests/test_idempotent_writes.py::test_reapplying_an_applied_source_spec_writes_nothing" },
+  { kind = "proof", test = "tests/test_idempotent_writes.py::test_readding_an_added_plan_spec_writes_nothing" },
+]
+[[steps]]
+id = "A.229"
+title = "The plan's dependency graph is validated, every dependency existing and no cycle allowed, and each dependency's kind, mandatory or discretionary, each milestone's date and each step's owner are plan data, so plan:status reports the critical path to a milestone and each step's float"
+thread = "A"
+depends_on = ["A.128"]
+because = { "A.128" = "the plan writers that will carry the new fields" }
+branch = "feature/plan-critical-path"
+done_when = [
+  { kind = "proof", test = "tests/test_plan_critical_path.py::test_a_cycle_or_a_missing_dependency_is_refused" },
+  { kind = "proof", test = "tests/test_plan_critical_path.py::test_the_critical_path_to_a_milestone_is_reported" },
+  { kind = "proof", test = "tests/test_plan_critical_path.py::test_a_discretionary_dependency_is_marked_and_shown" },
+]
+[[steps]]
+id = "A.230"
+title = "Model 13, the crossed random-effects bias model, is fitted at scale on the training window only and proven before it is used: the grouping structure is checked first, user and movie counts, ratings per group and both factors crossing, and refused below a declared minimum; on synthetic ratings with known variance components it recovers them within a declared tolerance over at least twenty seeds; convergence is checked apart from singularity, by agreement of the log-likelihood across optimizers, and a fit that does not converge is refused; a singular fit is reported as an identifiability failure; crossed effects are never fitted as nested; and a cold user or movie is predicted at the fixed effects as its stated limitation"
+thread = "A"
+depends_on = ["A.223", "A.225"]
+because = { "A.223" = "the model's declared estimand, inputs and assumptions", "A.225" = "the cleaned table and temporal split it is fitted on" }
+branch = "feature/model-crossed-effects"
+done_when = [
+  { kind = "proof", test = "tests/test_model_crossed_effects.py::test_a_grouping_below_its_declared_minimum_is_refused" },
+  { kind = "proof", test = "tests/test_model_crossed_effects.py::test_known_variance_components_are_recovered_within_tolerance_over_seeds" },
+  { kind = "proof", test = "tests/test_model_crossed_effects.py::test_optimizers_that_disagree_on_the_log_likelihood_mark_the_fit_unconverged" },
+  { kind = "proof", test = "tests/test_model_crossed_effects.py::test_a_singular_fit_is_reported_as_unidentified" },
+  { kind = "proof", test = "tests/test_model_crossed_effects.py::test_a_cold_user_is_predicted_at_the_fixed_effects" },
+  { kind = "proof", test = "tests/test_model_crossed_effects.py::test_no_rating_after_the_prediction_time_enters_the_fit" },
+]
+[[steps]]
+id = "A.231"
+title = "Model 14, ordinal regression, is a sensitivity rung whose assumption is checked rather than assumed: it recovers known thresholds on synthetic ordinal data, the proportional-odds assumption is tested per predictor with its graphical check beside the test, a violation by some predictors falls back to partial proportional odds, and its expected rating is scored by the same RMSE and MAE as every other model"
+thread = "A"
+depends_on = ["A.223", "A.225"]
+because = { "A.223" = "the model's declared estimand and assumptions", "A.225" = "the cleaned table and split it is fitted on" }
+branch = "feature/model-ordinal"
+done_when = [
+  { kind = "proof", test = "tests/test_model_ordinal.py::test_known_thresholds_are_recovered_on_synthetic_data" },
+  { kind = "proof", test = "tests/test_model_ordinal.py::test_the_proportional_odds_check_reports_each_predictor" },
+  { kind = "proof", test = "tests/test_model_ordinal.py::test_a_violation_falls_back_to_partial_proportional_odds" },
+  { kind = "proof", test = "tests/test_model_ordinal.py::test_the_expected_rating_is_scored_like_every_model" },
+]
+[[steps]]
+id = "A.232"
+title = "Elastic net, inside the ridge and lasso rung, standardises and tunes inside each time-ordered fold only: a mutant that fits the scaler or the penalty on all the data is caught, and its selection stability across folds is reported beside ridge and lasso"
+thread = "A"
+depends_on = ["A.223", "A.225"]
+because = { "A.223" = "the rung's declared assumptions", "A.225" = "the time-ordered folds it is tuned in" }
+branch = "feature/model-elastic-net"
+done_when = [
+  { kind = "proof", test = "tests/test_model_elastic_net.py::test_scaling_and_tuning_see_only_their_fold" },
+  { kind = "proof", test = "tests/test_model_elastic_net.py::test_a_scaler_fitted_on_all_the_data_is_caught" },
+]
+[[steps]]
+id = "A.233"
+title = "Technique 11, the prediction-interval coverage audit, declares its target coverage levels and its interval methods, bootstrap, Bayesian posterior predictive and split conformal, before any evaluation, then reports each method's empirical coverage on the temporal test set, clustered by user, as a curve across nominal levels and stratified by user activity: on synthetic data with known coverage it recovers that coverage, and the dependence between a user's ratings is stated as its limitation"
+thread = "A"
+depends_on = ["A.223", "A.225"]
+because = { "A.223" = "the technique's declared estimand and unit", "A.225" = "the temporal test set it audits" }
+branch = "feature/technique-coverage-audit"
+done_when = [
+  { kind = "proof", test = "tests/test_coverage_audit.py::test_targets_and_methods_declared_after_evaluation_are_refused" },
+  { kind = "proof", test = "tests/test_coverage_audit.py::test_known_coverage_is_recovered_on_synthetic_data" },
+  { kind = "proof", test = "tests/test_coverage_audit.py::test_coverage_is_computed_by_user_cluster" },
+  { kind = "proof", test = "tests/test_coverage_audit.py::test_coverage_is_reported_across_nominal_levels_and_by_user_activity" },
+]
+[[steps]]
+id = "A.234"
+title = "Technique 12, the sign-flip permutation test, flips the sign of each user's mean loss difference, never an individual rating: on synthetic correlated ratings under the null it holds its nominal Type I error while rating-level flipping does not, and the symmetry of the per-user differences is reported beside the p-value"
+thread = "A"
+depends_on = ["A.223", "A.225"]
+because = { "A.223" = "the technique's declared unit, the user", "A.225" = "the per-user losses it tests" }
+branch = "feature/technique-sign-flip"
+done_when = [
+  { kind = "proof", test = "tests/test_sign_flip.py::test_user_level_flipping_holds_its_nominal_type_one_error" },
+  { kind = "proof", test = "tests/test_sign_flip.py::test_rating_level_flipping_is_refused" },
+  { kind = "proof", test = "tests/test_sign_flip.py::test_the_symmetry_check_is_reported" },
+]
+[[steps]]
+id = "A.243"
+title = "The Phase 12 calibration diagnostic is proven before it is used: each model's point predictions are regressed on the observed ratings, reporting the calibration slope and intercept with their joint test, calibration-in-the-large and a decile plot of predicted against observed means, stratified by user activity so a cold-user miscalibration cannot hide in the pooled figure, and a deliberately miscalibrated synthetic model is flagged"
+thread = "A"
+depends_on = ["A.223", "A.225"]
+because = { "A.223" = "the declared diagnostic and its unit", "A.225" = "the temporal test set it is computed on" }
+branch = "feature/diagnostic-calibration"
+done_when = [
+  { kind = "proof", test = "tests/test_calibration.py::test_a_miscalibrated_synthetic_model_is_flagged" },
+  { kind = "proof", test = "tests/test_calibration.py::test_a_well_calibrated_synthetic_model_has_slope_one_and_intercept_zero" },
+  { kind = "proof", test = "tests/test_calibration.py::test_calibration_is_reported_by_user_activity" },
+]
+[[steps]]
+id = "A.236"
+title = "The research is accepted only against what was declared before results: the primary comparison resolves to one of its pre-specified verdicts, every claim names the diagnostic behind it, and a claim without one, or a result reached with leakage, is refused"
+thread = "A"
+depends_on = ["A.230", "A.231", "A.232", "A.233", "A.234", "A.243"]
+because = { "A.230" = "model 13's recovery and diagnostics", "A.231" = "model 14's assumption checks", "A.232" = "elastic net's leakage proof", "A.233" = "the interval coverage the claims rest on", "A.234" = "the primary test's validity", "A.243" = "the calibration every point-prediction claim rests on" }
+branch = "feature/research-acceptance"
+done_when = [
+  { kind = "proof", test = "tests/test_research_acceptance.py::test_the_primary_comparison_resolves_to_a_declared_verdict" },
+  { kind = "proof", test = "tests/test_research_acceptance.py::test_a_claim_without_its_diagnostic_is_refused" },
+]
+[[steps]]
+id = "A.239"
+title = "A step starts only when it is ready: worktree:add for a planned step's branch, and any commit naming the step, are refused while any of its mandatory dependencies is not verified, the refusal a typed decision/v1 whose action is blocked and which names the dependency that blocks it"
+thread = "A"
+depends_on = ["A.93"]
+because = { "A.93" = "worktree:add, which cuts the branch this refuses until the step is ready" }
+branch = "feature/step-readiness-gate"
+done_when = [
+  { kind = "proof", test = "tests/test_step_readiness.py::test_a_worktree_for_a_step_with_an_unverified_dependency_is_refused" },
+  { kind = "proof", test = "tests/test_step_readiness.py::test_a_commit_naming_a_step_that_is_not_ready_is_refused" },
+  { kind = "proof", test = "tests/test_step_readiness.py::test_the_refusal_is_a_typed_blocked_decision_naming_the_blocking_dependency" },
+]
+[[steps]]
+id = "A.240"
+title = "plan:status distinguishes planned, implemented, tested and verified, and a step is verified only by an evidence bundle bound to its source commit, built from proof-observation/v1 records that only the executor which ran the tests writes from its own JUnit report, each naming the node id, its closed outcome as the report recorded it, passed, failed, error, skipped, xfailed, xpassed or not_run, the report's digest, the commit and tree digest and the run id; a caller-supplied result is refused, failure and error stay distinct, only passed counts, a required proof that is skipped, xfailed, errored or absent leaves the step unverified, and the bundle's red and green verdicts, killed mutants and run records are each hashed and checked by a read-only verifier that fails closed on anything missing, mis-bound or recorded at another commit"
+thread = "A"
+depends_on = ["A.229"]
+because = { "A.229" = "the plan data and status report the new states extend" }
+branch = "feature/step-evidence-bundles"
+done_when = [
+  { kind = "proof", test = "tests/test_step_evidence.py::test_status_distinguishes_planned_implemented_tested_and_verified" },
+  { kind = "proof", test = "tests/test_step_evidence.py::test_a_proof_result_supplied_by_a_caller_is_refused" },
+  { kind = "proof", test = "tests/test_step_evidence.py::test_a_skipped_xfailed_or_absent_required_proof_leaves_the_step_unverified" },
+  { kind = "proof", test = "tests/test_step_evidence.py::test_a_setup_or_teardown_failure_is_recorded_as_error_not_failure" },
+  { kind = "proof", test = "tests/test_step_evidence.py::test_a_step_without_a_complete_bundle_is_not_verified" },
+  { kind = "proof", test = "tests/test_step_evidence.py::test_a_bundle_member_whose_hash_differs_fails_closed" },
+  { kind = "proof", test = "tests/test_step_evidence.py::test_evidence_recorded_at_another_commit_does_not_verify" },
+]
+[[steps]]
+id = "A.242"
+title = "plan:change makes every plan change one governed operation: a plan-change/v1 contract carries the steps, trace entry, record candidates and each finding as a structured record of its id, root cause, resolution and affected steps; it moves through a closed set of states, requested, validated, applied and verified, with refused, rolled_back and failed as the other terminals, each transition written to its journal before the state changes and no terminal state ever changing; before anything is written, runs.plan_change decides a fail-closed preflight that refuses a taken id, a missing dependency, a cycle, an unproven step, a malformed proof target, an unsafe path, a because map that does not cover exactly its dependencies, a branch not matching the feature pattern, and a worktree whose origin is not the project's canonical repository or whose base is not origin/develop; the write, add, record, trace and matrix stages run in the change's own worktree, each recorded on completion so a rerun resumes at the first unfinished stage without duplicating a step, and each emits a CI/CD task-run span sharing the change's trace id and naming the stage, its run id and its result, a refused stage's failure kept distinct from a broken runner's error; every provisional state's rollback discards that worktree, ending rolled_back when it succeeds and failed with the divergence recorded when it does not; verified is entered only after the read-back stages pass; and a plan-change-result/v1 of observations binds the spec's digest to the resulting plan, trace and id-ledger digests, signed where the ledger key is present, and leaving develop and the main checkout untouched"
+thread = "A"
+depends_on = ["A.228", "A.229", "A.151"]
+because = { "A.228" = "the idempotent writers whose stages a resumed change repeats safely", "A.229" = "the graph validation its preflight runs", "A.151" = "the run spans each stage's span is written through" }
+branch = "feature/plan-change"
+done_when = [
+  { kind = "proof", test = "tests/test_plan_change.py::test_a_plan_change_is_one_operation_with_a_validated_spec_and_result" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_it_registers_exactly_the_specs_steps_with_their_edges_preserved" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_each_finding_is_a_structured_record_naming_its_affected_steps" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_each_transition_is_journaled_before_the_state_changes_and_terminals_never_change" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_preflight_is_a_policy_decision_made_before_any_write" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_preflight_refuses_a_taken_id_missing_dependency_cycle_or_unproven_step_before_any_write" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_preflight_refuses_a_malformed_proof_target_or_an_unsafe_path_before_any_write" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_preflight_refuses_an_incomplete_because_map_or_a_branch_off_pattern" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_preflight_refuses_a_worktree_with_another_origin_or_base" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_each_stage_is_recorded_and_a_rerun_resumes_at_the_first_unfinished_stage" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_a_retry_after_registration_never_duplicates_a_step" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_each_stage_span_shares_the_changes_trace_id_and_keeps_failure_apart_from_error" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_a_failure_after_apply_rolls_back_and_a_failed_rollback_ends_failed" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_an_applied_change_is_verified_only_after_its_read_back_stages_pass" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_the_result_binds_the_spec_digest_to_the_resulting_plan_files" },
+  { kind = "proof", test = "tests/test_plan_change.py::test_a_refused_change_leaves_develop_and_the_main_checkout_untouched" },
+]
