@@ -15,11 +15,14 @@ import re
 import sys
 import tempfile
 import tomllib
+import urllib.error
+import urllib.parse
 import urllib.request
 import zipfile
 from collections.abc import Callable
+from http.client import HTTPMessage
 from pathlib import Path
-from typing import Literal
+from typing import IO, Literal
 
 from pydantic import Field
 
@@ -88,6 +91,35 @@ def load_pin(path: Path = PIN) -> DataPin:
 Download = Callable[[str, Path], None]
 
 
+def _origin(url: str) -> tuple[str, str]:
+    """A URL's origin as its scheme and host, lowercased; an explicit port is part of the host."""
+    parts = urllib.parse.urlsplit(url)
+    return parts.scheme.lower(), parts.netloc.lower()
+
+
+class SameOriginRedirects(urllib.request.HTTPRedirectHandler):
+    """A redirect handler that follows a redirect only within ARCHIVE_URL's origin (A.235).
+
+    urllib follows a 3xx without re-checking the first URL's scheme or host, so a redirect could
+    downgrade to plain HTTP or move to another host. A target outside the origin is refused as the
+    HTTPError urllib raises for an unhandled redirect.
+    """
+
+    def redirect_request(
+        self,
+        req: urllib.request.Request,
+        fp: IO[bytes],
+        code: int,
+        msg: str,
+        headers: HTTPMessage,
+        newurl: str,
+    ) -> urllib.request.Request | None:
+        if _origin(newurl) != _origin(ARCHIVE_URL):
+            reason = f"redirect to {newurl} refused: only {ARCHIVE_URL}'s origin is fetched from"
+            raise urllib.error.HTTPError(req.full_url, code, reason, headers, fp)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
 def _https_only() -> urllib.request.OpenerDirector:
     """An opener that speaks HTTPS alone: no file, ftp or plain-http handler is installed.
 
@@ -98,7 +130,7 @@ def _https_only() -> urllib.request.OpenerDirector:
     opener = urllib.request.OpenerDirector()
     for handler in (
         urllib.request.HTTPSHandler(),
-        urllib.request.HTTPRedirectHandler(),
+        SameOriginRedirects(),
         urllib.request.HTTPErrorProcessor(),
         urllib.request.HTTPDefaultErrorHandler(),
     ):
@@ -108,7 +140,7 @@ def _https_only() -> urllib.request.OpenerDirector:
 
 def _download(url: str, target: Path) -> None:
     """The bytes at an https URL, written to target; every other scheme is refused."""
-    if not url.startswith(SCHEME):
+    if _origin(url) != _origin(ARCHIVE_URL):
         raise SystemExit(f"data_fetch: refusing to download from {url}")
     with _https_only().open(url, timeout=120) as response:
         body: bytes = response.read()
