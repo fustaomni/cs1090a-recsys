@@ -1,0 +1,37 @@
+# contracts/mutations/A.244.toml
+# A.244's walking skeleton, each guard broken once, and the proof that must notice (mutation:check).
+
+[[mutants]]
+id = "pin-unchecked"
+file = "scripts/milestone2.py"
+before = "    if observed != pinned:"
+after = "    if False:"
+killers = ["tests/test_walking_skeleton.py::test_the_rendered_claim_traces_back_to_the_archive_digest"]
+
+[[mutants]]
+id = "count-dropped"
+file = "scripts/milestone2.py"
+before = "        ratings=count,"
+after = "        ratings=0,"
+killers = ["tests/test_walking_skeleton.py::test_one_number_travels_from_the_verified_archive_to_a_rendered_line"]
+
+[[mutants]]
+id = "digest-not-recorded"
+file = "scripts/milestone2.py"
+before = "        archive_sha256=digest,"
+after = "        archive_sha256=digest[::-1],"
+killers = ["tests/test_walking_skeleton.py::test_the_rendered_claim_traces_back_to_the_archive_digest"]
+
+[[mutants]]
+id = "results-not-written"
+file = "scripts/milestone2.py"
+before = '    out.write_bytes(canonical(results.model_dump(mode="json")))'
+after = "    out.touch()"
+killers = ["tests/test_walking_skeleton.py::test_one_number_travels_from_the_verified_archive_to_a_rendered_line"]
+
+[[mutants]]
+id = "line-untraced"
+file = "scripts/milestone2.py"
+before = "ratings [archive sha256:{traced}]."
+after = "ratings."
+killers = ["tests/test_walking_skeleton.py::test_the_rendered_claim_traces_back_to_the_archive_digest"]
