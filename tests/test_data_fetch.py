@@ -88,6 +88,7 @@ def test_a_matching_archive_is_extracted_with_every_file_fingerprinted(tmp_path:
     pin = _pin(archive_url)
     record, refusals = fetch(archive_url, md5_url, destination, download=_local, pin=pin)
     assert refusals == []
+    assert record is not None
     assert record.md5_observed == record.md5_published
     assert {entry.name for entry in record.files} == set(REQUIRED)
     for entry in nonempty(record.files):
@@ -207,6 +208,68 @@ def test_an_archive_over_its_size_or_count_limit_is_refused(
     monkeypatch.setattr(data_fetch, "MAX_TOTAL_BYTES", 1)
     _, refusals = fetch(archive_url, md5_url, tmp_path / "size", download=_local, pin=pin)
     assert "ERR_DATA_ARCHIVE_OVER_LIMIT" in refusals, refusals
+
+
+def test_an_interrupted_download_publishes_nothing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A fetch interrupted part-way leaves no published file and no staging behind (A.235)."""
+    archive_url, md5_url = _archive(tmp_path)
+    pin = _pin(archive_url)
+    destination = tmp_path / "data"
+    real = Path.write_bytes
+
+    def flaky(self: Path, data: bytes) -> int:
+        if self.name == "movies.dat":
+            raise OSError("interrupted")
+        return real(self, data)
+
+    monkeypatch.setattr(Path, "write_bytes", flaky)
+    with pytest.raises(OSError, match="interrupted"):
+        fetch(archive_url, md5_url, destination, download=_local, pin=pin)
+    assert not destination.exists(), sorted(destination.rglob("*"))
+    assert sorted(path.name for path in tmp_path.iterdir()) == ["ml-1m.zip", "ml-1m.zip.md5"]
+
+
+def test_a_stalled_download_times_out_and_retries_a_bounded_number_of_times(
+    tmp_path: Path,
+) -> None:
+    """Each attempt has a deadline, and the attempts and the waits between them are bounded."""
+    timeouts: list[float] = []
+    waits: list[float] = []
+
+    def stalled(url: str, timeout: float) -> bytes:
+        timeouts.append(timeout)
+        raise TimeoutError("stalled")
+
+    target = tmp_path / "copy.zip"
+    with pytest.raises(SystemExit, match="gave up"):
+        _download(ARCHIVE_URL, target, read=stalled, sleep=waits.append)
+    assert timeouts == [data_fetch.TIMEOUT_SECONDS] * data_fetch.ATTEMPTS, timeouts
+    expected = [data_fetch.BACKOFF_SECONDS * 2**n for n in range(data_fetch.ATTEMPTS - 1)]
+    assert waits == expected, waits
+    assert not target.exists()
+
+
+def test_a_verified_published_copy_makes_a_rerun_a_no_op(tmp_path: Path) -> None:
+    """A rerun downloads nothing while every published file matches its pin (A.235)."""
+    archive_url, md5_url = _archive(tmp_path)
+    pin = _pin(archive_url)
+    destination = tmp_path / "data"
+    _, refusals = fetch(archive_url, md5_url, destination, download=_local, pin=pin)
+    assert refusals == [], refusals
+    fetched: list[str] = []
+
+    def counting(url: str, target: Path) -> None:
+        fetched.append(url)
+        _local(url, target)
+
+    _, refusals = fetch(archive_url, md5_url, destination, download=counting, pin=pin)
+    assert refusals == [] and fetched == [], (refusals, fetched)
+    (destination / REQUIRED[0]).write_bytes(b"tampered")
+    _, refusals = fetch(archive_url, md5_url, destination, download=counting, pin=pin)
+    assert refusals == [] and fetched, (refusals, fetched)
+    assert (destination / REQUIRED[0]).read_bytes() != b"tampered"
 
 
 def test_the_pin_records_its_origin_date_corroborating_md5_and_reviewing_commit() -> None:
