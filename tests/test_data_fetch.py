@@ -3,8 +3,12 @@
 from __future__ import annotations
 
 import hashlib
+import io
+import urllib.error
+import urllib.request
 import zipfile
 from datetime import date
+from http.client import HTTPMessage
 from pathlib import Path
 
 import pytest
@@ -140,6 +144,23 @@ def test_a_matching_md5_never_admits_an_archive_that_misses_its_sha256_pin(
     assert "ERR_DATA_CHECKSUM_MISMATCH" not in refusals, refusals
     assert "ERR_DATA_PIN_MISMATCH" in refusals, refusals
     assert not destination.exists() or not any(destination.iterdir())
+
+
+def test_a_redirect_to_another_host_or_a_plain_http_origin_is_refused(tmp_path: Path) -> None:
+    """Only the allow-listed HTTPS origin is fetched from, before or after a redirect (A.235)."""
+    handler = data_fetch.SameOriginRedirects()
+    request = urllib.request.Request("https://files.grouplens.org/datasets/movielens/ml-1m.zip")
+    assert request.full_url == ARCHIVE_URL, request.full_url
+    plain = ARCHIVE_URL.replace("https://", "http://", 1)
+    for target in ("https://elsewhere.example/ml-1m.zip", plain):
+        with pytest.raises(urllib.error.HTTPError, match="refused"):
+            handler.redirect_request(request, io.BytesIO(), 302, "Found", HTTPMessage(), target)
+    same = ARCHIVE_URL.replace("ml-1m.zip", "ml-1m-mirror.zip")
+    followed = handler.redirect_request(request, io.BytesIO(), 302, "Found", HTTPMessage(), same)
+    assert followed is not None and followed.full_url == same, followed
+    with pytest.raises(SystemExit, match="refusing to download"):
+        _download("https://elsewhere.example/ml-1m.zip", tmp_path / "copy.zip")
+    assert not (tmp_path / "copy.zip").exists()
 
 
 def test_the_pin_records_its_origin_date_corroborating_md5_and_reviewing_commit() -> None:
