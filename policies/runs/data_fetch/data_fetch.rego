@@ -57,3 +57,36 @@ deny contains denial if {
 		"message": sprintf("archive SHA-256 %s, reviewed pin %s", [fetch.archive_sha256, fetch.archive_pinned]),
 	}
 }
+
+# METADATA
+# title: Every member is a plain file or folder inside the archive
+# custom:
+#   code: ERR_DATA_MEMBER_UNSAFE
+deny contains denial if {
+	fetch := input.data_fetch
+	some name in fetch.unsafe
+	denial := {
+		"code": rego.metadata.rule().custom.code,
+		"message": sprintf("%s is absolute, climbs out, names a drive, or is not a plain file", [name]),
+	}
+}
+
+over_limit(fetch) if fetch.member_count > fetch.max_members
+
+over_limit(fetch) if fetch.total_bytes > fetch.max_total_bytes
+
+# METADATA
+# title: The archive is within its member and size limits
+# custom:
+#   code: ERR_DATA_ARCHIVE_OVER_LIMIT
+deny contains denial if {
+	fetch := input.data_fetch
+	over_limit(fetch)
+	denial := {
+		"code": rego.metadata.rule().custom.code,
+		"message": sprintf(
+			"%d members of at most %d, %d bytes of at most %d",
+			[fetch.member_count, fetch.max_members, fetch.total_bytes, fetch.max_total_bytes],
+		),
+	}
+}
