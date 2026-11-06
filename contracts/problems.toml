@@ -977,6 +977,11 @@ title = "A merge is in progress"
 severity = "error"
 
 [[problems]]
+code = "ERR_DATA_ARCHIVE_OVER_LIMIT"
+title = "The archive is within its member and size limits"
+severity = "error"
+
+[[problems]]
 code = "ERR_DATA_CHECKSUM_MISMATCH"
 title = "The archive matches the checksum its publisher published"
 severity = "error"
@@ -989,6 +994,11 @@ severity = "error"
 [[problems]]
 code = "ERR_DATA_INPUT_MISSING"
 title = "The fetch record is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_DATA_MEMBER_UNSAFE"
+title = "Every member is a plain file or folder inside the archive"
 severity = "error"
 
 [[problems]]

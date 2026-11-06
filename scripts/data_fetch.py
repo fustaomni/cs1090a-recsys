@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import re
+import stat
 import sys
 import tempfile
 import tomllib
@@ -21,7 +22,7 @@ import urllib.request
 import zipfile
 from collections.abc import Callable
 from http.client import HTTPMessage
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import IO, Literal
 
 from pydantic import Field
@@ -42,6 +43,9 @@ SCHEME = "https://"
 # Lookarounds over the hex class, not backslash escapes: no escape crosses a layer (M60).
 MD5 = re.compile("(?<![0-9a-f])[0-9a-f]{32}(?![0-9a-f])")
 MAX_MEMBER_BYTES = 64 * 1024 * 1024
+# THE ARCHIVE'S BOUNDS (A.235): MovieLens 1M holds six entries and about 24 MB unpacked.
+MAX_MEMBERS = 16
+MAX_TOTAL_BYTES = 256 * 1024 * 1024
 
 
 class DataFile(Contract):
@@ -60,6 +64,11 @@ class DataFetch(Contract):
     md5_observed: str = Field(pattern=r"^[0-9a-f]{32}$")
     archive_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     archive_pinned: str = Field(pattern=r"^[0-9a-f]{64}$")
+    unsafe: tuple[str, ...]
+    member_count: int = Field(ge=0)
+    total_bytes: int = Field(ge=0)
+    max_members: int = Field(ge=1)
+    max_total_bytes: int = Field(ge=1)
     required: tuple[str, ...]
     files: tuple[DataFile, ...]
 
@@ -89,6 +98,19 @@ def load_pin(path: Path = PIN) -> DataPin:
 
 
 Download = Callable[[str, Path], None]
+
+
+def _unsafe(info: zipfile.ZipInfo) -> bool:
+    """A member that is absolute, climbs out, names a drive, or is not a plain file or folder."""
+    name = info.filename
+    kind = stat.S_IFMT(info.external_attr >> 16)
+    return (
+        name.startswith("/")
+        or "\\" in name
+        or (len(name) > 1 and name[1] == ":")
+        or ".." in PurePosixPath(name).parts
+        or kind not in (0, stat.S_IFREG, stat.S_IFDIR)
+    )
 
 
 def _origin(url: str) -> tuple[str, str]:
@@ -170,8 +192,15 @@ def observe(
     archive_sha256 = hashlib.sha256(data).hexdigest()
     published = MD5.search(sums.read_text(encoding="utf-8", errors="replace").lower())
     files: list[DataFile] = []
+    unsafe: list[str] = []
+    member_count = 0
+    total_bytes = 0
     if archive_sha256 == pinned.archive_sha256:
         with zipfile.ZipFile(archive) as bundle:
+            members = bundle.infolist()
+            member_count = len(members)
+            total_bytes = sum(info.file_size for info in members)
+            unsafe = [info.filename for info in members if _unsafe(info)]
             present = set(bundle.namelist())
             for name in REQUIRED:
                 if name not in present or bundle.getinfo(name).file_size > MAX_MEMBER_BYTES:
@@ -184,6 +213,11 @@ def observe(
         md5_observed=hashlib.md5(data, usedforsecurity=False).hexdigest(),
         archive_sha256=archive_sha256,
         archive_pinned=pinned.archive_sha256,
+        unsafe=tuple(unsafe),
+        member_count=member_count,
+        total_bytes=total_bytes,
+        max_members=MAX_MEMBERS,
+        max_total_bytes=MAX_TOTAL_BYTES,
         required=REQUIRED,
         files=tuple(files),
     )
@@ -207,6 +241,8 @@ def fetch(
         with zipfile.ZipFile(staging / "archive.zip") as bundle:
             for name in REQUIRED:
                 target = destination / name
+                if not target.resolve().is_relative_to(destination.resolve()):
+                    raise SystemExit(f"data_fetch: refusing to write {name} outside {destination}")
                 target.parent.mkdir(parents=True, exist_ok=True)
                 partial = target.with_name(target.name + ".partial")
                 partial.write_bytes(bundle.read(name))

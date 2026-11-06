@@ -51,6 +51,19 @@ def _archive(
     return str(archive), str(sums)
 
 
+def _hostile(tmp_path: Path, member: zipfile.ZipInfo) -> tuple[str, str]:
+    """The required members plus one hostile member, and the MD5 file that matches them."""
+    archive = tmp_path / "ml-1m.zip"
+    with zipfile.ZipFile(archive, "w") as bundle:
+        for name in REQUIRED:
+            bundle.writestr(name, f"{name} rows{NEWLINE}")
+        bundle.writestr(member, "planted")
+    digest = hashlib.md5(archive.read_bytes(), usedforsecurity=False).hexdigest()
+    sums = tmp_path / "ml-1m.zip.md5"
+    sums.write_text(f"MD5 (ml-1m.zip) = {digest}{NEWLINE}", encoding="utf-8")
+    return str(archive), str(sums)
+
+
 def _pin(archive_url: str) -> DataPin:
     """The pin a reviewer would commit for this test's own archive."""
     data = Path(archive_url).read_bytes()
@@ -161,6 +174,39 @@ def test_a_redirect_to_another_host_or_a_plain_http_origin_is_refused(tmp_path: 
     with pytest.raises(SystemExit, match="refusing to download"):
         _download("https://elsewhere.example/ml-1m.zip", tmp_path / "copy.zip")
     assert not (tmp_path / "copy.zip").exists()
+
+
+def test_a_traversing_absolute_or_link_member_is_refused(tmp_path: Path) -> None:
+    """Every member is inspected before anything is written, even one never extracted (A.235)."""
+    link = zipfile.ZipInfo("ml-1m/link")
+    link.external_attr = 0o120777 << 16
+    backslash = zipfile.ZipInfo("..\\escape.txt")
+    hostile = (zipfile.ZipInfo("../escape.txt"), zipfile.ZipInfo("/abs.txt"), backslash, link)
+    for index, member in enumerate(hostile):
+        case = tmp_path / str(index)
+        case.mkdir()
+        archive_url, md5_url = _hostile(case, member)
+        destination = case / "data"
+        pin = _pin(archive_url)
+        _, refusals = fetch(archive_url, md5_url, destination, download=_local, pin=pin)
+        assert "ERR_DATA_MEMBER_UNSAFE" in refusals, (member.filename, refusals)
+        assert not destination.exists() or not any(destination.iterdir())
+    assert not (tmp_path / "escape.txt").exists()
+
+
+def test_an_archive_over_its_size_or_count_limit_is_refused(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """An archive is bounded in members and unpacked bytes, judged from its own record (A.235)."""
+    archive_url, md5_url = _archive(tmp_path)
+    pin = _pin(archive_url)
+    monkeypatch.setattr(data_fetch, "MAX_MEMBERS", len(REQUIRED) - 1)
+    _, refusals = fetch(archive_url, md5_url, tmp_path / "count", download=_local, pin=pin)
+    assert "ERR_DATA_ARCHIVE_OVER_LIMIT" in refusals, refusals
+    monkeypatch.setattr(data_fetch, "MAX_MEMBERS", 16)
+    monkeypatch.setattr(data_fetch, "MAX_TOTAL_BYTES", 1)
+    _, refusals = fetch(archive_url, md5_url, tmp_path / "size", download=_local, pin=pin)
+    assert "ERR_DATA_ARCHIVE_OVER_LIMIT" in refusals, refusals
 
 
 def test_the_pin_records_its_origin_date_corroborating_md5_and_reviewing_commit() -> None:
