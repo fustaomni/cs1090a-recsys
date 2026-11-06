@@ -1,0 +1,15 @@
+# contracts/data-pin.toml
+# MovieLens 1M's reviewed SHA-256 pin: data:fetch's trust root (A.235). A matching digest proves
+# the bytes equal the ones reviewed here, not that the source is trustworthy. The publisher's MD5
+# is recorded as what the pin was corroborated against, and guards only against corruption.
+contract = "data-pin/v1"
+archive_url = "https://files.grouplens.org/datasets/movielens/ml-1m.zip"
+archive_sha256 = "a6898adb50b9ca05aa231689da44c217cb524e7ebd39d264c56e2832f2c54e20"
+first_fetched = "2026-11-06"
+md5_corroborated = "c4d9eecfca2ab87c1945afe126590906"
+reviewed_commit = "c0d7a210c1b420a99306de3cd37aed7720178317"
+files = [
+  { name = "ml-1m/ratings.dat", sha256 = "506d64ca44484487c11dc2d9a28de5c54948213e6b96285e298afe28d6ea4e0f" },
+  { name = "ml-1m/movies.dat", sha256 = "0140fc2356357c1a851d0f52e893a1e4d3696df632c4141cea8d5bc3d621f0b9" },
+  { name = "ml-1m/users.dat", sha256 = "1dc3a95300cb19f7c10e027daf29b8cdf1d908dab65b5edfb45950aa389a10a3" },
+]
