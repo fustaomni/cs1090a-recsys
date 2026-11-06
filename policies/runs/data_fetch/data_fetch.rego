@@ -44,3 +44,16 @@ deny contains denial if {
 		"message": sprintf("%s is missing from the archive", [name]),
 	}
 }
+
+# METADATA
+# title: The archive is the one its reviewed pin names
+# custom:
+#   code: ERR_DATA_PIN_MISMATCH
+deny contains denial if {
+	fetch := input.data_fetch
+	fetch.archive_sha256 != fetch.archive_pinned
+	denial := {
+		"code": rego.metadata.rule().custom.code,
+		"message": sprintf("archive SHA-256 %s, reviewed pin %s", [fetch.archive_sha256, fetch.archive_pinned]),
+	}
+}

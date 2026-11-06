@@ -14,6 +14,7 @@ import os
 import re
 import sys
 import tempfile
+import tomllib
 import urllib.request
 import zipfile
 from collections.abc import Callable
@@ -55,8 +56,33 @@ class DataFetch(Contract):
     md5_published: str | None
     md5_observed: str = Field(pattern=r"^[0-9a-f]{32}$")
     archive_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    archive_pinned: str = Field(pattern=r"^[0-9a-f]{64}$")
     required: tuple[str, ...]
     files: tuple[DataFile, ...]
+
+
+class DataPin(Contract):
+    """data-pin/v1: the reviewed bytes data:fetch trusts, and how they came to be trusted (A.235).
+
+    The trust root is archive_sha256, committed and reviewed; md5_corroborated is the publisher's
+    MD5 it was checked against, which guards only against accidental corruption.
+    """
+
+    contract: Literal["data-pin/v1"] = "data-pin/v1"
+    archive_url: str = Field(pattern=r"^https://")
+    archive_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    files: tuple[DataFile, ...] = Field(min_length=1)
+    first_fetched: str = Field(pattern=r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
+    md5_corroborated: str = Field(pattern=r"^[0-9a-f]{32}$")
+    reviewed_commit: str = Field(pattern=r"^[0-9a-f]{40}$")
+
+
+PIN = ROOT / "contracts" / "data-pin.toml"
+
+
+def load_pin(path: Path = PIN) -> DataPin:
+    """The committed pin, validated through its contract as JSON so arrays read as tuples."""
+    return DataPin.model_validate_json(json.dumps(tomllib.loads(path.read_text(encoding="utf-8"))))
 
 
 Download = Callable[[str, Path], None]
@@ -94,28 +120,38 @@ def observe(
     md5_url: str,
     staging: Path,
     download: Download = _download,
+    pin: DataPin | None = None,
 ) -> DataFetch:
-    """Download the archive and its MD5 into staging, and state what they hold."""
+    """Download the archive and its MD5 into staging, and state what they hold.
+
+    PINNED BEFORE IT IS OPENED (A.235): the archive is digested as bytes first, and opened as a
+    zip only when that digest is its reviewed pin, so an archive the pin does not name lists no
+    files and is never parsed. The decision is runs.data_fetch's; this only observes.
+    """
+    pinned = pin or load_pin()
     staging.mkdir(parents=True, exist_ok=True)
     archive = staging / "archive.zip"
     sums = staging / "archive.zip.md5"
     download(archive_url, archive)
     download(md5_url, sums)
     data = archive.read_bytes()
+    archive_sha256 = hashlib.sha256(data).hexdigest()
     published = MD5.search(sums.read_text(encoding="utf-8", errors="replace").lower())
     files: list[DataFile] = []
-    with zipfile.ZipFile(archive) as bundle:
-        present = set(bundle.namelist())
-        for name in REQUIRED:
-            if name not in present or bundle.getinfo(name).file_size > MAX_MEMBER_BYTES:
-                continue
-            digest = hashlib.sha256(bundle.read(name)).hexdigest()
-            files.append(DataFile(name=name, sha256=digest))
+    if archive_sha256 == pinned.archive_sha256:
+        with zipfile.ZipFile(archive) as bundle:
+            present = set(bundle.namelist())
+            for name in REQUIRED:
+                if name not in present or bundle.getinfo(name).file_size > MAX_MEMBER_BYTES:
+                    continue
+                digest = hashlib.sha256(bundle.read(name)).hexdigest()
+                files.append(DataFile(name=name, sha256=digest))
     return DataFetch(
         archive_url=archive_url,
         md5_published=published.group(0) if published else None,
         md5_observed=hashlib.md5(data, usedforsecurity=False).hexdigest(),
-        archive_sha256=hashlib.sha256(data).hexdigest(),
+        archive_sha256=archive_sha256,
+        archive_pinned=pinned.archive_sha256,
         required=REQUIRED,
         files=tuple(files),
     )
@@ -126,11 +162,12 @@ def fetch(
     md5_url: str,
     destination: Path,
     download: Download = _download,
+    pin: DataPin | None = None,
 ) -> tuple[DataFetch, list[str]]:
     """Observe, let runs.data_fetch decide, and unpack the required files only if it allows."""
     with tempfile.TemporaryDirectory() as scratch:
         staging = Path(scratch)
-        record = observe(archive_url, md5_url, staging, download)
+        record = observe(archive_url, md5_url, staging, download, pin)
         found = spine.evaluate(record, SUBJECT, POLICY, ENTRYPOINT)
         refusals = sorted(rule.code for rule in found.rules if rule.outcome == "fail")
         if refusals:

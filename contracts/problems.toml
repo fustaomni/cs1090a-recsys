@@ -992,6 +992,11 @@ title = "The fetch record is supplied, never assumed"
 severity = "error"
 
 [[problems]]
+code = "ERR_DATA_PIN_MISMATCH"
+title = "The archive is the one its reviewed pin names"
+severity = "error"
+
+[[problems]]
 code = "ERR_MODEL_DATA_UNDECLARED"
 title = "A fit reads exactly the declared data"
 severity = "error"
