@@ -12,9 +12,11 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import stat
 import sys
 import tempfile
+import time
 import tomllib
 import urllib.error
 import urllib.parse
@@ -46,6 +48,11 @@ MAX_MEMBER_BYTES = 64 * 1024 * 1024
 # THE ARCHIVE'S BOUNDS (A.235): MovieLens 1M holds six entries and about 24 MB unpacked.
 MAX_MEMBERS = 16
 MAX_TOTAL_BYTES = 256 * 1024 * 1024
+# EACH ATTEMPT HAS A DEADLINE, AND THE ATTEMPTS ARE BOUNDED (A.235): three attempts, the waits
+# between them doubling from one second.
+ATTEMPTS = 3
+BACKOFF_SECONDS = 1.0
+TIMEOUT_SECONDS = 120.0
 
 
 class DataFile(Contract):
@@ -160,13 +167,35 @@ def _https_only() -> urllib.request.OpenerDirector:
     return opener
 
 
-def _download(url: str, target: Path) -> None:
-    """The bytes at an https URL, written to target; every other scheme is refused."""
+Read = Callable[[str, float], bytes]
+
+
+def _read(url: str, timeout: float) -> bytes:
+    """One attempt: the whole body at url, through the HTTPS-only, same-origin opener."""
+    with _https_only().open(url, timeout=timeout) as response:
+        body: bytes = response.read()
+    return body
+
+
+def _download(
+    url: str, target: Path, *, read: Read = _read, sleep: Callable[[float], None] = time.sleep
+) -> None:
+    """The bytes at an allow-listed URL, written to target; every other origin is refused."""
     if _origin(url) != _origin(ARCHIVE_URL):
         raise SystemExit(f"data_fetch: refusing to download from {url}")
-    with _https_only().open(url, timeout=120) as response:
-        body: bytes = response.read()
-    target.write_bytes(body)
+    delay = BACKOFF_SECONDS
+    for attempt in range(1, ATTEMPTS + 1):
+        try:
+            body = read(url, TIMEOUT_SECONDS)
+        except OSError as error:
+            if attempt == ATTEMPTS:
+                reason = f"data_fetch: gave up on {url} after {ATTEMPTS} attempts: {error}"
+                raise SystemExit(reason) from error
+            sleep(delay)
+            delay *= 2
+        else:
+            target.write_bytes(body)
+            return
 
 
 def observe(
@@ -223,30 +252,66 @@ def observe(
     )
 
 
+def _published(destination: Path, pin: DataPin) -> bool:
+    """Every required file is published, and its bytes are the ones its pin names (A.235)."""
+    pinned = {entry.name: entry.sha256 for entry in pin.files}
+    for name in REQUIRED:
+        target = destination / name
+        if not target.is_file():
+            return False
+        if hashlib.sha256(target.read_bytes()).hexdigest() != pinned.get(name):
+            return False
+    return True
+
+
+def _publish(fresh: Path, destination: Path) -> None:
+    """Swap a complete staging directory into place by rename, on the same filesystem (A.235)."""
+    if not destination.exists():
+        os.replace(fresh, destination)
+        return
+    retired = destination.with_name(f".{destination.name}.retired")
+    shutil.rmtree(retired, ignore_errors=True)
+    os.replace(destination, retired)
+    os.replace(fresh, destination)
+    shutil.rmtree(retired)
+
+
 def fetch(
     archive_url: str,
     md5_url: str,
     destination: Path,
     download: Download = _download,
     pin: DataPin | None = None,
-) -> tuple[DataFetch, list[str]]:
-    """Observe, let runs.data_fetch decide, and unpack the required files only if it allows."""
+) -> tuple[DataFetch | None, list[str]]:
+    """Observe, let runs.data_fetch decide, and publish the required files only if it allows.
+
+    A VERIFIED COPY IS NOT FETCHED AGAIN: when every published file matches its pin there is no
+    record and nothing to refuse. Otherwise the members are written into a fresh directory beside
+    the destination and published with one rename, so an interruption publishes nothing.
+    """
+    pinned = pin or load_pin()
+    if _published(destination, pinned):
+        return None, []
     with tempfile.TemporaryDirectory() as scratch:
         staging = Path(scratch)
-        record = observe(archive_url, md5_url, staging, download, pin)
+        record = observe(archive_url, md5_url, staging, download, pinned)
         found = spine.evaluate(record, SUBJECT, POLICY, ENTRYPOINT)
         refusals = sorted(rule.code for rule in found.rules if rule.outcome == "fail")
         if refusals:
             return record, refusals
-        with zipfile.ZipFile(staging / "archive.zip") as bundle:
-            for name in REQUIRED:
-                target = destination / name
-                if not target.resolve().is_relative_to(destination.resolve()):
-                    raise SystemExit(f"data_fetch: refusing to write {name} outside {destination}")
-                target.parent.mkdir(parents=True, exist_ok=True)
-                partial = target.with_name(target.name + ".partial")
-                partial.write_bytes(bundle.read(name))
-                os.replace(partial, target)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        fresh = Path(tempfile.mkdtemp(prefix=f".{destination.name}.", dir=destination.parent))
+        try:
+            with zipfile.ZipFile(staging / "archive.zip") as bundle:
+                for name in REQUIRED:
+                    target = fresh / name
+                    if not target.resolve().is_relative_to(fresh.resolve()):
+                        raise SystemExit(f"data_fetch: refusing to write {name} outside {fresh}")
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_bytes(bundle.read(name))
+            _publish(fresh, destination)
+        finally:
+            shutil.rmtree(fresh, ignore_errors=True)
     return record, []
 
 
@@ -267,6 +332,9 @@ def _announce(outcome: str, code: str, message: str, data: dict[str, object]) ->
 def main() -> int:
     destination = default_ledger().parent.parent / "data"
     record, refusals = fetch(ARCHIVE_URL, MD5_URL, destination)
+    if record is None:
+        message = f"every file in {destination} matches its reviewed pin; nothing was fetched"
+        return _announce("success", "already_verified", message, {"destination": str(destination)})
     data: dict[str, object] = {**record.model_dump(mode="json"), "destination": str(destination)}
     if refusals:
         return _announce("refused", "fetch_refused", ", ".join(refusals), data)
