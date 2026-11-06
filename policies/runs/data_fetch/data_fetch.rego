@@ -71,6 +71,19 @@ deny contains denial if {
 	}
 }
 
+# METADATA
+# title: The fence this fetch holds is still the current one
+# custom:
+#   code: ERR_DATA_FENCE_STALE
+deny contains denial if {
+	fetch := input.data_fetch
+	fetch.fence_current != fetch.fence
+	denial := {
+		"code": rego.metadata.rule().custom.code,
+		"message": sprintf("this fetch holds fence %d, but the fence is now %d", [fetch.fence, fetch.fence_current]),
+	}
+}
+
 over_limit(fetch) if fetch.member_count > fetch.max_members
 
 over_limit(fetch) if fetch.total_bytes > fetch.max_total_bytes
