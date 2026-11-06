@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import fcntl
 import hashlib
 import io
 import urllib.error
@@ -228,7 +229,7 @@ def test_an_interrupted_download_publishes_nothing(
     with pytest.raises(OSError, match="interrupted"):
         fetch(archive_url, md5_url, destination, download=_local, pin=pin)
     assert not destination.exists(), sorted(destination.rglob("*"))
-    assert sorted(path.name for path in tmp_path.iterdir()) == ["ml-1m.zip", "ml-1m.zip.md5"]
+    assert [path.name for path in tmp_path.iterdir() if path.is_dir()] == []
 
 
 def test_a_stalled_download_times_out_and_retries_a_bounded_number_of_times(
@@ -270,6 +271,27 @@ def test_a_verified_published_copy_makes_a_rerun_a_no_op(tmp_path: Path) -> None
     _, refusals = fetch(archive_url, md5_url, destination, download=counting, pin=pin)
     assert refusals == [] and fetched, (refusals, fetched)
     assert (destination / REQUIRED[0]).read_bytes() != b"tampered"
+
+
+def test_a_concurrent_fetch_is_refused_and_a_stale_fence_cannot_publish(tmp_path: Path) -> None:
+    """A held lock refuses a second fetch, and a holder overtaken mid-download cannot publish."""
+    archive_url, md5_url = _archive(tmp_path)
+    pin = _pin(archive_url)
+    destination = tmp_path / "data"
+    lock = data_fetch.lock_path(destination)
+    with lock.open("a") as held:
+        fcntl.flock(held, fcntl.LOCK_EX)
+        with pytest.raises(data_fetch.FetchLockedError):
+            fetch(archive_url, md5_url, destination, download=_local, pin=pin)
+    assert not destination.exists()
+
+    def overtaken(url: str, target: Path) -> None:
+        _local(url, target)
+        data_fetch.advance_fence(destination)
+
+    _, refusals = fetch(archive_url, md5_url, destination, download=overtaken, pin=pin)
+    assert "ERR_DATA_FENCE_STALE" in refusals, refusals
+    assert not destination.exists()
 
 
 def test_the_pin_records_its_origin_date_corroborating_md5_and_reviewing_commit() -> None:

@@ -8,6 +8,7 @@ archive never reaches the data directory.
 
 from __future__ import annotations
 
+import fcntl
 import hashlib
 import json
 import os
@@ -72,6 +73,8 @@ class DataFetch(Contract):
     archive_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     archive_pinned: str = Field(pattern=r"^[0-9a-f]{64}$")
     unsafe: tuple[str, ...]
+    fence: int = Field(ge=0)
+    fence_current: int = Field(ge=0)
     member_count: int = Field(ge=0)
     total_bytes: int = Field(ge=0)
     max_members: int = Field(ge=1)
@@ -243,6 +246,8 @@ def observe(
         archive_sha256=archive_sha256,
         archive_pinned=pinned.archive_sha256,
         unsafe=tuple(unsafe),
+        fence=0,
+        fence_current=0,
         member_count=member_count,
         total_bytes=total_bytes,
         max_members=MAX_MEMBERS,
@@ -250,6 +255,40 @@ def observe(
         required=REQUIRED,
         files=tuple(files),
     )
+
+
+class FetchLockedError(Exception):
+    """Another data:fetch holds this checkout's lock, so this one is refused, never queued."""
+
+
+def lock_path(destination: Path) -> Path:
+    """The checkout's data:fetch lock, beside the directory it publishes."""
+    return destination.with_name(f".{destination.name}.lock")
+
+
+def fence_path(destination: Path) -> Path:
+    """The fence counter, advanced by every holder of the lock (A.235)."""
+    return destination.with_name(f".{destination.name}.fence")
+
+
+def _fence(destination: Path) -> int:
+    path = fence_path(destination)
+    return int(path.read_text(encoding="utf-8")) if path.is_file() else 0
+
+
+def advance_fence(destination: Path) -> int:
+    """Advance the fence and return the token this holder now carries, written atomically."""
+    token = _fence(destination) + 1
+    path = fence_path(destination)
+    partial = path.with_name(path.name + ".partial")
+    partial.write_text(str(token), encoding="utf-8")
+    os.replace(partial, path)
+    return token
+
+
+def _judge(record: DataFetch) -> list[str]:
+    found = spine.evaluate(record, SUBJECT, POLICY, ENTRYPOINT)
+    return sorted(rule.code for rule in found.rules if rule.outcome == "fail")
 
 
 def _published(destination: Path, pin: DataPin) -> bool:
@@ -292,14 +331,33 @@ def fetch(
     pinned = pin or load_pin()
     if _published(destination, pinned):
         return None, []
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    lock = lock_path(destination)
+    with lock.open("a", encoding="utf-8") as handle:
+        try:
+            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as error:
+            raise FetchLockedError(f"another data:fetch holds {lock}") from error
+        token = advance_fence(destination)
+        return _fetch_held(archive_url, md5_url, destination, download, pinned, token)
+
+
+def _fetch_held(
+    archive_url: str,
+    md5_url: str,
+    destination: Path,
+    download: Download,
+    pinned: DataPin,
+    token: int,
+) -> tuple[DataFetch | None, list[str]]:
+    """The fetch itself, under the lock: judged after download and again before publishing."""
     with tempfile.TemporaryDirectory() as scratch:
         staging = Path(scratch)
-        record = observe(archive_url, md5_url, staging, download, pinned)
-        found = spine.evaluate(record, SUBJECT, POLICY, ENTRYPOINT)
-        refusals = sorted(rule.code for rule in found.rules if rule.outcome == "fail")
+        observed = observe(archive_url, md5_url, staging, download, pinned)
+        record = observed.model_copy(update={"fence": token, "fence_current": _fence(destination)})
+        refusals = _judge(record)
         if refusals:
             return record, refusals
-        destination.parent.mkdir(parents=True, exist_ok=True)
         fresh = Path(tempfile.mkdtemp(prefix=f".{destination.name}.", dir=destination.parent))
         try:
             with zipfile.ZipFile(staging / "archive.zip") as bundle:
@@ -309,6 +367,10 @@ def fetch(
                         raise SystemExit(f"data_fetch: refusing to write {name} outside {fresh}")
                     target.parent.mkdir(parents=True, exist_ok=True)
                     target.write_bytes(bundle.read(name))
+            record = record.model_copy(update={"fence_current": _fence(destination)})
+            refusals = _judge(record)
+            if refusals:
+                return record, refusals
             _publish(fresh, destination)
         finally:
             shutil.rmtree(fresh, ignore_errors=True)
