@@ -1,0 +1,16 @@
+# contracts/mutations/A.250.toml
+# A.250's gate, pointed elsewhere or left out of CI, and the proof that must notice.
+
+[[mutants]]
+id = "gate-runs-elsewhere"
+file = "scripts/check_all.py"
+before = 'command=("uv", "run", "python", "scripts/centralization.py"),'
+after = 'command=("uv", "run", "python", "scripts/problem_codes.py", "--centralization"),'
+killers = ["tests/test_inventory_gate.py::test_the_inventory_is_a_ci_gate"]
+
+[[mutants]]
+id = "gate-left-out-of-ci"
+file = "scripts/check_all.py"
+before = "        name=\"centralization inventory\","
+after = "        name=\"centralization inventory\",\n        runs_in_ci=False,"
+killers = ["tests/test_inventory_gate.py::test_the_inventory_is_a_ci_gate"]

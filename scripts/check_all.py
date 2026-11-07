@@ -247,6 +247,15 @@ GATES: tuple[GateSpec, ...] = (
         may_be_empty=True,
         timeout_seconds=1200.0,
     ),
+    # THE HUB DRIFT CHECK (A.250): every capability this repository has and cscie103 lacks is
+    # classified, or the pull request does not merge. It reaches the hub's develop over the
+    # network, so by the rule above it runs in CI, always, on every pull request.
+    GateSpec(
+        name="centralization inventory",
+        command=("uv", "run", "python", "scripts/centralization.py"),
+        runs_in_hooks=False,
+        timeout_seconds=120.0,
+    ),
     # CLAIMS ABOUT THIS MACHINE (A.104): A.8's proofs that its mise state and new files are
     # owner-only. The hooks and the snapshot before every publication run them here; CI's
     # runner is not this machine, so the gate is declared out of CI, never detected there.

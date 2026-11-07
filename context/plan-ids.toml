@@ -242,4 +242,5 @@ issued = [
   { id = "A.247", first_title = "cs1090a-recsys's walking skeleton is classified as this project's own in its centralization register, as the hub declines it under X.10, so centralization:inventory passes" },
   { id = "A.248", first_title = "status:paths prints every changed path a commit should name, adopted from cscie103 D.355 at 25ed9e7, where it was ported from this repository's own commit paths, which develop no longer holds" },
   { id = "A.249", first_title = "plan:resolve resolves a merge or rebase stopped on the three plan files as data, appending every entry the other side added and refusing an id issued or an entry edited on both sides, adopted from cscie103 D.129 at 25ed9e7, which ported it from this repository, whose develop no longer holds it" },
+  { id = "A.250", first_title = "centralization:inventory runs as a CI gate on every pull request, so a capability the hub lacks can no longer merge here unclassified" },
 ]
