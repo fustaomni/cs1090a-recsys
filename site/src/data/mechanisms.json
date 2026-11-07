@@ -13,7 +13,7 @@
     { "id": "M10", "kind": "model", "ref": 10, "status": "built" },
     { "id": "M11", "kind": "model", "ref": 11, "status": "built" },
     { "id": "M12", "kind": "model", "ref": 12, "status": "built" },
-    { "id": "M13", "kind": "model", "ref": 13, "status": "planned" },
+    { "id": "M13", "kind": "model", "ref": 13, "status": "built" },
     { "id": "M14", "kind": "model", "ref": 14, "status": "planned" },
     { "id": "T1", "kind": "technique", "ref": 1, "status": "built" },
     { "id": "T2", "kind": "technique", "ref": 2, "status": "built" },
