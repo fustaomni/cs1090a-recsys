@@ -2907,3 +2907,35 @@ done_when = [
   { kind = "proof", test = "tests/test_walking_skeleton.py::test_one_number_travels_from_the_verified_archive_to_a_rendered_line" },
   { kind = "proof", test = "tests/test_walking_skeleton.py::test_the_rendered_claim_traces_back_to_the_archive_digest" },
 ]
+[[steps]]
+id = "A.245"
+title = "The project site holds no typed-in data: Project Group #34 is its three members with TF mentor Sukanya Krishna and a first TF meeting still to be set, the title is 'A recommender that records why it recommended, and is judged on it', the open seats, the join call and its note are gone, every count and every number in the site's text is bound to its source, the MovieLens figures to the generated movielens.json and the model, technique and milestone counts to their arrays' lengths, a number typed into the site's text is refused by a check, and Results has a section per milestone filled only from recorded evidence, Milestone 2's from milestone2-results/v1"
+thread = "A"
+depends_on = ["A.95", "A.99"]
+because = { "A.95" = "the site and the data files it renders, whose typed-in values this binds", "A.99" = "the mechanism labs and their registry, whose lengths the counts become" }
+branch = "feature/site-bindings"
+done_when = [
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_group_is_three_members_with_its_mentor_and_first_meeting" },
+  { kind = "proof", test = "tests/test_site_bindings.py::test_no_join_call_or_open_seat_remains" },
+  { kind = "proof", test = "tests/test_site_bindings.py::test_every_count_on_the_page_is_derived_from_its_source" },
+  { kind = "proof", test = "tests/test_site_bindings.py::test_a_number_typed_into_the_site_text_is_refused" },
+  { kind = "proof", test = "tests/test_site_bindings.py::test_each_milestone_has_a_results_section_filled_only_from_recorded_evidence" },
+  { kind = "task", name = "site:test" },
+]
+[[steps]]
+id = "A.246"
+title = "Models 13, a crossed random-effects bias model, and 14, ordinal regression as a sensitivity rung, and techniques 11, a prediction-interval coverage audit, and 12, a user-level sign-flip permutation test, are on the project site, each with a built interactive lab registered beside M1 to M12 and T1 to T10; ordinal regression leaves the exclusions; the Roadmap to December, the phases, the models and techniques and the interactive mechanisms read fourteen models and twelve techniques from the site data, never from typed text"
+thread = "A"
+depends_on = ["A.245", "A.99"]
+because = { "A.245" = "the bound counts that read fourteen and twelve from the data", "A.99" = "the lab registry and lab pattern each addition follows" }
+branch = "feature/site-additions"
+done_when = [
+  { kind = "proof", test = "tests/test_site_additions.py::test_the_site_carries_every_required_model_and_technique_from_its_data" },
+  { kind = "proof", test = "tests/test_site_additions.py::test_each_addition_has_a_built_lab" },
+  { kind = "proof", test = "tests/test_site_additions.py::test_ordinal_regression_is_a_model_not_an_exclusion" },
+  { kind = "path", path = "site/src/mechanisms/labs/M13.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/M14.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/T11.jsx" },
+  { kind = "path", path = "site/src/mechanisms/labs/T12.jsx" },
+  { kind = "task", name = "site:test" },
+]

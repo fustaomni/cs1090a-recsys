@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import data from "./data/project.json";
 import results from "./data/results.json";
 import Mechanisms from "./mechanisms/Mechanisms.jsx";
+import { bind } from "./bind.js";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
@@ -13,10 +14,6 @@ const SECTIONS = [
 ];
 
 const STATUS_LABEL = { done: "Done", current: "In progress", planned: "Planned" };
-
-const JOIN = `mailto:${data.contact}?subject=${encodeURIComponent(
-  "Joining the MovieLens recommender project",
-)}`;
 
 // One page per section, chosen by the URL hash, so each link shows only its own content
 // and #overview, #scope and the rest stay shareable.
@@ -40,49 +37,35 @@ function useHashPage() {
 
 function GroupCard() {
   const { group } = data;
-  const seats = Array.from({ length: group.seats }, (_, index) => group.members[index]);
   return (
     <aside className="group-card" aria-label={`Project Group #${group.number}`}>
       <p className="group-number">Project Group #{group.number}</p>
       <p className="group-title">{data.title}</p>
       <p className="group-label">Group members:</p>
       <ol>
-        {seats.map((member, index) =>
-          member ? (
-            <li key={member}>{member}</li>
-          ) : (
-            <li key={`open-${index}`} className="open">
-              <a href={JOIN}>Open seat · join us</a>
-            </li>
-          ),
-        )}
+        {group.members.map((member) => (
+          <li key={member}>{member}</li>
+        ))}
       </ol>
+      <p className="group-label">TF mentor: {group.mentor}</p>
+      <p className="group-label">First TF Meeting: {group.first_meeting}</p>
     </aside>
   );
 }
 
 function Overview() {
-  const { overview, milestones, join } = data;
+  const { overview, milestones } = data;
   return (
     <section id="overview" className="section">
       <GroupCard />
       <p className="eyebrow">MovieLens 1M · offline · leakage-safe</p>
       <h1>{data.title}</h1>
       <p className="lede">{overview.question}</p>
-      <div className="hero-cta">
-        <a className="cta" href={JOIN}>
-          Join the team
-        </a>
-        <p className="cta-note">
-          Two seats left. The design, the split and the evaluation are already done: you own
-          one block of phases end to end.
-        </p>
-      </div>
-      <p>{overview.summary}</p>
+      <p>{bind(overview.summary)}</p>
       <ul className="stats">
         {overview.stats.map((stat) => (
           <li key={stat.label}>
-            <strong>{stat.value}</strong>
+            <strong>{bind(`{${stat.bind}}`)}</strong>
             <span>{stat.label}</span>
           </li>
         ))}
@@ -98,20 +81,6 @@ function Overview() {
           </li>
         ))}
       </ol>
-      <div className="join">
-        <h2>{join.title}</h2>
-        <p>{join.need}</p>
-        <ul>
-          {join.roles.map((role) => (
-            <li key={role.name}>
-              <strong>{role.name}</strong> — {role.owns}
-            </li>
-          ))}
-        </ul>
-        <a className="cta" href={JOIN}>
-          Email the group to join
-        </a>
-      </div>
     </section>
   );
 }
@@ -140,7 +109,7 @@ function Scope() {
             {scope.retained.map((entry) => (
               <div key={entry.item}>
                 <dt>{entry.item}</dt>
-                <dd>{entry.form}</dd>
+                <dd>{bind(entry.form)}</dd>
               </div>
             ))}
           </dl>
@@ -178,7 +147,7 @@ function Phases() {
                   </summary>
                   <ul>
                     {byId[id].points.map((point) => (
-                      <li key={point}>{point}</li>
+                      <li key={point}>{bind(point)}</li>
                     ))}
                   </ul>
                 </details>
@@ -204,7 +173,7 @@ function Deploys() {
   return (
     <section id="deploys" className="section">
       <h2>What the project deploys</h2>
-      <h3>Twelve predictive models, simplest first</h3>
+      <h3>{bind("{models} predictive models, simplest first")}</h3>
       <ol className="ladder">
         {groups.map((group) => (
           <li key={group.phase}>
@@ -231,7 +200,7 @@ function Deploys() {
         </ul>
         <p>{data.baseline_note}</p>
       </div>
-      <h3>Ten supporting techniques</h3>
+      <h3>{bind("{techniques} supporting techniques")}</h3>
       <ul className="cards">
         {data.techniques.map((technique) => (
           <li key={technique.id}>
@@ -316,6 +285,38 @@ function Results() {
           </tbody>
         </table>
       </div>
+      <h3>Results by milestone</h3>
+      {results.milestones.map((section) => {
+        const milestone = data.milestones.find((entry) => entry.id === section.milestone);
+        return (
+          <div key={section.milestone} className="milestone-group">
+            <h4>
+              {section.milestone} · {milestone ? milestone.name : ""}
+            </h4>
+            {section.entries.length === 0 ? (
+              <p className="muted">
+                No recorded evidence yet: this section is filled only from the run that records it.
+              </p>
+            ) : (
+              <ul>
+                {section.entries.map((entry) => (
+                  <li key={entry.label}>
+                    <strong>
+                      {typeof entry.value === "number"
+                        ? new Intl.NumberFormat("en-US").format(entry.value)
+                        : entry.value}
+                    </strong>{" "}
+                    {entry.label}{" "}
+                    <span className="muted">
+                      · {entry.evidence.contract} {entry.evidence.sha256.slice(0, 12)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        );
+      })}
       <p className="muted">
         Intervals are 95%, from a bootstrap clustered by user. Each is descriptive, not a test:
         only the primary comparison above is tested, paired, as pre-registered.
@@ -336,6 +337,9 @@ const READY = {
 export default function App() {
   const page = useHashPage();
   const Page = READY[page];
+  useEffect(() => {
+    document.title = data.title;
+  }, []);
   return (
     <>
       <header className="bar">
@@ -353,9 +357,6 @@ export default function App() {
             </a>
           ))}
         </nav>
-        <a className="cta small" href={JOIN}>
-          Join the team
-        </a>
       </header>
       <main>
         <Page />
