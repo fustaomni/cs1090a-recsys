@@ -1509,7 +1509,7 @@
  
  [[problems]]
  code = "ERR_TEMPLATE_UNPINNED"
-@@ -1086,151 +797,236 @@
+@@ -1086,151 +797,256 @@
  severity = "error"
  
  [[problems]]
@@ -1841,8 +1841,18 @@
 +severity = "error"
 +
 +[[problems]]
++code = "ERR_DATA_ARCHIVE_OVER_LIMIT"
++title = "The archive is within its member and size limits"
++severity = "error"
++
++[[problems]]
 +code = "ERR_DATA_CHECKSUM_MISMATCH"
 +title = "The archive matches the checksum its publisher published"
++severity = "error"
++
++[[problems]]
++code = "ERR_DATA_FENCE_STALE"
++title = "The fence this fetch holds is still the current one"
 +severity = "error"
 +
 +[[problems]]
@@ -1853,6 +1863,16 @@
 +[[problems]]
 +code = "ERR_DATA_INPUT_MISSING"
 +title = "The fetch record is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_DATA_MEMBER_UNSAFE"
++title = "Every member is a plain file or folder inside the archive"
++severity = "error"
++
++[[problems]]
++code = "ERR_DATA_PIN_MISMATCH"
++title = "The archive is the one its reviewed pin names"
 +severity = "error"
 +
 +[[problems]]
