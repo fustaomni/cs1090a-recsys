@@ -2953,3 +2953,16 @@ done_when = [
   { kind = "proof", test = "tests/test_status_paths.py::test_outside_a_repository_is_refused_not_read_as_clean" },
   { kind = "path", path = "contracts/mutations/A.248.toml" },
 ]
+[[steps]]
+id = "A.249"
+title = "plan:resolve resolves a merge or rebase stopped on the three plan files as data, appending every entry the other side added and refusing an id issued or an entry edited on both sides, adopted from cscie103 D.129 at 25ed9e7, which ported it from this repository, whose develop no longer holds it"
+thread = "A"
+depends_on = ["A.29"]
+because = { "A.29" = "source:port, which brings the hub's files here at a pinned commit, recording each digest" }
+branch = "feature/plan-resolve"
+done_when = [
+  { kind = "proof", test = "tests/test_plan_conflicts.py::test_one_id_issued_on_both_sides_is_refused" },
+  { kind = "proof", test = "tests/test_plan_conflicts.py::test_one_entry_edited_on_both_sides_is_refused" },
+  { kind = "proof", test = "tests/test_plan_conflicts.py::test_the_resolution_is_validated_before_it_is_staged" },
+  { kind = "path", path = "contracts/mutations/A.249.toml" },
+]
