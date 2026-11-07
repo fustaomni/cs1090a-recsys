@@ -145,7 +145,7 @@ def test_an_archive_that_misses_its_sha256_pin_is_never_opened(
         opened.append(str(file))
         return real(file)
 
-    monkeypatch.setattr(data_fetch.zipfile, "ZipFile", spy)
+    monkeypatch.setattr(zipfile, "ZipFile", spy)
     _, refusals = fetch(archive_url, md5_url, tmp_path / "data", download=_local, pin=wrong)
     assert "ERR_DATA_PIN_MISMATCH" in refusals, refusals
     assert opened == [], opened
@@ -187,8 +187,8 @@ def test_a_traversing_absolute_or_link_member_is_refused(tmp_path: Path) -> None
     link.external_attr = 0o120777 << 16
     backslash = zipfile.ZipInfo("..\\escape.txt")
     hostile = (zipfile.ZipInfo("../escape.txt"), zipfile.ZipInfo("/abs.txt"), backslash, link)
-    for index, member in enumerate(hostile):
-        case = tmp_path / str(index)
+    for member in nonempty(hostile):
+        case = tmp_path / hashlib.sha256(member.filename.encode()).hexdigest()[:12]
         case.mkdir()
         archive_url, md5_url = _hostile(case, member)
         destination = case / "data"

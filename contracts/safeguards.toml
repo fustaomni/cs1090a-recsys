@@ -1739,6 +1739,42 @@ path = "policies/runs/data_fetch/data_fetch.rego"
 anchor = "\tnot name in present\n"
 mutant = "\tfalse\n"
 proof = "tests/test_data_fetch.py::test_an_archive_missing_a_required_file_is_refused"
+
+[[safeguards]]
+id = "DATA.PIN_MISMATCH"
+engine = "data:fetch"
+guard = "ERR_DATA_PIN_MISMATCH"
+path = "policies/runs/data_fetch/data_fetch.rego"
+anchor = "\tfetch.archive_sha256 != fetch.archive_pinned\n"
+mutant = "\tfalse\n"
+proof = "tests/test_data_fetch.py::test_a_matching_md5_never_admits_an_archive_that_misses_its_sha256_pin"
+
+[[safeguards]]
+id = "DATA.MEMBER_UNSAFE"
+engine = "data:fetch"
+guard = "ERR_DATA_MEMBER_UNSAFE"
+path = "policies/runs/data_fetch/data_fetch.rego"
+anchor = "\tsome name in fetch.unsafe\n"
+mutant = "\tfalse\n"
+proof = "tests/test_data_fetch.py::test_a_traversing_absolute_or_link_member_is_refused"
+
+[[safeguards]]
+id = "DATA.ARCHIVE_OVER_LIMIT"
+engine = "data:fetch"
+guard = "ERR_DATA_ARCHIVE_OVER_LIMIT"
+path = "policies/runs/data_fetch/data_fetch.rego"
+anchor = "\tover_limit(fetch)\n"
+mutant = "\tfalse\n"
+proof = "tests/test_data_fetch.py::test_an_archive_over_its_size_or_count_limit_is_refused"
+
+[[safeguards]]
+id = "DATA.FENCE_STALE"
+engine = "data:fetch"
+guard = "ERR_DATA_FENCE_STALE"
+path = "policies/runs/data_fetch/data_fetch.rego"
+anchor = "\tfetch.fence_current != fetch.fence\n"
+mutant = "\tfalse\n"
+proof = "tests/test_data_fetch.py::test_a_concurrent_fetch_is_refused_and_a_stale_fence_cannot_publish"
 [[safeguards]]
 id = "SIBLING.INPUT_MISSING"
 engine = "sibling:checkout"
