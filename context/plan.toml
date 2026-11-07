@@ -2977,3 +2977,14 @@ done_when = [
   { kind = "proof", test = "tests/test_plan_conflicts.py::test_the_resolution_is_validated_before_it_is_staged" },
   { kind = "path", path = "contracts/mutations/A.249.toml" },
 ]
+[[steps]]
+id = "A.250"
+title = "centralization:inventory runs as a CI gate on every pull request, so a capability the hub lacks can no longer merge here unclassified"
+thread = "A"
+depends_on = ["A.205"]
+because = { "A.205" = "the inventory and register this makes a gate" }
+branch = "feature/inventory-gate"
+done_when = [
+  { kind = "proof", test = "tests/test_inventory_gate.py::test_the_inventory_is_a_ci_gate" },
+  { kind = "path", path = "contracts/mutations/A.250.toml" },
+]
