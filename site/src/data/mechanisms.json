@@ -25,7 +25,7 @@
     { "id": "T8", "kind": "technique", "ref": 8, "status": "built" },
     { "id": "T9", "kind": "technique", "ref": 9, "status": "built" },
     { "id": "T10", "kind": "technique", "ref": 10, "status": "built" },
-    { "id": "T11", "kind": "technique", "ref": 11, "status": "planned" },
+    { "id": "T11", "kind": "technique", "ref": 11, "status": "built" },
     { "id": "T12", "kind": "technique", "ref": 12, "status": "planned" }
   ]
 }
