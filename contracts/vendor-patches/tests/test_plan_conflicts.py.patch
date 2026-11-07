@@ -1,0 +1,18 @@
+--- a/tests/test_plan_conflicts.py
++++ b/tests/test_plan_conflicts.py
+@@ -201,6 +201,15 @@
+     assert _unmerged(repo) == set(), _unmerged(repo)
+ 
+ 
++def test_an_absent_request_is_refused_by_the_policy(tmp_path: Path) -> None:
++    """runs.plan_resolve refuses when no resolve plan is supplied, never reading it as clean."""
++    subject = _subject()
++    plan = subject.plan_resolve(_repo(tmp_path))
++    found = subject.evaluate(plan, "not_plan_resolve", subject.POLICY, subject.ENTRYPOINT)
++    codes = {rule.code for rule in found.rules if rule.outcome == "fail"}
++    assert "ERR_PLAN_RESOLVE_INPUT_MISSING" in codes, found
++
++
+ def test_an_argument_is_refused_naming_no_task(capsys: pytest.CaptureFixture[str]) -> None:
+     """An argument is refused, and the refusal names no task this repository does not declare."""
+     subject = _subject()

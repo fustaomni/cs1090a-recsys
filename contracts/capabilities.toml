@@ -376,6 +376,12 @@ implementation = "scripts/status_paths.py"
 emits = "command-outcome/v1"
 
 [[capabilities]]
+task = "plan:resolve"
+version = "1.0.0"
+implementation = "scripts/plan_conflicts.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
 task = "deps:add"
 version = "1.0.0"
 implementation = "scripts/deps_add.py"
