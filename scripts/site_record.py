@@ -69,12 +69,35 @@ class Primary(Contract):
     verdict: str | None = None
 
 
+class Evidence(Contract):
+    """The recorded file a value was read from: its contract and the SHA-256 of its bytes."""
+
+    contract: str = Field(min_length=1)
+    sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+
+class Entry(Contract):
+    """One value a milestone's results show, never without the evidence it was read from."""
+
+    label: str = Field(min_length=1)
+    value: str | int | float
+    evidence: Evidence
+
+
+class Section(Contract):
+    """One milestone's results: empty until evidence for it is recorded (A.245)."""
+
+    milestone: str = Field(min_length=1)
+    entries: tuple[Entry, ...] = ()
+
+
 class Results(Contract):
     """site-results/v1: everything the results board shows."""
 
     contract: Literal["site-results/v1"] = "site-results/v1"
     updated: str
     protocol: str
+    milestones: tuple[Section, ...]
     primary: Primary
     rows: tuple[Row, ...]
 

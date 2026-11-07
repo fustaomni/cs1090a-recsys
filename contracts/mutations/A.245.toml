@@ -1,0 +1,51 @@
+# contracts/mutations/A.245.toml
+# A.245's site bindings, each regressed once, and the proof that must notice (mutation:check).
+
+[[mutants]]
+id = "title-reverted"
+file = "site/src/data/project.json"
+before = '"title": "A recommender that records why it recommended, and is judged on it",'
+after = '"title": "A recommender that records why it recommended",'
+killers = ["tests/test_site_bindings.py::test_the_group_is_three_members_with_its_mentor_and_first_meeting"]
+
+[[mutants]]
+id = "mentor-dropped"
+file = "site/src/data/project.json"
+before = '"mentor": "Sukanya Krishna",'
+after = '"tutor": "Sukanya Krishna",'
+killers = ["tests/test_site_bindings.py::test_the_group_is_three_members_with_its_mentor_and_first_meeting"]
+
+[[mutants]]
+id = "open-seat-returns"
+file = "site/src/App.jsx"
+before = '<p className="group-label">Group members:</p>'
+after = '<p className="group-label">Group members · Open seat:</p>'
+killers = ["tests/test_site_bindings.py::test_no_join_call_or_open_seat_remains"]
+
+[[mutants]]
+id = "stat-typed"
+file = "site/src/data/project.json"
+before = '{ "bind": "ratings", "label": "ratings" },'
+after = '{ "bind": "ratings", "value": "1,000,209", "label": "ratings" },'
+killers = ["tests/test_site_bindings.py::test_every_count_on_the_page_is_derived_from_its_source"]
+
+[[mutants]]
+id = "figure-typed"
+file = "site/src/data/project.json"
+before = "at most {users} users."
+after = "at most 6,040 users."
+killers = ["tests/test_site_bindings.py::test_a_number_typed_into_the_site_text_is_refused"]
+
+[[mutants]]
+id = "count-word-typed"
+file = "site/src/data/project.json"
+before = '"form": "{models} models and {techniques} supporting techniques"'
+after = '"form": "Twelve models and {techniques} supporting techniques"'
+killers = ["tests/test_site_bindings.py::test_a_number_typed_into_the_site_text_is_refused"]
+
+[[mutants]]
+id = "milestone-section-renamed"
+file = "site/src/data/results.json"
+before = "    {\n      \"milestone\": \"M4\",\n      \"entries\": []"
+after = "    {\n      \"milestone\": \"M5\",\n      \"entries\": []"
+killers = ["tests/test_site_bindings.py::test_each_milestone_has_a_results_section_filled_only_from_recorded_evidence"]
