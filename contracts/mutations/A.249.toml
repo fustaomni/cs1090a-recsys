@@ -1,0 +1,23 @@
+# contracts/mutations/d129.toml
+# Plan-file conflicts are resolved as data, refused when changed on both sides (D.129).
+
+[[mutants]]
+id = "id-issued-twice-allowed"
+file = "scripts/plan_conflicts.py"
+before = '                raise PlanConflictError(f"{label} {name} was issued on both sides")'
+after = '                continue'
+killers = ["tests/test_plan_conflicts.py::test_one_id_issued_on_both_sides_is_refused"]
+
+[[mutants]]
+id = "edited-twice-allowed"
+file = "scripts/plan_conflicts.py"
+before = '                raise PlanConflictError(f"{label} {name} was edited on both sides")'
+after = '                continue'
+killers = ["tests/test_plan_conflicts.py::test_one_entry_edited_on_both_sides_is_refused"]
+
+[[mutants]]
+id = "validation-skipped"
+file = "scripts/plan_conflicts.py"
+before = '        rendered = _validated(documents)'
+after = '        rendered = {relative: tomlkit.dumps(doc) for relative, doc in documents.items()}'
+killers = ["tests/test_plan_conflicts.py::test_the_resolution_is_validated_before_it_is_staged"]
