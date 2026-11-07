@@ -256,6 +256,11 @@ class = "project"
 reason = "this recommender fitted model as a governed artifact (A.100)"
 
 [[capabilities]]
+id = "script:scripts/milestone2.py"
+class = "project"
+reason = "this recommender Milestone 2 walking skeleton, from the verified archive to the proposal line (A.244)"
+
+[[capabilities]]
 id = "script:scripts/site_record.py"
 class = "project"
 reason = "this project public site and its labs (A.95, A.98, A.99)"
