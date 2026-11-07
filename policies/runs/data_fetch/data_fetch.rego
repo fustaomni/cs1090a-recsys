@@ -44,3 +44,62 @@ deny contains denial if {
 		"message": sprintf("%s is missing from the archive", [name]),
 	}
 }
+
+# METADATA
+# title: The archive is the one its reviewed pin names
+# custom:
+#   code: ERR_DATA_PIN_MISMATCH
+deny contains denial if {
+	fetch := input.data_fetch
+	fetch.archive_sha256 != fetch.archive_pinned
+	denial := {
+		"code": rego.metadata.rule().custom.code,
+		"message": sprintf("archive SHA-256 %s, reviewed pin %s", [fetch.archive_sha256, fetch.archive_pinned]),
+	}
+}
+
+# METADATA
+# title: Every member is a plain file or folder inside the archive
+# custom:
+#   code: ERR_DATA_MEMBER_UNSAFE
+deny contains denial if {
+	fetch := input.data_fetch
+	some name in fetch.unsafe
+	denial := {
+		"code": rego.metadata.rule().custom.code,
+		"message": sprintf("%s is absolute, climbs out, names a drive, or is not a plain file", [name]),
+	}
+}
+
+# METADATA
+# title: The fence this fetch holds is still the current one
+# custom:
+#   code: ERR_DATA_FENCE_STALE
+deny contains denial if {
+	fetch := input.data_fetch
+	fetch.fence_current != fetch.fence
+	denial := {
+		"code": rego.metadata.rule().custom.code,
+		"message": sprintf("this fetch holds fence %d, but the fence is now %d", [fetch.fence, fetch.fence_current]),
+	}
+}
+
+over_limit(fetch) if fetch.member_count > fetch.max_members
+
+over_limit(fetch) if fetch.total_bytes > fetch.max_total_bytes
+
+# METADATA
+# title: The archive is within its member and size limits
+# custom:
+#   code: ERR_DATA_ARCHIVE_OVER_LIMIT
+deny contains denial if {
+	fetch := input.data_fetch
+	over_limit(fetch)
+	denial := {
+		"code": rego.metadata.rule().custom.code,
+		"message": sprintf(
+			"%d members of at most %d, %d bytes of at most %d",
+			[fetch.member_count, fetch.max_members, fetch.total_bytes, fetch.max_total_bytes],
+		),
+	}
+}
