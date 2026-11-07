@@ -396,6 +396,16 @@ title = "The apply request is supplied, never assumed"
 severity = "error"
 
 [[problems]]
+code = "ERR_STATUS_PATHS_INPUT_MISSING"
+title = "The status observation is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_STATUS_PATHS_UNANSWERED"
+title = "A git that could not answer is never read as a clean tree"
+severity = "error"
+
+[[problems]]
 code = "ERR_SOURCE_APPLY_LINE_TOO_LONG"
 title = "No line the spec writes into Python passes the line limit"
 severity = "error"
