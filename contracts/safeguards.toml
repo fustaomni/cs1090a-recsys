@@ -31,6 +31,33 @@ mutant = "\tfalse\n"
 proof = "tests/test_status_paths.py::test_outside_a_repository_is_refused_not_read_as_clean"
 
 [[safeguards]]
+id = "SA.PLAN_RESOLVE_INPUT_MISSING"
+engine = "plan:resolve"
+guard = "ERR_PLAN_RESOLVE_INPUT_MISSING"
+path = "policies/runs/plan_resolve/plan_resolve.rego"
+anchor = "\tnot input.plan_resolve\n"
+mutant = "\tfalse\n"
+proof = "tests/test_plan_conflicts.py::test_an_absent_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SA.PLAN_RESOLVE_NO_OPERATION"
+engine = "plan:resolve"
+guard = "ERR_PLAN_RESOLVE_NO_OPERATION"
+path = "policies/runs/plan_resolve/plan_resolve.rego"
+anchor = "\tinput.plan_resolve.operation == \"none\"\n"
+mutant = "\tfalse\n"
+proof = "tests/test_plan_conflicts.py::test_no_operation_is_refused_by_its_coded_rule"
+
+[[safeguards]]
+id = "SA.PLAN_RESOLVE_NOTHING_CONFLICTED"
+engine = "plan:resolve"
+guard = "ERR_PLAN_RESOLVE_NOTHING_CONFLICTED"
+path = "policies/runs/plan_resolve/plan_resolve.rego"
+anchor = "\tcount(input.plan_resolve.conflicted) == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_plan_conflicts.py::test_no_plan_file_in_conflict_is_refused_by_its_coded_rule"
+
+[[safeguards]]
 id = "SA.PATH_OUTSIDE"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_PATH_OUTSIDE"
