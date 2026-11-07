@@ -1,0 +1,16 @@
+# contracts/mutations/A.247.toml
+# A.247's register entry, unnamed or left without its reason, and the proof that must notice.
+
+[[mutants]]
+id = "entry-renamed"
+file = "contracts/centralization.toml"
+before = 'id = "script:scripts/milestone2.py"'
+after = 'id = "script:scripts/milestone2-elsewhere.py"'
+killers = ["tests/test_centralization.py::test_the_walking_skeleton_is_classified_in_this_register"]
+
+[[mutants]]
+id = "reason-emptied"
+file = "contracts/centralization.toml"
+before = 'reason = "this recommender Milestone 2 walking skeleton, from the verified archive to the proposal line (A.244)"'
+after = 'reason = ""'
+killers = ["tests/test_centralization.py::test_the_walking_skeleton_is_classified_in_this_register"]
