@@ -138,6 +138,6 @@ def test_the_movielens_summary_is_computed_from_the_verified_ratings() -> None:
 def test_the_site_data_carries_every_phase_model_and_technique() -> None:
     data = json.loads((SITE / "src" / "data" / "project.json").read_text(encoding="utf-8"))
     assert [phase["id"] for phase in data["phases"]] == PHASES
-    assert [model["id"] for model in data["models"]] == list(range(1, 13))
+    assert [model["id"] for model in data["models"]] == list(range(1, 15))
     assert len(data["baselines"]) == 4
-    assert len(data["techniques"]) == 10
+    assert len(data["techniques"]) == 12

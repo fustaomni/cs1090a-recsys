@@ -1,0 +1,37 @@
+# contracts/mutations/A.246.toml
+# A.246's site additions, each regressed once, and the proof that must notice (mutation:check).
+
+[[mutants]]
+id = "model-14-renumbered"
+file = "site/src/data/project.json"
+before = '{ "id": 14, "name": "Ordinal regression, a cumulative link model", "phase": "12" }'
+after = '{ "id": 15, "name": "Ordinal regression, a cumulative link model", "phase": "12" }'
+killers = ["tests/test_site_additions.py::test_the_site_carries_every_required_model_and_technique_from_its_data"]
+
+[[mutants]]
+id = "technique-12-renumbered"
+file = "site/src/data/project.json"
+before = '{ "id": 12, "name": "User-level sign-flip permutation test",'
+after = '{ "id": 13, "name": "User-level sign-flip permutation test",'
+killers = ["tests/test_site_additions.py::test_the_site_carries_every_required_model_and_technique_from_its_data"]
+
+[[mutants]]
+id = "lab-left-planned"
+file = "site/src/data/mechanisms.json"
+before = '{ "id": "T12", "kind": "technique", "ref": 12, "status": "built" }'
+after = '{ "id": "T12", "kind": "technique", "ref": 12, "status": "planned" }'
+killers = ["tests/test_site_additions.py::test_each_addition_has_a_built_lab"]
+
+[[mutants]]
+id = "lab-not-loaded"
+file = "site/src/mechanisms/Mechanisms.jsx"
+before = '  M13: lazy(() => import("./labs/M13.jsx")),'
+after = "  // M13 not loaded"
+killers = ["tests/test_site_additions.py::test_each_addition_has_a_built_lab"]
+
+[[mutants]]
+id = "ordinal-excluded-again"
+file = "site/src/data/project.json"
+before = '  "excluded": ['
+after = '  "excluded": [ "Ordinal regression, outside the chosen family of methods",'
+killers = ["tests/test_site_additions.py::test_ordinal_regression_is_a_model_not_an_exclusion"]
