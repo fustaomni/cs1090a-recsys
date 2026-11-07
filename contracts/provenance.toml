@@ -811,9 +811,9 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 
 [[adapted]]
 path = "contracts/problems.toml"
-reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108)"
+reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108); ERR_STATUS_PATHS_INPUT_MISSING and ERR_STATUS_PATHS_UNANSWERED registered for status:paths (A.248)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "11b63c1351498af5fd96c273d8258f11ec82c4db0e928cbe3bcc171a8fe9a294"
+sha256 = "cb45e8f34b08da84aaf065ef76e2ca9a68cb86efa05a72f98634cab7f3497a6d"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
@@ -1350,3 +1350,36 @@ path = "tests/integration/test_generated_gate.py"
 reason = "at tests/integration, where this repository declares the integration level (A.39); git through gitenv's scrubbed environment; a two-field identity, as this repository declares one; the bundle-fixture refresh, the PII gate and the policy-decision proof dropped, since this repository has no update_fixtures.py, check_pii.py or evaluate_policies.py; origin reads as the project's declared GitHub repository while its pushes reach a local bare one through pushInsteadOf, since source:apply reads the repository from origin; the nested gate runs --offline --ci, judging the project and never the developer machine, whose claims are declared out of CI (A.104); the project's own tests run as its test task runs them, selected by its own addopts, since an -m would replace that filter and run its claims about the machine (A.104); A.123; a project renamed by identity:set keeps a consistent lock, proven by uv lock --check --offline in cscie103 D.263's form (A.146)"
 patch = "contracts/vendor-patches/tests/integration/test_generated_gate.py.patch"
 sha256 = "772a9806711eab1f84c1159c87e0f2ddc00034d0c83214d70adb97f14b2986f6"
+
+[[files]]
+path = "scripts/status_paths.py"
+sha256 = "6d04a1ab25174d0659501fa771252bdeac62175f7a0f3f97daf916497d46b3ba"
+commit = "25ed9e72aeea0a0f6b141d33dfe48df8271e9923"
+
+[[adapted]]
+path = "scripts/status_paths.py"
+reason = "the docstring names this repository by its role, since the identity audit allows its name only in a declared slot"
+patch = "contracts/vendor-patches/scripts/status_paths.py.patch"
+sha256 = "e3398d5a8ffd1e54e7336a38662b415a8cff85645c5128758bf5a92f806ef189"
+
+[[files]]
+path = "policies/runs/status_paths/status_paths.rego"
+sha256 = "1da59e30e5313fa61adac748db7964b7397fa87cb63bf3b13635a44225a3a926"
+commit = "25ed9e72aeea0a0f6b141d33dfe48df8271e9923"
+
+[[files]]
+path = "tests/test_status_paths.py"
+sha256 = "416500e76256bf9e11eddfdf4743f143e45bc8278e08267fbaf6da1f8a320b33"
+commit = "25ed9e72aeea0a0f6b141d33dfe48df8271e9923"
+
+[[adapted]]
+path = "tests/test_status_paths.py"
+reason = "a proof that the policy refuses an absent observation, which ERR_STATUS_PATHS_INPUT_MISSING's safeguard names"
+patch = "contracts/vendor-patches/tests/test_status_paths.py.patch"
+sha256 = "1e5bd143311897355ff995f2d677ec1423d2e84c0555472615c09278e665d635"
+
+[[files]]
+path = "contracts/mutations/A.248.toml"
+upstream_path = "contracts/mutations/d355.toml"
+sha256 = "a700ffa820184e3ca952f012ecb761b6268b7fc9d1891ce0c2049e23e09d1445"
+commit = "25ed9e72aeea0a0f6b141d33dfe48df8271e9923"

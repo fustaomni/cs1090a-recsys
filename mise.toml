@@ -172,6 +172,14 @@ description = "Commit exactly the named paths with a conventional message, throu
 #   mise run commit -- --message "feat(x): subject" --path scripts/x.py
 run = "uv run --no-sync python scripts/commit.py"
 
+[tasks."status:paths"]
+description = "Print every changed path a commit should name, derived from git rather than recalled"
+# A.248, adopted from cscie103 D.355 at 25ed9e7, which ported it from this repository's own
+# commit paths (RS.30): a commit's path list composed from memory was wrong six times in one
+# session, so git's porcelain record is read instead, every untracked file by its own path.
+#   mise run run status:paths
+run = "uv run --no-sync python scripts/status_paths.py"
+
 [tasks.status]
 description = "Show branch, working tree, and how it relates to develop"
 # READ OPERATIONS ARE PROJECT OPERATIONS TOO. `git status` typed by hand is

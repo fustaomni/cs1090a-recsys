@@ -370,6 +370,12 @@ implementation = "scripts/source_apply.py"
 emits = "command-outcome/v1"
 
 [[capabilities]]
+task = "status:paths"
+version = "1.0.0"
+implementation = "scripts/status_paths.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
 task = "deps:add"
 version = "1.0.0"
 implementation = "scripts/deps_add.py"
