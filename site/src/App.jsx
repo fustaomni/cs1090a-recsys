@@ -161,15 +161,11 @@ function Phases() {
 }
 
 function Deploys() {
-  const groups = [];
-  for (const model of data.models) {
-    const last = groups[groups.length - 1];
-    if (last && last.phase === model.phase) {
-      last.models.push(model);
-    } else {
-      groups.push({ phase: model.phase, models: [model] });
-    }
-  }
+  // Grouped by phase, in first-seen order, so a later model joins its phase's rung (A.246).
+  const groups = [...Map.groupBy(data.models, (model) => model.phase)].map(([phase, models]) => ({
+    phase,
+    models,
+  }));
   return (
     <section id="deploys" className="section">
       <h2>What the project deploys</h2>
