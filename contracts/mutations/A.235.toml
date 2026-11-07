@@ -1,0 +1,107 @@
+# contracts/mutations/A.235.toml
+# A.235's data:fetch guards, each broken once, and the proof that must notice (mutation:check).
+
+[[mutants]]
+id = "pin-not-checked-before-opening"
+file = "scripts/data_fetch.py"
+before = "    if archive_sha256 == pinned.archive_sha256:"
+after = "    if True:"
+killers = ["tests/test_data_fetch.py::test_an_archive_that_misses_its_sha256_pin_is_never_opened"]
+
+[[mutants]]
+id = "pin-rule-blind"
+file = "policies/runs/data_fetch/data_fetch.rego"
+before = "\tfetch.archive_sha256 != fetch.archive_pinned\n"
+after = "\tfalse\n"
+killers = ["tests/test_data_fetch.py::test_a_matching_md5_never_admits_an_archive_that_misses_its_sha256_pin"]
+
+[[mutants]]
+id = "redirect-origin-unchecked"
+file = "scripts/data_fetch.py"
+before = "        if _origin(newurl) != _origin(ARCHIVE_URL):"
+after = "        if False:"
+killers = ["tests/test_data_fetch.py::test_a_redirect_to_another_host_or_a_plain_http_origin_is_refused"]
+
+[[mutants]]
+id = "download-origin-unchecked"
+file = "scripts/data_fetch.py"
+before = "    if _origin(url) != _origin(ARCHIVE_URL):"
+after = "    if False:"
+killers = ["tests/test_data_fetch.py::test_a_url_that_is_not_https_is_refused"]
+
+[[mutants]]
+id = "traversal-unseen"
+file = "scripts/data_fetch.py"
+before = '        or ".." in PurePosixPath(name).parts'
+after = "        or False"
+killers = ["tests/test_data_fetch.py::test_a_traversing_absolute_or_link_member_is_refused"]
+
+[[mutants]]
+id = "backslash-unseen"
+file = "scripts/data_fetch.py"
+before = '        or "\\" in name'
+after = "        or False"
+killers = ["tests/test_data_fetch.py::test_a_traversing_absolute_or_link_member_is_refused"]
+
+[[mutants]]
+id = "link-unseen"
+file = "scripts/data_fetch.py"
+before = "        or kind not in (0, stat.S_IFREG, stat.S_IFDIR)"
+after = "        or False"
+killers = ["tests/test_data_fetch.py::test_a_traversing_absolute_or_link_member_is_refused"]
+
+[[mutants]]
+id = "limits-unchecked"
+file = "policies/runs/data_fetch/data_fetch.rego"
+before = "over_limit(fetch) if fetch.member_count > fetch.max_members"
+after = "over_limit(fetch) if false"
+killers = ["tests/test_data_fetch.py::test_an_archive_over_its_size_or_count_limit_is_refused"]
+
+[[mutants]]
+id = "one-attempt"
+file = "scripts/data_fetch.py"
+before = "    for attempt in range(1, ATTEMPTS + 1):"
+after = "    for attempt in range(1, 2):"
+killers = ["tests/test_data_fetch.py::test_a_stalled_download_times_out_and_retries_a_bounded_number_of_times"]
+
+[[mutants]]
+id = "flat-backoff"
+file = "scripts/data_fetch.py"
+before = "            delay *= 2"
+after = "            delay *= 1"
+killers = ["tests/test_data_fetch.py::test_a_stalled_download_times_out_and_retries_a_bounded_number_of_times"]
+
+[[mutants]]
+id = "published-piecewise"
+file = "scripts/data_fetch.py"
+before = "                    target = fresh / name"
+after = "                    target = destination / name"
+killers = ["tests/test_data_fetch.py::test_an_interrupted_download_publishes_nothing"]
+
+[[mutants]]
+id = "never-a-no-op"
+file = "scripts/data_fetch.py"
+before = "    if _published(destination, pinned):"
+after = "    if False:"
+killers = ["tests/test_data_fetch.py::test_a_verified_published_copy_makes_a_rerun_a_no_op"]
+
+[[mutants]]
+id = "lock-not-taken"
+file = "scripts/data_fetch.py"
+before = "            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)"
+after = "            pass"
+killers = ["tests/test_data_fetch.py::test_a_concurrent_fetch_is_refused_and_a_stale_fence_cannot_publish"]
+
+[[mutants]]
+id = "fence-rule-blind"
+file = "policies/runs/data_fetch/data_fetch.rego"
+before = "\tfetch.fence_current != fetch.fence\n"
+after = "\tfalse\n"
+killers = ["tests/test_data_fetch.py::test_a_concurrent_fetch_is_refused_and_a_stale_fence_cannot_publish"]
+
+[[mutants]]
+id = "unknown-passes"
+file = "scripts/data_fetch.py"
+before = '    return [] if decision.action == "proceed" else [decision.reason_code]'
+after = "    return []"
+killers = ["tests/test_data_fetch.py::test_an_unknown_observation_is_refused_never_passed"]
