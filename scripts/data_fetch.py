@@ -287,8 +287,17 @@ def advance_fence(destination: Path) -> int:
 
 
 def _judge(record: DataFetch) -> list[str]:
+    """The failing rules' codes, or the spine's reason whenever it does not proceed (A.235).
+
+    UNKNOWN NEVER PROCEEDS: a record the policy cannot judge has no failing rule, and only the
+    spine's decision table turns it into a halt, so an unjudged fetch is refused, never passed.
+    """
     found = spine.evaluate(record, SUBJECT, POLICY, ENTRYPOINT)
-    return sorted(rule.code for rule in found.rules if rule.outcome == "fail")
+    failing = sorted(rule.code for rule in found.rules if rule.outcome == "fail")
+    if failing:
+        return failing
+    decision = spine.decide(found)
+    return [] if decision.action == "proceed" else [decision.reason_code]
 
 
 def _published(destination: Path, pin: DataPin) -> bool:
