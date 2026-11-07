@@ -2,6 +2,24 @@
   "contract": "site-results/v1",
   "updated": "2026-10-16",
   "protocol": "Protocol A: global temporal split, testing on ratings after the 0.9 quantile of timestamps",
+  "milestones": [
+    {
+      "milestone": "M1",
+      "entries": []
+    },
+    {
+      "milestone": "M2",
+      "entries": []
+    },
+    {
+      "milestone": "M3",
+      "entries": []
+    },
+    {
+      "milestone": "M4",
+      "entries": []
+    }
+  ],
   "primary": {
     "question": "Does the best model beat the regularised bias baseline on RMSE, compared paired and clustered by user?",
     "verdicts": [
