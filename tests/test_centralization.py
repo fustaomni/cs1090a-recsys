@@ -70,3 +70,13 @@ def test_an_unclassified_absent_capability_is_refused(tmp_path: Path) -> None:
         inventory.judge(("script:scripts/born_here.py", "task:born:here"), register)
     assert "script:scripts/born_here.py" in str(refused.value), refused.value
     assert "task:born:here" not in str(refused.value), refused.value
+
+
+def test_the_walking_skeleton_is_classified_in_this_register() -> None:
+    """scripts/milestone2.py, which the hub declines under X.10, is classified here (A.247)."""
+    inventory = _inventory()
+    register = Path(__file__).resolve().parent.parent / "contracts" / "centralization.toml"
+    try:
+        inventory.judge(("script:scripts/milestone2.py",), register)
+    except SystemExit as refused:
+        pytest.fail(f"the register leaves it unclassified: {refused}")
