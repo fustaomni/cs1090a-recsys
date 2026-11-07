@@ -1061,3 +1061,18 @@ severity = "error"
 code = "ERR_STATUS_PATHS_UNANSWERED"
 title = "A git that could not answer is never read as a clean tree"
 severity = "error"
+
+[[problems]]
+code = "ERR_PLAN_RESOLVE_INPUT_MISSING"
+title = "The resolve plan is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_PLAN_RESOLVE_NOTHING_CONFLICTED"
+title = "A plan file is in conflict"
+severity = "error"
+
+[[problems]]
+code = "ERR_PLAN_RESOLVE_NO_OPERATION"
+title = "A merge or a rebase is in progress"
+severity = "error"
