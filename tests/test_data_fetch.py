@@ -5,6 +5,8 @@ from __future__ import annotations
 import fcntl
 import hashlib
 import io
+import re
+import tomllib
 import urllib.error
 import urllib.request
 import zipfile
@@ -21,6 +23,7 @@ from data_fetch import (
     ENTRYPOINT,
     POLICY,
     REQUIRED,
+    ROOT,
     DataFile,
     DataPin,
     _download,
@@ -292,6 +295,37 @@ def test_a_concurrent_fetch_is_refused_and_a_stale_fence_cannot_publish(tmp_path
     _, refusals = fetch(archive_url, md5_url, destination, download=overtaken, pin=pin)
     assert "ERR_DATA_FENCE_STALE" in refusals, refusals
     assert not destination.exists()
+
+
+def test_an_unknown_observation_is_refused_never_passed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A fetch the policy cannot judge halts as the spine decides, and publishes nothing."""
+    archive_url, md5_url = _archive(tmp_path)
+    pin = _pin(archive_url)
+    destination = tmp_path / "data"
+    monkeypatch.setattr(data_fetch, "POLICY", tmp_path / "no-policy")
+    _, refusals = fetch(archive_url, md5_url, destination, download=_local, pin=pin)
+    assert refusals == ["UNEVALUABLE"], refusals
+    assert not destination.exists()
+
+
+def test_every_refusal_carries_a_registered_problem_code() -> None:
+    """Every code runs.data_fetch can refuse with is in the one problem registry (A.235)."""
+    problems = tomllib.loads((ROOT / "contracts" / "problems.toml").read_text(encoding="utf-8"))
+    registered = {entry["code"] for entry in problems["problems"]}
+    rego = (POLICY / "data_fetch.rego").read_text(encoding="utf-8")
+    declared = set(re.findall(r"code: (ERR_[A-Z_]+)", rego))
+    expected = {
+        "ERR_DATA_PIN_MISMATCH",
+        "ERR_DATA_MEMBER_UNSAFE",
+        "ERR_DATA_ARCHIVE_OVER_LIMIT",
+        "ERR_DATA_FENCE_STALE",
+        "ERR_DATA_CHECKSUM_MISMATCH",
+        "ERR_DATA_FILES_MISSING",
+    }
+    assert expected <= declared, expected - declared
+    assert declared <= registered, declared - registered
 
 
 def test_the_pin_records_its_origin_date_corroborating_md5_and_reviewing_commit() -> None:
