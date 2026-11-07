@@ -1,6 +1,6 @@
 --- a/contracts/problems.toml
 +++ b/contracts/problems.toml
-@@ -6,18 +6,498 @@
+@@ -6,18 +6,499 @@
  contract = "problems/v1"
  
  [[problems]]
@@ -405,6 +405,7 @@
 +title = "The apply request is supplied, never assumed"
 +severity = "error"
 +
++
 +[[problems]]
 +code = "ERR_SOURCE_APPLY_LINE_TOO_LONG"
 +title = "No line the spec writes into Python passes the line limit"
@@ -511,7 +512,7 @@
  severity = "error"
  
  [[problems]]
-@@ -36,23 +516,78 @@
+@@ -36,23 +517,78 @@
  severity = "error"
  
  [[problems]]
@@ -607,7 +608,7 @@
  severity = "error"
  
  [[problems]]
-@@ -76,68 +611,23 @@
+@@ -76,68 +612,23 @@
  severity = "error"
  
  [[problems]]
@@ -693,7 +694,7 @@
  severity = "error"
  
  [[problems]]
-@@ -156,26 +646,6 @@
+@@ -156,26 +647,6 @@
  severity = "error"
  
  [[problems]]
@@ -720,7 +721,7 @@
  code = "ERR_DISCARD_AUTHORED"
  title = "The destination holds only its generated commit"
  severity = "error"
-@@ -216,136 +686,6 @@
+@@ -216,136 +687,6 @@
  severity = "error"
  
  [[problems]]
@@ -857,7 +858,7 @@
  code = "ERR_IDENTITY_HAS_REMOTE"
  title = "The project is not yet published"
  severity = "error"
-@@ -396,371 +736,6 @@
+@@ -396,371 +737,6 @@
  severity = "error"
  
  [[problems]]
@@ -1229,7 +1230,7 @@
  code = "ERR_PUBLISH_DIRTY"
  title = "The destination is clean"
  severity = "error"
-@@ -796,271 +771,6 @@
+@@ -796,271 +772,6 @@
  severity = "error"
  
  [[problems]]
@@ -1501,7 +1502,7 @@
  code = "ERR_TEMPLATE_DESTINATION_INSIDE"
  title = "The destination is outside the source"
  severity = "error"
-@@ -1079,6 +789,7 @@
+@@ -1079,6 +790,7 @@
  code = "ERR_TEMPLATE_SOURCE_NOT_SSH"
  title = "The source is SSH"
  severity = "error"
@@ -1509,7 +1510,7 @@
  
  [[problems]]
  code = "ERR_TEMPLATE_UNPINNED"
-@@ -1086,151 +797,256 @@
+@@ -1086,151 +798,266 @@
  severity = "error"
  
  [[problems]]
@@ -1913,4 +1914,14 @@
 +[[problems]]
 +code = "ERR_SIBLING_ORIGIN_NO_CLONE"
 +title = "The sibling is already cloned"
++severity = "error"
++
++[[problems]]
++code = "ERR_STATUS_PATHS_INPUT_MISSING"
++title = "The status observation is supplied, never assumed"
++severity = "error"
++
++[[problems]]
++code = "ERR_STATUS_PATHS_UNANSWERED"
++title = "A git that could not answer is never read as a clean tree"
 +severity = "error"
