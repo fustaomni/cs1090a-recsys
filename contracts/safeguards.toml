@@ -13,6 +13,24 @@ mutant = "\tfalse\n"
 proof = "tests/test_source_apply.py::test_an_absent_request_is_refused_by_the_policy"
 
 [[safeguards]]
+id = "SA.STATUS_PATHS_INPUT_MISSING"
+engine = "status:paths"
+guard = "ERR_STATUS_PATHS_INPUT_MISSING"
+path = "policies/runs/status_paths/status_paths.rego"
+anchor = "\tnot input.status_paths\n"
+mutant = "\tfalse\n"
+proof = "tests/test_status_paths.py::test_an_absent_request_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SA.STATUS_PATHS_UNANSWERED"
+engine = "status:paths"
+guard = "ERR_STATUS_PATHS_UNANSWERED"
+path = "policies/runs/status_paths/status_paths.rego"
+anchor = "\tinput.status_paths.answered == false\n"
+mutant = "\tfalse\n"
+proof = "tests/test_status_paths.py::test_outside_a_repository_is_refused_not_read_as_clean"
+
+[[safeguards]]
 id = "SA.PATH_OUTSIDE"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_PATH_OUTSIDE"

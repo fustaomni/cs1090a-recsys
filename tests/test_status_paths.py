@@ -21,6 +21,7 @@ from pathlib import Path
 
 import pytest
 
+import spine
 import status_paths
 from command_outcome import CommandOutcome
 
@@ -80,6 +81,16 @@ def test_an_ignored_file_is_not_named(tmp_path: Path, capsys: pytest.CaptureFixt
 def test_a_clean_tree_names_nothing(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     """Nothing changed is an answer, and the task still succeeds."""
     assert _named(_repo(tmp_path), capsys) == []
+
+
+def test_an_absent_request_is_refused_by_the_policy() -> None:
+    """runs.status_paths refuses when no observation is supplied, never reading it as clean."""
+    evidence = status_paths.StatusPaths(answered=True, detail="", paths=())
+    found = spine.evaluate(
+        evidence, "not_status_paths", status_paths.POLICY, status_paths.ENTRYPOINT
+    )
+    codes = {rule.code for rule in found.rules if rule.outcome == "fail"}
+    assert "ERR_STATUS_PATHS_INPUT_MISSING" in codes, found
 
 
 def test_outside_a_repository_is_refused_not_read_as_clean(
