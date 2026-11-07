@@ -2939,3 +2939,14 @@ done_when = [
   { kind = "path", path = "site/src/mechanisms/labs/T12.jsx" },
   { kind = "task", name = "site:test" },
 ]
+[[steps]]
+id = "A.247"
+title = "cs1090a-recsys's walking skeleton is classified as this project's own in its centralization register, as the hub declines it under X.10, so centralization:inventory passes"
+thread = "A"
+depends_on = ["A.205", "A.244"]
+because = { "A.205" = "the inventory and register that must classify every capability the hub lacks", "A.244" = "the walking skeleton whose script, scripts/milestone2.py, went unclassified" }
+branch = "feature/centralization-milestone2"
+done_when = [
+  { kind = "proof", test = "tests/test_centralization.py::test_the_walking_skeleton_is_classified_in_this_register" },
+  { kind = "path", path = "contracts/mutations/A.247.toml" },
+]
