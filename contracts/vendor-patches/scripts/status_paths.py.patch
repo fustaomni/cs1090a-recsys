@@ -1,0 +1,11 @@
+--- a/scripts/status_paths.py
++++ b/scripts/status_paths.py
+@@ -1,7 +1,7 @@
+ # scripts/status_paths.py
+ """status:paths -- every changed path a commit should name, derived rather than recalled (D.355).
+ 
+-PORTED FROM cs1090a-recsys's `commit paths` (RS.30), built after a commit's path list, composed
++PORTED FROM this repository's `commit paths` (RS.30), built after a commit's path list, composed
+ from memory, was wrong six times in one session. git's own record is read instead: porcelain v1,
+ NUL-separated, with every untracked file listed by its own path, because a wholly new directory
+ otherwise collapses to one entry and hides the file a commit is most likely to forget. The
