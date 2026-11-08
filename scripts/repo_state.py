@@ -79,6 +79,8 @@ class Worktree(Contract):
     branch: str | None
     is_main: bool
     is_dirty: bool
+    # GIT'S OWN VERDICT (D.442): registered, but its directory is gone, so nothing ran in it.
+    prunable: bool = False
 
     @property
     def is_linked(self) -> bool:
@@ -205,6 +207,20 @@ def _worktrees(root: Path) -> tuple[Worktree, ...]:
     worktrees: list[Worktree] = []
     for index, record in enumerate(records):
         path = Path(record["worktree"])
+        # A WORKTREE GIT MARKS PRUNABLE (D.442) has lost its directory: it is reported, nothing
+        # runs inside it, and pruning stays an explicit step, as an observer that prunes can
+        # drop a live worktree's entry.
+        if "prunable" in record:
+            worktrees.append(
+                Worktree(
+                    path=path,
+                    branch=record.get("branch", "").removeprefix("refs/heads/") or None,
+                    is_main=index == 0,
+                    is_dirty=False,
+                    prunable=True,
+                )
+            )
+            continue
         status = subprocess.run(
             ["git", "status", "--porcelain", "-z"],
             capture_output=True,

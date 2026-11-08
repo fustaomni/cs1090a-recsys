@@ -1,0 +1,9 @@
+# contracts/mutations/d442.toml
+# D.442: a prunable worktree is reported and never inspected; ignoring git's marker is caught.
+
+[[mutants]]
+id = "prunable-ignored"
+file = "scripts/repo_state.py"
+before = '        if "prunable" in record:'
+after = '        if "prunable" in record and False:'
+killers = ["tests/test_repo_state_prunable.py::test_a_worktree_whose_directory_is_gone_is_reported_prunable"]

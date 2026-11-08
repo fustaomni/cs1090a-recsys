@@ -1,0 +1,16 @@
+# contracts/mutations/d443.toml
+# D.443: the report counts only live worktrees and names the prunable ones; each slip is caught.
+
+[[mutants]]
+id = "vanished-worktree-counted"
+file = "scripts/repo_report.py"
+before = '        if not worktree.prunable'
+after = '        if True'
+killers = ["tests/test_repo_state_prunable.py::test_the_report_names_a_vanished_worktree_and_counts_nothing_in_it"]
+
+[[mutants]]
+id = "vanished-worktree-unnamed"
+file = "scripts/repo_report.py"
+before = "for worktree in state.worktrees if worktree.prunable),"
+after = "for worktree in state.worktrees if False),"
+killers = ["tests/test_repo_state_prunable.py::test_the_report_names_a_vanished_worktree_and_counts_nothing_in_it"]
