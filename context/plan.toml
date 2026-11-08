@@ -2977,3 +2977,25 @@ done_when = [
   { kind = "proof", test = "tests/test_plan_conflicts.py::test_the_resolution_is_validated_before_it_is_staged" },
   { kind = "path", path = "contracts/mutations/A.249.toml" },
 ]
+[[steps]]
+id = "A.251"
+title = "A registered worktree whose directory is gone is reported prunable and never inspected, adopted from cscie103 D.442 at 9911174, so one vanished snapshot no longer breaks every observation of this repository"
+thread = "A"
+depends_on = ["A.29"]
+because = { "A.29" = "source:port, which brings the hub's proof and mutation spec here at a pinned commit" }
+branch = "feature/worktree-prunable"
+done_when = [
+  { kind = "proof", test = "tests/test_repo_state_prunable.py::test_a_worktree_whose_directory_is_gone_is_reported_prunable" },
+  { kind = "path", path = "contracts/mutations/A.251.toml" },
+]
+[[steps]]
+id = "A.252"
+title = "repo:state's report names a worktree git marks prunable and counts nothing inside it, adopted from cscie103 D.443 at d1fbaf0, so this repository's observation survives a vanished snapshot end to end"
+thread = "A"
+depends_on = ["A.251"]
+because = { "A.251" = "the prunable marker this report now honours" }
+branch = "feature/worktree-prunable"
+done_when = [
+  { kind = "proof", test = "tests/test_repo_state_prunable.py::test_the_report_names_a_vanished_worktree_and_counts_nothing_in_it" },
+  { kind = "path", path = "contracts/mutations/A.252.toml" },
+]

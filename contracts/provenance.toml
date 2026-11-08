@@ -901,6 +901,12 @@ sha256 = "0ae2c795c14a56645e4c224cabd1814791395905df646d5b6683f71502517dda"
 path = "scripts/repo_report.py"
 sha256 = "8809e4a245c12c8827b27ab91d891ffa6420840d0bab167a821d819a9e180832"
 
+[[adapted]]
+path = "scripts/repo_report.py"
+reason = "a worktree git marks prunable is named in the report and counted nowhere, adopted from cscie103 D.443 (A.252)"
+patch = "contracts/vendor-patches/scripts/repo_report.py.patch"
+sha256 = "e5c9291335f45dec1c837570e2a714895bf379cea07d34aac5fdcc5ed4928abf"
+
 [[files]]
 path = "policies/machine/branches/branches.rego"
 sha256 = "90811a6ea275038694cb5009cac0e24b2edfd1ebb7d1b1d825bbdba0dd4003a5"
@@ -1304,6 +1310,12 @@ path = "scripts/repo_state.py"
 sha256 = "3e75a456c9db060822e1200ae6694874473122a6585736fbcb3e3245b1faf0e5"
 commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
 
+[[adapted]]
+path = "scripts/repo_state.py"
+reason = "a worktree git marks prunable is reported and never inspected, adopted from cscie103 D.442 (A.251)"
+patch = "contracts/vendor-patches/scripts/repo_state.py.patch"
+sha256 = "0cd49b48b9e63e872c78ca2c842fc7c9577e97a4df9e73366fd65ca484721b0f"
+
 [[files]]
 path = "tests/test_repo_state.py"
 sha256 = "88664542556050e3cbea3e0aacdfa669bae9fa0e9e73669111fe3cca75215a40"
@@ -1410,3 +1422,20 @@ path = "contracts/mutations/A.249.toml"
 upstream_path = "contracts/mutations/d129.toml"
 sha256 = "086284616bc03bfb0d10bae1cce6f1941b07aa222a24a40e9b6cad4134e76c54"
 commit = "25ed9e72aeea0a0f6b141d33dfe48df8271e9923"
+
+[[files]]
+path = "tests/test_repo_state_prunable.py"
+sha256 = "bc8a6bb9db639e0c096ceed23462aa00a80c6711fb90befea4a61dd56d4bd65b"
+commit = "d1fbaf0a9e6f4c6aa623fdb26c895e6d3cf1a221"
+
+[[files]]
+path = "contracts/mutations/A.251.toml"
+upstream_path = "contracts/mutations/d442.toml"
+sha256 = "8b5a9dc51a8796f44fdc8a7912d45f5497ef8357d1d77d09bedbe830d6995a39"
+commit = "d1fbaf0a9e6f4c6aa623fdb26c895e6d3cf1a221"
+
+[[files]]
+path = "contracts/mutations/A.252.toml"
+upstream_path = "contracts/mutations/d443.toml"
+sha256 = "38da52fc3698a68221e451cd6cb844c30c50bfc6620e2fdc59a403ecd58709c1"
+commit = "d1fbaf0a9e6f4c6aa623fdb26c895e6d3cf1a221"
