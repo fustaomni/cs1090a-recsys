@@ -57,7 +57,7 @@
      ),
      # FULL HISTORY, NOT THE WORKING TREE. A pre-commit hook only ever sees the
      # incoming change, so anything committed before hooks existed -- or pushed
-@@ -240,123 +239,32 @@
+@@ -240,123 +239,41 @@
          runs_in_hooks=True,
          timeout_seconds=300.0,
      ),
@@ -124,7 +124,13 @@
 -    GateSpec(
 -        name="prereqs",
 -        command=("uv", "run", "python", "scripts/check_prereqs.py"),
--        runs_in_hooks=False,
++    # THE HUB DRIFT CHECK (A.250): every capability this repository has and cscie103 lacks is
++    # classified, or the pull request does not merge. It reaches the hub's develop over the
++    # network, so by the rule above it runs in CI, always, on every pull request.
++    GateSpec(
++        name="centralization inventory",
++        command=("uv", "run", "python", "scripts/centralization.py"),
+         runs_in_hooks=False,
 -        timeout_seconds=300.0,
 -    ),
 -    # THE MACHINE ITSELF, judged by policies/machine/nix.
@@ -171,6 +177,8 @@
 -        name="env-parity",
 -        command=("uv", "run", "python", "scripts/check_env_parity.py"),
 -        runs_in_hooks=False,
++        timeout_seconds=120.0,
++    ),
 +    # CLAIMS ABOUT THIS MACHINE (A.104): A.8's proofs that its mise state and new files are
 +    # owner-only. The hooks and the snapshot before every publication run them here; CI's
 +    # runner is not this machine, so the gate is declared out of CI, never detected there.
@@ -195,7 +203,7 @@
  
  
  def run_gate(spec: GateSpec) -> GateRun:
-@@ -368,6 +276,8 @@
+@@ -368,6 +285,8 @@
          state: State = "timed_out"
      elif isinstance(ended, Exited) and ended.code == 0:
          state = "executed_passed"
@@ -204,7 +212,7 @@
      else:
          state = "executed_failed"
      return GateRun(
-@@ -387,7 +297,11 @@
+@@ -387,7 +306,11 @@
  
  def main() -> int:
      offline = "--offline" in sys.argv
@@ -217,7 +225,7 @@
  
      if offline:
          skipped = [spec.name for spec in GATES if not spec.runs_in_hooks]
-@@ -399,13 +313,14 @@
+@@ -399,13 +322,14 @@
          ran = run_gate(spec)
          runs.append(ran)
          late = f" (timed out after {spec.timeout_seconds:g}s)" if ran.state == "timed_out" else ""
@@ -234,7 +242,7 @@
  
      if failed:
          for ran in failed:
-@@ -417,7 +332,9 @@
+@@ -417,7 +341,9 @@
          )
          return 1
  
