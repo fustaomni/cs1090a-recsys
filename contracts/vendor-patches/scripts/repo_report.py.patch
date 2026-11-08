@@ -1,0 +1,28 @@
+--- a/scripts/repo_report.py
++++ b/scripts/repo_report.py
+@@ -67,6 +67,9 @@
+     contract: Literal["repository-state/v1"] = "repository-state/v1"
+     worktrees: tuple[WorktreeReport, ...]
+     long_lived: tuple[BranchPosition, ...]
++    # WORKTREES GIT MARKS PRUNABLE (D.443): registered, their directories gone. Named here, never
++    # counted, since a count for a directory that is gone would be invented evidence.
++    prunable: tuple[str, ...] = ()
+     verdicts: ReportVerdicts
+ 
+ 
+@@ -110,6 +113,7 @@
+             ),
+         )
+         for worktree in state.worktrees
++        if not worktree.prunable
+     )
+     long_lived = tuple(
+         BranchPosition(name=branch.name, position=branch.position)
+@@ -119,6 +123,7 @@
+     return RepositoryReport(
+         worktrees=worktrees,
+         long_lived=long_lived,
++        prunable=tuple(str(worktree.path) for worktree in state.worktrees if worktree.prunable),
+         verdicts=ReportVerdicts(
+             every_worktree_clean=all(not worktree.changes for worktree in worktrees),
+             no_worktree_behind_develop=all(worktree.behind_develop == 0 for worktree in worktrees),
