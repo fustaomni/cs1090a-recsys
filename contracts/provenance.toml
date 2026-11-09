@@ -977,9 +977,9 @@ sha256 = "48cb399c2caa9ffac9db7a5c53b2f9c2cb0da1d169b7988243866d88e3e5e1c4"
 
 [[adapted]]
 path = "copier.yml"
-reason = "the run-ledger anchor is excluded, since a generated project starts its own ledger as it starts its own plan (A.121); the provenance record of this repository, its vendor patches and the two proofs that verify them are excluded as its own port history, and the generated-project gate is excluded where it now lives, at tests/integration (A.123); the proof that tracked references name cscie103 where it lives is excluded with that record, since a generated project has none (A.183)"
+reason = "the run-ledger anchor is excluded, since a generated project starts its own ledger as it starts its own plan (A.121); the provenance record of this repository, its vendor patches and the two proofs that verify them are excluded as its own port history, and the generated-project gate is excluded where it now lives, at tests/integration (A.123); the proof that tracked references name cscie103 where it lives is excluded with that record, since a generated project has none (A.183); this project's live-site Railway identity, its deployment record and their proof are excluded as this project's own, so a generated project never deploys into this site (A.254)"
 patch = "contracts/vendor-patches/copier.yml.patch"
-sha256 = "be410035f21bda29d5cc6e2e081cb560d6354a8731decd5e7ea1eb3c8c806986"
+sha256 = "e29393bc8081a77148deb09946b2dec3d6882941ea99731314a76fb846834058"
 
 [[files]]
 path = "contracts/project-identity.toml"
