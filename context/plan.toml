@@ -3062,6 +3062,8 @@ done_when = [
   { kind = "proof", test = "tests/test_site_review.py::test_every_model_is_named_by_number_in_the_phase_the_data_places_it" },
   { kind = "proof", test = "tests/test_site_review.py::test_every_technique_is_named_by_number_in_each_phase_it_names" },
   { kind = "proof", test = "tests/test_site_review.py::test_a_typed_model_or_technique_reference_is_refused" },
+  { kind = "proof", test = "tests/test_site_deployed.py::test_a_record_names_the_commit_its_deploy_built" },
+  { kind = "proof", test = "tests/test_site_deployed.py::test_an_out_naming_the_record_itself_is_refused" },
   { kind = "task", name = "site:test" },
   { kind = "task", name = "site:deploy" },
 ]

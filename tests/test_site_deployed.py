@@ -70,3 +70,57 @@ def test_site_deploy_targets_only_the_declared_railway_identity() -> None:
         assert f"--{flag}" in command, command
         assert command[command.index(f"--{flag}") + 1] == identity[flag], command
     assert "-y" not in command and "--yes" not in command and "--name" not in command, command
+
+
+def _identity(root: Path) -> None:
+    """A declared Railway identity in a scratch root, so nothing reaches the real service."""
+    (root / "contracts").mkdir(parents=True, exist_ok=True)
+    (root / "site").mkdir(exist_ok=True)
+    (root / "contracts" / "site-railway.toml").write_text(
+        'contract = "site-railway/v1"\nproject = "p"\nenvironment = "e"\nservice = "s"\n'
+        'domain = "d"\n',
+        encoding="utf-8",
+    )
+
+
+def test_a_record_names_the_commit_its_deploy_built(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A commit made between site:deploy and site:record is never named as built (A.258)."""
+    import subprocess
+
+    import site_deployed
+
+    _identity(tmp_path)
+    built, later = "a" * 40, "b" * 40
+    monkeypatch.setattr(site_deployed, "built_from", lambda root: built)
+    # THE STDLIB MODULE ITSELF: site_deployed only imports it, and imports are not re-exported.
+    monkeypatch.setattr(
+        subprocess,
+        "run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(args, 0),
+    )
+    assert site_deployed.deploy(tmp_path) == 0
+    monkeypatch.setattr(site_deployed, "built_from", lambda root: later)
+    listed = site_deployed.Listed(id="d", status="SUCCESS")
+    monkeypatch.setattr(site_deployed, "settled", lambda root: listed)
+    monkeypatch.setattr(site_deployed, "counts", lambda root: (14, 12))
+    out = tmp_path / ".artifacts" / "spec.toml"
+    assert site_deployed.record(out, tmp_path) == 0
+    written = out.read_text(encoding="utf-8")
+    assert built in written and later not in written, written
+
+
+def test_an_out_naming_the_record_itself_is_refused(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """--out takes the spec's path; the record's own path is refused before anything is read."""
+    import site_deployed
+
+    _identity(tmp_path)
+    record = tmp_path / "contracts" / "site-deployment.json"
+    record.write_text("{}\n", encoding="utf-8")
+    monkeypatch.setattr(site_deployed, "observed", lambda root: pytest.fail("observed first"))
+    with pytest.raises(SystemExit, match="record itself"):
+        site_deployed.record(record, tmp_path)
+    assert record.read_text(encoding="utf-8") == "{}\n"

@@ -1,0 +1,51 @@
+# contracts/mutations/A.258.toml
+# A.258: each binding correction undone alone, and the proof that must catch it.
+
+[[mutants]]
+id = "model-10-dropped"
+file = "site/src/data/project.json"
+before = '"{model:10}: each round reweights'
+after = '"AdaBoost: each round reweights'
+killers = ["tests/test_site_review.py::test_every_model_is_named_by_number_in_the_phase_the_data_places_it"]
+
+[[mutants]]
+id = "technique-2-unbound"
+file = "site/src/data/project.json"
+before = '"{technique:2}: target-encoded means'
+after = '"Target-encoded means'
+killers = ["tests/test_site_review.py::test_every_technique_is_named_by_number_in_each_phase_it_names"]
+
+[[mutants]]
+id = "model-13-typed-again"
+file = "site/src/data/project.json"
+before = '"{model:13} estimates the user and movie shrinkage'
+after = '"Model 13 estimates the user and movie shrinkage'
+killers = ["tests/test_site_review.py::test_a_typed_model_or_technique_reference_is_refused"]
+
+[[mutants]]
+id = "technique-11-typed-again"
+file = "site/src/data/project.json"
+before = '"{technique:11}: the prediction intervals audited'
+after = '"Technique 11: the prediction intervals audited'
+killers = ["tests/test_site_review.py::test_a_typed_model_or_technique_reference_is_refused"]
+
+[[mutants]]
+id = "deploy-notes-nothing"
+file = "scripts/site_deployed.py"
+before = '        marker.write_text(commit + "\n", encoding="utf-8")'
+after = '        pass'
+killers = ["tests/test_site_deployed.py::test_a_record_names_the_commit_its_deploy_built"]
+
+[[mutants]]
+id = "record-reads-head-again"
+file = "scripts/site_deployed.py"
+before = '    commit = deployed_commit(root)'
+after = '    commit = built_from(root)'
+killers = ["tests/test_site_deployed.py::test_a_record_names_the_commit_its_deploy_built"]
+
+[[mutants]]
+id = "out-unchecked"
+file = "scripts/site_deployed.py"
+before = '    if out.resolve() == (root / RECORD).resolve():'
+after = '    if False:'
+killers = ["tests/test_site_deployed.py::test_an_out_naming_the_record_itself_is_refused"]
