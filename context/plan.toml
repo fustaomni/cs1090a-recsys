@@ -2638,8 +2638,8 @@ done_when = [
 id = "A.224"
 title = "A teammate on FAS OnDemand reaches a working checkout in one light, non-interactive command whose every input is declared in an onboarding-manifest/v1 requirement contract changed only by reviewed commits: the canonical repository URL from the project identity and the ref with its expected commit, verified after cloning so an origin or HEAD that differs stops onboarding; the tool versions in the FAS tools lock, installed only through tools:install; uv.lock, synced with --locked; the data's origin and SHA-256, fetched through data:fetch; the allowed install locations, the checkout, the uv cache and one kernel directory, with a write anywhere else refused; and the kernel's scope, a user kernel named from the project identity that never overwrites one this checkout did not create. It records each stage only after verifying its result so a rerun resumes at the first unverified stage and a second run after success changes nothing, refuses a kernel whose kernel.json does not name this checkout's interpreter, never executes the notebook, keeps within a declared memory and disk budget, and ends in an onboarding-result/v1 of observations only, judged on the spine by runs.onboarding where an unknown observation is refused and every refusal carries a registered problem code"
 thread = "A"
-depends_on = ["A.103", "A.235", "A.254"]
-because = { "A.103" = "the FAS tools this command installs only through tools:install", "A.235" = "the verified data acquisition it runs as one stage", "A.254" = "the deployed site the group finishes before a teammate is onboarded" }
+depends_on = ["A.103", "A.235", "A.254", "A.255", "A.261"]
+because = { "A.103" = "the FAS tools this command installs only through tools:install", "A.235" = "the verified data acquisition it runs as one stage", "A.254" = "the deployed site the group finishes before a teammate is onboarded", "A.255" = "the npm the onboarded checkout builds the site with", "A.261" = "the reviewed site, every page accurate, before onboarding" }
 branch = "feature/fas-onboarding"
 done_when = [
   { kind = "proof", test = "tests/test_onboarding.py::test_one_command_leaves_a_checked_checkout_with_its_kernel" },
@@ -3027,5 +3027,87 @@ done_when = [
   { kind = "proof", test = "tests/test_site_deployed.py::test_a_generated_project_carries_no_railway_identity_or_deployment" },
   { kind = "path", path = "contracts/site-railway.toml" },
   { kind = "task", name = "site:deploy" },
+  { kind = "task", name = "site:test" },
+]
+[[steps]]
+id = "A.256"
+title = "The Overview page is accurate: the milestones' statuses follow the calendar, Milestone 1 done and Milestone 2 current; Milestone 2 is described as the brief states it, an 8 to 10 minute presentation to the TF with the slides, the notebook and a one to two page revised proposal due Friday November 13 at 9:59 pm ET; and its phases are the data work the brief asks for, the distributional EDA and feature engineering moving to Milestone 3, since the brief puts exploratory analysis and the baseline there; then the site is deployed and the deployment recorded"
+thread = "A"
+depends_on = ["A.254"]
+because = { "A.254" = "the recorded deployment each page revision ends with" }
+branch = "feature/site-overview"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_milestone_statuses_run_done_then_current_then_planned" },
+  { kind = "proof", test = "tests/test_site_review.py::test_milestone_2_is_described_and_scoped_as_the_brief_states" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.257"
+title = "The Scope page is reviewed against the data and the review and found accurate: the four removed items with their reasons, the three retained ones with their bound counts, and the principle that every question, feature and metric concerns rating submissions, recorded as asserted content so a later change is a reviewed one"
+thread = "A"
+depends_on = ["A.256"]
+because = { "A.256" = "the page before it, revised and deployed one at a time" }
+branch = "feature/site-scope"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_scope_holds_what_the_review_confirmed" },
+]
+[[steps]]
+id = "A.258"
+title = "The Phases page names every model and technique the same way: each reference is a binding to the models and techniques data, rendered as Model N or Technique N with its name, a typed reference is refused by a check, every model appears in the phase the data places it in, Model 10 AdaBoost included in Phase 9, every technique appears in each phase its where names, Techniques 2 and 4 included in Phase 3, and the split's T_test and T_val render as subscripted names; then the site is deployed and the deployment recorded"
+thread = "A"
+depends_on = ["A.257"]
+because = { "A.257" = "the page before it, revised and deployed one at a time" }
+branch = "feature/site-phases"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_every_model_is_named_by_number_in_the_phase_the_data_places_it" },
+  { kind = "proof", test = "tests/test_site_review.py::test_every_technique_is_named_by_number_in_each_phase_it_names" },
+  { kind = "proof", test = "tests/test_site_review.py::test_a_typed_model_or_technique_reference_is_refused" },
+  { kind = "task", name = "site:test" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.259"
+title = "The Models and techniques page is accurate: the fourteen models by family and the twelve techniques with where each is used match the data and the Phases page, and the baseline note names Model 12 by binding instead of the twelfth model; then the site is deployed and the deployment recorded"
+thread = "A"
+depends_on = ["A.258"]
+because = { "A.258" = "the phase references this page must agree with" }
+branch = "feature/site-deploys"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_the_baseline_note_names_its_model_by_binding" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.260"
+title = "The Interactive mechanisms page is reviewed from its source: each of the twenty-six labs is titled Model N or Technique N from the data, in the data's order, and every claim a lab states is checked against its computation; then the site is deployed and the deployment recorded"
+thread = "A"
+depends_on = ["A.259"]
+because = { "A.259" = "the page before it, revised and deployed one at a time" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_every_lab_is_titled_by_its_model_or_technique_number" },
+  { kind = "task", name = "site:test" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.261"
+title = "The Results page is reviewed from its source: each milestone's section states only what its recorded evidence holds, Milestone 2's from milestone2-results/v1, and any model or technique it names is named Model N or Technique N; then the site is deployed and the deployment recorded"
+thread = "A"
+depends_on = ["A.260"]
+because = { "A.260" = "the page before it, revised and deployed one at a time" }
+branch = "feature/site-results"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_results_state_only_their_recorded_evidence" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.255"
+title = "npm 12.2.2 is the site's package manager: installed through the pinned toolchain, the site's dependency install scripts allowed only by an exact-version allowScripts list reviewed in site/package.json, the lock checked for git and remote dependencies that npm 12 refuses by default, and site:build, site:test and site:status proven under it"
+thread = "A"
+depends_on = ["A.261"]
+because = { "A.261" = "the reviewed site whose build and deploy this toolchain change must keep working" }
+branch = "feature/npm-12"
+done_when = [
+  { kind = "proof", test = "tests/test_site_toolchain.py::test_the_site_installs_under_npm_12_with_only_reviewed_install_scripts" },
+  { kind = "task", name = "site:build" },
   { kind = "task", name = "site:test" },
 ]
