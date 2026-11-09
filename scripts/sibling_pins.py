@@ -24,6 +24,10 @@ RAW = "https://raw.githubusercontent.com"
 VERSION = re.compile(r'^\s*version\s*=\s*"([^"]+)";', re.MULTILINE)
 RELEASE_TAG = re.compile(r"/download/jdk-([^/]+)/")
 SECONDS = 60
+# THROTTLING IS TRANSIENT (A.272): curl retries 408, 429 and 5xx with exponential backoff and
+# honours Retry-After; --retry-max-time bounds the total, so a lasting failure is still refused.
+RETRIES = 4
+RETRY_SECONDS = 300
 REGISTER = "contracts/siblings.toml"
 USAGE = "usage: mise run run sibling:pin <name> (--out <spec.toml> | --check)"
 
@@ -32,7 +36,7 @@ Listing = Callable[[str, str], list[str]]
 
 
 def fetch(url: str) -> str:
-    """A public file over HTTPS, bounded; a failed fetch is refused by its URL."""
+    """A public file over HTTPS, retried within a bound; a lasting failure names its URL."""
     done = subprocess.run(
         [
             "curl",
@@ -42,6 +46,10 @@ def fetch(url: str) -> str:
             "--location",
             "--max-time",
             str(SECONDS),
+            "--retry",
+            str(RETRIES),
+            "--retry-max-time",
+            str(RETRY_SECONDS),
             url,
         ],
         stdin=subprocess.DEVNULL,
@@ -50,7 +58,7 @@ def fetch(url: str) -> str:
         check=False,
     )
     if done.returncode != 0:
-        raise SystemExit(f"cannot fetch {url}: {done.stderr.strip()}")
+        raise SystemExit(f"cannot fetch {url} after {RETRIES} retries: {done.stderr.strip()}")
     return done.stdout
 
 
