@@ -21,6 +21,11 @@ pre-commit:
       stage_fixed: true
     - name: lint
       run: mise run lint
+    # STAGED PYTHON IS TYPE-CHECKED AT THE COMMIT THAT MAKES IT (A.267): incrementally, on both
+    # platforms; the glob skips a commit without Python, and the full types gate stays at pre-push.
+    - name: types (staged)
+      glob: "*.py"
+      run: mise run types:staged {staged_files}
     # EVERY COMMIT, NOT ONLY ONES TOUCHING A WORKFLOW (M38, D.95): offline and about a second, so
     # a token widening refused here never exists as a commit. CI's required gate is the backstop.
     - name: workflows

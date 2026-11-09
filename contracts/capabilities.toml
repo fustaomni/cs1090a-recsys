@@ -650,3 +650,9 @@ task = "ci:rerun"
 version = "1.0.0"
 implementation = "scripts/ci_rerun.py"
 emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "types:staged"
+version = "1.0.0"
+implementation = "scripts/types_staged.py"
+emits = "text"
