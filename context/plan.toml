@@ -2679,10 +2679,10 @@ done_when = [
 ]
 [[steps]]
 id = "A.225"
-title = "The Milestone 2 notebook gets, understands and cleans MovieLens 1M in order: the group and its members, the data's size in megabytes, what a row and each column mean with shape, types and summary statistics, cleaning driven by a ratings-quality/v1 contract whose validity, uniqueness, referential-integrity and completeness rules each produce pass, fail or unknown with its count and are judged on the spine, a temporal split before any feature is computed with no feature drawn from a rating after its prediction time, and the revised question stated so its answer can be judged, recording every number it reports into ms2-results/v1 as it computes it"
+title = "The Milestone 2 notebook is a Jupyter notebook (.ipynb) that runs top to bottom in a fresh kernel on the verified MovieLens 1M archive, widening the walking skeleton A.244 proved, and shows in order: the Canvas group number and its members, getting the data with its size in megabytes, what a row and each column mean with shape, types and summary statistics, cleaning driven by a ratings-quality/v1 contract whose validity, uniqueness, referential-integrity and completeness rules each produce pass, fail or unknown with its count, the brief's checks each reported with its finding and decision (missing data and its pattern, unusual values, the balance of the rating classes, each numerical feature's range, and information leakage, with a temporal split before any feature is computed), a few plots each titled with labelled axes, and the revised question stated so its answer can be judged, recording every number it reports into milestone2-results/v1 as it computes it"
 thread = "A"
-depends_on = ["A.237"]
-because = { "A.237" = "the governed run and results contract the notebook records into" }
+depends_on = ["A.244", "A.235"]
+because = { "A.244" = "the walking skeleton whose runner and results contract this widens", "A.235" = "the verified MovieLens 1M archive the notebook reads" }
 branch = "feature/ms2-notebook"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_every_section_the_milestone_requires_is_present_in_order" },
@@ -2690,6 +2690,9 @@ done_when = [
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_each_quality_rule_reports_pass_fail_or_unknown_with_its_count" },
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_a_rating_outside_one_to_five_or_an_orphan_user_fails_its_rule" },
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_a_feature_computed_from_a_later_rating_is_refused" },
+  { kind = "proof", test = "tests/test_ms2_notebook.py::test_the_notebook_is_an_ipynb_that_runs_top_to_bottom_in_a_fresh_kernel" },
+  { kind = "proof", test = "tests/test_ms2_notebook.py::test_each_check_the_brief_lists_reports_its_finding_and_decision" },
+  { kind = "proof", test = "tests/test_ms2_notebook.py::test_every_plot_has_a_title_and_labelled_axes" },
 ]
 [[steps]]
 id = "A.238"
@@ -2715,19 +2718,20 @@ done_when = [
 id = "A.226"
 title = "The revised proposal is one to two pages rendered through the document renderer: the question and how it changed, the data source with its link, the cleaned rows and columns, the findings that change the plan and the plan for features, models and evaluation with each method's estimand and assumptions, every number and method bound rather than typed, and each staff condition met if the project is conditionally approved"
 thread = "A"
-depends_on = ["A.238"]
-because = { "A.238" = "the renderer whose bindings, rules and refusals the proposal is built with" }
+depends_on = ["A.225", "A.244"]
+because = { "A.225" = "the notebook results the proposal's numbers are bound to", "A.244" = "the walking skeleton whose renderer this widens" }
 branch = "feature/ms2-proposal"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_proposal.py::test_the_proposal_renders_with_every_number_in_its_claims_manifest" },
   { kind = "proof", test = "tests/test_ms2_proposal.py::test_the_proposal_is_one_to_two_pages_with_every_required_section" },
+  { kind = "proof", test = "tests/test_ms2_proposal.py::test_the_proposal_names_the_approval_status_and_meets_each_staff_condition" },
 ]
 [[steps]]
 id = "A.227"
 title = "The Milestone 2 slides are rendered through the document renderer, numbered with one point each, every number and figure bound rather than typed or pasted, every figure titled with labelled axes as its results entry records, checked from that entry and never by parsing an image, and each member's part named"
 thread = "A"
-depends_on = ["A.238", "A.226"]
-because = { "A.238" = "the renderer the slides are built with", "A.226" = "the proposal whose question and plan the slides present" }
+depends_on = ["A.226", "A.225", "A.244"]
+because = { "A.226" = "the proposal whose question and plan the slides present", "A.225" = "the notebook results and figures the slides show", "A.244" = "the walking skeleton whose renderer this widens" }
 branch = "feature/ms2-slides"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_slides.py::test_the_slides_render_with_every_number_and_figure_in_their_claims_manifest" },
@@ -2998,4 +3002,15 @@ branch = "feature/worktree-prunable"
 done_when = [
   { kind = "proof", test = "tests/test_repo_state_prunable.py::test_the_report_names_a_vanished_worktree_and_counts_nothing_in_it" },
   { kind = "path", path = "contracts/mutations/A.252.toml" },
+]
+[[steps]]
+id = "A.253"
+title = "The Milestone 2 presentation to TF Sukanya Krishna is scheduled in the week of November 9 and recorded in a reviewed file: eight to ten minutes from the numbered slides, the three members each presenting a named part of roughly equal length following the brief's suggested structure, the conditions summarised if the project is conditionally approved, and the questions for the TF listed"
+thread = "A"
+depends_on = ["A.227"]
+because = { "A.227" = "the numbered slides the presentation is given from" }
+branch = "feature/ms2-presentation"
+done_when = [
+  { kind = "proof", test = "tests/test_ms2_presentation.py::test_the_presentation_is_scheduled_in_its_week_with_every_member_presenting_a_named_part" },
+  { kind = "path", path = "contracts/requirements/milestone2.md" },
 ]
