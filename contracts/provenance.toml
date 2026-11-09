@@ -346,6 +346,12 @@ sha256 = "59415037ecec2129ec97eeac955a5d101b32f5427f3ed4d1ee46810411e08236"
 [[files]]
 path = "tests/acceptance/test_sandbox.py"
 sha256 = "c536c981746031ea681718de90a42c7bf3cc7a411ed734d4ab31dfc154069937"
+
+[[adapted]]
+path = "tests/acceptance/test_sandbox.py"
+reason = "A.262: a proof that the sandbox copies only what a commit could contain, so ignored build output never reaches it"
+patch = "contracts/vendor-patches/tests/acceptance/test_sandbox.py.patch"
+sha256 = "5d6c9707a0b97ffc1bf6b09d8d6212ff65b7c85c08f81eb9018e3a3a7f88f697"
 [[files]]
 path = "tests/test_secret_scanning.py"
 sha256 = "dcde6cb0310e50c3e7d5f0dd9da91d9b74a14f12fe54ff16cd78bd241eee815f"
@@ -416,9 +422,9 @@ patch = "contracts/vendor-patches/tests/test_run_gateway.py.patch"
 sha256 = "5e42c5e892a6f5d791dc560f823a9ac0e93f2bbeb21a88753046e880807854ab"
 [[adapted]]
 path = "tests/acceptance/acceptance_sandbox.py"
-reason = "no Nix in recsys; .cache excluded from the copy; the path-trust exception stated"
+reason = "A.262: the sandbox copies only what a commit could contain, through safeguards.copy_committable, so ignored build output never reaches it"
 patch = "contracts/vendor-patches/tests/acceptance/acceptance_sandbox.py.patch"
-sha256 = "58892992a93d2c7df17a1a06738187e7d60407d00ab3d896640c3d776feb1ac7"
+sha256 = "5e153d03607a074b3b3e8d91d7f2d07ddfc1bbc78ce435c87b7ec438569f9da6"
 [[adapted]]
 path = "scripts/plan_init.py"
 reason = "day-one trace writes sources inline, the layout plan:record edits"
@@ -545,9 +551,9 @@ sha256 = "fa7e99480e9c10832ce0c93b9a74fd82d741846bf1c94a8ce2a4544e6e5e005d"
 
 [[adapted]]
 path = "scripts/worktree.py"
-reason = "A.191: refresh merges origin/develop with a merge commit naming its plan step, never a rebase, so a published branch keeps every commit; A.207: the merge is staged without committing, a changed mise.toml is gated and trusted, and only then is the merge committed, so its hooks run against a trusted config"
+reason = "A.264: one kebab-case slug rule; A.266: the refresh merge carries its Plan-Step message through a conflict"
 patch = "contracts/vendor-patches/scripts/worktree.py.patch"
-sha256 = "e490ff5dd94f03f0e2a55c58e1783c320ac8567b32765c74325a2f10415e93a5"
+sha256 = "6f26b55112b9ddded2ab422ca2230a0aa800fa5d5f19e739c9d9e1dd499d9b63"
 
 [[files]]
 path = "policies/machine/setup/setup_env.rego"
@@ -573,13 +579,19 @@ sha256 = "7a7c2b8900df46055d005cd78d67e4da1637cba0ddea2de0b6e56fdfda844f4d"
 
 [[adapted]]
 path = "tests/test_worktree_refresh.py"
-reason = "A.191: refresh merges and takes a plan step, so its proofs fake a merge and pass one"
+reason = "A.266: a stopped refresh keeps its Plan-Step for the merge commit"
 patch = "contracts/vendor-patches/tests/test_worktree_refresh.py.patch"
-sha256 = "0f7838b9752fe9081929f29796daddc537324ba0aa7dffd32f96450e4edd2ad3"
+sha256 = "c27a4af78bd151e15f2adab5db7948bcb33afbda9fb4aaf391def390ec6677d4"
 
 [[files]]
 path = "tests/test_worktree_remove.py"
 sha256 = "446e49bce584d01a264e808c500b11e6d5a0df18f76c63d9b7bf8e43604636e8"
+
+[[adapted]]
+path = "tests/test_worktree_remove.py"
+reason = "A.264: proofs that a malformed slug is refused before anything is looked up"
+patch = "contracts/vendor-patches/tests/test_worktree_remove.py.patch"
+sha256 = "30a6682954c09cc5d2a6c4f7988a6f5d16b64454a175011a2db916558d02f98d"
 
 [[files]]
 path = "scripts/workflow_audit.py"

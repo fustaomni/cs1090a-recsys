@@ -1,0 +1,9 @@
+# contracts/mutations/A.266.toml
+# A.266: the merge message withheld from a refresh's merge, and the proof that must catch it.
+
+[[mutants]]
+id = "merge-without-message"
+file = "scripts/worktree.py"
+before = '"--no-commit", "-m", message, "origin/develop"'
+after = '"--no-commit", "origin/develop"'
+killers = ["tests/test_worktree_refresh.py::test_a_stopped_refresh_keeps_its_plan_step_for_the_merge_commit"]
