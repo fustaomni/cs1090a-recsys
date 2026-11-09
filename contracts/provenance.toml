@@ -462,9 +462,9 @@ patch = "contracts/vendor-patches/.gitignore.patch"
 sha256 = "7510fa70ceb99fd8ce6eeae1b43d45de2a50cb14167222f0a91a9c1d524e7cc8"
 [[adapted]]
 path = "lefthook.yml"
-reason = "the header is rewritten for recsys; pre-commit runs audit:workflows again, restored with the workflow audit (A.23)"
+reason = "A.267: pre-commit type-checks the staged Python files incrementally, both platforms; the full types gate stays at pre-push"
 patch = "contracts/vendor-patches/lefthook.yml.patch"
-sha256 = "6170e339ffbc747f0c0d11765a5c831846b48089bc617aafd33f6839cb9d2501"
+sha256 = "d5acd718aeb14f506d3180483df26f4e42bd1c9169190eeb67709c92b0435108"
 [[adapted]]
 path = "tests/test_commit_execution.py"
 reason = "FakeGit reports the stage; A.12's proofs that nothing staged never commits"
