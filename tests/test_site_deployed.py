@@ -45,6 +45,20 @@ def test_the_recorded_deployment_names_its_commit_and_carries_fourteen_models_an
     assert (record["project"], record["service"]) == declared, record
 
 
+def test_a_generated_project_carries_no_railway_identity_or_deployment() -> None:
+    """This project's deployment facts are its own: copier.yml keeps them out (A.254)."""
+    import fnmatch
+
+    import yaml
+
+    loaded = yaml.safe_load((ROOT / "copier.yml").read_text(encoding="utf-8"))
+    assert isinstance(loaded, dict), "copier.yml is not a mapping"
+    excluded = [str(pattern) for pattern in loaded.get("_exclude", [])]
+    own = ("contracts/site-railway.toml", "contracts/site-deployment.json")
+    for path in (*own, "tests/test_site_deployed.py"):
+        assert any(fnmatch.fnmatch(path, pattern) for pattern in excluded), path
+
+
 def test_site_deploy_targets_only_the_declared_railway_identity() -> None:
     """site:deploy passes the declared ids and can never create a project (A.254)."""
     assert IDENTITY.is_file(), "no declared Railway identity"
