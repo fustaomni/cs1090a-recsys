@@ -17,6 +17,7 @@ from typing import Literal, Self
 
 from pydantic import Field, model_validator
 
+import site_deployed
 from contract_base import Contract, from_document
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -143,6 +144,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             Path(out).write_text(_spec(current, render(updated)), encoding="utf-8")
             print(f"recorded {key} from {run_id}; apply it with source:apply {out}")
             return 0
+        case ["deploy"]:
+            # TO THE DECLARED SERVICE ONLY (A.254): never a directory's link, never a new project.
+            return site_deployed.deploy()
+        case ["delete-project", project]:
+            return site_deployed.delete_project(project)
+        case ["deployment", "--out", out]:
+            # THE LIVE SITE'S DEPLOYMENT, recorded the same way, as a spec (A.254).
+            return site_deployed.record(Path(out))
         case _:
             raise SystemExit(USAGE)
 

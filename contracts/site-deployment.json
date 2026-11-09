@@ -1,0 +1,10 @@
+{
+  "contract": "site-deployment/v1",
+  "commit": "911704e0a0bc0e59358b1ddc8f4ec2e9f9747eb5",
+  "deployment": "afc6bff9-96ff-4624-b489-14eae534f49e",
+  "project": "58907094-aacd-463b-9a80-e72af4a76db2",
+  "service": "2c8c5ceb-618a-4439-b675-3e8c30bea68d",
+  "status": "SUCCESS",
+  "models": 14,
+  "techniques": 12
+}

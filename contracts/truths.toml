@@ -6,9 +6,10 @@ requirements = [
   "context/plan*.toml",
   "contracts/design-acceptance.toml",
   "contracts/requirements/*.md",
+  "contracts/site-railway.toml",
   "contracts/truths.toml",
   "site/src/data/*.json",
 ]
 requirement_writers = ["plan:add", "plan:amend", "plan:record", "plan:retract", "source:apply"]
-observations = []
+observations = ["contracts/site-deployment.json"]
 verdict_fields = ["verdict", "passed", "verified", "done"]

@@ -3016,13 +3016,16 @@ done_when = [
 ]
 [[steps]]
 id = "A.254"
-title = "The deployed project site is develop's: the site with its fourteen models and twelve techniques, each with its lab, is deployed through site:deploy and the deployment recorded, naming the commit it was built from, the deployment id and the model and technique counts the built data carries, so that onboarding begins only once the live site is the one the repository holds"
+title = "The deployed project site is develop's: its Railway identity, the project, environment and service that serve cs1090a.fustaomni.com, is declared in contracts/site-railway.toml, a reviewed requirement; site:deploy deploys to exactly that identity by passing its ids, never relying on a directory's link and never creating a project; the deployment is recorded with the commit it was built from, the deployment id, the project and service it went to, and the model and technique counts the built data carries, and a record naming any other project or service is refused; a project an unlinked deploy created is deleted by its id, never by its name, and the declared project can never be deleted; the identity, the record and their proof are this project's own and are never carried into a project generated from this repository; so onboarding begins only once the live site is the one the repository holds"
 thread = "A"
 depends_on = ["A.246", "A.95"]
 because = { "A.246" = "the fourteen models, twelve techniques and four new labs this deploys", "A.95" = "site:build and site:deploy, the deployment this records" }
 branch = "feature/site-deployed"
 done_when = [
   { kind = "proof", test = "tests/test_site_deployed.py::test_the_recorded_deployment_names_its_commit_and_carries_fourteen_models_and_twelve_techniques" },
+  { kind = "proof", test = "tests/test_site_deployed.py::test_site_deploy_targets_only_the_declared_railway_identity" },
+  { kind = "proof", test = "tests/test_site_deployed.py::test_a_generated_project_carries_no_railway_identity_or_deployment" },
+  { kind = "path", path = "contracts/site-railway.toml" },
   { kind = "task", name = "site:deploy" },
   { kind = "task", name = "site:test" },
 ]
