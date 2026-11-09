@@ -3131,6 +3131,26 @@ done_when = [
   { kind = "proof", test = "tests/test_gate_durations.py::test_every_run_reports_its_slowest_phases" },
 ]
 [[steps]]
+id = "A.264"
+title = "worktree:add, refresh and remove share one lowercase kebab-case slug rule, checked before any path or branch is built, so a malformed name such as a branch name is refused instead of reported already removed, while an absent well-formed slug stays the idempotent success D.105 decided"
+thread = "A"
+depends_on = []
+branch = "feature/remove-unknown"
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_a_malformed_slug_is_refused_before_anything_is_looked_up" },
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_add_refuses_an_uppercase_slug_its_message_already_forbids" },
+]
+[[steps]]
+id = "A.266"
+title = "worktree:refresh gives git merge its Plan-Step message with -m, so a merge stopped on conflicts keeps the step in MERGE_MSG and worktree:conclude commits it, instead of git's default message that commit-msg refuses"
+thread = "A"
+depends_on = ["A.264"]
+because = { "A.264" = "the branch whose refresh met this, carrying both fixes in one pull request" }
+branch = "feature/remove-unknown"
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_refresh.py::test_a_stopped_refresh_keeps_its_plan_step_for_the_merge_commit" },
+]
+[[steps]]
 id = "A.265"
 title = "ci:rerun retries, once and through the gateway, a CI run on this branch's current head that finished without any job running a step, refuses every other run, and reads the new attempt back, so a GitHub-side scheduling failure is recovered without a raw gh call, a new full dispatch or a throwaway commit"
 thread = "A"
