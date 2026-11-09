@@ -455,8 +455,9 @@ description = "Sign the Railway CLI in without a browser on this machine, by a p
 run = "cd site && mise exec node@24 -- npx --no-install railway login --browserless"
 
 [tasks."site:deploy"]
-description = "Build the site, then deploy site/ with railway up, creating and linking the service on first run"
-run = "mise run site:build && cd site && mise exec node@24 -- npx --no-install railway up --detach -y --name cs1090a-recsys-site"
+description = "Build the site, then deploy site/ to the Railway service contracts/site-railway.toml declares"
+# A.254: explicit ids, never a directory's link: railway up -y with no link created a new project.
+run = "mise run site:build && uv run --no-sync python scripts/site_record.py deploy"
 
 [tasks."site:domain"]
 description = "Attach a custom domain to the site (or generate one), printing the DNS records it needs"
