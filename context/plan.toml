@@ -3111,3 +3111,12 @@ done_when = [
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:test" },
 ]
+[[steps]]
+id = "A.262"
+title = "The acceptance sandbox copies only what a commit of the working tree could contain, from git's own file list as safeguards.copy_committable does, so ignored build output such as site/node_modules never reaches it and a full gate after a site build is not slowed by copying it"
+thread = "A"
+depends_on = []
+branch = "feature/gate-copy"
+done_when = [
+  { kind = "proof", test = "tests/acceptance/test_sandbox.py::test_the_sandbox_copies_only_what_a_commit_could_contain" },
+]

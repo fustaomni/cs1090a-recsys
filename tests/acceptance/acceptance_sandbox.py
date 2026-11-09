@@ -19,7 +19,6 @@ environment -- and faults are made at the operating-system boundary.
 from __future__ import annotations
 
 import os
-import shutil
 import stat
 import subprocess
 import sys
@@ -28,19 +27,9 @@ from pathlib import Path
 
 from run_ledger import RunRecord
 from run_task import RunSummary
+from safeguards import copy_committable
 
 SOURCE = Path(__file__).resolve().parents[2]
-EXCLUDED = (
-    ".git",
-    ".venv",
-    ".artifacts",
-    ".cache",
-    ".mypy_cache",
-    ".ruff_cache",
-    ".pytest_cache",
-    "__pycache__",
-    "result",
-)
 TIMEOUT_SECONDS = 600
 IDENTITY = (
     "-c",
@@ -95,7 +84,9 @@ class Sandbox:
     @classmethod
     def create(cls, base: Path) -> Sandbox:
         root = base / "sandbox"
-        shutil.copytree(SOURCE, root, ignore=shutil.ignore_patterns(*EXCLUDED), symlinks=True)
+        # ONLY WHAT A COMMIT COULD CONTAIN (A.262): git's own list decides, so ignored build
+        # output such as site/node_modules is never copied, and no hand-kept list can drift.
+        copy_committable(SOURCE, root)
         _git(root, "init", "-q", "-b", "develop")
         _git(root, "add", "-A")
         _git(root, "commit", "-q", "-m", "chore(sandbox): the working tree under test")

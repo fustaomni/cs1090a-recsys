@@ -14,11 +14,42 @@
  test_git_isolation does; the sandbox trusted by mise; uv pointed at the running interpreter's
  environment -- and faults are made at the operating-system boundary.
  """
-@@ -31,6 +34,7 @@
-     ".git",
-     ".venv",
-     ".artifacts",
-+    ".cache",
-     ".mypy_cache",
-     ".ruff_cache",
-     ".pytest_cache",
+@@ -16,7 +19,6 @@
+ from __future__ import annotations
+ 
+ import os
+-import shutil
+ import stat
+ import subprocess
+ import sys
+@@ -25,18 +27,9 @@
+ 
+ from run_ledger import RunRecord
+ from run_task import RunSummary
++from safeguards import copy_committable
+ 
+ SOURCE = Path(__file__).resolve().parents[2]
+-EXCLUDED = (
+-    ".git",
+-    ".venv",
+-    ".artifacts",
+-    ".mypy_cache",
+-    ".ruff_cache",
+-    ".pytest_cache",
+-    "__pycache__",
+-    "result",
+-)
+ TIMEOUT_SECONDS = 600
+ IDENTITY = (
+     "-c",
+@@ -91,7 +84,9 @@
+     @classmethod
+     def create(cls, base: Path) -> Sandbox:
+         root = base / "sandbox"
+-        shutil.copytree(SOURCE, root, ignore=shutil.ignore_patterns(*EXCLUDED), symlinks=True)
++        # ONLY WHAT A COMMIT COULD CONTAIN (A.262): git's own list decides, so ignored build
++        # output such as site/node_modules is never copied, and no hand-kept list can drift.
++        copy_committable(SOURCE, root)
+         _git(root, "init", "-q", "-b", "develop")
+         _git(root, "add", "-A")
+         _git(root, "commit", "-q", "-m", "chore(sandbox): the working tree under test")
