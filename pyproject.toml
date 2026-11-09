@@ -75,7 +75,7 @@ markers = [
 ]
 # Fail closed: a typo'd marker or unknown option is an error, every non-pass reports its
 # reason, and the default run is hermetic so the pre-push hook needs no network.
-addopts = ["--strict-markers", "--strict-config", "-ra", "-m", "not integration and not machine"]
+addopts = ["--strict-markers", "--strict-config", "-ra", "--durations=20", "--durations-min=1.0", "-m", "not integration and not machine"]
 xfail_strict = true
 # scripts/ is importable by tests, declared rather than hacked, so tests exercise the real code.
 pythonpath = ["scripts"]
