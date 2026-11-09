@@ -24,6 +24,23 @@ DELIVERABLES = (
     "Friday, November 13 at 9:59 pm ET",
 )
 EDA_LATER = "Exploratory data analysis and a baseline model come in Milestone 3"
+# THE SCOPE AS REVIEWED (A.257): asserted content, so a later change to it is a reviewed one.
+REMOVED = {
+    "The live application, serving and latency budget": (
+        "Building a live application exceeds the project scope"
+    ),
+    "Real-user impression logging and off-policy evaluation": (
+        "Live-user data would not meet the public-data requirement"
+    ),
+    "The Open Bandit Dataset": "Analysing a second large dataset exceeds the scope",
+    "The self-attention sequence model": "Outside the chosen family of methods",
+}
+RETAINED = {
+    "MovieLens 1M, offline only": ("{ratings}", "{users}", "{moviesRated}"),
+    "Predicting the next recorded rating": ("never a movie watched",),
+    "Tabular inputs, classical methods": ("{models}", "{techniques}"),
+}
+PRINCIPLE = "Every question, feature and metric concerns rating submissions."
 
 
 def _milestones() -> list[dict[str, object]]:
@@ -74,3 +91,26 @@ def test_milestone_2_is_described_and_scoped_as_the_brief_states() -> None:
     assert _phase_ids(third)[:2] == ["1B", "3"], third
     for milestone in (second, third):
         assert milestone.get("phases") == ", ".join(_phase_ids(milestone)), milestone
+
+
+def _scope_entries(key: str) -> list[dict[str, object]]:
+    project = json.loads(PROJECT.read_text(encoding="utf-8"))
+    scope = project.get("scope")
+    assert isinstance(scope, dict), project.keys()
+    entries = scope.get(key)
+    assert isinstance(entries, list), scope
+    return entries
+
+
+def test_scope_holds_what_the_review_confirmed() -> None:
+    """The reviewed Scope: four removals with reasons, three retentions bound to their counts."""
+    gone = {str(e.get("item")): str(e.get("why")) for e in nonempty(_scope_entries("removed"))}
+    assert gone == REMOVED, gone
+    kept = {str(e.get("item")): str(e.get("form")) for e in nonempty(_scope_entries("retained"))}
+    assert set(kept) == set(RETAINED), kept
+    for item, required in nonempty(RETAINED.items()):
+        for phrase in nonempty(required):
+            assert phrase in kept[item], (item, kept[item])
+    project = json.loads(PROJECT.read_text(encoding="utf-8"))
+    principle = str(project["scope"]["principle"])
+    assert principle.endswith(PRINCIPLE), principle
