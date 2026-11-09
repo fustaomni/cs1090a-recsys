@@ -1,0 +1,10 @@
+# contracts/site-railway.toml
+# site-railway/v1 (A.254): the Railway project, environment and service that serve the live site,
+# as site:status reported them on 2026-11-08. site:deploy and the deployment recorder target
+# exactly these ids, never a directory's link, so no checkout can deploy elsewhere or create a
+# project. A requirement: it changes only by a reviewed commit.
+contract = "site-railway/v1"
+project = "58907094-aacd-463b-9a80-e72af4a76db2"
+environment = "50b78e55-5de1-41a4-87c2-6cc0471de20c"
+service = "2c8c5ceb-618a-4439-b675-3e8c30bea68d"
+domain = "cs1090a.fustaomni.com"

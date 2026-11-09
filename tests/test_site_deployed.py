@@ -8,6 +8,7 @@ the deployment is recorded at deploy time instead, as an observation, and this p
 from __future__ import annotations
 
 import json
+import tomllib
 from pathlib import Path
 
 import pytest
@@ -17,6 +18,7 @@ from gitenv import git
 ROOT = Path(__file__).resolve().parent.parent
 RECORD = ROOT / "contracts" / "site-deployment.json"
 PROJECT = ROOT / "site" / "src" / "data" / "project.json"
+IDENTITY = ROOT / "contracts" / "site-railway.toml"
 
 
 def test_the_recorded_deployment_names_its_commit_and_carries_fourteen_models_and_twelve_techniques(
@@ -37,3 +39,20 @@ def test_the_recorded_deployment_names_its_commit_and_carries_fourteen_models_an
     assert isinstance(commit, str), record
     held = git("merge-base", "--is-ancestor", commit, "HEAD", cwd=ROOT)
     assert held.returncode == 0, f"{commit} is not in this branch's history"
+    assert IDENTITY.is_file(), "no declared Railway identity"
+    identity: dict[str, object] = tomllib.loads(IDENTITY.read_text(encoding="utf-8"))
+    declared = (identity["project"], identity["service"])
+    assert (record["project"], record["service"]) == declared, record
+
+
+def test_site_deploy_targets_only_the_declared_railway_identity() -> None:
+    """site:deploy passes the declared ids and can never create a project (A.254)."""
+    assert IDENTITY.is_file(), "no declared Railway identity"
+    identity: dict[str, object] = tomllib.loads(IDENTITY.read_text(encoding="utf-8"))
+    import site_deployed
+
+    command = site_deployed.up_command(site_deployed.declared())
+    for flag in ("project", "environment", "service"):
+        assert f"--{flag}" in command, command
+        assert command[command.index(f"--{flag}") + 1] == identity[flag], command
+    assert "-y" not in command and "--yes" not in command and "--name" not in command, command
