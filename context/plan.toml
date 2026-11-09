@@ -3130,3 +3130,16 @@ branch = "feature/gate-durations"
 done_when = [
   { kind = "proof", test = "tests/test_gate_durations.py::test_every_run_reports_its_slowest_phases" },
 ]
+[[steps]]
+id = "A.265"
+title = "ci:rerun retries, once and through the gateway, a CI run on this branch's current head that finished without any job running a step, refuses every other run, and reads the new attempt back, so a GitHub-side scheduling failure is recovered without a raw gh call, a new full dispatch or a throwaway commit"
+thread = "A"
+depends_on = []
+branch = "feature/ci-rerun"
+done_when = [
+  { kind = "proof", test = "tests/test_ci_rerun.py::test_a_run_for_another_head_is_refused" },
+  { kind = "proof", test = "tests/test_ci_rerun.py::test_a_run_still_in_progress_is_refused" },
+  { kind = "proof", test = "tests/test_ci_rerun.py::test_a_run_whose_jobs_ran_steps_is_refused" },
+  { kind = "proof", test = "tests/test_ci_rerun.py::test_a_failed_run_that_never_ran_a_step_is_retried_once_and_read_back" },
+  { kind = "proof", test = "tests/test_ci_rerun.py::test_ci_rerun_is_declared_mutating_and_a_capability" },
+]
