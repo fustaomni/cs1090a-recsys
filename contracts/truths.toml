@@ -10,5 +10,5 @@ requirements = [
   "site/src/data/*.json",
 ]
 requirement_writers = ["plan:add", "plan:amend", "plan:record", "plan:retract", "source:apply"]
-observations = []
+observations = ["contracts/site-deployment.json"]
 verdict_fields = ["verdict", "passed", "verified", "done"]
