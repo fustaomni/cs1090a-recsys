@@ -6,6 +6,7 @@ requirements = [
   "context/plan*.toml",
   "contracts/design-acceptance.toml",
   "contracts/requirements/*.md",
+  "contracts/site-railway.toml",
   "contracts/truths.toml",
   "site/src/data/*.json",
 ]
