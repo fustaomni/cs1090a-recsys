@@ -1,0 +1,44 @@
+# contracts/mutations/A.256.toml
+# A.256: each Overview correction reverted alone, and the proof that must catch it.
+
+[[mutants]]
+id = "milestone-1-still-current"
+file = "site/src/data/project.json"
+before = '"status": "done", "phase_ids": [] }'
+after = '"status": "current", "phase_ids": [] }'
+killers = ["tests/test_site_review.py::test_milestone_statuses_run_done_then_current_then_planned"]
+
+[[mutants]]
+id = "milestone-2-left-planned"
+file = "site/src/data/project.json"
+before = '"phases": "0, 1A, 2", "status": "current"'
+after = '"phases": "0, 1A, 2", "status": "planned"'
+killers = ["tests/test_site_review.py::test_milestone_statuses_run_done_then_current_then_planned"]
+
+[[mutants]]
+id = "milestone-2-name-reverted"
+file = "site/src/data/project.json"
+before = '"name": "Data wrangling and project redefinition"'
+after = '"name": "Data wrangling and redefinition"'
+killers = ["tests/test_site_review.py::test_milestone_2_is_described_and_scoped_as_the_brief_states"]
+
+[[mutants]]
+id = "presentation-length-reverted"
+file = "site/src/data/project.json"
+before = 'An 8 to 10 minute presentation to the project TF'
+after = 'A 10-minute presentation to the project TF'
+killers = ["tests/test_site_review.py::test_milestone_2_is_described_and_scoped_as_the_brief_states"]
+
+[[mutants]]
+id = "deadline-time-dropped"
+file = "site/src/data/project.json"
+before = 'due Friday, November 13 at 9:59 pm ET'
+after = 'due Friday, November 13'
+killers = ["tests/test_site_review.py::test_milestone_2_is_described_and_scoped_as_the_brief_states"]
+
+[[mutants]]
+id = "eda-back-in-milestone-2"
+file = "site/src/data/project.json"
+before = '"phases": "1B, 3, 4, 5, 6", "status": "planned", "phase_ids": ["1B", "3", "4", "5", "6"] }'
+after = '"phases": "4, 5, 6", "status": "planned", "phase_ids": ["4", "5", "6"] }'
+killers = ["tests/test_site_review.py::test_milestone_2_is_described_and_scoped_as_the_brief_states"]
