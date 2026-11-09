@@ -5,6 +5,7 @@ contract = "truths/v1"
 requirements = [
   "context/plan*.toml",
   "contracts/design-acceptance.toml",
+  "contracts/requirements/*.md",
   "contracts/truths.toml",
   "site/src/data/*.json",
 ]
