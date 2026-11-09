@@ -42,5 +42,11 @@ _exclude:
   # copier.yml to render (D.61).
   - "tests/test_copier_template.py"
   - "tests/integration/test_generated_gate.py"
+  # THIS PROJECT'S LIVE SITE (A.254): its Railway identity and deployment record name this
+  # project's own service and commit, so a generated project carries neither, and never deploys
+  # into this site.
+  - "contracts/site-railway.toml"
+  - "contracts/site-deployment.json"
+  - "tests/test_site_deployed.py"
   # THIS COURSE'S OWN RESOURCES: a project has its own schema (D.64).
   - "resources/coursework.yml"
