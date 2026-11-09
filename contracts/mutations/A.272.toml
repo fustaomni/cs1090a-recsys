@@ -1,0 +1,23 @@
+# contracts/mutations/A.272.toml
+# A.272: each property of the retried fetch undone alone, and the proof that must catch it.
+
+[[mutants]]
+id = "not-retried"
+file = "scripts/sibling_pins.py"
+before = '            "--retry",'
+after = '            "--no-buffer",'
+killers = ["tests/test_sibling_fetch.py::test_a_throttled_fetch_is_retried_with_backoff_and_a_bound"]
+
+[[mutants]]
+id = "unbounded"
+file = "scripts/sibling_pins.py"
+before = '            "--retry-max-time",'
+after = '            "--max-redirs",'
+killers = ["tests/test_sibling_fetch.py::test_a_throttled_fetch_is_retried_with_backoff_and_a_bound"]
+
+[[mutants]]
+id = "retries-unnamed"
+file = "scripts/sibling_pins.py"
+before = ' after {RETRIES} retries'
+after = ''
+killers = ["tests/test_sibling_fetch.py::test_a_fetch_that_keeps_failing_is_refused_by_its_url"]
