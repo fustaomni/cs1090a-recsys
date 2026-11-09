@@ -3120,3 +3120,13 @@ branch = "feature/gate-copy"
 done_when = [
   { kind = "proof", test = "tests/acceptance/test_sandbox.py::test_the_sandbox_copies_only_what_a_commit_could_contain" },
 ]
+[[steps]]
+id = "A.263"
+title = "Every pytest run reports its slowest twenty setup, call and teardown phases over one second, from the one addopts in pyproject.toml, so a gate's time is measured on every run instead of guessed"
+thread = "A"
+depends_on = ["A.262"]
+because = { "A.262" = "the sandbox fix whose effect on the gate's time this measures" }
+branch = "feature/gate-durations"
+done_when = [
+  { kind = "proof", test = "tests/test_gate_durations.py::test_every_run_reports_its_slowest_phases" },
+]
