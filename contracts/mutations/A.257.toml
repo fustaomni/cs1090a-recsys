@@ -1,0 +1,30 @@
+# contracts/mutations/A.257.toml
+# A.257: each reviewed Scope fact broken alone, and the proof that must catch it.
+
+[[mutants]]
+id = "a-removal-dropped"
+file = "site/src/data/project.json"
+before = '{ "item": "The Open Bandit Dataset", "why": "Analysing a second large dataset exceeds the scope" },'
+after = ''
+killers = ["tests/test_site_review.py::test_scope_holds_what_the_review_confirmed"]
+
+[[mutants]]
+id = "a-reason-softened"
+file = "site/src/data/project.json"
+before = '"why": "Live-user data would not meet the public-data requirement"'
+after = '"why": "Not needed for now"'
+killers = ["tests/test_site_review.py::test_scope_holds_what_the_review_confirmed"]
+
+[[mutants]]
+id = "rating-count-unbound"
+file = "site/src/data/project.json"
+before = '{ratings} ratings, {users} users'
+after = 'a million ratings, {users} users'
+killers = ["tests/test_site_review.py::test_scope_holds_what_the_review_confirmed"]
+
+[[mutants]]
+id = "watched-not-submitted"
+file = "site/src/data/project.json"
+before = 'Every question, feature and metric concerns rating submissions.'
+after = 'Every question, feature and metric concerns movies watched.'
+killers = ["tests/test_site_review.py::test_scope_holds_what_the_review_confirmed"]
