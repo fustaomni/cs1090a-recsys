@@ -222,13 +222,15 @@
          )
  
      _git("fetch", "origin", "--prune", "--quiet")
-@@ -231,44 +286,92 @@
+@@ -231,44 +286,94 @@
      # is plumbing, and it cannot describe something that did not happen.
      before = git_run("rev-parse", "HEAD", cwd=path).stdout.strip()
  
 -    result = git_run("rebase", "origin/develop", cwd=path)
 +    message = _merge_message(branch, step)
-+    result = git_run("merge", "--no-ff", "--no-commit", "origin/develop", cwd=path)
++    # THE MESSAGE GOES TO THE MERGE ITSELF (A.266): a merge stopped on conflicts keeps it in
++    # MERGE_MSG, which worktree:conclude commits; without -m it would hold git's default.
++    result = git_run("merge", "--no-ff", "--no-commit", "-m", message, "origin/develop", cwd=path)
      if result.returncode != 0:
          print((result.stdout + result.stderr).strip(), file=sys.stderr)
          raise SystemExit(
@@ -330,7 +332,7 @@
      path = sibling_path(slug)
      branch = f"feature/{slug}"
  
-@@ -276,19 +379,19 @@
+@@ -276,19 +381,19 @@
          # ALREADY GONE IS THE END STATE, NOT AN ERROR (D.105). prune removes only registrations
          # whose directories are missing; the branch, if any, goes exactly as below: branch -d.
          _git("worktree", "prune")
@@ -356,7 +358,7 @@
      return _delete_branch(branch)
  
  
-@@ -298,12 +401,18 @@
+@@ -298,12 +403,18 @@
              return cmd_list()
          case ["add", slug]:
              return cmd_add(slug)
