@@ -42,6 +42,15 @@ from setup_env import setup_environment
 # "fatal: not a git repository". A path computed by counting is a path that
 # breaks when a file moves.
 ROOT = Path(__file__).resolve().parent.parent
+# ONE SLUG RULE FOR EVERY VERB (A.264): lowercase words joined by single hyphens.
+SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+
+
+def _slug(slug: str) -> str:
+    """A worktree's name: lowercase kebab-case, checked before any path or branch is built."""
+    if not SLUG.fullmatch(slug):
+        raise SystemExit(f"slug must be lowercase kebab-case: {slug!r}")
+    return slug
 
 
 def _git(*args: str, cwd: Path | None = None) -> str:
@@ -121,8 +130,7 @@ def cmd_add(slug: str, base: str | None = None) -> int:
     none, origin/develop is fetched first. --no-track keeps the new branch from inheriting its
     base as upstream, which made it look pushed at birth (this project, 2026-09-26).
     """
-    if not slug or not all(character.isalnum() or character == "-" for character in slug):
-        raise SystemExit(f"slug must be lowercase kebab-case: {slug!r}")
+    _slug(slug)
 
     branch = f"feature/{slug}"
     path = sibling_path(slug)
@@ -241,6 +249,7 @@ def cmd_refresh(slug: str, step: str) -> int:
 
     REFUSES ON A DIRTY TREE rather than stashing: a stash nobody created hides the work.
     """
+    _slug(slug)
     if not re.fullmatch(r"[A-Z]\.[0-9]+", step):
         raise SystemExit(f"refusing: {step!r} is not a plan step id, such as A.95")
     path = sibling_path(slug)
@@ -362,6 +371,7 @@ def _branch_found(branch: str) -> bool:
 
 
 def cmd_remove(slug: str) -> int:
+    _slug(slug)
     path = sibling_path(slug)
     branch = f"feature/{slug}"
 
