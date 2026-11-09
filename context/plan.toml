@@ -3140,3 +3140,13 @@ done_when = [
   { kind = "proof", test = "tests/test_worktree_remove.py::test_a_malformed_slug_is_refused_before_anything_is_looked_up" },
   { kind = "proof", test = "tests/test_worktree_remove.py::test_add_refuses_an_uppercase_slug_its_message_already_forbids" },
 ]
+[[steps]]
+id = "A.266"
+title = "worktree:refresh gives git merge its Plan-Step message with -m, so a merge stopped on conflicts keeps the step in MERGE_MSG and worktree:conclude commits it, instead of git's default message that commit-msg refuses"
+thread = "A"
+depends_on = ["A.264"]
+because = { "A.264" = "the branch whose refresh met this, carrying both fixes in one pull request" }
+branch = "feature/remove-unknown"
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_refresh.py::test_a_stopped_refresh_keeps_its_plan_step_for_the_merge_commit" },
+]
