@@ -17,4 +17,13 @@ describe("bind (A.245)", () => {
       expect(values[name]).toBeGreaterThan(0);
     }
   });
+
+  it("renders a model or technique by its number and its name (A.258)", () => {
+    expect(bind("{model:10}")).toBe("Model 10 · AdaBoost for regression");
+    expect(bind("{technique:4}")).toBe("Technique 4 · PCA");
+  });
+
+  it("refuses a model or technique the data does not hold (A.258)", () => {
+    expect(() => bind("{model:15}")).toThrow(/unbound \{model:15\}/);
+  });
 });

@@ -23,8 +23,19 @@ export function sources(project = data, summary = movielens) {
   };
 }
 
-export function bind(text, values = sources()) {
-  return text.replace(/\{(\w+)\}/g, (token, name) => {
+// A numbered token, {model:N} or {technique:N}, renders that entry as "Model N · name" (A.258).
+const NUMBERED = { model: ["Model", "models"], technique: ["Technique", "techniques"] };
+
+export function bind(text, values = sources(), project = data) {
+  return text.replace(/\{(\w+)(?::(\d+))?\}/g, (token, name, number) => {
+    if (number !== undefined) {
+      const [label, key] = NUMBERED[name] ?? [];
+      const entry = key && project[key].find((item) => item.id === Number(number));
+      if (!entry) {
+        throw new Error(`unbound ${token} in: ${text}`);
+      }
+      return `${label} ${entry.id} · ${entry.name}`;
+    }
     if (!(name in values)) {
       throw new Error(`unbound ${token} in: ${text}`);
     }
