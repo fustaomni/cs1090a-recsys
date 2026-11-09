@@ -3165,3 +3165,59 @@ done_when = [
   { kind = "proof", test = "tests/test_ci_rerun.py::test_a_failed_run_that_never_ran_a_step_is_retried_once_and_read_back" },
   { kind = "proof", test = "tests/test_ci_rerun.py::test_ci_rerun_is_declared_mutating_and_a_capability" },
 ]
+[[steps]]
+id = "A.267"
+title = "A commit is type-checked before it is made: pre-commit runs mypy incrementally, with its cache, on the staged Python files only, so a type error is refused at the commit that makes it, while the full two-platform types gate stays at pre-push and in pr"
+thread = "A"
+depends_on = []
+branch = "feature/types-fast"
+done_when = [
+  { kind = "proof", test = "tests/test_types_staged.py::test_pre_commit_type_checks_the_staged_python_files" },
+  { kind = "proof", test = "tests/test_types_staged.py::test_the_staged_check_is_incremental_and_skips_a_commit_without_python" },
+]
+[[steps]]
+id = "A.268"
+title = "The live site's Railway service is declared in Infrastructure as Code, .railway/railway.ts pulled from the live project, with site:config-plan reporting no drift and nothing destructive, the service cut over from Config as Code and railway.json removed, and a deploy afterwards succeeding with no deprecation warning, before Railway stops reading Config as Code on 2026-12-01"
+thread = "A"
+depends_on = ["A.258"]
+because = { "A.258" = "the deploy whose output first carried the deprecation warning" }
+branch = "feature/site-railway-iac"
+done_when = [
+  { kind = "proof", test = "tests/test_site_railway_iac.py::test_the_service_is_declared_as_infrastructure_as_code" },
+  { kind = "proof", test = "tests/test_site_railway_iac.py::test_no_config_as_code_file_remains" },
+  { kind = "task", name = "site:config-plan" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.269"
+title = "Milestone 2's notebook gets, loads and cleans MovieLens 1M and restates the question the data can answer, covering Phases 0, 1A and 2, and runs top to bottom from a clean kernel under automation, with seeds set, the raw data never modified, and its logic imported from the repository's modules"
+thread = "A"
+depends_on = ["A.261"]
+because = { "A.261" = "the site work, completed before Milestone 2's deliverables begin" }
+branch = "feature/ms2-notebook"
+done_when = [
+  { kind = "proof", test = "tests/test_ms2_notebook.py::test_the_notebook_runs_top_to_bottom_from_a_clean_kernel" },
+  { kind = "proof", test = "tests/test_ms2_notebook.py::test_the_notebook_covers_phases_0_1a_and_2_in_order" },
+]
+[[steps]]
+id = "A.270"
+title = "Milestone 2's slides, delivered as a PDF of at most ten slides for an eight to ten minute talk to the project TF, run question, data, cleaning, findings and the revised plan with its next steps, carrying charts from the notebook, little text and no code"
+thread = "A"
+depends_on = ["A.269"]
+because = { "A.269" = "the notebook whose results and charts the slides present" }
+branch = "feature/ms2-slides"
+done_when = [
+  { kind = "proof", test = "tests/test_ms2_deliverables.py::test_the_slides_are_a_pdf_of_at_most_ten_slides" },
+  { kind = "proof", test = "tests/test_ms2_deliverables.py::test_the_slides_cover_question_data_cleaning_findings_and_next_steps" },
+]
+[[steps]]
+id = "A.271"
+title = "Milestone 2's revised proposal, one to two pages, restates the project question the cleaned data can answer, what changed since Milestone 1 and why, and the plan for Milestone 3"
+thread = "A"
+depends_on = ["A.269"]
+because = { "A.269" = "the notebook whose findings the proposal revises the plan from" }
+branch = "feature/ms2-proposal"
+done_when = [
+  { kind = "proof", test = "tests/test_ms2_deliverables.py::test_the_revised_proposal_is_one_to_two_pages" },
+  { kind = "proof", test = "tests/test_ms2_deliverables.py::test_the_revised_proposal_restates_the_question_and_the_changes" },
+]
