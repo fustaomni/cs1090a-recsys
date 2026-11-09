@@ -3130,3 +3130,13 @@ branch = "feature/gate-durations"
 done_when = [
   { kind = "proof", test = "tests/test_gate_durations.py::test_every_run_reports_its_slowest_phases" },
 ]
+[[steps]]
+id = "A.264"
+title = "worktree:add, refresh and remove share one lowercase kebab-case slug rule, checked before any path or branch is built, so a malformed name such as a branch name is refused instead of reported already removed, while an absent well-formed slug stays the idempotent success D.105 decided"
+thread = "A"
+depends_on = []
+branch = "feature/remove-unknown"
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_a_malformed_slug_is_refused_before_anything_is_looked_up" },
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_add_refuses_an_uppercase_slug_its_message_already_forbids" },
+]
