@@ -2,7 +2,8 @@
 """site:record deployment -- the live site's deployment recorded as an observation (A.254).
 
 site:deploy uploads site/ with railway up, so Railway never learns which commit it was built from.
-The recorder observes that commit from a site/ with no uncommitted change, the newest deployment
+site:deploy notes that commit from a site/ with no uncommitted change before it uploads, and
+the recorder takes that note (A.258), the newest deployment
 Railway lists, waited on until its status is final, and the model and technique counts the deployed
 data carries, then emits a source-apply spec writing contracts/site-deployment.json. Only a SUCCESS
 is recorded; a failed or crashed deployment is refused by name.
@@ -24,6 +25,7 @@ from gitenv import git
 
 ROOT = Path(__file__).resolve().parent.parent
 RECORD = Path("contracts") / "site-deployment.json"
+MARKER = Path(".artifacts") / "site-deploy-commit"
 PROJECT = Path("site") / "src" / "data" / "project.json"
 QUOTE = "'" * 3
 COMMIT = r"^[0-9a-f]{40}$"
@@ -75,8 +77,17 @@ def up_command(identity: Identity) -> list[str]:
 
 
 def deploy(root: Path = ROOT) -> int:
-    """Upload site/ to the declared service, as site:deploy's second half."""
-    return subprocess.run(up_command(declared(root)), cwd=root / "site", check=False).returncode
+    """Upload site/ to the declared service, noting the commit it was built from (A.258).
+
+    THE COMMIT IS READ BEFORE THE UPLOAD, so a commit made before site:record is never named.
+    """
+    commit = built_from(root)
+    code = subprocess.run(up_command(declared(root)), cwd=root / "site", check=False).returncode
+    if code == 0:
+        marker = root / MARKER
+        marker.parent.mkdir(parents=True, exist_ok=True)
+        marker.write_text(commit + "\n", encoding="utf-8")
+    return code
 
 
 def delete_project(project: str, root: Path = ROOT) -> int:
@@ -147,9 +158,17 @@ def settled(root: Path = ROOT) -> Listed:
         time.sleep(POLL_SECONDS)
 
 
+def deployed_commit(root: Path = ROOT) -> str:
+    """The commit the last site:deploy built from, as it noted it."""
+    marker = root / MARKER
+    if not marker.is_file():
+        raise SystemExit(f"no site:deploy noted the commit it built ({MARKER}); deploy first")
+    return marker.read_text(encoding="utf-8").strip()
+
+
 def observed(root: Path = ROOT) -> Deployment:
     """The deployment record, refused unless the deployment succeeded."""
-    commit = built_from(root)
+    commit = deployed_commit(root)
     final = settled(root)
     if final.status != "SUCCESS":
         raise SystemExit(f"deployment {final.id} ended {final.status}, so nothing is recorded")
@@ -184,6 +203,8 @@ def spec(current: str | None, text: str) -> str:
 
 def record(out: Path, root: Path = ROOT) -> int:
     """Observe the deployment and write the spec that records it at out."""
+    if out.resolve() == (root / RECORD).resolve():
+        raise SystemExit("--out names the record itself; give a spec path, then apply it")
     deployment = observed(root)
     existing = root / RECORD
     current = existing.read_text(encoding="utf-8") if existing.is_file() else None
