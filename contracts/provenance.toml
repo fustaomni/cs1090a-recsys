@@ -581,7 +581,7 @@ sha256 = "7a7c2b8900df46055d005cd78d67e4da1637cba0ddea2de0b6e56fdfda844f4d"
 path = "tests/test_worktree_refresh.py"
 reason = "A.266: a stopped refresh keeps its Plan-Step for the merge commit"
 patch = "contracts/vendor-patches/tests/test_worktree_refresh.py.patch"
-sha256 = "e830c624fedc156fc57b634a929cf3212dcda4e543aa1fe58cd5db802b56d844"
+sha256 = "c27a4af78bd151e15f2adab5db7948bcb33afbda9fb4aaf391def390ec6677d4"
 
 [[files]]
 path = "tests/test_worktree_remove.py"
