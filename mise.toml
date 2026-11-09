@@ -721,6 +721,12 @@ run = "uv run --no-sync python scripts/source_restore.py"
 description = "Read the current branch's latest failed CI run as typed data, and record the run"
 run = "uv run --no-sync python scripts/pr_logs.py"
 
+# A.265: one retry of a CI run on this head that never ran a step, refused for any other run.
+[tasks."ci:rerun"]
+description = "Retry once a CI run on this branch's head that failed before any job ran a step, and read the new attempt back"
+usage = 'arg "<run-id>" help="The failed run, as pr:logs reports it"'
+run = 'uv run --no-sync python scripts/ci_rerun.py "${usage_run_id?}"'
+
 [tasks."repo:history"]
 description = "Read commit history as data: subject, authored time, trailers and files, newest first"
 # NUL- AND CONTROL-BYTE-SEPARATED, as git's own %(trailers) options allow: nothing can break the parse.
