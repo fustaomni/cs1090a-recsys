@@ -551,9 +551,9 @@ sha256 = "fa7e99480e9c10832ce0c93b9a74fd82d741846bf1c94a8ce2a4544e6e5e005d"
 
 [[adapted]]
 path = "scripts/worktree.py"
-reason = "A.264: add, refresh and remove share one lowercase kebab-case slug rule, checked first"
+reason = "A.264: one kebab-case slug rule; A.266: the refresh merge carries its Plan-Step message through a conflict"
 patch = "contracts/vendor-patches/scripts/worktree.py.patch"
-sha256 = "20d27f637f39611a75cd094cdf0e6c63ca39ec69ee8ee94aec26bcedde0364fe"
+sha256 = "6f26b55112b9ddded2ab422ca2230a0aa800fa5d5f19e739c9d9e1dd499d9b63"
 
 [[files]]
 path = "policies/machine/setup/setup_env.rego"
@@ -579,9 +579,9 @@ sha256 = "7a7c2b8900df46055d005cd78d67e4da1637cba0ddea2de0b6e56fdfda844f4d"
 
 [[adapted]]
 path = "tests/test_worktree_refresh.py"
-reason = "A.191: refresh merges and takes a plan step, so its proofs fake a merge and pass one"
+reason = "A.266: a stopped refresh keeps its Plan-Step for the merge commit"
 patch = "contracts/vendor-patches/tests/test_worktree_refresh.py.patch"
-sha256 = "0f7838b9752fe9081929f29796daddc537324ba0aa7dffd32f96450e4edd2ad3"
+sha256 = "e830c624fedc156fc57b634a929cf3212dcda4e543aa1fe58cd5db802b56d844"
 
 [[files]]
 path = "tests/test_worktree_remove.py"

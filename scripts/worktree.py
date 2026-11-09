@@ -287,7 +287,9 @@ def cmd_refresh(slug: str, step: str) -> int:
     before = git_run("rev-parse", "HEAD", cwd=path).stdout.strip()
 
     message = _merge_message(branch, step)
-    result = git_run("merge", "--no-ff", "--no-commit", "origin/develop", cwd=path)
+    # THE MESSAGE GOES TO THE MERGE ITSELF (A.266): a merge stopped on conflicts keeps it in
+    # MERGE_MSG, which worktree:conclude commits; without -m it would hold git's default.
+    result = git_run("merge", "--no-ff", "--no-commit", "-m", message, "origin/develop", cwd=path)
     if result.returncode != 0:
         print((result.stdout + result.stderr).strip(), file=sys.stderr)
         raise SystemExit(
