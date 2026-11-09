@@ -94,8 +94,9 @@ def test_a_record_names_the_commit_its_deploy_built(
     _identity(tmp_path)
     built, later = "a" * 40, "b" * 40
     monkeypatch.setattr(site_deployed, "built_from", lambda root: built)
+    # THE STDLIB MODULE ITSELF: site_deployed only imports it, and imports are not re-exported.
     monkeypatch.setattr(
-        site_deployed.subprocess,
+        subprocess,
         "run",
         lambda *args, **kwargs: subprocess.CompletedProcess(args, 0),
     )
