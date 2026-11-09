@@ -3165,3 +3165,13 @@ done_when = [
   { kind = "proof", test = "tests/test_ci_rerun.py::test_a_failed_run_that_never_ran_a_step_is_retried_once_and_read_back" },
   { kind = "proof", test = "tests/test_ci_rerun.py::test_ci_rerun_is_declared_mutating_and_a_capability" },
 ]
+[[steps]]
+id = "A.272"
+title = "sibling_pins.fetch retries a throttled or transient fetch with curl's own exponential backoff, which honours Retry-After on a 429, bounded by --retry-max-time, so a rate-limited CI runner no longer fails the integration gate while a fetch that keeps failing is still refused by its URL"
+thread = "A"
+depends_on = []
+branch = "feature/sibling-fetch-retry"
+done_when = [
+  { kind = "proof", test = "tests/test_sibling_fetch.py::test_a_throttled_fetch_is_retried_with_backoff_and_a_bound" },
+  { kind = "proof", test = "tests/test_sibling_fetch.py::test_a_fetch_that_keeps_failing_is_refused_by_its_url" },
+]
