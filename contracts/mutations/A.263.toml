@@ -1,0 +1,9 @@
+# contracts/mutations/A.263.toml
+# A.263: the duration report removed, and the proof that must catch it.
+
+[[mutants]]
+id = "durations-unreported"
+file = "pyproject.toml"
+before = '"--durations=20", "--durations-min=1.0", '
+after = ''
+killers = ["tests/test_gate_durations.py::test_every_run_reports_its_slowest_phases"]
