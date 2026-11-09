@@ -257,4 +257,5 @@ issued = [
   { id = "A.263", first_title = "Every pytest run reports its slowest twenty setup, call and teardown phases over one second, from the one addopts in pyproject.toml, so a gate's time is measured on every run instead of guessed" },
   { id = "A.264", first_title = "worktree:add, refresh and remove share one lowercase kebab-case slug rule, checked before any path or branch is built, so a malformed name such as a branch name is refused instead of reported already removed, while an absent well-formed slug stays the idempotent success D.105 decided" },
   { id = "A.266", first_title = "worktree:refresh gives git merge its Plan-Step message with -m, so a merge stopped on conflicts keeps the step in MERGE_MSG and worktree:conclude commits it, instead of git's default message that commit-msg refuses" },
+  { id = "A.265", first_title = "ci:rerun retries, once and through the gateway, a CI run on this branch's current head that finished without any job running a step, refuses every other run, and reads the new attempt back, so a GitHub-side scheduling failure is recovered without a raw gh call, a new full dispatch or a throwaway commit" },
 ]
