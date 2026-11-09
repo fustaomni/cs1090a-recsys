@@ -1,0 +1,33 @@
+--- a/tests/test_worktree_remove.py
++++ b/tests/test_worktree_remove.py
+@@ -85,3 +85,30 @@
+     assert worktree.cmd_remove("probe") == 0
+     assert ("worktree", "remove", str(tmp_path)) in calls, calls
+     assert ("branch", "-d", BRANCH) in calls, calls
++
++
++# A.264: NAMES THAT ARE NOT KEBAB-CASE SLUGS, the first a branch name passed by mistake.
++MALFORMED = ("feature/site-overview", "Site-Overview", "-lead", "trail-", "two--dashes", "")
++
++
++def test_a_malformed_slug_is_refused_before_anything_is_looked_up(
++    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
++) -> None:
++    """remove and refresh refuse a name that is not a kebab-case slug, and touch no git (A.264)."""
++    calls = _setup(monkeypatch, tmp_path / "gone", branch_exists=False)
++    for name in nonempty(MALFORMED):
++        with pytest.raises(SystemExit, match="kebab-case"):
++            worktree.cmd_remove(name)
++        with pytest.raises(SystemExit, match="kebab-case"):
++            worktree.cmd_refresh(name, "A.264")
++    assert calls == [], calls
++
++
++def test_add_refuses_an_uppercase_slug_its_message_already_forbids(
++    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
++) -> None:
++    """The rule matches its message: lowercase kebab-case, so Site-Overview is refused (A.264)."""
++    calls = _setup(monkeypatch, tmp_path, branch_exists=False)
++    with pytest.raises(SystemExit, match="kebab-case"):
++        worktree.cmd_add("Site-Overview")
++    assert calls == [], calls

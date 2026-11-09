@@ -551,9 +551,9 @@ sha256 = "fa7e99480e9c10832ce0c93b9a74fd82d741846bf1c94a8ce2a4544e6e5e005d"
 
 [[adapted]]
 path = "scripts/worktree.py"
-reason = "A.191: refresh merges origin/develop with a merge commit naming its plan step, never a rebase, so a published branch keeps every commit; A.207: the merge is staged without committing, a changed mise.toml is gated and trusted, and only then is the merge committed, so its hooks run against a trusted config"
+reason = "A.264: add, refresh and remove share one lowercase kebab-case slug rule, checked first"
 patch = "contracts/vendor-patches/scripts/worktree.py.patch"
-sha256 = "e490ff5dd94f03f0e2a55c58e1783c320ac8567b32765c74325a2f10415e93a5"
+sha256 = "20d27f637f39611a75cd094cdf0e6c63ca39ec69ee8ee94aec26bcedde0364fe"
 
 [[files]]
 path = "policies/machine/setup/setup_env.rego"
@@ -586,6 +586,12 @@ sha256 = "0f7838b9752fe9081929f29796daddc537324ba0aa7dffd32f96450e4edd2ad3"
 [[files]]
 path = "tests/test_worktree_remove.py"
 sha256 = "446e49bce584d01a264e808c500b11e6d5a0df18f76c63d9b7bf8e43604636e8"
+
+[[adapted]]
+path = "tests/test_worktree_remove.py"
+reason = "A.264: proofs that a malformed slug is refused before anything is looked up"
+patch = "contracts/vendor-patches/tests/test_worktree_remove.py.patch"
+sha256 = "30a6682954c09cc5d2a6c4f7988a6f5d16b64454a175011a2db916558d02f98d"
 
 [[files]]
 path = "scripts/workflow_audit.py"
