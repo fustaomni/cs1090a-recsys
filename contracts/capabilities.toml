@@ -644,3 +644,9 @@ task = "sibling:override"
 version = "1.0.0"
 implementation = "scripts/sibling_checkout.py"
 emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "ci:rerun"
+version = "1.0.0"
+implementation = "scripts/ci_rerun.py"
+emits = "command-outcome/v1"

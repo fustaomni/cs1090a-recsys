@@ -1,0 +1,23 @@
+# contracts/mutations/A.265.toml
+# A.265: each refusal rule of ci:rerun disabled alone, and the proof that must catch it.
+
+[[mutants]]
+id = "any-head-retried"
+file = "scripts/ci_rerun.py"
+before = '    if run.head_sha != head:'
+after = '    if False:'
+killers = ["tests/test_ci_rerun.py::test_a_run_for_another_head_is_refused"]
+
+[[mutants]]
+id = "unfinished-run-retried"
+file = "scripts/ci_rerun.py"
+before = '    if run.status != "completed" or run.conclusion not in ENDED_BADLY:'
+after = '    if False:'
+killers = ["tests/test_ci_rerun.py::test_a_run_still_in_progress_is_refused"]
+
+[[mutants]]
+id = "executed-run-retried"
+file = "scripts/ci_rerun.py"
+before = '    if ran:'
+after = '    if False:'
+killers = ["tests/test_ci_rerun.py::test_a_run_whose_jobs_ran_steps_is_refused"]
