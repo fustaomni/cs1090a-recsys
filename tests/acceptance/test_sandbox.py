@@ -64,3 +64,27 @@ def test_a_mutating_task_already_running_is_refused(sandbox: Sandbox) -> None:
     assert decision.reason_code == "ERR_RUN_DUPLICATE_EXECUTION", decision
     (record,) = sandbox.ledger_records()
     assert record.verdict == "refused", record
+
+
+def test_the_sandbox_copies_only_what_a_commit_could_contain(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Ignored build output never reaches the sandbox; tracked and untracked source does."""
+    import acceptance_sandbox
+
+    from gitenv import git
+
+    source = tmp_path / "source"
+    (source / "build").mkdir(parents=True)
+    (source / ".gitignore").write_text("build/\n", encoding="utf-8")
+    (source / "kept.py").write_text("x = 1\n", encoding="utf-8")
+    (source / "build" / "bulk.bin").write_text("ignored\n", encoding="utf-8")
+    assert git("init", "-q", cwd=source).returncode == 0
+    assert git("add", "kept.py", ".gitignore", cwd=source).returncode == 0
+    (source / "fresh.py").write_text("y = 2\n", encoding="utf-8")
+    monkeypatch.setattr(acceptance_sandbox, "SOURCE", source)
+    made = Sandbox.create(tmp_path / "out")
+    assert (made.root / "kept.py").is_file(), "a tracked file was not copied"
+    assert (made.root / "fresh.py").is_file(), "an untracked, unignored file was not copied"
+    copied = sorted(str(path.relative_to(made.root)) for path in made.root.rglob("*"))
+    assert not (made.root / "build").exists(), copied

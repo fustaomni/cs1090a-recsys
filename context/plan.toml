@@ -3113,3 +3113,55 @@ done_when = [
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:test" },
 ]
+[[steps]]
+id = "A.262"
+title = "The acceptance sandbox copies only what a commit of the working tree could contain, from git's own file list as safeguards.copy_committable does, so ignored build output such as site/node_modules never reaches it and a full gate after a site build is not slowed by copying it"
+thread = "A"
+depends_on = []
+branch = "feature/gate-copy"
+done_when = [
+  { kind = "proof", test = "tests/acceptance/test_sandbox.py::test_the_sandbox_copies_only_what_a_commit_could_contain" },
+]
+[[steps]]
+id = "A.263"
+title = "Every pytest run reports its slowest twenty setup, call and teardown phases over one second, from the one addopts in pyproject.toml, so a gate's time is measured on every run instead of guessed"
+thread = "A"
+depends_on = ["A.262"]
+because = { "A.262" = "the sandbox fix whose effect on the gate's time this measures" }
+branch = "feature/gate-durations"
+done_when = [
+  { kind = "proof", test = "tests/test_gate_durations.py::test_every_run_reports_its_slowest_phases" },
+]
+[[steps]]
+id = "A.264"
+title = "worktree:add, refresh and remove share one lowercase kebab-case slug rule, checked before any path or branch is built, so a malformed name such as a branch name is refused instead of reported already removed, while an absent well-formed slug stays the idempotent success D.105 decided"
+thread = "A"
+depends_on = []
+branch = "feature/remove-unknown"
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_a_malformed_slug_is_refused_before_anything_is_looked_up" },
+  { kind = "proof", test = "tests/test_worktree_remove.py::test_add_refuses_an_uppercase_slug_its_message_already_forbids" },
+]
+[[steps]]
+id = "A.266"
+title = "worktree:refresh gives git merge its Plan-Step message with -m, so a merge stopped on conflicts keeps the step in MERGE_MSG and worktree:conclude commits it, instead of git's default message that commit-msg refuses"
+thread = "A"
+depends_on = ["A.264"]
+because = { "A.264" = "the branch whose refresh met this, carrying both fixes in one pull request" }
+branch = "feature/remove-unknown"
+done_when = [
+  { kind = "proof", test = "tests/test_worktree_refresh.py::test_a_stopped_refresh_keeps_its_plan_step_for_the_merge_commit" },
+]
+[[steps]]
+id = "A.265"
+title = "ci:rerun retries, once and through the gateway, a CI run on this branch's current head that finished without any job running a step, refuses every other run, and reads the new attempt back, so a GitHub-side scheduling failure is recovered without a raw gh call, a new full dispatch or a throwaway commit"
+thread = "A"
+depends_on = []
+branch = "feature/ci-rerun"
+done_when = [
+  { kind = "proof", test = "tests/test_ci_rerun.py::test_a_run_for_another_head_is_refused" },
+  { kind = "proof", test = "tests/test_ci_rerun.py::test_a_run_still_in_progress_is_refused" },
+  { kind = "proof", test = "tests/test_ci_rerun.py::test_a_run_whose_jobs_ran_steps_is_refused" },
+  { kind = "proof", test = "tests/test_ci_rerun.py::test_a_failed_run_that_never_ran_a_step_is_retried_once_and_read_back" },
+  { kind = "proof", test = "tests/test_ci_rerun.py::test_ci_rerun_is_declared_mutating_and_a_capability" },
+]
