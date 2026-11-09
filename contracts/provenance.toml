@@ -346,6 +346,12 @@ sha256 = "59415037ecec2129ec97eeac955a5d101b32f5427f3ed4d1ee46810411e08236"
 [[files]]
 path = "tests/acceptance/test_sandbox.py"
 sha256 = "c536c981746031ea681718de90a42c7bf3cc7a411ed734d4ab31dfc154069937"
+
+[[adapted]]
+path = "tests/acceptance/test_sandbox.py"
+reason = "A.262: a proof that the sandbox copies only what a commit could contain, so ignored build output never reaches it"
+patch = "contracts/vendor-patches/tests/acceptance/test_sandbox.py.patch"
+sha256 = "5d6c9707a0b97ffc1bf6b09d8d6212ff65b7c85c08f81eb9018e3a3a7f88f697"
 [[files]]
 path = "tests/test_secret_scanning.py"
 sha256 = "dcde6cb0310e50c3e7d5f0dd9da91d9b74a14f12fe54ff16cd78bd241eee815f"
@@ -416,9 +422,9 @@ patch = "contracts/vendor-patches/tests/test_run_gateway.py.patch"
 sha256 = "5e42c5e892a6f5d791dc560f823a9ac0e93f2bbeb21a88753046e880807854ab"
 [[adapted]]
 path = "tests/acceptance/acceptance_sandbox.py"
-reason = "no Nix in recsys; .cache excluded from the copy; the path-trust exception stated"
+reason = "A.262: the sandbox copies only what a commit could contain, through safeguards.copy_committable, so ignored build output never reaches it"
 patch = "contracts/vendor-patches/tests/acceptance/acceptance_sandbox.py.patch"
-sha256 = "58892992a93d2c7df17a1a06738187e7d60407d00ab3d896640c3d776feb1ac7"
+sha256 = "5e153d03607a074b3b3e8d91d7f2d07ddfc1bbc78ce435c87b7ec438569f9da6"
 [[adapted]]
 path = "scripts/plan_init.py"
 reason = "day-one trace writes sources inline, the layout plan:record edits"
