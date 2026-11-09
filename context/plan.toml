@@ -2638,8 +2638,8 @@ done_when = [
 id = "A.224"
 title = "A teammate on FAS OnDemand reaches a working checkout in one light, non-interactive command whose every input is declared in an onboarding-manifest/v1 requirement contract changed only by reviewed commits: the canonical repository URL from the project identity and the ref with its expected commit, verified after cloning so an origin or HEAD that differs stops onboarding; the tool versions in the FAS tools lock, installed only through tools:install; uv.lock, synced with --locked; the data's origin and SHA-256, fetched through data:fetch; the allowed install locations, the checkout, the uv cache and one kernel directory, with a write anywhere else refused; and the kernel's scope, a user kernel named from the project identity that never overwrites one this checkout did not create. It records each stage only after verifying its result so a rerun resumes at the first unverified stage and a second run after success changes nothing, refuses a kernel whose kernel.json does not name this checkout's interpreter, never executes the notebook, keeps within a declared memory and disk budget, and ends in an onboarding-result/v1 of observations only, judged on the spine by runs.onboarding where an unknown observation is refused and every refusal carries a registered problem code"
 thread = "A"
-depends_on = ["A.103", "A.235"]
-because = { "A.103" = "the FAS tools this command installs only through tools:install", "A.235" = "the verified data acquisition it runs as one stage" }
+depends_on = ["A.103", "A.235", "A.254"]
+because = { "A.103" = "the FAS tools this command installs only through tools:install", "A.235" = "the verified data acquisition it runs as one stage", "A.254" = "the deployed site the group finishes before a teammate is onboarded" }
 branch = "feature/fas-onboarding"
 done_when = [
   { kind = "proof", test = "tests/test_onboarding.py::test_one_command_leaves_a_checked_checkout_with_its_kernel" },
@@ -2681,8 +2681,8 @@ done_when = [
 id = "A.225"
 title = "The Milestone 2 notebook is a Jupyter notebook (.ipynb) that runs top to bottom in a fresh kernel on the verified MovieLens 1M archive, widening the walking skeleton A.244 proved, and shows in order: the Canvas group number and its members, getting the data with its size in megabytes, what a row and each column mean with shape, types and summary statistics, cleaning driven by a ratings-quality/v1 contract whose validity, uniqueness, referential-integrity and completeness rules each produce pass, fail or unknown with its count, the brief's checks each reported with its finding and decision (missing data and its pattern, unusual values, the balance of the rating classes, each numerical feature's range, and information leakage, with a temporal split before any feature is computed), a few plots each titled with labelled axes, and the revised question stated so its answer can be judged, recording every number it reports into milestone2-results/v1 as it computes it"
 thread = "A"
-depends_on = ["A.244", "A.235"]
-because = { "A.244" = "the walking skeleton whose runner and results contract this widens", "A.235" = "the verified MovieLens 1M archive the notebook reads" }
+depends_on = ["A.224", "A.244", "A.235"]
+because = { "A.224" = "the one-command checkout, kernel and data every member opens the notebook in", "A.244" = "the walking skeleton whose runner and results contract this widens", "A.235" = "the verified MovieLens 1M archive the notebook reads" }
 branch = "feature/ms2-notebook"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_every_section_the_milestone_requires_is_present_in_order" },
@@ -3013,4 +3013,16 @@ branch = "feature/ms2-presentation"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_presentation.py::test_the_presentation_is_scheduled_in_its_week_with_every_member_presenting_a_named_part" },
   { kind = "path", path = "contracts/requirements/milestone2.md" },
+]
+[[steps]]
+id = "A.254"
+title = "The deployed project site is develop's: the site with its fourteen models and twelve techniques, each with its lab, is deployed through site:deploy and the deployment recorded, naming the commit it was built from, the deployment id and the model and technique counts the built data carries, so that onboarding begins only once the live site is the one the repository holds"
+thread = "A"
+depends_on = ["A.246", "A.95"]
+because = { "A.246" = "the fourteen models, twelve techniques and four new labs this deploys", "A.95" = "site:build and site:deploy, the deployment this records" }
+branch = "feature/site-deployed"
+done_when = [
+  { kind = "proof", test = "tests/test_site_deployed.py::test_the_recorded_deployment_names_its_commit_and_carries_fourteen_models_and_twelve_techniques" },
+  { kind = "task", name = "site:deploy" },
+  { kind = "task", name = "site:test" },
 ]
