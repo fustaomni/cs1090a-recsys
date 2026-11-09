@@ -263,4 +263,5 @@ issued = [
   { id = "A.269", first_title = "Milestone 2's notebook gets, loads and cleans MovieLens 1M and restates the question the data can answer, covering Phases 0, 1A and 2, and runs top to bottom from a clean kernel under automation, with seeds set, the raw data never modified, and its logic imported from the repository's modules" },
   { id = "A.270", first_title = "Milestone 2's slides, delivered as a PDF of at most ten slides for an eight to ten minute talk to the project TF, run question, data, cleaning, findings and the revised plan with its next steps, carrying charts from the notebook, little text and no code" },
   { id = "A.271", first_title = "Milestone 2's revised proposal, one to two pages, restates the project question the cleaned data can answer, what changed since Milestone 1 and why, and the plan for Milestone 3" },
+  { id = "A.272", first_title = "sibling_pins.fetch retries a throttled or transient fetch with curl's own exponential backoff, which honours Retry-After on a 429, bounded by --retry-max-time, so a rate-limited CI runner no longer fails the integration gate while a fetch that keeps failing is still refused by its URL" },
 ]
