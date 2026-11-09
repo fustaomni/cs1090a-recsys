@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
+from typing import Any
 
 from nonvacuous import nonempty
 
@@ -114,3 +115,61 @@ def test_scope_holds_what_the_review_confirmed() -> None:
     project = json.loads(PROJECT.read_text(encoding="utf-8"))
     principle = str(project["scope"]["principle"])
     assert principle.endswith(PRINCIPLE), principle
+
+
+# A.258: EVERY MODEL AND TECHNIQUE IS A BINDING, never typed: {model:N} and {technique:N}.
+WHERE = re.compile(r"Phases? (\d+[AB]?(?:(?:, | and )\d+[AB]?)*)")
+TYPED = re.compile(r"\b(?:[Mm]odel|[Tt]echnique)s? \d+\b")
+
+
+def _project() -> dict[str, Any]:
+    loaded: dict[str, Any] = json.loads(PROJECT.read_text(encoding="utf-8"))
+    return loaded
+
+
+def _phase_points(project: dict[str, Any]) -> dict[str, list[str]]:
+    return {str(phase["id"]): list(phase["points"]) for phase in nonempty(project["phases"])}
+
+
+def _where_phases(where: str) -> list[str]:
+    """The phase ids a technique's where names: "Phases 1A and 1B, ..." gives 1A and 1B."""
+    found = [part for run in WHERE.findall(where) for part in re.split(r", | and ", run)]
+    assert found, f"no phase named in: {where}"
+    return found
+
+
+def test_every_model_is_named_by_number_in_the_phase_the_data_places_it() -> None:
+    """Every model is bound by number in the points of the phase its data names."""
+    project = _project()
+    points = _phase_points(project)
+    missing = [
+        f"Model {model['id']} in Phase {model['phase']}"
+        for model in nonempty(project["models"])
+        if not any(f"{{model:{model['id']}}}" in point for point in points[str(model["phase"])])
+    ]
+    assert missing == [], missing
+
+
+def test_every_technique_is_named_by_number_in_each_phase_it_names() -> None:
+    """Every technique is bound by number in each phase its where names."""
+    project = _project()
+    points = _phase_points(project)
+    missing = [
+        f"Technique {technique['id']} in Phase {phase}"
+        for technique in nonempty(project["techniques"])
+        for phase in _where_phases(str(technique["where"]))
+        if not any(f"{{technique:{technique['id']}}}" in point for point in points[phase])
+    ]
+    assert missing == [], missing
+
+
+def test_a_typed_model_or_technique_reference_is_refused() -> None:
+    """No phase point types a model or technique number; each is a binding instead."""
+    points = _phase_points(_project())
+    typed = [
+        f"Phase {phase}: {point[:60]}"
+        for phase, texts in nonempty(points.items())
+        for point in texts
+        if TYPED.search(point)
+    ]
+    assert typed == [], typed
