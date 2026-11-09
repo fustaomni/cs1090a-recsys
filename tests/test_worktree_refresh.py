@@ -103,12 +103,13 @@ def test_a_stopped_refresh_keeps_its_plan_step_for_the_merge_commit(
     """A conflicted merge holds the step in MERGE_MSG, so conclude can commit it (A.266)."""
     _setup(monkeypatch, tmp_path, rebase=1, synced=UNCHANGED)
     merges: list[tuple[str, ...]] = []
-    faked = worktree.git_run
 
     def recording(*args: str, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
+        """Record each merge and stop it on conflicts; answer every other git call cleanly."""
         if args[:1] == ("merge",):
             merges.append(args)
-        return faked(*args, cwd=cwd)
+            return _done(1)
+        return _done(0, BEFORE if args == ("rev-parse", "HEAD") else "")
 
     monkeypatch.setattr(worktree, "git_run", recording)
     with pytest.raises(SystemExit):
