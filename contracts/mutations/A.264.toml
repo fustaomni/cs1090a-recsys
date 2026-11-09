@@ -1,0 +1,12 @@
+# contracts/mutations/A.264.toml
+# A.264: the shared slug rule disabled, and the proofs that must catch it.
+
+[[mutants]]
+id = "slug-unchecked"
+file = "scripts/worktree.py"
+before = '    if not SLUG.fullmatch(slug):'
+after = '    if False:'
+killers = [
+  "tests/test_worktree_remove.py::test_a_malformed_slug_is_refused_before_anything_is_looked_up",
+  "tests/test_worktree_remove.py::test_add_refuses_an_uppercase_slug_its_message_already_forbids",
+]

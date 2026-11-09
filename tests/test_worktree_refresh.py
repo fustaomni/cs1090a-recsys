@@ -95,3 +95,25 @@ def test_an_unchanged_lock_leaves_the_refresh_succeeding(
 ) -> None:
     _setup(monkeypatch, tmp_path, rebase=0, synced=UNCHANGED)
     assert worktree.cmd_refresh("probe", "A.1") == 0
+
+
+def test_a_stopped_refresh_keeps_its_plan_step_for_the_merge_commit(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """A conflicted merge holds the step in MERGE_MSG, so conclude can commit it (A.266)."""
+    _setup(monkeypatch, tmp_path, rebase=1, synced=UNCHANGED)
+    merges: list[tuple[str, ...]] = []
+
+    def recording(*args: str, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
+        """Record each merge and stop it on conflicts; answer every other git call cleanly."""
+        if args[:1] == ("merge",):
+            merges.append(args)
+            return _done(1)
+        return _done(0, BEFORE if args == ("rev-parse", "HEAD") else "")
+
+    monkeypatch.setattr(worktree, "git_run", recording)
+    with pytest.raises(SystemExit):
+        worktree.cmd_refresh("probe", "A.1")
+    (merge,) = merges
+    assert "-m" in merge, merge
+    assert "Plan-Step: A.1" in merge[merge.index("-m") + 1], merge
