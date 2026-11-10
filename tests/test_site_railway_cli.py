@@ -97,3 +97,36 @@ def test_every_linked_task_links_the_declared_service_first() -> None:
     ]
     command = site_deployed.link_command(identity)
     assert command[-len(expected) :] == expected, command
+
+
+def _words(run: str) -> list[str]:
+    """A shell run's words, read by shlex: comments and quoted text are never commands."""
+    lexer = shlex.shlex(run, posix=True, punctuation_chars=True)
+    lexer.whitespace_split = True
+    return list(lexer)
+
+
+def _holds_constant(source: str, word: str) -> bool:
+    """A list or tuple in the Python source holds word as a string constant (A.276)."""
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Tuple | ast.List) and any(
+            isinstance(item, ast.Constant) and item.value == word for item in node.elts
+        ):
+            return True
+    return False
+
+
+def test_no_task_runs_any_tool_through_npx() -> None:
+    """npx fetches from the registry where node_modules is missing: every tool runs by script."""
+    runs = _runs().items()
+    found = [f"mise.toml {name}" for name, run in runs if "npx" in run and "npx" in _words(run)]
+    for path in nonempty(sorted((ROOT / "scripts").glob("*.py"))):
+        if _holds_constant(path.read_text(encoding="utf-8"), "npx"):
+            found.append(str(path.relative_to(ROOT)))
+    assert found == [], found
+
+
+def test_site_test_installs_the_locked_site_first() -> None:
+    run = _runs()["site:test"]
+    tests = "npm run --silent test"
+    assert tests in run and "mise run site:install" in run[: run.index(tests)], run
