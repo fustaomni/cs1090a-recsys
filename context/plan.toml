@@ -3080,13 +3080,14 @@ done_when = [
 ]
 [[steps]]
 id = "A.260"
-title = "The Interactive mechanisms page is reviewed from its source: each of the twenty-six labs is titled Model N or Technique N from the data, in the data's order, and every claim a lab states is checked against its computation; then the site is deployed and the deployment recorded"
+title = "The Interactive mechanisms page is reviewed from its source: each of the twenty-six labs is titled Model N or Technique N from the data, in the data's order, and every claim a lab states is checked against its computation, recorded in contracts/lab-claims.toml with the vitest test or binding that checks it, a claim the computation contradicts corrected in the prose; then the site is deployed and the deployment recorded"
 thread = "A"
 depends_on = ["A.259"]
 because = { "A.259" = "the page before it, revised and deployed one at a time" }
 branch = "feature/site-mechanisms"
 done_when = [
   { kind = "proof", test = "tests/test_site_review.py::test_every_lab_is_titled_by_its_model_or_technique_number" },
+  { kind = "proof", test = "tests/test_site_review.py::test_every_lab_claim_names_the_computation_that_checks_it" },
   { kind = "task", name = "site:test" },
   { kind = "task", name = "site:deploy" },
 ]
