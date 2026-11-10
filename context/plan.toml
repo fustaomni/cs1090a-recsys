@@ -3232,6 +3232,19 @@ done_when = [
   { kind = "proof", test = "tests/test_sibling_fetch.py::test_a_fetch_that_keeps_failing_is_refused_by_its_url" },
 ]
 [[steps]]
+id = "A.273"
+title = "Every Railway CLI task runs the CLI from the site's locked install: the locked packages are installed first when absent, the CLI is run by an npm script resolving to @railway/cli's own binary, never through npx, which falls back to the registry and resolves the name railway to Railway's IaC SDK, and every task that reads a directory's link first links the checkout's site/ non-interactively to the project, environment and service contracts/site-railway.toml declares"
+thread = "A"
+depends_on = ["A.254"]
+because = { "A.254" = "the site's Railway tasks, which assumed an install only site:build performs" }
+branch = "feature/site-railway-cli"
+done_when = [
+  { kind = "proof", test = "tests/test_site_railway_cli.py::test_no_task_runs_the_railway_cli_through_npx" },
+  { kind = "proof", test = "tests/test_site_railway_cli.py::test_every_railway_task_installs_the_locked_site_first" },
+  { kind = "proof", test = "tests/test_site_railway_cli.py::test_every_linked_task_links_the_declared_service_first" },
+  { kind = "task", name = "site:status" },
+]
+[[steps]]
 id = "A.274"
 title = "mypy searches scripts/ exactly as pytest imports it, mypy_path matching pythonpath, so the staged type check resolves a test's imports when the test is staged without the script it imports, and the full two-platform gate still passes with no module found twice"
 thread = "A"

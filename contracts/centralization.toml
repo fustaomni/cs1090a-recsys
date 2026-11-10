@@ -291,6 +291,16 @@ class = "project"
 reason = "this project public site and its labs (A.95, A.98, A.99)"
 
 [[capabilities]]
+id = "task:site:install"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "task:site:link"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
 id = "task:site:lock"
 class = "project"
 reason = "this project public site and its labs (A.95, A.98, A.99)"
