@@ -194,7 +194,7 @@ function Deploys() {
             <li key={baseline.name}>{baseline.name}</li>
           ))}
         </ul>
-        <p>{data.baseline_note}</p>
+        <p>{bind(data.baseline_note)}</p>
       </div>
       <h3>{bind("{techniques} supporting techniques")}</h3>
       <ul className="cards">
