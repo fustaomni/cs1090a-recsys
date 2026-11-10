@@ -1,0 +1,9 @@
+# contracts/mutations/A.278.toml
+# A.278: the test gate's deadline typed again, and the proof that must catch it.
+
+[[mutants]]
+id = "deadline-typed-again"
+file = "scripts/check_all.py"
+before = 'timeout_seconds=TEST_MEASURED_SECONDS * TEST_HEADROOM,'
+after = 'timeout_seconds=900.0,'
+killers = ["tests/test_gate_budget.py::test_the_test_gate_deadline_is_computed_from_its_measurement"]
