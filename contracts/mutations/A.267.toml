@@ -1,0 +1,23 @@
+# contracts/mutations/A.267.toml
+# A.267: each property of the staged type check undone alone, and the proof that must catch it.
+
+[[mutants]]
+id = "runs-without-python"
+file = "scripts/types_staged.py"
+before = '    if not files:'
+after = '    if False:'
+killers = ["tests/test_types_staged.py::test_the_staged_check_is_incremental_and_skips_a_commit_without_python"]
+
+[[mutants]]
+id = "not-incremental"
+file = "scripts/types_staged.py"
+before = '"--incremental", "--platform"'
+after = '"--platform"'
+killers = ["tests/test_types_staged.py::test_the_staged_check_is_incremental_and_skips_a_commit_without_python"]
+
+[[mutants]]
+id = "glob-widened"
+file = "lefthook.yml"
+before = '      glob: "*.py"'
+after = '      glob: "*"'
+killers = ["tests/test_types_staged.py::test_pre_commit_type_checks_the_staged_python_files"]
