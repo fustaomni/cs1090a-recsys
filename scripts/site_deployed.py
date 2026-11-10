@@ -34,7 +34,8 @@ FINAL = frozenset({"SUCCESS", "FAILED", "CRASHED", "REMOVED", "SKIPPED"})
 POLL_SECONDS = 10.0
 DEADLINE_SECONDS = 900.0
 IDENTITY = Path("contracts") / "site-railway.toml"
-CLI = ("mise", "exec", "node@24", "--", "npx", "--no-install", "railway")
+# A.273: THE SITE'S OWN @railway/cli, BY ITS npm SCRIPT; npx could resolve railway to the IaC SDK.
+CLI = ("mise", "exec", "node@24", "--", "npm", "run", "--silent", "railway", "--")
 
 
 class Listed(Contract):
@@ -74,6 +75,16 @@ def _target(identity: Identity) -> list[str]:
 def up_command(identity: Identity) -> list[str]:
     """railway up to the declared service only: no -y and no --name, so it never creates one."""
     return [*CLI, "up", "--detach", *_target(identity)]
+
+
+def link_command(identity: Identity) -> list[str]:
+    """railway link to the declared ids, non-interactively (A.273)."""
+    return [*CLI, "link", *_target(identity)]
+
+
+def link(root: Path = ROOT) -> int:
+    """Link this checkout's site/ to the declared service: config commands read only the link."""
+    return subprocess.run(link_command(declared(root)), cwd=root / "site", check=False).returncode
 
 
 def deploy(root: Path = ROOT) -> int:

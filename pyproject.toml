@@ -50,6 +50,9 @@ python_version = "3.12"
 strict = true
 # The file set, declared once: mypy checks these only when no path is given.
 files = ["scripts", "tests"]
+# WHERE PYTEST IMPORTS FROM (A.274): scripts/ is a module root for both, so a test checked
+# alone, as the staged check does, resolves its scripts/ imports exactly as the test run does.
+mypy_path = ["scripts"]
 # Fail closed: silence becomes failure.
 warn_unused_configs = true
 warn_unreachable = true
