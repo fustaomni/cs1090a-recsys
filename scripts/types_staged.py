@@ -31,7 +31,10 @@ def staged_python(paths: list[str], root: Path = ROOT) -> list[str]:
 
 
 def command(files: list[str], platform: str) -> list[str]:
-    return [sys.executable, "-m", "mypy", "--incremental", "--platform", platform, *files]
+    # ONE CACHE PER PLATFORM (A.275): mypy abandons a cache entry written under another platform,
+    # so a cache both runs share leaves every run cold; the full types gate uses the same two.
+    flags = ["--incremental", "--platform", platform, "--cache-dir", f".mypy_cache/{platform}"]
+    return [sys.executable, "-m", "mypy", *flags, *files]
 
 
 def main(argv: list[str] | None = None) -> int:
