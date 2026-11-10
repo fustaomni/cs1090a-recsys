@@ -3282,13 +3282,14 @@ done_when = [
 ]
 [[steps]]
 id = "A.277"
-title = "Every task and script cscie103 lacks at its resolved develop tip is classified in contracts/centralization.toml: types:staged and its script, rebase_state.py and site_deployed.py now; and a proof in the machine tier, which every developer gate runs with the developer's credentials, pr's snapshot gate included, and CI's runner never, since cscie103 is private and CI's token reads only this repository, fails whenever one is unclassified"
+title = "Every task and script cscie103 lacks is classified in contracts/centralization.toml: types:staged and its script, rebase_state.py and site_deployed.py now; centralization:record writes cscie103's capabilities at its resolved develop tip to contracts/centralization-upstream.toml, an explicit action, and a hermetic proof refuses any capability the record lacks that is unclassified, so every gate runs it, the snapshot gate and CI included"
 thread = "A"
 depends_on = ["A.205", "A.267", "A.273"]
 because = { "A.205" = "the inventory and its classification register", "A.267" = "the staged type check left unclassified", "A.273" = "the site's deploy module left unclassified" }
 branch = "feature/centralization-classify"
 done_when = [
-  { kind = "proof", test = "tests/machine/test_centralization_inventory.py::test_every_capability_cscie103_lacks_is_classified" },
+  { kind = "proof", test = "tests/test_centralization_record.py::test_every_capability_the_recorded_upstream_lacks_is_classified" },
+  { kind = "task", name = "centralization:record" },
   { kind = "task", name = "centralization:inventory" },
 ]
 [[steps]]
