@@ -1,0 +1,16 @@
+# contracts/mutations/A.259.toml
+# A.259: the baseline note's binding undone in each place, and the proof that must catch it.
+
+[[mutants]]
+id = "ordinal-typed-again"
+file = "site/src/data/project.json"
+before = 'the same budget as {model:12}.'
+after = 'the same budget as the twelfth model.'
+killers = ["tests/test_site_review.py::test_the_baseline_note_names_its_model_by_binding"]
+
+[[mutants]]
+id = "rendered-raw-again"
+file = "site/src/App.jsx"
+before = '<p>{bind(data.baseline_note)}</p>'
+after = '<p>{data.baseline_note}</p>'
+killers = ["tests/test_site_review.py::test_the_baseline_note_names_its_model_by_binding"]

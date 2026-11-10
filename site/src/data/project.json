@@ -72,7 +72,7 @@
     { "id": 13, "name": "Crossed random-effects bias model", "phase": "6" },
     { "id": 14, "name": "Ordinal regression, a cumulative link model", "phase": "12" }
   ],
-  "baseline_note": "A well-tuned simple baseline is hard to beat on dense rating data, and an under-tuned one makes the whole comparison an artefact of how the tuning budget was spent. So the bias model gets its own tuned penalties and the same budget as the twelfth model.",
+  "baseline_note": "A well-tuned simple baseline is hard to beat on dense rating data, and an under-tuned one makes the whole comparison an artefact of how the tuning budget was spent. So the bias model gets its own tuned penalties and the same budget as {model:12}.",
   "families": {
     "5": "Linear family",
     "6": "Regularisation",
