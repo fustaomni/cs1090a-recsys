@@ -3103,7 +3103,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.255"
-title = "npm 12.2.2 is the site's package manager: pinned in mise's tools as npm:npm and required by site/package.json's devEngines.packageManager with onFail error, so any other npm refuses; the site's dependency install scripts allowed only by an exact-version allowScripts list reviewed in site/package.json, @railway/cli for the Railway binary and esbuild for its compiler; the lock checked for git and remote dependencies that npm 12 refuses by default; and site:build, site:test and site:status proven under it"
+title = "npm 12.2.0 is the site's package manager, the newest npm 12 the repository's minimum_release_age admits, with 12.2.2 following when the cutoff advances: pinned in mise's tools as npm:npm and required by site/package.json's devEngines.packageManager with onFail error, so any other npm refuses; the site's dependency install scripts allowed only by an exact-version allowScripts list reviewed in site/package.json, @railway/cli for the Railway binary and esbuild for its compiler; the lock checked for git and remote dependencies that npm 12 refuses by default; and site:build, site:test and site:status proven under it"
 thread = "A"
 depends_on = []
 because = {  }
