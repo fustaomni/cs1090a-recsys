@@ -50,6 +50,12 @@ uv run --no-sync mypy --platform darwin
 uv run --no-sync mypy --platform linux
 '''
 
+[tasks."types:staged"]
+description = "Static type check of the given Python files, incrementally, for both platforms"
+# PRE-COMMIT'S TYPE CHECK (A.267): lefthook passes the staged files; mypy's cache makes a commit's
+# check take seconds, while the full types gate above stays at pre-push and in pr.
+run = "uv run --no-sync python scripts/types_staged.py"
+
 [tasks.test]
 description = "Hermetic tests: no network, no credentials"
 # addopts in pyproject.toml deselects the integration marker, so this is safe in
