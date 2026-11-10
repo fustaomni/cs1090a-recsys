@@ -1,0 +1,16 @@
+# contracts/mutations/A.268.toml
+# A.268: the declared service undone in each way that matters, and the proof that must catch it.
+
+[[mutants]]
+id = "builder-changed"
+file = "site/.railway/railway.ts"
+before = 'builder: "RAILPACK"'
+after = 'builder: "NIXPACKS"'
+killers = ["tests/test_site_railway_iac.py::test_the_service_is_declared_as_infrastructure_as_code"]
+
+[[mutants]]
+id = "restart-policy-declared"
+file = "site/.railway/railway.ts"
+before = 'replicas: { "us-west2": 1 },'
+after = 'replicas: { "us-west2": 1 }, restartPolicy: "ON_FAILURE",'
+killers = ["tests/test_site_railway_iac.py::test_the_service_is_declared_as_infrastructure_as_code"]
