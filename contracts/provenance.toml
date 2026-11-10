@@ -442,9 +442,9 @@ patch = "contracts/vendor-patches/tests/test_signing.py.patch"
 sha256 = "e79583063db873058c6af6a2e3129fbee985d965f177bc249940cf2f0bb0b62d"
 [[adapted]]
 path = "scripts/check_all.py"
-reason = "a lane that may be empty reports nothing to run instead of failing (A.90); the workflows gate returns with the workflow audit (A.23); claims about the developer machine are a hooks lane declared out of CI (A.104); exemptions, suppressions and problems return with their audits (A.108); repo hygiene, assertions, evidence and models return with their audits (A.107)"
+reason = "A.278: the test gate's deadline is computed from its measured duration, the slowest passing run times a runaway-backstop multiplier, instead of a typed 900 s"
 patch = "contracts/vendor-patches/scripts/check_all.py.patch"
-sha256 = "8a96e99e694d2bb0508ed2858df0a848e3a4449bea8b05d69ef3dd9977da60f7"
+sha256 = "25226e67466051b0899277e87534f01f15ee61e7b0069d0b07cc6052be152ad3"
 [[adapted]]
 path = "scripts/commit.py"
 reason = "the root commit names its branch (A.5); nothing staged is refused and git reasons kept (A.12)"
