@@ -3256,3 +3256,15 @@ done_when = [
   { kind = "proof", test = "tests/test_types_staged.py::test_a_test_staged_alone_resolves_its_scripts_imports" },
   { kind = "task", name = "types" },
 ]
+[[steps]]
+id = "A.275"
+title = "Each platform keeps its own mypy cache, .mypy_cache/darwin and .mypy_cache/linux, shared by the staged check and the full types gate, so a check after another runs incrementally instead of starting cold because the other platform's run had invalidated every entry"
+thread = "A"
+depends_on = ["A.267", "A.274"]
+because = { "A.267" = "the staged check whose runs never reused the cache", "A.274" = "the proof whose 117 s exposed it" }
+branch = "feature/types-cache"
+done_when = [
+  { kind = "proof", test = "tests/test_types_staged.py::test_each_platform_keeps_its_own_mypy_cache" },
+  { kind = "proof", test = "tests/test_types_staged.py::test_the_full_gate_shares_the_staged_checks_caches" },
+  { kind = "task", name = "types" },
+]

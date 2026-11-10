@@ -46,8 +46,8 @@ description = "Static type check, for every platform this code runs on"
 # per target is the documented approach and far cheaper than a CI OS matrix.
 run = '''
 set -euo pipefail
-uv run --no-sync mypy --platform darwin
-uv run --no-sync mypy --platform linux
+uv run --no-sync mypy --platform darwin --cache-dir .mypy_cache/darwin
+uv run --no-sync mypy --platform linux --cache-dir .mypy_cache/linux
 '''
 
 [tasks."types:staged"]

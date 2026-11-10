@@ -1,0 +1,16 @@
+# contracts/mutations/A.275.toml
+# A.275: each per-platform cache undone alone, and the proof that must catch it.
+
+[[mutants]]
+id = "staged-shares-one-cache"
+file = "scripts/types_staged.py"
+before = '"--cache-dir", f".mypy_cache/{platform}"'
+after = '"--cache-dir", ".mypy_cache"'
+killers = ["tests/test_types_staged.py::test_each_platform_keeps_its_own_mypy_cache"]
+
+[[mutants]]
+id = "gate-drops-its-cache"
+file = "mise.toml"
+before = 'uv run --no-sync mypy --platform darwin --cache-dir .mypy_cache/darwin'
+after = 'uv run --no-sync mypy --platform darwin'
+killers = ["tests/test_types_staged.py::test_the_full_gate_shares_the_staged_checks_caches"]
