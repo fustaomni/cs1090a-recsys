@@ -3268,3 +3268,15 @@ done_when = [
   { kind = "proof", test = "tests/test_types_staged.py::test_the_full_gate_shares_the_staged_checks_caches" },
   { kind = "task", name = "types" },
 ]
+[[steps]]
+id = "A.276"
+title = "site:test runs vitest from the site's locked install, by the npm script test after site:install, never through npx, and no task reaches any tool through npx, so the site's tests run in a fresh checkout as the Railway tasks do since A.273"
+thread = "A"
+depends_on = ["A.273"]
+because = { "A.273" = "the install-first pattern, which left site:test on npx" }
+branch = "feature/site-test-install"
+done_when = [
+  { kind = "proof", test = "tests/test_site_railway_cli.py::test_no_task_runs_any_tool_through_npx" },
+  { kind = "proof", test = "tests/test_site_railway_cli.py::test_site_test_installs_the_locked_site_first" },
+  { kind = "task", name = "site:test" },
+]
