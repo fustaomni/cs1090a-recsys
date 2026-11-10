@@ -1,0 +1,40 @@
+# contracts/lab-claims.toml
+# lab-claims/v1 (A.260): every claim a lab's prose states, with the vitest case that checks it
+# against the lab's computation, named as file > describe > it. Each lab is verified against
+# the rendered Interactive mechanisms page before its prose is corrected.
+contract = "lab-claims/v1"
+
+[[claims]]
+lab = "M1"
+claim = "Ratings only take the values 1 to 5."
+evidence = "site/src/mechanisms/lib/lib.test.js > seeded data > gives ratings only on the five integer levels"
+
+[[claims]]
+lab = "M1"
+claim = "User and movie history are standardised, with correlation rho."
+evidence = "site/src/mechanisms/lib/lib.test.js > seeded data > draws user and movie history standard normal, correlated rho"
+
+[[claims]]
+lab = "M1"
+claim = "Least squares is the lowest point of the bowl, where the sum of squared residuals is smallest."
+evidence = "site/src/mechanisms/lib/lib.test.js > simple least squares > computes the same SSE from sums as directly, and is the bowl's lowest point"
+
+[[claims]]
+lab = "M1"
+claim = "b1 = cov(x, y) / var(x), and b0 is the mean rating since x is centred."
+evidence = "site/src/mechanisms/lib/lib.test.js > simple least squares > has slope cov/var and intercept the mean rating once x is centred"
+
+[[claims]]
+lab = "M1"
+claim = "Predictions outside [1, 5] are counted, and the residuals use the unclipped predictions."
+evidence = "site/src/mechanisms/lib/lib.test.js > errors in and out of range > counts predictions outside [1, 5] and never scores worse after clipping"
+
+[[claims]]
+lab = "M1"
+claim = "Leaving movie history out, the slope absorbs rho times its effect: in expectation, before rounding, it is the user effect plus rho times the movie effect."
+evidence = "site/src/mechanisms/lib/lib.test.js > omitted-variable bias > absorbs rho times the movie effect when movie history is correlated"
+
+[[claims]]
+lab = "M1"
+claim = "Rounding to the five levels, which also caps ratings at 1 and 5, flattens the slope."
+evidence = "site/src/mechanisms/lib/lib.test.js > rounding to levels > flattens the fitted slope, since the levels cap ratings at 1 and 5"

@@ -20,6 +20,14 @@ export default function M1() {
   const xs = useMemo(() => rows.map((row) => row.user), [rows]);
   const ys = useMemo(() => rows.map((row) => row.rating), [rows]);
   const fit = useMemo(() => simpleFit(xs, ys), [xs, ys]);
+  // THE SAME DRAWS BEFORE ROUNDING (A.260): the slope rounding flattens, shown, not asserted.
+  const unrounded = useMemo(() => {
+    const raw = ratings({ seed: 11, n: 300, rho, levels: false });
+    return simpleFit(
+      raw.map((row) => row.user),
+      raw.map((row) => row.rating),
+    );
+  }, [rho]);
   const totals = useMemo(() => sums(xs, ys), [xs, ys]);
   const bowl = useMemo(() => surface(B0, B1, (a, b) => sse(totals, a, b)), [totals]);
 
@@ -193,15 +201,15 @@ export default function M1() {
           <dt>Omitted-variable bias</dt>
           <dd>
             The true user effect is {TRUTH.user}; movie history, left out, has effect{" "}
-            {TRUTH.movie}. The fitted slope {fit.b1.toFixed(3)} absorbs about ρ × {TRUTH.movie}:
-            before rounding to levels it would be {expected.toFixed(3)}.
+            {TRUTH.movie} and correlation ρ with user history, so the slope absorbs ρ ×{" "}
+            {TRUTH.movie}: in expectation, before rounding to levels, it is {expected.toFixed(3)}.
           </dd>
         </div>
       </dl>
       <p className="muted">
-        Seeded synthetic data: {rows.length} ratings, ρ = {rho.toFixed(2)}. Rounding to five
-        levels flattens the slope a little, which is why the fit sits near, not on, the value
-        before rounding.
+        Seeded synthetic data: {rows.length} ratings, ρ = {rho.toFixed(2)}. Rounding to the five
+        levels, which also caps ratings at 1 and 5, flattens the slope: on the same draws it is{" "}
+        {unrounded.b1.toFixed(3)} before rounding and {fit.b1.toFixed(3)} after.
       </p>
       <Provenance
         data="Synthetic ratings, generated in this page: ratings({ seed: 11, n: 300 }); no real ratings"
