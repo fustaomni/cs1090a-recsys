@@ -601,6 +601,10 @@ run = "uv run --no-sync python scripts/pr.py"
 
 # recsys (plan A.26): the founding locked and installed tools by hand, and neither run left a
 # record. Both are tasks, so each runs through the gateway and is recorded like any other.
+[tasks."tools:verify"]
+description = "Verify each locked tool mise records no provenance for, by its publisher's method, and record it"
+run = "uv run --no-sync python scripts/tools_verify.py"
+
 [tasks."tools:lock"]
 description = "Lock every [tools] pin for linux-x64, keeping versions already locked; installs nothing"
 # mise lock writes the lockfile without installing, and keeps a locked version unless --bump is

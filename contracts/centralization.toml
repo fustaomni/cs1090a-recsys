@@ -41,6 +41,16 @@ class = "generic"
 reason = "the upstream's capabilities are recorded as data, so the classification proof is hermetic (A.277)"
 
 [[capabilities]]
+id = "script:scripts/tools_verify.py"
+class = "generic"
+reason = "each locked tool without mise provenance is verified by its publisher's own method and recorded (A.279)"
+
+[[capabilities]]
+id = "task:tools:verify"
+class = "generic"
+reason = "each locked tool without mise provenance is verified by its publisher's own method and recorded (A.279)"
+
+[[capabilities]]
 id = "script:scripts/claims_audit.py"
 class = "generic"
 reason = "claims are credited only with contract, task, proof and run evidence (A.36)"
