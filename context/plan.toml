@@ -3233,7 +3233,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.273"
-title = "Every Railway CLI task runs the CLI from the site's locked install: the locked packages are installed first when absent, and the CLI is run by an npm script resolving to @railway/cli's own binary, never through npx, which falls back to the registry and resolves the name railway to Railway's IaC SDK"
+title = "Every Railway CLI task runs the CLI from the site's locked install: the locked packages are installed first when absent, the CLI is run by an npm script resolving to @railway/cli's own binary, never through npx, which falls back to the registry and resolves the name railway to Railway's IaC SDK, and every task that reads a directory's link first links the checkout's site/ non-interactively to the project, environment and service contracts/site-railway.toml declares"
 thread = "A"
 depends_on = ["A.254"]
 because = { "A.254" = "the site's Railway tasks, which assumed an install only site:build performs" }
@@ -3241,5 +3241,6 @@ branch = "feature/site-railway-cli"
 done_when = [
   { kind = "proof", test = "tests/test_site_railway_cli.py::test_no_task_runs_the_railway_cli_through_npx" },
   { kind = "proof", test = "tests/test_site_railway_cli.py::test_every_railway_task_installs_the_locked_site_first" },
+  { kind = "proof", test = "tests/test_site_railway_cli.py::test_every_linked_task_links_the_declared_service_first" },
   { kind = "task", name = "site:status" },
 ]
