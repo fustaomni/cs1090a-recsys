@@ -280,6 +280,18 @@ implementation = "mise.toml"
 emits = "text"
 
 [[capabilities]]
+task = "site:install"
+version = "1.0.0"
+implementation = "mise.toml"
+emits = "text"
+
+[[capabilities]]
+task = "site:link"
+version = "1.0.0"
+implementation = "scripts/site_record.py"
+emits = "text"
+
+[[capabilities]]
 task = "data:fetch"
 version = "1.0.0"
 implementation = "scripts/data_fetch.py"

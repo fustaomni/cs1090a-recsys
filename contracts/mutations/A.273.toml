@@ -1,0 +1,37 @@
+# contracts/mutations/A.273.toml
+# A.273: each property of the Railway CLI's resolution undone alone, and the proof that catches it.
+
+[[mutants]]
+id = "status-back-on-npx"
+file = "mise.toml"
+before = 'npm run --silent railway -- status"'
+after = 'npx --no-install railway status"'
+killers = ["tests/test_site_railway_cli.py::test_no_task_runs_the_railway_cli_through_npx"]
+
+[[mutants]]
+id = "plan-not-installed"
+file = "mise.toml"
+before = 'run = "mise run site:install && mise run site:link && cd site && mise exec node@24 -- npm run --silent railway -- config plan"'
+after = 'run = "mise run site:link && cd site && mise exec node@24 -- npm run --silent railway -- config plan"'
+killers = ["tests/test_site_railway_cli.py::test_every_railway_task_installs_the_locked_site_first"]
+
+[[mutants]]
+id = "recorder-back-on-npx"
+file = "scripts/site_deployed.py"
+before = '"npm", "run", "--silent", "railway", "--")'
+after = '"npx", "--no-install", "railway")'
+killers = ["tests/test_site_railway_cli.py::test_no_task_runs_the_railway_cli_through_npx"]
+
+[[mutants]]
+id = "status-not-linked"
+file = "mise.toml"
+before = 'run = "mise run site:install && mise run site:link && cd site && mise exec node@24 -- npm run --silent railway -- status"'
+after = 'run = "mise run site:install && cd site && mise exec node@24 -- npm run --silent railway -- status"'
+killers = ["tests/test_site_railway_cli.py::test_every_linked_task_links_the_declared_service_first"]
+
+[[mutants]]
+id = "link-without-ids"
+file = "scripts/site_deployed.py"
+before = 'return [*CLI, "link", *_target(identity)]'
+after = 'return [*CLI, "link"]'
+killers = ["tests/test_site_railway_cli.py::test_every_linked_task_links_the_declared_service_first"]
