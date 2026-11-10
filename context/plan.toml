@@ -3280,3 +3280,14 @@ done_when = [
   { kind = "proof", test = "tests/test_site_railway_cli.py::test_site_test_installs_the_locked_site_first" },
   { kind = "task", name = "site:test" },
 ]
+[[steps]]
+id = "A.277"
+title = "Every task and script cscie103 lacks at its resolved develop tip is classified in contracts/centralization.toml: types:staged and its script, rebase_state.py and site_deployed.py now; and a proof in the integration tier, which CI runs with network, fails whenever one is unclassified, so a new capability cannot land unclassified again"
+thread = "A"
+depends_on = ["A.205", "A.267", "A.273"]
+because = { "A.205" = "the inventory and its classification register", "A.267" = "the staged type check left unclassified", "A.273" = "the site's deploy module left unclassified" }
+branch = "feature/centralization-classify"
+done_when = [
+  { kind = "proof", test = "tests/integration/test_centralization.py::test_every_capability_cscie103_lacks_is_classified" },
+  { kind = "task", name = "centralization:inventory" },
+]
