@@ -3280,3 +3280,14 @@ done_when = [
   { kind = "proof", test = "tests/test_site_railway_cli.py::test_site_test_installs_the_locked_site_first" },
   { kind = "task", name = "site:test" },
 ]
+[[steps]]
+id = "A.278"
+title = "The hermetic test gate's deadline is computed, not typed: check_all.py declares the slowest passing run measured, with its host and date, and the runaway-backstop multiplier, and the gate's timeout is their product, so a suite that is slow but passing is never killed and a hung one still fails; a proof holds the arithmetic"
+thread = "A"
+depends_on = []
+because = {  }
+branch = "feature/gate-budget"
+done_when = [
+  { kind = "proof", test = "tests/test_check_all.py::test_the_test_gate_deadline_is_computed_from_its_measurement" },
+  { kind = "task", name = "check:offline" },
+]
