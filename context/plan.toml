@@ -3288,6 +3288,6 @@ depends_on = ["A.205", "A.267", "A.273"]
 because = { "A.205" = "the inventory and its classification register", "A.267" = "the staged type check left unclassified", "A.273" = "the site's deploy module left unclassified" }
 branch = "feature/centralization-classify"
 done_when = [
-  { kind = "proof", test = "tests/integration/test_centralization.py::test_every_capability_cscie103_lacks_is_classified" },
+  { kind = "proof", test = "tests/integration/test_centralization_inventory.py::test_every_capability_cscie103_lacks_is_classified" },
   { kind = "task", name = "centralization:inventory" },
 ]
