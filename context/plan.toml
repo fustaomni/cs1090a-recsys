@@ -3103,15 +3103,16 @@ done_when = [
 ]
 [[steps]]
 id = "A.255"
-title = "npm 12.2.2 is the site's package manager: installed through the pinned toolchain, the site's dependency install scripts allowed only by an exact-version allowScripts list reviewed in site/package.json, the lock checked for git and remote dependencies that npm 12 refuses by default, and site:build, site:test and site:status proven under it"
+title = "npm 12.2.2 is the site's package manager: pinned in mise's tools as npm:npm and required by site/package.json's devEngines.packageManager with onFail error, so any other npm refuses; the site's dependency install scripts allowed only by an exact-version allowScripts list reviewed in site/package.json, @railway/cli for the Railway binary and esbuild for its compiler; the lock checked for git and remote dependencies that npm 12 refuses by default; and site:build, site:test and site:status proven under it"
 thread = "A"
-depends_on = ["A.261"]
-because = { "A.261" = "the reviewed site whose build and deploy this toolchain change must keep working" }
+depends_on = []
+because = {  }
 branch = "feature/npm-12"
 done_when = [
   { kind = "proof", test = "tests/test_site_toolchain.py::test_the_site_installs_under_npm_12_with_only_reviewed_install_scripts" },
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:test" },
+  { kind = "task", name = "site:status" },
 ]
 [[steps]]
 id = "A.262"
