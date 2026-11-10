@@ -1,0 +1,12 @@
+# contracts/mutations/A.274.toml
+# A.274: mypy's search path undone, and the proofs that must catch it.
+
+[[mutants]]
+id = "mypy-path-empty"
+file = "pyproject.toml"
+before = 'mypy_path = ["scripts"]'
+after = 'mypy_path = []'
+killers = [
+  "tests/test_types_staged.py::test_mypy_searches_where_pytest_imports",
+  "tests/test_types_staged.py::test_a_test_staged_alone_resolves_its_scripts_imports",
+]

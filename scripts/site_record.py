@@ -147,6 +147,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         case ["deploy"]:
             # TO THE DECLARED SERVICE ONLY (A.254): never a directory's link, never a new project.
             return site_deployed.deploy()
+        case ["link"]:
+            # THE CHECKOUT'S LINK, TO THE DECLARED IDS (A.273): config commands read nothing else.
+            return site_deployed.link()
         case ["delete-project", project]:
             return site_deployed.delete_project(project)
         case ["deployment", "--out", out]:

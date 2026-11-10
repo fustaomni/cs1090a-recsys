@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import subprocess
+import tomllib
 from pathlib import Path
 from typing import Any
 
@@ -49,3 +50,33 @@ def test_the_staged_check_is_incremental_and_skips_a_commit_without_python(
     assert calls == [], "a commit without Python ran mypy"
     assert types_staged.main(["scripts/a.py"]) == 0
     assert all("--incremental" in call for call in nonempty(calls)), calls
+
+
+def test_mypy_searches_where_pytest_imports() -> None:
+    """mypy resolves scripts/ modules from the path pytest imports them from (A.274)."""
+    config = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    pythonpath = config["tool"]["pytest"]["ini_options"]["pythonpath"]
+    assert config["tool"]["mypy"].get("mypy_path") == pythonpath, config["tool"]["mypy"]
+
+
+def test_a_test_staged_alone_resolves_its_scripts_imports() -> None:
+    """A test staged without the scripts it imports still type-checks, as in a real commit."""
+    assert types_staged.main(["tests/test_types_staged.py"]) == 0
+
+
+def test_each_platform_keeps_its_own_mypy_cache(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A platform never shares a cache with the other, whose entries mypy would discard (A.275)."""
+    calls = _record(monkeypatch)
+    assert types_staged.main(["scripts/a.py"]) == 0
+    caches = {
+        call[call.index("--platform") + 1]: call[call.index("--cache-dir") + 1]
+        for call in nonempty(calls)
+    }
+    assert caches == {"darwin": ".mypy_cache/darwin", "linux": ".mypy_cache/linux"}, calls
+
+
+def test_the_full_gate_shares_the_staged_checks_caches() -> None:
+    """The full gate writes the caches the staged check reads, so a commit after it starts warm."""
+    run = tomllib.loads((ROOT / "mise.toml").read_text(encoding="utf-8"))["tasks"]["types"]["run"]
+    for platform in nonempty(types_staged.PLATFORMS):
+        assert f"mypy --platform {platform} --cache-dir .mypy_cache/{platform}" in run, run
