@@ -1,0 +1,9 @@
+# contracts/mutations/A.277.toml
+# A.277: a classification removed, and the hermetic proof that must catch it.
+
+[[mutants]]
+id = "classification-removed"
+file = "contracts/centralization.toml"
+before = 'id = "task:types:staged"'
+after = 'id = "task:types:staged-unlisted"'
+killers = ["tests/test_centralization_record.py::test_every_capability_the_recorded_upstream_lacks_is_classified"]

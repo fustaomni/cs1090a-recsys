@@ -36,6 +36,11 @@ class = "generic"
 reason = "a capability born in a sibling is listed and classified until centralized (A.205)"
 
 [[capabilities]]
+id = "task:centralization:record"
+class = "generic"
+reason = "the upstream's capabilities are recorded as data, so the classification proof is hermetic (A.277)"
+
+[[capabilities]]
 id = "script:scripts/claims_audit.py"
 class = "generic"
 reason = "claims are credited only with contract, task, proof and run evidence (A.36)"
