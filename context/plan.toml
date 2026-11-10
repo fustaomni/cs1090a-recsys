@@ -3303,3 +3303,26 @@ done_when = [
   { kind = "proof", test = "tests/test_gate_budget.py::test_the_test_gate_deadline_is_computed_from_its_measurement" },
   { kind = "task", name = "check:offline" },
 ]
+[[steps]]
+id = "A.279"
+title = "tools:verify verifies every locked tool whose provenance mise.lock does not record, by the method its publisher provides, and records the evidence in contracts/tool-provenance.toml: a GitHub immutable release by gh release verify-asset, node by a release key's OpenPGP signature on SHASUMS256.txt, checked in Python with pysequoia against nodejs/release-keys pinned by commit, and an npm package by npm audit signatures with its integrity equal to the aube lock's; test_tool_provenance accepts an npm-backend entry only through its recorded verification"
+thread = "A"
+depends_on = ["A.9", "A.278"]
+because = { "A.9" = "the provenance register and its proof", "A.278" = "the gate that must stay within its deadline while the new proofs run" }
+branch = "feature/tools-verify"
+done_when = [
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_every_locked_tool_names_its_provenance" },
+  { kind = "proof", test = "tests/test_tools_verify.py::test_each_publisher_kind_is_verified_by_its_own_method" },
+  { kind = "task", name = "tools:verify" },
+]
+[[steps]]
+id = "A.280"
+title = "tools:which records, for every tool mise.toml declares, the binary mise resolves and the version it reports, as typed evidence, so which npm or node a task runs is observed through a task, never a raw mise which or mise exec probe"
+thread = "A"
+depends_on = ["A.279"]
+because = { "A.279" = "the verified tools whose resolution this records" }
+branch = "feature/tools-which"
+done_when = [
+  { kind = "proof", test = "tests/test_tools_which.py::test_each_tool_resolves_to_its_locked_install" },
+  { kind = "task", name = "tools:which" },
+]
