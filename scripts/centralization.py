@@ -10,6 +10,7 @@ by its id, so nothing born here is forgotten.
 
 from __future__ import annotations
 
+import sys
 import tomllib
 from pathlib import Path
 
@@ -18,6 +19,9 @@ import upstream
 ROOT = Path(__file__).resolve().parent.parent
 REGISTER = ROOT / "contracts" / "centralization.toml"
 PROVENANCE = ROOT / "contracts" / "provenance.toml"
+# THE UPSTREAM AS DATA (A.277): cscie103 is private and every gate is hermetic, so its capabilities
+# are recorded by an explicit run and the proof reads the record offline.
+UPSTREAM = ROOT / "contracts" / "centralization-upstream.toml"
 BRANCH = "develop"
 CLASSES = ("generic", "project")
 
@@ -48,11 +52,40 @@ def judge(listed: tuple[str, ...], register: Path) -> None:
         raise SystemExit(f"not classified in contracts/centralization.toml: {named}")
 
 
+def recorded(path: Path = UPSTREAM) -> frozenset[str]:
+    """The capabilities cscie103 had when centralization:record last read it."""
+    return frozenset(tomllib.loads(path.read_text(encoding="utf-8"))["capabilities"])
+
+
+def write_record(source: str, commit: str, theirs: Path, path: Path = UPSTREAM) -> int:
+    """Record cscie103's capabilities at commit, so a proof can read them offline."""
+    names = sorted(capabilities(theirs))
+    lines = [
+        "# contracts/centralization-upstream.toml",
+        "# centralization-upstream/v1 (A.277): cscie103's capabilities at a resolved develop tip,",
+        "# written by centralization:record and read offline by the classification proof.",
+        'contract = "centralization-upstream/v1"',
+        f'source = "{source}"',
+        f'branch = "{BRANCH}"',
+        f'commit = "{commit}"',
+        "capabilities = [",
+        *(f'  "{name}",' for name in names),
+        "]",
+        "",
+    ]
+    path.write_text("\n".join(lines), encoding="utf-8")
+    return len(names)
+
+
 def main() -> int:
     """List what cscie103 lacks at its resolved develop tip, then judge the classification."""
     source = tomllib.loads(PROVENANCE.read_text(encoding="utf-8"))["source"]
     commit = upstream.tip(source, BRANCH)
     theirs = upstream.checkout(source, commit)
+    if sys.argv[1:] == ["--record"]:
+        count = write_record(source, commit, theirs)
+        print(f"recorded {count} capabilities of {source} at {commit} in {UPSTREAM.name}")
+        return 0
     listed = absent(ROOT, theirs)
     print(f"{source} {BRANCH} resolved to {commit}; {len(listed)} capabilities it lacks:")
     for item in listed:

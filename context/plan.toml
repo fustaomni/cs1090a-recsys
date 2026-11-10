@@ -3281,6 +3281,18 @@ done_when = [
   { kind = "task", name = "site:test" },
 ]
 [[steps]]
+id = "A.277"
+title = "Every task and script cscie103 lacks is classified in contracts/centralization.toml: types:staged and its script, rebase_state.py and site_deployed.py now; centralization:record writes cscie103's capabilities at its resolved develop tip to contracts/centralization-upstream.toml, an explicit action, and a hermetic proof refuses any capability the record lacks that is unclassified, so every gate runs it, the snapshot gate and CI included"
+thread = "A"
+depends_on = ["A.205", "A.267", "A.273"]
+because = { "A.205" = "the inventory and its classification register", "A.267" = "the staged type check left unclassified", "A.273" = "the site's deploy module left unclassified" }
+branch = "feature/centralization-classify"
+done_when = [
+  { kind = "proof", test = "tests/test_centralization_record.py::test_every_capability_the_recorded_upstream_lacks_is_classified" },
+  { kind = "task", name = "centralization:record" },
+  { kind = "task", name = "centralization:inventory" },
+]
+[[steps]]
 id = "A.278"
 title = "The hermetic test gate's deadline is computed, not typed: check_all.py declares the slowest passing run measured, with its host and date, and the runaway-backstop multiplier, and the gate's timeout is their product, so a suite that is slow but passing is never killed and a hung one still fails; a proof holds the arithmetic"
 thread = "A"
