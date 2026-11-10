@@ -3288,6 +3288,6 @@ depends_on = []
 because = {  }
 branch = "feature/gate-budget"
 done_when = [
-  { kind = "proof", test = "tests/test_check_all.py::test_the_test_gate_deadline_is_computed_from_its_measurement" },
+  { kind = "proof", test = "tests/test_gate_budget.py::test_the_test_gate_deadline_is_computed_from_its_measurement" },
   { kind = "task", name = "check:offline" },
 ]
