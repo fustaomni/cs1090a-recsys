@@ -83,7 +83,9 @@ def test_every_linked_task_links_the_declared_service_first() -> None:
     for name in nonempty(LINKED):
         run = runs[name]
         assert LINK in run and run.index(LINK) < run.index(CLI), (name, run)
-    identity = site_deployed.declared(ROOT)
+    # THE IDENTITY IS BUILT BY ITS OWN MODEL: a generated project carries no
+    # contracts/site-railway.toml (copier.yml), and the model's rules name every field required.
+    identity = site_deployed.Identity(project="p", environment="e", service="s", domain="d")
     expected = [
         "link",
         "--project",
