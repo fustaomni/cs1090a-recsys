@@ -162,7 +162,6 @@ export default function M3() {
   const names = centredTerms.map((term) => term.label);
   return (
     <article className="lab">
-      <h3>Model 3 · Polynomial and interaction terms</h3>
       <p>
         A squared count term lets the surface bend, and a user × count term lets the effect of a
         user's mean depend on how much they have rated. The surface is drawn unclipped: the

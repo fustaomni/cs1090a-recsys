@@ -218,7 +218,6 @@ export default function T4() {
 
   return (
     <article className="lab">
-      <h3>Technique · Principal component analysis</h3>
       <p>
         PCA rotates the standardised features onto new axes ordered by how much of their variance
         each captures, and keeping the first few compresses the table for kNN. It never looks at

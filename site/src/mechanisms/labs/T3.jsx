@@ -82,7 +82,6 @@ export default function T3() {
 
   return (
     <article className="lab">
-      <h3>Technique · Data imbalance</h3>
       <p>
         Most MovieLens ratings are 3★ or 4★, so pooled error flatters a model that ignores the
         rare levels. Macro-averaged error computes the error at each rating level and averages

@@ -91,7 +91,6 @@ export default function M14() {
 
   return (
     <article className="lab">
-      <h3>Model 14 · Ordinal regression, a cumulative link model</h3>
       <p>
         The model scores each rating on a hidden continuous scale, then four cut-points slice that
         scale into one to five stars. The cut-points are learned, not assumed equally spaced, which

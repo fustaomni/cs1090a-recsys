@@ -204,7 +204,6 @@ export default function T1() {
 
   return (
     <article className="lab">
-      <h3>Technique · EDA and visualisation</h3>
       <p>
         Exploration is split in two, because exploring every row is itself a leak. Phase 1A
         audits the structure of all rows: counts over time, encoding and integrity, never the

@@ -214,7 +214,6 @@ export default function M4() {
 
   return (
     <article className="lab">
-      <h3>Model 4 · Ridge regression</h3>
       <p>
         Ridge adds λ‖b‖² to the least squares objective, which rounds the valley of correlated
         predictors into a bowl. Its minimum, the dark line, slides toward zero as λ grows and pulls

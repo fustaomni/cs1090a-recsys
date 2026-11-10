@@ -218,7 +218,6 @@ export default function M5() {
 
   return (
     <article className="lab">
-      <h3>Model 5 · Lasso regression</h3>
       <p>
         Lasso adds λ‖b‖₁, which puts creases in the objective along each axis. It has no closed
         form: coordinate descent updates one coefficient at a time by soft-thresholding, and a

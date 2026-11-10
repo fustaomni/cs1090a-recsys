@@ -245,7 +245,6 @@ export default function M8() {
 
   return (
     <article className="lab">
-      <h3>Model 8 · Bagging</h3>
       <p>
         Bagging grows many deep trees, each on a bootstrap sample of the rows, and averages them.
         Each tree is a step function with high variance and low bias; their average is still a

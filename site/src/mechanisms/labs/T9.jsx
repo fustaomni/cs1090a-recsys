@@ -122,7 +122,6 @@ export default function T9() {
 
   return (
     <article className="lab">
-      <h3>Technique · Bootstrap inference</h3>
       <p>
         Every test rating belongs to one user and one movie, and ratings from the same user, or
         of the same movie, share error. Resampling single ratings treats them as independent and

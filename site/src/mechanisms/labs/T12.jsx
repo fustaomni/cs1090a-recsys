@@ -124,7 +124,6 @@ export default function T12() {
 
   return (
     <article className="lab">
-      <h3>Technique 12 · User-level sign-flip permutation test</h3>
       <p>
         Each user contributes a block of paired differences in error, model A minus model B. If the
         two models were equally good, each user's block would be as likely to sit above zero as

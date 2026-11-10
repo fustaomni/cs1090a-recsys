@@ -143,7 +143,6 @@ export default function M13() {
 
   return (
     <article className="lab">
-      <h3>Model 13 · Crossed random-effects bias model</h3>
       <p>
         A rating is the grand mean plus an offset for the user and an offset for the movie, the
         two crossed rather than nested. Each offset is partially pooled: a user who rated few

@@ -144,7 +144,6 @@ export default function T2() {
 
   return (
     <article className="lab">
-      <h3>Technique · Missingness and imputation</h3>
       <p>
         A user or movie with no history yet has no mean to use. The smoothed encoding fills it
         without a special case: S = (n·ȳ + m·μ) / (n + m) becomes μ when n = 0 and the user's

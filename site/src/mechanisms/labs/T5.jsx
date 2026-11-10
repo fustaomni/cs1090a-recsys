@@ -163,7 +163,6 @@ export default function T5() {
 
   return (
     <article className="lab">
-      <h3>Technique · Time-aware cross-validation</h3>
       <p>
         Folds subdivide only the training window, before T_val; the validation and test windows
         stay fenced off until the end. The window is cut into blocks of equal row count, not

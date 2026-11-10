@@ -167,7 +167,6 @@ export default function T7() {
 
   return (
     <article className="lab">
-      <h3>Technique · Out-of-bag error and the optimism gap</h3>
       <p>
         Out-of-bag error grades each training row with the trees that never saw it, about a
         third of them. That makes it nearly the same estimate as random cross-validation, so the

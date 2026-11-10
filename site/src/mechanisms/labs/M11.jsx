@@ -182,7 +182,6 @@ export default function M11() {
 
   return (
     <article className="lab">
-      <h3>Model 11 · Gradient boosting</h3>
       <p>
         Gradient boosting starts from the mean rating and adds trees one at a time. Each tree is
         fitted to the negative gradient of the loss at the current prediction, which for squared

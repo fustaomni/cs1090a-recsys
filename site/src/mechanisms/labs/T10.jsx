@@ -195,7 +195,6 @@ export default function T10() {
 
   return (
     <article className="lab">
-      <h3>Technique · Hypothesis tests and intervals</h3>
       <p>
         Two models scored on the same test ratings make correlated errors. Their separate RMSE
         intervals can overlap heavily while the paired difference, recomputed on each resample
