@@ -10,7 +10,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "railway": "railway"
+    "railway": "railway",
+    "test": "vitest run"
   },
   "dependencies": {
     "plotly.js-gl3d-dist-min": "^4.1.2",
