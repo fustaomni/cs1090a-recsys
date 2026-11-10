@@ -292,6 +292,12 @@ implementation = "scripts/site_record.py"
 emits = "text"
 
 [[capabilities]]
+task = "centralization:record"
+version = "1.0.0"
+implementation = "scripts/centralization.py"
+emits = "text"
+
+[[capabilities]]
 task = "data:fetch"
 version = "1.0.0"
 implementation = "scripts/data_fetch.py"

@@ -562,6 +562,10 @@ run = "uv run --no-sync python scripts/upstream.py --tip"
 description = "List every task and script cscie103 lacks at its resolved develop tip, refusing any unclassified"
 run = "uv run --no-sync python scripts/centralization.py"
 
+[tasks."centralization:record"]
+description = "Record cscie103's capabilities at its resolved develop tip, for the offline classification proof"
+run = "uv run --no-sync python scripts/centralization.py --record"
+
 [tasks."provenance:adapt"]
 description = "Plan a ported file's change as its recorded, reversible vendor patch and provenance entry"
 run = "uv run --no-sync python scripts/provenance_adapt.py"
