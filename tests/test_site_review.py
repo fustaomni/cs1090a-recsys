@@ -163,6 +163,15 @@ def test_every_technique_is_named_by_number_in_each_phase_it_names() -> None:
     assert missing == [], missing
 
 
+def test_the_baseline_note_names_its_model_by_binding() -> None:
+    """The baseline note names Model 12 by binding, never as a typed number or ordinal (A.259)."""
+    note = _project()["baseline_note"]
+    assert "{model:12}" in note, note
+    assert not TYPED.search(note) and "twelfth" not in note, note
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "{bind(data.baseline_note)}" in app, "the baseline note is rendered without bind"
+
+
 def test_a_typed_model_or_technique_reference_is_refused() -> None:
     """No phase point types a model or technique number; each is a binding instead."""
     points = _phase_points(_project())
