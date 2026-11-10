@@ -3244,3 +3244,15 @@ done_when = [
   { kind = "proof", test = "tests/test_site_railway_cli.py::test_every_linked_task_links_the_declared_service_first" },
   { kind = "task", name = "site:status" },
 ]
+[[steps]]
+id = "A.274"
+title = "mypy searches scripts/ exactly as pytest imports it, mypy_path matching pythonpath, so the staged type check resolves a test's imports when the test is staged without the script it imports, and the full two-platform gate still passes with no module found twice"
+thread = "A"
+depends_on = ["A.267"]
+because = { "A.267" = "the staged type check whose single-file runs could not resolve scripts/ modules" }
+branch = "feature/types-path"
+done_when = [
+  { kind = "proof", test = "tests/test_types_staged.py::test_mypy_searches_where_pytest_imports" },
+  { kind = "proof", test = "tests/test_types_staged.py::test_a_test_staged_alone_resolves_its_scripts_imports" },
+  { kind = "task", name = "types" },
+]
