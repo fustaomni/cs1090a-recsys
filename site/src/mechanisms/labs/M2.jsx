@@ -136,7 +136,6 @@ export default function M2() {
 
   return (
     <article className="lab">
-      <h3>Model 2 · Multi-linear regression</h3>
       <p>
         Two predictors, user and movie history, both centred so the intercept is the mean rating.
         The bowl is the sum of squared residuals over the two slopes. As the predictors become

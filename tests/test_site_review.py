@@ -172,6 +172,25 @@ def test_the_baseline_note_names_its_model_by_binding() -> None:
     assert "{bind(data.baseline_note)}" in app, "the baseline note is rendered without bind"
 
 
+def test_every_lab_is_titled_by_its_model_or_technique_number() -> None:
+    """Each lab's heading is bound from the data as Model N or Technique N, in its order (A.260)."""
+    project = _project()
+    mechanisms = ROOT / "site" / "src" / "mechanisms"
+    registry = json.loads((PROJECT.parent / "mechanisms.json").read_text(encoding="utf-8"))
+    expected = [("model", model["id"]) for model in project["models"]] + [
+        ("technique", technique["id"]) for technique in project["techniques"]
+    ]
+    labs = nonempty(registry["labs"])
+    assert [(lab["kind"], lab["ref"]) for lab in labs] == expected, labs
+    for lab in nonempty(labs):
+        assert lab["id"] == f"{lab['kind'][0].upper()}{lab['ref']}", lab
+    files = nonempty(sorted((mechanisms / "labs").glob("*.jsx")))
+    typed = [path.name for path in files if "<h3>" in path.read_text(encoding="utf-8")]
+    assert typed == [], typed
+    page = (mechanisms / "Mechanisms.jsx").read_text(encoding="utf-8")
+    assert "{bind(`{${current.kind}:${current.ref}}`)}" in page, "the lab heading is not bound"
+
+
 def test_a_typed_model_or_technique_reference_is_refused() -> None:
     """No phase point types a model or technique number; each is a binding instead."""
     points = _phase_points(_project())

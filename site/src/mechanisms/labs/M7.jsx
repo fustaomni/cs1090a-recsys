@@ -209,7 +209,6 @@ export default function M7() {
 
   return (
     <article className="lab">
-      <h3>Model 7 · Decision tree regression, with pruning</h3>
       <p>
         A regression tree cuts the feature space with one axis-aligned threshold at a time and
         predicts the mean training rating in each box, so its surface is flat steps with vertical

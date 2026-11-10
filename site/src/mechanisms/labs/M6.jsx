@@ -284,7 +284,6 @@ export default function M6() {
 
   return (
     <article className="lab">
-      <h3>Model 6 · k-nearest-neighbour regression</h3>
       <p>
         kNN learns no equation. To predict a rating it finds the k training rows nearest the
         query and averages their ratings. The shape drawn around the query is the neighbourhood

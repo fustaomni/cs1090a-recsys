@@ -138,7 +138,6 @@ export default function M10() {
 
   return (
     <article className="lab">
-      <h3>Model 10 · AdaBoost for regression (AdaBoost.R2)</h3>
       <p>
         Each round draws rows in proportion to their weights and fits a shallow tree. Every
         row's loss is its error over the round's largest error D, the weighted average loss L̄

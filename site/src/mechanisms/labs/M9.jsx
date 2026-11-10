@@ -185,7 +185,6 @@ export default function M9() {
 
   return (
     <article className="lab">
-      <h3>Model 9 · Random forest</h3>
       <p>
         A random forest is bagging plus one more source of randomness: every split may only
         choose among a random subset of max_features features. Roots stop being the same split in

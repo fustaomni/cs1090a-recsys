@@ -245,7 +245,6 @@ export default function T6() {
 
   return (
     <article className="lab">
-      <h3>Technique · The bias–variance trade-off</h3>
       <p>
         Complexity here is a named hyperparameter: the number of splits in a regression tree.
         With none, every prediction is the training mean, a flat plane. Each later rating is

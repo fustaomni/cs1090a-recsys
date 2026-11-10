@@ -1,0 +1,16 @@
+# contracts/mutations/A.260.toml
+# A.260: the lab heading's binding and the registry's order, each undone alone.
+
+[[mutants]]
+id = "heading-unbound"
+file = "site/src/mechanisms/Mechanisms.jsx"
+before = '{bind(`{${current.kind}:${current.ref}}`)}'
+after = '{name(current)}'
+killers = ["tests/test_site_review.py::test_every_lab_is_titled_by_its_model_or_technique_number"]
+
+[[mutants]]
+id = "registry-out-of-order"
+file = "site/src/data/mechanisms.json"
+before = '{ "id": "T1", "kind": "technique", "ref": 1,'
+after = '{ "id": "T1", "kind": "technique", "ref": 2,'
+killers = ["tests/test_site_review.py::test_every_lab_is_titled_by_its_model_or_technique_number"]

@@ -170,7 +170,6 @@ export default function T8() {
 
   return (
     <article className="lab">
-      <h3>Technique · Variable importance</h3>
       <p>
         Shuffle one feature in the later rows and the truth stays put while each prediction moves
         to wherever the model sends the new inputs; the rise in error is that feature's

@@ -153,7 +153,6 @@ export default function M12() {
 
   return (
     <article className="lab">
-      <h3>Model 12 · Stacking and blending</h3>
       <p>
         A meta-learner weights the base models' out-of-fold predictions. Because those
         predictions all track the same rating they are highly correlated, so least squares can

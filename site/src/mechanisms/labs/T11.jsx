@@ -78,7 +78,6 @@ export default function T11() {
 
   return (
     <article className="lab">
-      <h3>Technique 11 · Prediction-interval coverage audit</h3>
       <p>
         Each test rating gets an interval around its prediction, sized on a separate calibration
         set so that, in the long run, the stated share of ratings falls inside. The audit checks

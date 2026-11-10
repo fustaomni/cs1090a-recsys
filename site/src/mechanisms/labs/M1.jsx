@@ -130,7 +130,6 @@ export default function M1() {
 
   return (
     <article className="lab">
-      <h3>Model 1 · Simple linear regression</h3>
       <p>
         One predictor, the user's history, fits a line to ratings that only take the values 1 to
         5. Move the line yourself, or let least squares choose it: the choice is the lowest point
