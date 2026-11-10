@@ -1,0 +1,16 @@
+# contracts/mutations/A.279.toml
+# A.279: an npm audit's refusals ignored, and npm-backend entries skipped, each caught.
+
+[[mutants]]
+id = "invalid-signatures-ignored"
+file = "scripts/tools_verify.py"
+before = '    if data.get("invalid") or data.get("missing"):'
+after = '    if data.get("missing"):'
+killers = ["tests/test_tools_verify.py::test_each_publisher_kind_is_verified_by_its_own_method"]
+
+[[mutants]]
+id = "npm-entries-unchecked"
+file = "tests/test_tool_provenance.py"
+before = '        if PLATFORM not in entry:'
+after = '        if False:'
+killers = ["tests/test_tool_provenance.py::test_an_npm_tool_is_verified_only_by_its_recorded_provenance"]
