@@ -333,3 +333,43 @@ evidence = "site/src/mechanisms/lib/forest.test.js > random forests, as Model 9 
 lab = "M9"
 claim = "Out-of-bag error predicts each training row only with the trees that left it out."
 evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > predicts each training row out of bag only with trees that never saw it"
+
+[[claims]]
+lab = "M10"
+claim = "The weighted average loss sets beta = Lbar / (1 - Lbar), and each tree is weighted by log(1 / beta) at learning rate 1."
+evidence = "site/src/mechanisms/lib/boosting.test.js > AdaBoost.R2 > sets beta from the average loss and weights each tree by log(1 / beta)"
+
+[[claims]]
+lab = "M10"
+claim = "At learning rate nu, rows are multiplied by beta^(nu(1 - L)) and each tree is weighted by nu log(1 / beta)."
+evidence = "site/src/mechanisms/lib/adaboost.test.js > AdaBoost.R2, as Model 10 shows it > scales each tree's weight and every row's update by the learning rate"
+
+[[claims]]
+lab = "M10"
+claim = "Rows the tree predicted poorly gain share once weights are renormalised."
+evidence = "site/src/mechanisms/lib/boosting.test.js > AdaBoost.R2 > shifts weight toward the rows the round predicted worst"
+
+[[claims]]
+lab = "M10"
+claim = "The ensemble predicts the weighted median of its trees."
+evidence = "site/src/mechanisms/lib/boosting.test.js > AdaBoost.R2 > takes the weighted median, not the mean"
+
+[[claims]]
+lab = "M10"
+claim = "Boosting stops when the weighted average loss reaches 0.5."
+evidence = "site/src/mechanisms/lib/boosting.test.js > AdaBoost.R2 > stops when the average loss reaches one half"
+
+[[claims]]
+lab = "M10"
+claim = "One huge error sets D, so every other row's loss shrinks and the outlier keeps the most weight."
+evidence = "site/src/mechanisms/lib/adaboost.test.js > AdaBoost.R2, as Model 10 shows it > lets one huge error set D and leave the outlier the heaviest row after a round"
+
+[[claims]]
+lab = "M10"
+claim = "Square and exponential losses amplify it, lowering the average loss further."
+evidence = "site/src/mechanisms/lib/adaboost.test.js > AdaBoost.R2, as Model 10 shows it > lowers the average loss further under square and exponential losses"
+
+[[claims]]
+lab = "M10"
+claim = "A weighted median ignores a few extreme trees, but once enough tree weight chases the outlier it follows them, nearer the outlier than a weighted mean."
+evidence = "site/src/mechanisms/lib/adaboost.test.js > AdaBoost.R2, as Model 10 shows it > lets the weighted median follow the outlier once enough tree weight chases it"
