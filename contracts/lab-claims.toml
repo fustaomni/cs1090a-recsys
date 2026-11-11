@@ -218,3 +218,53 @@ evidence = "site/src/mechanisms/lib/knn.test.js > kNN, as Model 6 shows it > los
 lab = "M6"
 claim = "As the dimension grows every point sits at nearly the same distance: the relative contrast collapses."
 evidence = "site/src/mechanisms/lib/neighbours.test.js > nearest neighbours > concentrates distances as the dimension grows"
+
+[[claims]]
+lab = "M7"
+claim = "A regression tree predicts the mean training rating in each box, so a prediction can never leave [1, 5]."
+evidence = "site/src/mechanisms/lib/tree.test.js > growing a regression tree > predicts a leaf mean, so every prediction stays within [1, 5]"
+
+[[claims]]
+lab = "M7"
+claim = "Each cut is chosen greedily: the feature and threshold that leave the least squared error on the two sides."
+evidence = "site/src/mechanisms/lib/tree.test.js > growing a regression tree > splits the root where the two sides' squared error is smallest, over every feature"
+
+[[claims]]
+lab = "M7"
+claim = "The split search's lowest point is the threshold the tree chooses."
+evidence = "site/src/mechanisms/lib/tree.test.js > growing a regression tree > returns a split curve whose minimum is the chosen threshold"
+
+[[claims]]
+lab = "M7"
+claim = "Grown to the end it keeps every split that lowers training error at all."
+evidence = "site/src/mechanisms/lib/tree.test.js > growing a regression tree > never raises training error as splits are added"
+
+[[claims]]
+lab = "M7"
+claim = "Cost-complexity pruning removes the splits that buy the least, giving nested subtrees."
+evidence = "site/src/mechanisms/lib/tree.test.js > cost-complexity pruning > produces nested subtrees with rising alpha and falling leaf counts"
+
+[[claims]]
+lab = "M7"
+claim = "The subtree in effect at alpha minimises training SSE plus alpha times its leaves."
+evidence = "site/src/mechanisms/lib/tree.test.js > cost-complexity pruning > chooses the subtree minimising SSE + alpha x leaves among the sequence"
+
+[[claims]]
+lab = "M7"
+claim = "A feature offers one threshold per gap between its distinct values: the binary genre one, a continuous mean nearly one per row."
+evidence = "site/src/mechanisms/lib/cart.test.js > the split search, as Model 7 shows it > offers one threshold per gap between distinct values: one for genre, nearly one per row for a mean"
+
+[[claims]]
+lab = "M7"
+claim = "Impurity importance gives each feature's share of the squared error its training splits removed."
+evidence = "site/src/mechanisms/lib/tree.test.js > importance and drawing > gives impurity shares that sum to one"
+
+[[claims]]
+lab = "M7"
+claim = "Permutation importance is the rise in later-window RMSE when a feature is shuffled, none for a feature the model never uses."
+evidence = "site/src/mechanisms/lib/tree.test.js > importance and drawing > measures no permutation importance for a feature the model never uses"
+
+[[claims]]
+lab = "M7"
+claim = "The surface is flat steps with vertical walls at the split thresholds."
+evidence = "site/src/mechanisms/lib/tree.test.js > importance and drawing > draws a surface whose cells are flat between the split thresholds"
