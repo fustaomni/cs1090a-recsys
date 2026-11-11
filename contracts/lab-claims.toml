@@ -373,3 +373,38 @@ evidence = "site/src/mechanisms/lib/adaboost.test.js > AdaBoost.R2, as Model 10 
 lab = "M10"
 claim = "A weighted median ignores a few extreme trees, but once enough tree weight chases the outlier it follows them, nearer the outlier than a weighted mean."
 evidence = "site/src/mechanisms/lib/adaboost.test.js > AdaBoost.R2, as Model 10 shows it > lets the weighted median follow the outlier once enough tree weight chases it"
+
+[[claims]]
+lab = "M11"
+claim = "Gradient boosting starts from the mean rating under squared loss."
+evidence = "site/src/mechanisms/lib/boosting.test.js > gradient boosting > starts from the mean, so the first residuals sum to zero"
+
+[[claims]]
+lab = "M11"
+claim = "Under absolute loss it starts from the median."
+evidence = "site/src/mechanisms/lib/boosting.test.js > gradient boosting > starts from the median under absolute loss"
+
+[[claims]]
+lab = "M11"
+claim = "Each tree is fitted to the negative gradient of the loss, for squared error the residual y - F."
+evidence = "site/src/mechanisms/lib/boosting.test.js > gradient boosting > fits each stage to the residual y - F, the negative gradient of squared loss"
+
+[[claims]]
+lab = "M11"
+claim = "Only a fraction nu of each tree is added to the prediction."
+evidence = "site/src/mechanisms/lib/gbm.test.js > gradient boosting, as Model 11 shows it > adds only a fraction nu of each tree to the prediction"
+
+[[claims]]
+lab = "M11"
+claim = "Adding stages never raises the training error."
+evidence = "site/src/mechanisms/lib/boosting.test.js > gradient boosting > never raises training error from one stage to the next"
+
+[[claims]]
+lab = "M11"
+claim = "Early stopping keeps the best validation stage once no improvement has come for the patience window."
+evidence = "site/src/mechanisms/lib/boosting.test.js > gradient boosting > stops after the patience window and keeps the best stage"
+
+[[claims]]
+lab = "M11"
+claim = "A sum of shrunken trees can step past the rating scale."
+evidence = "site/src/mechanisms/lib/gbm.test.js > gradient boosting, as Model 11 shows it > can step past the rating scale, since a sum of trees is not bounded by it"
