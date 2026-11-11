@@ -748,3 +748,33 @@ evidence = "site/src/mechanisms/lib/oob.test.js > out-of-bag error, as Technique
 lab = "T7"
 claim = "In these drifting ratings the later period is easier to predict, which can hide the cost of training on the past."
 evidence = "site/src/mechanisms/lib/oob.test.js > out-of-bag error, as Technique 7 shows it > finds the later period easier to predict on these drifting ratings"
+
+[[claims]]
+lab = "T8"
+claim = "The rise in error when a feature is shuffled is its importance; a feature the model never reads has none."
+evidence = "site/src/mechanisms/lib/importance.test.js > importance > finds no rise for a feature the model never reads"
+
+[[claims]]
+lab = "T8"
+claim = "Error is measured as root mean squared error on the later rows."
+evidence = "site/src/mechanisms/lib/importance.test.js > importance > measures error as root mean squared error"
+
+[[claims]]
+lab = "T8"
+claim = "A conditional shuffle stays within strata of the correlated feature."
+evidence = "site/src/mechanisms/lib/importance.test.js > shuffling > keeps a conditional shuffle inside each stratum of the given feature"
+
+[[claims]]
+lab = "T8"
+claim = "With correlated features a plain shuffle invents combinations the training data never contained; a conditional shuffle keeps them realistic."
+evidence = "site/src/mechanisms/lib/permutation.test.js > permutation importance, as Technique 8 shows it > sends more shuffled points outside the training data plainly than conditionally"
+
+[[claims]]
+lab = "T8"
+claim = "A shuffled point is outside the training data when its nearest training point is beyond the support radius."
+evidence = "site/src/mechanisms/lib/importance.test.js > importance > flags points far from every training point as outside the support"
+
+[[claims]]
+lab = "T8"
+claim = "Shares are each feature's rise in RMSE over the sum of positive rises."
+evidence = "site/src/mechanisms/lib/importance.test.js > importance > turns rises into shares that sum to one, ignoring negatives"
