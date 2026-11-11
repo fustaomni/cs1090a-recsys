@@ -543,3 +543,28 @@ evidence = "site/src/mechanisms/lib/movielens.test.js > summarising the MovieLen
 lab = "T1"
 claim = "Phase 1A audits structure over all rows: counts, encoding and integrity."
 evidence = "site/src/mechanisms/lib/movielens.test.js > summarising the MovieLens files > counts the structure"
+
+[[claims]]
+lab = "T2"
+claim = "The smoothed encoding S = (n ybar + m mu) / (n + m) becomes mu when n = 0, at every prior weight, with no special case in the formula's use."
+evidence = "site/src/mechanisms/lib/encoding.test.js > the smoothed encoding, as Technique 2 shows it > becomes the global mean with no history at every prior weight, m = 0 included"
+
+[[claims]]
+lab = "T2"
+claim = "S becomes the user's own mean as n grows against m."
+evidence = "site/src/mechanisms/lib/macro.test.js > encoding a user's history > falls back to the global mean with no history and to the user's mean as m shrinks"
+
+[[claims]]
+lab = "T2"
+claim = "Prior-only means are built from each user's earlier ratings only, the time-ordered form of out-of-fold encoding."
+evidence = "site/src/mechanisms/lib/macro.test.js > encoding a user's history > uses only earlier ratings in the prior-only encoding"
+
+[[claims]]
+lab = "T2"
+claim = "A user mean that includes the rating being predicted leaks the target: the naive encoding is flattered in sample."
+evidence = "site/src/mechanisms/lib/macro.test.js > encoding a user's history > flatters the naive encoding in sample, the leak the prior-only one avoids"
+
+[[claims]]
+lab = "T2"
+claim = "Naive exceeds prior-only in sample by the own-rating leak, and prior-only exceeds the later rows by what in-sample correlation overstates even without it."
+evidence = "site/src/mechanisms/lib/encoding.test.js > the smoothed encoding, as Technique 2 shows it > splits the in-sample excess into the own-rating leak and the further drop to later rows"
