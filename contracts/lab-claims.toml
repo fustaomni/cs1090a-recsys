@@ -673,3 +673,48 @@ evidence = "site/src/mechanisms/lib/cv.test.js > cross-validation, as Technique 
 lab = "T5"
 claim = "Each fold refits shrunk user and movie offsets on its own training rows, a baseline that beats the mean on later rows."
 evidence = "site/src/mechanisms/lib/timecv.test.js > leaks > fits a shrunk user-and-movie baseline that beats the mean on later rows"
+
+[[claims]]
+lab = "T6"
+claim = "As splits are added, training error keeps falling."
+evidence = "site/src/mechanisms/lib/tree.test.js > growing a regression tree > never raises training error as splits are added"
+
+[[claims]]
+lab = "T6"
+claim = "Error on held-out rows falls and then rises again as splits are added."
+evidence = "site/src/mechanisms/lib/biasvariance.test.js > bias and variance, as Technique 6 shows them > lets fold error fall and then rise as splits are added"
+
+[[claims]]
+lab = "T6"
+claim = "Low ratings are over-predicted and high ones under-predicted even by the best squared-error predictor."
+evidence = "site/src/mechanisms/lib/calibration.test.js > shrinkage and calibration > slants error by level even for the true conditional mean"
+
+[[claims]]
+lab = "T6"
+claim = "A calibration slope near one means the shrinkage is the expected kind."
+evidence = "site/src/mechanisms/lib/calibration.test.js > shrinkage and calibration > is calibrated with slope near one for the true conditional mean"
+
+[[claims]]
+lab = "T6"
+claim = "A slope well above one means the predictions are flatter than the data supports."
+evidence = "site/src/mechanisms/lib/calibration.test.js > shrinkage and calibration > reads excess shrinkage as a slope above one"
+
+[[claims]]
+lab = "T6"
+claim = "Below one the predictions spread wider than the data supports, the mark of overfitting."
+evidence = "site/src/mechanisms/lib/biasvariance.test.js > bias and variance, as Technique 6 shows them > spreads the deepest tree's later predictions wider than the data supports"
+
+[[claims]]
+lab = "T6"
+claim = "The calibration slope is undefined for a constant prediction."
+evidence = "site/src/mechanisms/lib/calibration.test.js > shrinkage and calibration > leaves the slope undefined for a constant prediction"
+
+[[claims]]
+lab = "T6"
+claim = "Across twelve independent datasets the tree trades bias for variance as it grows."
+evidence = "site/src/mechanisms/lib/calibration.test.js > bias and variance on synthetic data > trades bias for variance as the tree grows"
+
+[[claims]]
+lab = "T6"
+claim = "The rounded ratings carry more noise than the latent sigma squared plotted, so the parts approximate the error rather than sum to it."
+evidence = "site/src/mechanisms/lib/biasvariance.test.js > bias and variance, as Technique 6 shows them > finds more noise in the rounded ratings than the latent sigma squared"

@@ -209,7 +209,7 @@ export default function T6() {
       [
         ["bias", "Bias²", colors.accent],
         ["variance", "Variance", colors.ink],
-        ["noise", "Noise", colors.muted],
+        ["noise", "Noise σ², before rounding", colors.muted],
       ].map(([key, name, color]) => ({
         type: "scatter",
         mode: "lines+markers",
@@ -308,12 +308,14 @@ export default function T6() {
       <Plot traces={partTraces} layout={partLayout} label="Decomposition" height={300} />
       <p className="muted">
         The decomposition needs the true function, which only seeded data has; on MovieLens the
-        curve above is the evidence. Error by true rating always slants, so Phase 12 decides
+        curve above is the evidence. The ratings are rounded to five levels, so the noise shown is
+        the latent σ², below the ratings' own, and the three parts approximate the error rather
+        than sum to it. Error by true rating always slants, so Phase 12 decides
         whether to accept the shrinkage by calibration, binned by predicted value. Seeded
         synthetic data: {train.length} training and {valid.length} later ratings on five levels.
       </p>
       <Provenance
-        data="Synthetic ratings from a known true surface, generated in this page: surfaceRatings({ seed: 191, n: 300 }), seed raised by New sample; no real ratings"
+        data={`Synthetic ratings from a known true surface, generated in this page: surfaceRatings({ seed: ${seed}, n: 300, noise: ${fixed(noise, 2)} }), the seed raised by New sample; the decomposition fits twelve more sets, seeds 300 to 311 with n 240, scored on 60 query rows, seed 5; no real ratings`}
         split="The first 240 rows train; the remaining 60 are the later window"
         features="user, movie"
         method="Regression tree, with tree splits as the complexity"
