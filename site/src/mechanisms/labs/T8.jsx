@@ -278,13 +278,14 @@ export default function T8() {
       <p className="muted">
         Shares are each feature's rise in RMSE over the sum of positive rises, an explicit
         normalisation; the published split may have used a different measure, so agreement is
-        only meaningful if the measures match. Intervals here are over shuffles, model randomness
-        only; on the project data the user-clustered bootstrap adds the uncertainty of the data.
+        only meaningful if the measures match. Intervals here are over shuffles of one fitted
+        forest, the permutation's randomness only; on the project data the user-clustered
+        bootstrap adds the uncertainty of the data.
         This lab runs on seeded synthetic ratings ({train.length} training, {later.length}{" "}
         later), so its verdict is about them, not about MovieLens.
       </p>
       <Provenance
-        data="Synthetic ratings, generated in this page: forestRatings({ seed: 121, n: 300 }); no real ratings"
+        data={`Synthetic ratings, generated in this page: forestRatings({ seed: 121, n: 300, rho: ${fixed(rho, 1)} }), shuffled with seed 31; no real ratings`}
         split="The first 220 rows train; the remaining 80 are the later window"
         features="user, movie, genre, noise"
         method="Random forest with 30 trees, mtry 2, minimum leaf 3, seed 13"
