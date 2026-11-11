@@ -78,6 +78,53 @@ describe("collinearity", () => {
     };
     expect(spread(0.9)).toBeGreaterThan(1.5 * spread(0));
   });
+
+  it("trades the slopes off along the valley as the predictors correlate", () => {
+    const rows = ratings({ n: 300, rho: 0.9 });
+    const ys = rows.map((row) => row.rating);
+    const rng = mulberry32(7);
+    const terms = [{ value: (row) => row.user }, { value: (row) => row.movie }];
+    const pairs = Array.from({ length: 60 }, () => {
+      const picked = resample(rng, rows.length);
+      const coef = fit(picked.map((i) => rows[i]), terms, picked.map((i) => ys[i]));
+      return [coef[1], coef[2]];
+    });
+    const first = pairs.map((pair) => pair[0]);
+    const second = pairs.map((pair) => pair[1]);
+    const a = mean(first);
+    const b = mean(second);
+    const covariance = mean(pairs.map(([x, y]) => (x - a) * (y - b)));
+    const sd = (values, centre) => Math.sqrt(mean(values.map((v) => (v - centre) ** 2)));
+    expect(covariance / (sd(first, a) * sd(second, b))).toBeLessThan(-0.5);
+  });
+});
+
+describe("the multi-linear bowl", () => {
+  const rows = ratings({ seed: 31, n: 300, rho: 0.6 });
+  const ys = rows.map((row) => row.rating);
+  const ybar = mean(ys);
+  const ubar = mean(rows.map((row) => row.user));
+  const fbar = mean(rows.map((row) => row.movie));
+  const xs = rows.map((row) => [row.user - ubar, row.movie - fbar]);
+  const deviations = ys.map((y) => y - ybar);
+  const { gram, moment } = normalEquations(xs, deviations);
+  const syy = dot(deviations, deviations);
+  const left = (a, b) => xs.map(([u, f], i) => deviations[i] - a * u - b * f);
+
+  it("is the sum of squared residuals, expanded through the normal equations", () => {
+    for (const [a, b] of [[0.2, 0.9], [0.5, 0.5], [-0.2, 1.2]]) {
+      const across = a * moment[0] + b * moment[1];
+      const curved = a * a * gram[0][0] + 2 * a * b * gram[0][1] + b * b * gram[1][1];
+      const direct = left(a, b).reduce((total, r) => total + r * r, 0);
+      expect(syy - 2 * across + curved).toBeCloseTo(direct, 8);
+    }
+  });
+
+  it("leaves residuals summing to zero for any slopes once the intercept is the mean", () => {
+    for (const [a, b] of [[0.2, 0.9], [1.1, -0.1]]) {
+      expect(left(a, b).reduce((total, r) => total + r, 0)).toBeCloseTo(0, 8);
+    }
+  });
 });
 
 describe("polynomial and interaction terms", () => {

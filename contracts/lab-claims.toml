@@ -38,3 +38,38 @@ evidence = "site/src/mechanisms/lib/lib.test.js > omitted-variable bias > absorb
 lab = "M1"
 claim = "Rounding to the five levels, which also caps ratings at 1 and 5, flattens the slope."
 evidence = "site/src/mechanisms/lib/lib.test.js > rounding to levels > flattens the fitted slope, since the levels cap ratings at 1 and 5"
+
+[[claims]]
+lab = "M2"
+claim = "Both predictors are centred, so the intercept is the mean rating."
+evidence = "site/src/mechanisms/lib/regression.test.js > least squares by QR > solves the centred normal equations, with the intercept at the mean rating"
+
+[[claims]]
+lab = "M2"
+claim = "The bowl is the sum of squared residuals over the two slopes."
+evidence = "site/src/mechanisms/lib/regression.test.js > the multi-linear bowl > is the sum of squared residuals, expanded through the normal equations"
+
+[[claims]]
+lab = "M2"
+claim = "As the predictors correlate, resampled slopes spread out."
+evidence = "site/src/mechanisms/lib/regression.test.js > collinearity > spreads resampled coefficients more as the predictors correlate"
+
+[[claims]]
+lab = "M2"
+claim = "Slopes that fit equally well trade off: resampled fits scatter along the valley floor."
+evidence = "site/src/mechanisms/lib/regression.test.js > collinearity > trades the slopes off along the valley as the predictors correlate"
+
+[[claims]]
+lab = "M2"
+claim = "The least squares slopes solve the centred normal equations."
+evidence = "site/src/mechanisms/lib/regression.test.js > least squares by QR > satisfies the normal equations X'X b = X'y"
+
+[[claims]]
+lab = "M2"
+claim = "The residual sum is zero for any slopes because b0 is the mean rating; the other two sums vanish only at the least squares fit."
+evidence = "site/src/mechanisms/lib/regression.test.js > the multi-linear bowl > leaves residuals summing to zero for any slopes once the intercept is the mean"
+
+[[claims]]
+lab = "M2"
+claim = "VIF = 1 / (1 - R^2) is the same for each slope, about 1 / (1 - rho^2)."
+evidence = "site/src/mechanisms/lib/regression.test.js > collinearity > raises the VIF of correlated predictors to about 1 / (1 - rho^2)"
