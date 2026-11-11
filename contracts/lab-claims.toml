@@ -718,3 +718,33 @@ evidence = "site/src/mechanisms/lib/calibration.test.js > bias and variance on s
 lab = "T6"
 claim = "The rounded ratings carry more noise than the latent sigma squared plotted, so the parts approximate the error rather than sum to it."
 evidence = "site/src/mechanisms/lib/biasvariance.test.js > bias and variance, as Technique 6 shows them > finds more noise in the rounded ratings than the latent sigma squared"
+
+[[claims]]
+lab = "T7"
+claim = "Out-of-bag error grades each training row only with the trees that never saw it."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > predicts each training row out of bag only with trees that never saw it"
+
+[[claims]]
+lab = "T7"
+claim = "About a third of the trees leave each training row out."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > leaves about 36.8% of rows out of each bootstrap sample"
+
+[[claims]]
+lab = "T7"
+claim = "Out-of-bag error is nearly the same estimate as random cross-validation; both ignore time."
+evidence = "site/src/mechanisms/lib/oob.test.js > out-of-bag error, as Technique 7 shows it > agrees closely with random cross-validation, both ignoring time"
+
+[[claims]]
+lab = "T7"
+claim = "A random split inside the later period separates the gap into the time change and the later period, both scored on the same held-out rows."
+evidence = "site/src/mechanisms/lib/oob.test.js > out-of-bag error, as Technique 7 shows it > scores the temporal forest on the same held-out later rows as the within-period one"
+
+[[claims]]
+lab = "T7"
+claim = "With few trees the out-of-bag estimate starts high and only settles as B grows."
+evidence = "site/src/mechanisms/lib/oob.test.js > out-of-bag error, as Technique 7 shows it > starts higher with few trees and settles as B grows"
+
+[[claims]]
+lab = "T7"
+claim = "In these drifting ratings the later period is easier to predict, which can hide the cost of training on the past."
+evidence = "site/src/mechanisms/lib/oob.test.js > out-of-bag error, as Technique 7 shows it > finds the later period easier to predict on these drifting ratings"
