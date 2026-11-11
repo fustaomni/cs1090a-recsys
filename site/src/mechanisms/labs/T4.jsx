@@ -219,7 +219,8 @@ export default function T4() {
   return (
     <article className="lab">
       <p>
-        PCA rotates the standardised features onto new axes ordered by how much of their variance
+        PCA rotates the features, standardised unless that is turned off, onto new axes ordered by
+        how much of their variance
         each captures, and keeping the first few compresses the table for kNN. It never looks at
         the ratings: it keeps the most variance, and whether that is what predicts ratings is
         exactly what the validation curve tests.
@@ -282,7 +283,8 @@ export default function T4() {
           <dt>Distance contrast at {m} components</dt>
           <dd>
             {fixed(contrast, 2)}, averaged over 20 later queries. Keeping every component
-            reproduces the standardised distances exactly, since a rotation preserves them.
+            reproduces the distances between the centred, and while the box is on standardised,
+            features exactly, since a rotation preserves them.
           </dd>
         </div>
       </dl>
@@ -319,7 +321,7 @@ export default function T4() {
         {train.length} training and {later.length} later ratings on five levels.
       </p>
       <Provenance
-        data="Synthetic ratings, generated in this page: wideRatings({ seed: 81, n: 300 }); no real ratings"
+        data={`Synthetic ratings, generated in this page: wideRatings({ seed: 81, n: 300, planted: ${planted} }); no real ratings`}
         split="The first 240 rows train; the remaining 60 are the later window"
         preparation="Optional standardisation, fitted on the training rows only"
         method="PCA by Jacobi eigendecomposition, then k nearest neighbours or regression on the components"

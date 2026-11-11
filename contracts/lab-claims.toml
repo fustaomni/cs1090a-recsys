@@ -598,3 +598,38 @@ evidence = "site/src/mechanisms/lib/imbalance.test.js > class weights, as Techni
 lab = "T3"
 claim = "At a uniform mix the 1 / n_k weights are nearly equal and change almost nothing."
 evidence = "site/src/mechanisms/lib/imbalance.test.js > class weights, as Technique 3 shows them > change almost nothing at a uniform mix, where the weights are nearly equal"
+
+[[claims]]
+lab = "T4"
+claim = "PCA rotates the features onto orthonormal axes ordered by the variance each captures."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > principal components > diagonalises a symmetric matrix into orthonormal eigenvectors"
+
+[[claims]]
+lab = "T4"
+claim = "The components are uncorrelated and their variances are the scree's eigenvalues."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > principal components > gives uncorrelated scores whose variances are the eigenvalues"
+
+[[claims]]
+lab = "T4"
+claim = "Turn standardising off and the rating count, measured in large units, takes over the first component on its own."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > principal components > lets a large-unit column dominate the first component unless scaled"
+
+[[claims]]
+lab = "T4"
+claim = "With the hidden signal planted, least squares on the components only recovers it once the last, lowest-variance component is kept."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > principal components > finds a planted low-variance signal only once the last component is kept"
+
+[[claims]]
+lab = "T4"
+claim = "kNN, which weighs each direction by its spread, barely sees the planted direction at all."
+evidence = "site/src/mechanisms/lib/projection.test.js > PCA, as Technique 4 shows it > lets kNN barely change when the planted last component is added"
+
+[[claims]]
+lab = "T4"
+claim = "Keeping every component reproduces the distances between the centred, and when the box is on standardised, features exactly."
+evidence = "site/src/mechanisms/lib/projection.test.js > PCA, as Technique 4 shows it > reproduces the prepared distances exactly when every component is kept, scaled or not"
+
+[[claims]]
+lab = "T4"
+claim = "The pipeline can prefer the fewest components within one standard error of the best."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > principal components > can prefer the fewest components within one standard error"
