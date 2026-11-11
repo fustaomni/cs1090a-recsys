@@ -140,6 +140,16 @@ export default function M13() {
 
   const userKept = kept(fit.userCount[u], pooling);
   const movieKept = kept(fit.movieCount[m], pooling);
+  // The share kept applies to the mean residual after the other offsets at this pooling.
+  const meanResidual = (key, index) => {
+    const other = key === "user" ? "movie" : "user";
+    const offsets = key === "user" ? fit.movies : fit.users;
+    const own = rows.filter((row) => row[key] === index);
+    if (own.length === 0) return 0;
+    return own.reduce((s, row) => s + row.rating - fit.mu - offsets[row[other]], 0) / own.length;
+  };
+  const userResidual = meanResidual("user", u);
+  const movieResidual = meanResidual("movie", m);
 
   return (
     <article className="lab">
@@ -192,22 +202,24 @@ export default function M13() {
         <div>
           <dt>User {user}</dt>
           <dd>
-            rated {fit.userCount[u]} movies; raw offset {signed(raw.users[u])}, keeps{" "}
+            rated {fit.userCount[u]} movies; mean residual after the movie offsets{" "}
+            {signed(userResidual)}, keeps{" "}
             {(100 * userKept).toFixed(0)}% of it as n / (n + σ²/τ²), so {signed(bu)}
           </dd>
         </div>
         <div>
           <dt>Movie {movie}</dt>
           <dd>
-            rated by {fit.movieCount[m]} users; raw offset {signed(raw.movies[m])}, keeps{" "}
+            rated by {fit.movieCount[m]} users; mean residual after the user offsets{" "}
+            {signed(movieResidual)}, keeps{" "}
             {(100 * movieKept).toFixed(0)}% of it, so {signed(bm)}
           </dd>
         </div>
       </dl>
       <p className="muted">
         The prediction is the intersection of this user's identity and this movie's identity,
-        each trusted only as far as its own ratings allow. At σ²/τ² = 0 the offsets are raw
-        means; as it grows they shrink to zero and every prediction becomes μ.
+        each trusted only as far as its own ratings allow. At σ²/τ² = 0 the offsets are the
+        unpooled crossed least-squares fit; as it grows they shrink, as a whole, to zero and every prediction becomes μ.
       </p>
       <Provenance
         data="Synthetic ratings, generated in this page: crossedRatings({ seed: 131 }); no real ratings"
