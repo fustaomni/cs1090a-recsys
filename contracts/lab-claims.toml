@@ -298,3 +298,38 @@ evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > leaves about 36
 lab = "M8"
 claim = "Out-of-bag error predicts each training row only with the trees that left it out."
 evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > predicts each training row out of bag only with trees that never saw it"
+
+[[claims]]
+lab = "M9"
+claim = "Trying all four features at every split is plain bagging."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > random forests > grow exactly the plain tree when every feature is allowed at every split"
+
+[[claims]]
+lab = "M9"
+claim = "With a random subset of max_features at each split, roots stop being the same split in every tree."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > random forests > spread their root splits across features when mtry is small"
+
+[[claims]]
+lab = "M9"
+claim = "The trees decorrelate as each split sees fewer features."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > random forests > decorrelate their trees when each split sees fewer features"
+
+[[claims]]
+lab = "M9"
+claim = "The variance floor rho sigma squared drops as each split sees fewer features."
+evidence = "site/src/mechanisms/lib/forest.test.js > random forests, as Model 9 shows them > lower the variance floor rho sigma squared when each split sees fewer features"
+
+[[claims]]
+lab = "M9"
+claim = "The usual price is weaker individual trees, yet here, on the later window, a tree that sees one feature per split is no worse than one that sees all four."
+evidence = "site/src/mechanisms/lib/forest.test.js > random forests, as Model 9 shows them > find single trees with one feature per split no worse on the later window"
+
+[[claims]]
+lab = "M9"
+claim = "Impurity importance, computed on training data, gives the pure-noise column a share; permutation importance on later rows gives it almost none."
+evidence = "site/src/mechanisms/lib/forest.test.js > random forests, as Model 9 shows them > credit the noise column by impurity on training data, far less by permutation later"
+
+[[claims]]
+lab = "M9"
+claim = "Out-of-bag error predicts each training row only with the trees that left it out."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > predicts each training row out of bag only with trees that never saw it"
