@@ -3281,3 +3281,16 @@ done_when = [
   { kind = "proof", test = "tests/test_site_railway_cli.py::test_site_test_installs_the_locked_site_first" },
   { kind = "task", name = "site:test" },
 ]
+[[steps]]
+id = "A.281"
+title = "The project site prints its content and nothing covers it: a print stylesheet, by CSS media query and never by script, hides the sticky navigation and other screen-only controls or makes them static, keeps every page's text, readouts, provenance and footer, and lets no fixed element repeat over content on any printed page, proven against the built stylesheet and confirmed on a printed page of the live site"
+thread = "A"
+depends_on = ["A.260"]
+because = { "A.260" = "the lab review whose printed pages show the overlap, finished before the page's styles change" }
+branch = "feature/site-print"
+done_when = [
+  { kind = "proof", test = "tests/test_site_print.py::test_printing_hides_the_sticky_navigation_by_media_query" },
+  { kind = "proof", test = "tests/test_site_print.py::test_printing_keeps_the_provenance_and_the_footer" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
