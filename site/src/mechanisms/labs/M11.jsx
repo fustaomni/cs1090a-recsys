@@ -183,11 +183,12 @@ export default function M11() {
   return (
     <article className="lab">
       <p>
-        Gradient boosting starts from the mean rating and adds trees one at a time. Each tree is
+        Gradient boosting starts from the mean rating, or the median under absolute loss, and adds
+        trees one at a time. Each tree is
         fitted to the negative gradient of the loss at the current prediction, which for squared
         error is simply the residual y − F, and only a fraction ν of it is added. On the left is
-        the prediction so far; on the right, the residuals the next tree is fitted to and that
-        tree's own surface.
+        the prediction after m stages; on the right, the residuals before stage m and the tree
+        fitted to them, the last one the left already includes.
       </p>
       <div className="lab-grid">
         <Plot traces={surfaceTraces} layout={surfaceLayout} label="Prediction after m stages" />
