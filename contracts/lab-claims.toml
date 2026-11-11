@@ -98,3 +98,43 @@ evidence = "site/src/mechanisms/lib/regression.test.js > polynomial and interact
 lab = "M3"
 claim = "The ratings sit on the five levels."
 evidence = "site/src/mechanisms/lib/regression.test.js > polynomial terms with the curvature held > draws its ratings on the five integer levels"
+
+[[claims]]
+lab = "M4"
+claim = "Ridge adds lambda times the squared norm to the mean squared error, solving (X'X/n + lambda I) b = X'y/n."
+evidence = "site/src/mechanisms/lib/penalized.test.js > ridge > is least squares at lambda = 0 and solves (X'X/n + lambda I) b = X'y/n"
+
+[[claims]]
+lab = "M4"
+claim = "As lambda grows the coefficients are pulled toward each other, never exactly to zero."
+evidence = "site/src/mechanisms/lib/penalized.test.js > ridge > pulls correlated coefficients toward each other, never exactly to zero"
+
+[[claims]]
+lab = "M4"
+claim = "Resampled least squares fits scatter along the valley while the ridge fits stay close together."
+evidence = "site/src/mechanisms/lib/ridge.test.js > ridge, as Model 4 shows it > scatters resampled fits less than least squares does"
+
+[[claims]]
+lab = "M4"
+claim = "Each direction keeps d / (d + lambda) of its least squares value, so the weak, collinear direction is shrunk hardest."
+evidence = "site/src/mechanisms/lib/ridge.test.js > ridge, as Model 4 shows it > keeps d / (d + lambda) of least squares along each eigen-direction"
+
+[[claims]]
+lab = "M4"
+claim = "The effective degrees of freedom are the sum of the directions' shrinkage factors."
+evidence = "site/src/mechanisms/lib/penalized.test.js > ridge > has effective degrees of freedom equal to the trace of its hat matrix"
+
+[[claims]]
+lab = "M4"
+claim = "Lambda is chosen on time-ordered folds, each validated on rows later than its training rows."
+evidence = "site/src/mechanisms/lib/penalized.test.js > selection and tuning > validates every fold on rows later than all its training rows"
+
+[[claims]]
+lab = "M4"
+claim = "The 1-SE rule takes the largest lambda within one standard error of the minimum."
+evidence = "site/src/mechanisms/lib/penalized.test.js > selection and tuning > takes the largest lambda within one standard error of the minimum"
+
+[[claims]]
+lab = "M4"
+claim = "The predictors are standardised on the training rows, and the intercept, the mean rating, is never penalised."
+evidence = "site/src/mechanisms/lib/ridge.test.js > ridge, as Model 4 shows it > standardises each predictor on the rows it is given, to mean 0 and variance 1"

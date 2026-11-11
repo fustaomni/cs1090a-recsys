@@ -215,7 +215,7 @@ export default function M4() {
   return (
     <article className="lab">
       <p>
-        Ridge adds λ‖b‖² to the least squares objective, which rounds the valley of correlated
+        Ridge adds λ‖b‖² to the mean squared error, which rounds the valley of correlated
         predictors into a bowl. Its minimum, the dark line, slides toward zero as λ grows and pulls
         the two coefficients toward each other without ever reaching zero. Resampling shows why
         that helps: the least squares fits scatter along the valley while the ridge fits stay
@@ -302,7 +302,7 @@ export default function M4() {
         {later.length} later ratings on five levels, with true effects 0.5 and 0.5.
       </p>
       <Provenance
-        data="Synthetic ratings, generated in this page: ratings({ seed: 51, n: 150 }); no real ratings"
+        data={`Synthetic ratings, generated in this page: ratings({ seed: 51, n: 150, rho: ${fixed(rho, 2)} }); no real ratings`}
         split="The first 120 rows train; the remaining 30 are the later window"
         method="Ridge regression, solved by Cholesky"
       />
