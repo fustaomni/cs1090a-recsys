@@ -188,8 +188,10 @@ export default function M9() {
       <p>
         A random forest is bagging plus one more source of randomness: every split may only
         choose among a random subset of max_features features. Roots stop being the same split in
-        every tree, the trees decorrelate, and the variance floor ρσ² drops, at the price of
-        slightly worse individual trees. Trying all four features at every split is plain bagging,
+        every tree, the trees decorrelate, and the variance floor ρσ² drops. The usual price is
+        weaker individual trees, yet here, on the later window, a tree that sees one feature per
+        split is no worse than one that sees all four. Trying all four features at every split is
+        plain bagging,
         which is also what scikit-learn's default of 1.0 does, so the setting is declared, never
         left to the default.
       </p>
@@ -272,7 +274,7 @@ export default function M9() {
         training and {later.length} later ratings on five levels.
       </p>
       <Provenance
-        data="Synthetic ratings, generated in this page: forestRatings({ seed: 101, n: 240 }), query rows forestRatings({ seed: 9, n: 20 }); no real ratings"
+        data="Synthetic ratings, generated in this page: forestRatings({ seed: 101, n: 240 }); for rho and the floor, eight training sets forestRatings({ seed: 1000 to 1007, n: 200 }) scored on query rows forestRatings({ seed: 9, n: 20 }); no real ratings"
         split="The first 200 rows train; the remaining 40 are the later window"
         features="user, movie, genre, noise"
         method="Random forest, feature subsets at each split, forest seed 11"
