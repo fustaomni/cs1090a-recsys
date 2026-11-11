@@ -178,3 +178,43 @@ evidence = "site/src/mechanisms/lib/penalized.test.js > ridge > pulls correlated
 lab = "M5"
 claim = "The 1-SE lambda is the largest within one standard error of the minimum on time-ordered folds."
 evidence = "site/src/mechanisms/lib/penalized.test.js > selection and tuning > takes the largest lambda within one standard error of the minimum"
+
+[[claims]]
+lab = "M6"
+claim = "kNN learns no equation: a prediction is the mean rating of the k nearest training rows."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > nearest neighbours > predicts the mean rating of those neighbours"
+
+[[claims]]
+lab = "M6"
+claim = "The k nearest rows are found in order of distance."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > nearest neighbours > returns the k closest rows in order of distance"
+
+[[claims]]
+lab = "M6"
+claim = "The drawn neighbourhood holds exactly the k rows; its radius is the distance to the k-th, so it grows with k."
+evidence = "site/src/mechanisms/lib/knn.test.js > kNN, as Model 6 shows it > draws a neighbourhood holding exactly the k nearest rows, its radius growing with k"
+
+[[claims]]
+lab = "M6"
+claim = "Manhattan distance is never below Euclidean, and Gower lies in [0, 1] for mixed features."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > nearest neighbours > keeps Manhattan at or above Euclidean, and Gower within [0, 1]"
+
+[[claims]]
+lab = "M6"
+claim = "Gower's octahedron holds the query's own group, since a row in another group pays a quarter of the distance for that alone."
+evidence = "site/src/mechanisms/lib/knn.test.js > kNN, as Model 6 shows it > charges a row in another group a quarter of the Gower distance for that alone"
+
+[[claims]]
+lab = "M6"
+claim = "The k-d tree finds exactly what brute force finds while visiting fewer rows."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > nearest neighbours > finds exactly what brute force finds with a k-d tree, visiting fewer rows"
+
+[[claims]]
+lab = "M6"
+claim = "Tree indexes lose that advantage as dimensions grow."
+evidence = "site/src/mechanisms/lib/knn.test.js > kNN, as Model 6 shows it > loses the k-d tree's advantage as the dimension grows"
+
+[[claims]]
+lab = "M6"
+claim = "As the dimension grows every point sits at nearly the same distance: the relative contrast collapses."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > nearest neighbours > concentrates distances as the dimension grows"
