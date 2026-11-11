@@ -833,3 +833,38 @@ evidence = "site/src/mechanisms/lib/hypothesis.test.js > the paired test, as Tec
 lab = "T10"
 claim = "The paired interval narrows as the two models share more of their error."
 evidence = "site/src/mechanisms/lib/hypothesis.test.js > the paired test, as Technique 10 shows it > narrows the paired interval as the two models share more of their error"
+
+[[claims]]
+lab = "T11"
+claim = "The interval score is the width plus 2/alpha times how far each miss falls outside."
+evidence = "site/src/mechanisms/lib/coverage.test.js > prediction-interval coverage audit (A.246) > scores an interval by its width, plus 2/alpha times any miss"
+
+[[claims]]
+lab = "T11"
+claim = "Intervals sized on a separate calibration set widen as the nominal level rises."
+evidence = "site/src/mechanisms/lib/coverage.test.js > prediction-interval coverage audit (A.246) > widens the interval as the nominal level rises"
+
+[[claims]]
+lab = "T11"
+claim = "In the long run the stated share of ratings falls inside: split conformal covers marginally."
+evidence = "site/src/mechanisms/lib/coverage.test.js > prediction-interval coverage audit (A.246) > covers close to its nominal level overall, as split conformal guarantees marginally"
+
+[[claims]]
+lab = "T11"
+claim = "One width for everyone under-covers the noisier raters, which only a group-level audit reveals."
+evidence = "site/src/mechanisms/lib/coverage.test.js > prediction-interval coverage audit (A.246) > covers the noisier light raters less than the heavy raters with one width for all"
+
+[[claims]]
+lab = "T11"
+claim = "On the page's 30 test ratings both groups are covered in full at 95%."
+evidence = "site/src/mechanisms/lib/t11.audit.test.js > the coverage audit, as Technique 11 shows it > covers both groups in full at 95% on the page's 30 test ratings"
+
+[[claims]]
+lab = "T11"
+claim = "Lower the level to 80% and the noisier light raters fall short of the heavy ones."
+evidence = "site/src/mechanisms/lib/t11.audit.test.js > the coverage audit, as Technique 11 shows it > lets the noisier light raters fall short of the heavy ones at 80%"
+
+[[claims]]
+lab = "T11"
+claim = "On 30 ratings the default gap is within two binomial standard errors of the promise."
+evidence = "site/src/mechanisms/lib/t11.audit.test.js > the coverage audit, as Technique 11 shows it > finds the default gap within two binomial standard errors on 30 ratings"
