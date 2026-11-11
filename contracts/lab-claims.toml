@@ -268,3 +268,33 @@ evidence = "site/src/mechanisms/lib/tree.test.js > importance and drawing > meas
 lab = "M7"
 claim = "The surface is flat steps with vertical walls at the split thresholds."
 evidence = "site/src/mechanisms/lib/tree.test.js > importance and drawing > draws a surface whose cells are flat between the split thresholds"
+
+[[claims]]
+lab = "M8"
+claim = "Bagging averages deep trees, each grown on a bootstrap sample of the rows."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > predicts the mean of its trees"
+
+[[claims]]
+lab = "M8"
+claim = "The average of step functions is still a step function, only with finer steps."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > drawing an average of trees > keeps every cell flat with vertical walls between cells"
+
+[[claims]]
+lab = "M8"
+claim = "Averaging lowers variance but not bias: the average keeps one bootstrap tree's expected prediction."
+evidence = "site/src/mechanisms/lib/bagging.test.js > bagging, as Model 8 shows it > keeps one bootstrap tree's expected prediction, so averaging lowers variance, not bias"
+
+[[claims]]
+lab = "M8"
+claim = "Trees grown from the same data are correlated, so the variance falls toward a floor rho sigma squared, not to zero."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > lowers variance across datasets toward a floor above zero"
+
+[[claims]]
+lab = "M8"
+claim = "A bootstrap sample leaves out about 1/e, 36.8 percent, of the rows."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > leaves about 36.8% of rows out of each bootstrap sample"
+
+[[claims]]
+lab = "M8"
+claim = "Out-of-bag error predicts each training row only with the trees that left it out."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > predicts each training row out of bag only with trees that never saw it"
