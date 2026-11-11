@@ -148,7 +148,8 @@ export default function T12() {
       <ul className="chips">
         {blocks.map((block, index) => (
           <li key={block.user}>
-            U{block.user}: {signs[index] < 0 ? "flipped (+Z)" : "original (−Z)"}
+            U{block.user}: {signs[index] < 0 ? "flipped" : "original"}, block mean{" "}
+            {(means[index] * signs[index]).toFixed(2)}
           </li>
         ))}
       </ul>
@@ -180,11 +181,14 @@ export default function T12() {
         </div>
         <div>
           <dt>Symmetry the test assumes</dt>
-          <dd>skewness of the per-user differences {skewness(means).toFixed(2)}; near zero is what the test needs</dd>
+          <dd>
+            skewness of the per-user differences {skewness(means).toFixed(2)}; near zero is what
+            the test needs, though from only {users} values this is a rough check
+          </dd>
         </div>
       </dl>
       <Provenance
-        data="Synthetic paired differences, generated in this page: blockData({ seed: 171 }); no real ratings"
+        data={`Synthetic paired differences, generated in this page: blockData({ seed: 171, users: ${users} }); the row-level flip 4000 draws seeded 173, each shown draw seeded 1000 plus its number; no real ratings`}
         method="Exact sign-flip permutation test over user blocks, two-sided; a row-level flip by Monte Carlo for contrast"
       />
     </article>
