@@ -633,3 +633,43 @@ evidence = "site/src/mechanisms/lib/projection.test.js > PCA, as Technique 4 sho
 lab = "T4"
 claim = "The pipeline can prefer the fewest components within one standard error of the best."
 evidence = "site/src/mechanisms/lib/neighbours.test.js > principal components > can prefer the fewest components within one standard error"
+
+[[claims]]
+lab = "T5"
+claim = "Ratings are front-loaded in time, so blocks are cut by row count, not calendar time."
+evidence = "site/src/mechanisms/lib/timecv.test.js > time-ordered folds > front-loads the ratings: over 40% arrive in the first fifth of the time span"
+
+[[claims]]
+lab = "T5"
+claim = "The training window ends at T_val, cut at a timestamp boundary."
+evidence = "site/src/mechanisms/lib/timecv.test.js > time-ordered folds > cuts the training window at a timestamp boundary"
+
+[[claims]]
+lab = "T5"
+claim = "The window is cut into blocks of equal row count, each cut moved to a timestamp boundary."
+evidence = "site/src/mechanisms/lib/timecv.test.js > time-ordered folds > makes blocks of nearly equal row count that never split a timestamp"
+
+[[claims]]
+lab = "T5"
+claim = "Fold k trains on the blocks before block k + 1 and validates on it, before T_val, with any gap dropped."
+evidence = "site/src/mechanisms/lib/timecv.test.js > time-ordered folds > validates every rolling fold strictly after its training rows, before T_val"
+
+[[claims]]
+lab = "T5"
+claim = "A sliding window keeps only the latest blocks."
+evidence = "site/src/mechanisms/lib/timecv.test.js > time-ordered folds > keeps only the latest blocks in a sliding window"
+
+[[claims]]
+lab = "T5"
+claim = "Rolling folds validate no row with statistics from its user's later ratings; random folds validate many."
+evidence = "site/src/mechanisms/lib/timecv.test.js > leaks > finds no future leaks in rolling folds and many in random folds"
+
+[[claims]]
+lab = "T5"
+claim = "Random folds also train on more rows than the first rolling fold, so their optimism is not all leak."
+evidence = "site/src/mechanisms/lib/cv.test.js > cross-validation, as Technique 5 shows it > trains every random fold on more rows than the first rolling fold, for every k"
+
+[[claims]]
+lab = "T5"
+claim = "Each fold refits shrunk user and movie offsets on its own training rows, a baseline that beats the mean on later rows."
+evidence = "site/src/mechanisms/lib/timecv.test.js > leaks > fits a shrunk user-and-movie baseline that beats the mean on later rows"
