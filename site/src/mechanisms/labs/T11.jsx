@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
 import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
-import { audit, conformalHalfWidth, coverageData } from "../lib/coverage.js";
+import { COVERAGE, audit, conformalHalfWidth, coverageData } from "../lib/coverage.js";
 
 const PILLAR = "#3b82f6";
 const COVERED = "#4ade80";
@@ -75,6 +75,8 @@ export default function T11() {
   );
 
   const gap = result.coverage - level;
+  const se = Math.sqrt((level * (1 - level)) / result.rows.length);
+  const chance = Math.abs(gap) <= 2 * se ? "within" : "beyond";
 
   return (
     <article className="lab">
@@ -104,7 +106,10 @@ export default function T11() {
       </div>
       <p className="status-line">
         {audited
-          ? `Audited: ${percent(result.coverage)} of the ${result.rows.length} test ratings fall inside their ${percent(level)} intervals, a gap of ${(100 * gap).toFixed(0)} points from the promise.`
+          ? `Audited: ${percent(result.coverage)} of the ${result.rows.length} test ratings fall ` +
+            `inside their ${percent(level)} intervals, a gap of ${(100 * gap).toFixed(0)} points ` +
+            `from the promise, ${chance} two binomial standard errors of ` +
+            `${(100 * se).toFixed(0)} points on ${result.rows.length} ratings.`
           : `Initial state: ${percent(level)} intervals drawn for ${result.rows.length} test ratings. Run the coverage audit to check them against the ratings.`}
       </p>
       {audited && (
@@ -118,7 +123,9 @@ export default function T11() {
           </div>
           {result.groups.map((group) => (
             <div key={group.group}>
-              <dt>{group.group} raters</dt>
+              <dt>
+                {group.group} raters, rating noise {COVERAGE.noise[group.group]}
+              </dt>
               <dd>
                 {percent(group.coverage)} covered, n = {group.n}
               </dd>
@@ -128,7 +135,8 @@ export default function T11() {
             <dt>Width and interval score</dt>
             <dd>
               every interval {result.width.toFixed(2)} wide; mean interval score{" "}
-              {result.score.toFixed(2)}, the width plus 2/α times each miss
+              {result.score.toFixed(2)}, the width plus 2/α times how far each miss falls
+              outside
             </dd>
           </div>
         </dl>
@@ -136,10 +144,11 @@ export default function T11() {
       <p className="muted">
         Split conformal promises coverage on average over all ratings, not for each group: one
         width for everyone can over-cover steady raters and under-cover noisy ones, which only a
-        group-level audit reveals.
+        group-level audit reveals. On these 30 test ratings both groups are covered in full at
+        95%; lower the level to 80% and the noisier light raters fall short of the heavy ones.
       </p>
       <Provenance
-        data="Synthetic ratings, generated in this page: coverageData({ seed: 151 }); no real ratings"
+        data="Synthetic ratings, generated in this page: coverageData({ seed: 151 }), light raters with rating noise 1.1 and heavy raters with 0.55; no real ratings"
         method="Split-conformal intervals from 200 calibration residuals; coverage, width and interval score on 30 test ratings"
       />
     </article>
