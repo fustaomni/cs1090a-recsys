@@ -818,3 +818,18 @@ evidence = "site/src/mechanisms/lib/bootstrap.test.js > bootstrap inference, as 
 lab = "T9"
 claim = "Percentile endpoints settle only as replicates grow into the thousands."
 evidence = "site/src/mechanisms/lib/bootstrap.test.js > bootstrap inference, as Technique 9 shows it > settles its user-clustered endpoints as replicates grow into the thousands"
+
+[[claims]]
+lab = "T10"
+claim = "The paired difference, recomputed on each resample of the same users, has a narrower interval than either model's own RMSE."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > narrows the paired difference below either model's own interval"
+
+[[claims]]
+lab = "T10"
+claim = "The separate RMSE intervals can overlap while the paired difference sits clearly away from zero, so overlap is not a test of a paired difference."
+evidence = "site/src/mechanisms/lib/hypothesis.test.js > the paired test, as Technique 10 shows it > overlaps the marginal intervals while the paired one excludes zero, at the defaults"
+
+[[claims]]
+lab = "T10"
+claim = "The paired interval narrows as the two models share more of their error."
+evidence = "site/src/mechanisms/lib/hypothesis.test.js > the paired test, as Technique 10 shows it > narrows the paired interval as the two models share more of their error"
