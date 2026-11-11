@@ -138,3 +138,43 @@ evidence = "site/src/mechanisms/lib/penalized.test.js > selection and tuning > t
 lab = "M4"
 claim = "The predictors are standardised on the training rows, and the intercept, the mean rating, is never penalised."
 evidence = "site/src/mechanisms/lib/ridge.test.js > ridge, as Model 4 shows it > standardises each predictor on the rows it is given, to mean 0 and variance 1"
+
+[[claims]]
+lab = "M5"
+claim = "Coordinate descent soft-thresholds each coefficient, and one whose z lands inside plus or minus lambda is set exactly to zero."
+evidence = "site/src/mechanisms/lib/penalized.test.js > lasso by coordinate descent > soft-thresholds: shrinks by lambda and zeroes anything within it"
+
+[[claims]]
+lab = "M5"
+claim = "Lasso adds lambda times the L1 norm to half the mean squared error, so at its solution |x'r| / n equals lambda for each kept predictor and is at most lambda for each zeroed one."
+evidence = "site/src/mechanisms/lib/penalized.test.js > lasso by coordinate descent > satisfies the KKT conditions at its solution"
+
+[[claims]]
+lab = "M5"
+claim = "Every coefficient is zero at or above lambda max."
+evidence = "site/src/mechanisms/lib/penalized.test.js > lasso by coordinate descent > zeroes every coefficient from lambda_max up, and frees one just below it"
+
+[[claims]]
+lab = "M5"
+claim = "The drawn path is coordinate descent from zero, ending at the lasso solution."
+evidence = "site/src/mechanisms/lib/penalized.test.js > lasso by coordinate descent > records a path that starts at zero and ends at the solution"
+
+[[claims]]
+lab = "M5"
+claim = "Over half-samples the noise predictor, which has no effect, is selected far less often than the histories."
+evidence = "site/src/mechanisms/lib/penalized.test.js > selection and tuning > selects the irrelevant predictor far less often than the ones that matter"
+
+[[claims]]
+lab = "M5"
+claim = "Raise rho and the two correlated histories trade places from sample to sample."
+evidence = "site/src/mechanisms/lib/lasso.test.js > lasso, as Model 5 shows it > lets the two correlated histories trade places across half-samples at high rho"
+
+[[claims]]
+lab = "M5"
+claim = "Ridge never sets a coefficient to zero; lasso does."
+evidence = "site/src/mechanisms/lib/penalized.test.js > ridge > pulls correlated coefficients toward each other, never exactly to zero"
+
+[[claims]]
+lab = "M5"
+claim = "The 1-SE lambda is the largest within one standard error of the minimum on time-ordered folds."
+evidence = "site/src/mechanisms/lib/penalized.test.js > selection and tuning > takes the largest lambda within one standard error of the minimum"
