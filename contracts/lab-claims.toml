@@ -513,3 +513,33 @@ evidence = "site/src/mechanisms/lib/ordinal.test.js > ordinal regression, a cumu
 lab = "M14"
 claim = "Shifting the cut-points together flips no star at zero and more as the shift grows, testing the stability of the star predictions."
 evidence = "site/src/mechanisms/lib/ordinal.test.js > ordinal regression, a cumulative link model (A.246) > flips nothing at zero shift, and more ratings as the cut-offs move further"
+
+[[claims]]
+lab = "T1"
+claim = "Rating values stay locked until the split is made, the risk register included."
+evidence = "site/src/mechanisms/lib/register.test.js > the risk register, as Technique 1 shows it > shows no rating value until the split is made, for either pair of cutoffs"
+
+[[claims]]
+lab = "T1"
+claim = "The register counts the movies with fewer than 8 training ratings."
+evidence = "site/src/mechanisms/lib/register.test.js > the risk register, as Technique 1 shows it > counts the movies with fewer than 8 training ratings from the bins 1, 2-3 and 4-7"
+
+[[claims]]
+lab = "T1"
+claim = "Every number is computed from MovieLens 1M itself: 1,000,209 ratings by 6,040 users, each with at least 20, on 3,706 of 3,883 listed movies."
+evidence = "site/src/mechanisms/lib/movielens.test.js > the committed MovieLens 1M summary > matches the dataset's published facts"
+
+[[claims]]
+lab = "T1"
+claim = "The cutoffs are quantiles of time, in time order, and every split's windows partition the ratings."
+evidence = "site/src/mechanisms/lib/movielens.test.js > the committed MovieLens 1M summary > puts the cutoffs in time order and partitions every split"
+
+[[claims]]
+lab = "T1"
+claim = "A cutoff moves past any rating sharing its timestamp, so no moment is split across windows."
+evidence = "site/src/mechanisms/lib/movielens.test.js > summarising the MovieLens files > cuts at a quantile and moves past a shared timestamp"
+
+[[claims]]
+lab = "T1"
+claim = "Phase 1A audits structure over all rows: counts, encoding and integrity."
+evidence = "site/src/mechanisms/lib/movielens.test.js > summarising the MovieLens files > counts the structure"

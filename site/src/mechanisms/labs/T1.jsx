@@ -3,6 +3,7 @@ import data from "../../data/movielens.json";
 import Plot from "../Plot.jsx";
 import Provenance from "../Provenance.jsx";
 import { fixed } from "../lib/format.js";
+import { riskRegister } from "../lib/register.js";
 
 const SPLITS = { "0.8/0.9": [0.8, 0.9], "0.85/0.95": [0.85, 0.95] };
 const STARS = ["1★", "2★", "3★", "4★", "5★"];
@@ -132,8 +133,6 @@ export default function T1() {
   );
 
   const windows = summary.windows;
-  const sparse = training.movieTail.filter((b) => b.to < 8).reduce((t, b) => t + b.count, 0);
-  const smallestGenre = training.genres.reduce((a, g) => (g.ratings < a.ratings ? g : a));
   const shares = training.counts.map((n) => n / windows.train.rows);
   const pairs = [];
   data.genres.forEach((g, i) =>
@@ -142,45 +141,7 @@ export default function T1() {
     }),
   );
   pairs.sort((a, b) => b[2] - a[2]);
-  const cut = data.quantiles[chosen[0]];
-  const span = data.timeline.cumulative.length - 1;
-  const register = [
-    [
-      "Ratings are front-loaded in time",
-      `${percent(cut.index, s.ratings)} of all ratings were submitted by ${cut.date}, ` +
-        `day ${cut.day} of ${span}`,
-      "Cut at quantiles of time, never at calendar dates; blocks of equal row count for folds",
-      "Phase 2",
-    ],
-    [
-      "The ordinal target is imbalanced",
-      `${percent(training.counts[0], windows.train.rows)} of training ratings are 1★ against ` +
-        `${percent(training.counts[3], windows.train.rows)} at 4★; skew ${fixed(training.skew, 2)}`,
-      "Report macro-averaged error beside pooled error, with the constant floors",
-      "Phase 0",
-    ],
-    [
-      "Long tails and cold start",
-      `${integer(sparse)} of ${integer(windows.train.movies)} movies have fewer than 8 ` +
-        `training ratings; ${integer(summary.testUsersUnseen)} of ` +
-        `${integer(summary.testUsers)} test users never appear in training`,
-      "Smoothed prior-only encodings, a count feature, and cold-start thresholds",
-      "Phases 3 and 12",
-    ],
-    [
-      "Sparse genres",
-      `${smallestGenre.genre} has ${integer(smallestGenre.ratings)} training ratings, ` +
-        `${percent(smallestGenre.ratings, windows.train.rows)} of the window`,
-      "Expect split bias toward dense features; judge importance by permutation",
-      "Phase 8",
-    ],
-    [
-      "The movie list is not UTF-8",
-      `${s.nonUtf8MovieLines} lines of movies.dat fail UTF-8 decoding`,
-      "Read all three files as Latin-1",
-      "Phase 1A",
-    ],
-  ];
+  const register = riskRegister(data, key, split);
   const audit = [
     ["Ratings", integer(s.ratings)],
     ["Users", `${integer(s.users)}, each with at least ${s.fewestRatingsPerUser} ratings`],
