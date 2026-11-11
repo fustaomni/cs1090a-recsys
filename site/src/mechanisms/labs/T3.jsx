@@ -164,7 +164,9 @@ export default function T3() {
         the models still minimise pooled error, and the macro metric changes which model is
         selected and how it is reported. Weighting training rows by 1 / n_k makes training itself
         attend to rare levels, an optional, declared intervention: with the fitted model, turn it
-        on and macro error falls while pooled error rises. Real shares: training window of
+        on and, with the real shares, macro error falls while pooled error rises; at a uniform
+        mix the weights are nearly equal and it changes almost nothing. Real shares: training
+        window of
         MovieLens 1M, cut at the 0.8 quantile of time.
       </p>
       <Provenance

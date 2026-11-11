@@ -568,3 +568,33 @@ evidence = "site/src/mechanisms/lib/macro.test.js > encoding a user's history > 
 lab = "T2"
 claim = "Naive exceeds prior-only in sample by the own-rating leak, and prior-only exceeds the later rows by what in-sample correlation overstates even without it."
 evidence = "site/src/mechanisms/lib/encoding.test.js > the smoothed encoding, as Technique 2 shows it > splits the in-sample excess into the own-rating leak and the further drop to later rows"
+
+[[claims]]
+lab = "T3"
+claim = "The constant floors every model must beat are 1.20 for MAE^M and the square root of two for RMSE^M, both at a constant 3."
+evidence = "site/src/mechanisms/lib/macro.test.js > pooled against macro error > gives the macro floors 1.20 and the square root of two at a constant 3"
+
+[[claims]]
+lab = "T3"
+claim = "For a constant prediction the macro score depends only on the constant, not on how common each rating is, while pooled error moves with the class mix."
+evidence = "site/src/mechanisms/lib/macro.test.js > pooled against macro error > makes the macro score of a constant independent of the class mix"
+
+[[claims]]
+lab = "T3"
+claim = "Pooled RMSE is minimised at the mean rating and macro RMSE at 3."
+evidence = "site/src/mechanisms/lib/macro.test.js > pooled against macro error > minimises pooled RMSE at the mean rating and macro RMSE at 3"
+
+[[claims]]
+lab = "T3"
+claim = "Weighting training rows by 1 / n_k trades pooled error for macro error."
+evidence = "site/src/mechanisms/lib/macro.test.js > pooled against macro error > trades pooled error for macro error when training weights levels by 1 / n_k"
+
+[[claims]]
+lab = "T3"
+claim = "With the real shares, turning on the 1 / n_k weights makes macro error fall while pooled error rises."
+evidence = "site/src/mechanisms/lib/imbalance.test.js > class weights, as Technique 3 shows them > lower macro error and raise pooled error with the real shares"
+
+[[claims]]
+lab = "T3"
+claim = "At a uniform mix the 1 / n_k weights are nearly equal and change almost nothing."
+evidence = "site/src/mechanisms/lib/imbalance.test.js > class weights, as Technique 3 shows them > change almost nothing at a uniform mix, where the weights are nearly equal"
