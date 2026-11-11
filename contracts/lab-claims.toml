@@ -408,3 +408,48 @@ evidence = "site/src/mechanisms/lib/boosting.test.js > gradient boosting > stops
 lab = "M11"
 claim = "A sum of shrunken trees can step past the rating scale."
 evidence = "site/src/mechanisms/lib/gbm.test.js > gradient boosting, as Model 11 shows it > can step past the rating scale, since a sum of trees is not bounded by it"
+
+[[claims]]
+lab = "M12"
+claim = "Least squares can put a negative weight on one model; a non-negativity constraint forbids that and finds the constrained minimum."
+evidence = "site/src/mechanisms/lib/inference.test.js > stacking > finds the constrained minimum when a weight wants to go negative"
+
+[[claims]]
+lab = "M12"
+claim = "When the unconstrained weights are already non-negative, the constraint changes nothing."
+evidence = "site/src/mechanisms/lib/inference.test.js > stacking > keeps the unconstrained solution when it is already non-negative"
+
+[[claims]]
+lab = "M12"
+claim = "A ridge penalty pulls correlated weights toward each other."
+evidence = "site/src/mechanisms/lib/stacking.test.js > stacking, as Model 12 shows it > pulls the two weights toward each other as the ridge penalty grows"
+
+[[claims]]
+lab = "M12"
+claim = "A weight lands exactly on zero only when the constraint binds, where the unconstrained minimum lies outside the feasible region."
+evidence = "site/src/mechanisms/lib/stacking.test.js > stacking, as Model 12 shows it > sets a weight exactly to zero only where the constraint binds"
+
+[[claims]]
+lab = "M12"
+claim = "The weights can be made to sum to one."
+evidence = "site/src/mechanisms/lib/inference.test.js > stacking > makes the weights sum to one when asked"
+
+[[claims]]
+lab = "M12"
+claim = "The unpenalised intercept stays whether or not the weights sum to one."
+evidence = "site/src/mechanisms/lib/stacking.test.js > stacking, as Model 12 shows it > keeps an unpenalised intercept when the weights sum to one"
+
+[[claims]]
+lab = "M12"
+claim = "For an average, ensemble error is member error minus ambiguity."
+evidence = "site/src/mechanisms/lib/inference.test.js > stacking > splits ensemble error into member error minus ambiguity"
+
+[[claims]]
+lab = "M12"
+claim = "The slider sets the correlation of the base models' own noise; their errors also share the rating's noise and correlate higher."
+evidence = "site/src/mechanisms/lib/stacking.test.js > stacking, as Model 12 shows it > keeps the errors more correlated than the slider sets, through the rating noise they share"
+
+[[claims]]
+lab = "M12"
+claim = "The comparison with the best single model uses a user-clustered bootstrap, resampling users with all their ratings."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > gives row, user and pigeonhole weights with the right structure"
