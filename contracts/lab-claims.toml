@@ -483,3 +483,33 @@ evidence = "site/src/mechanisms/lib/crossed.test.js > crossed random-effects bia
 lab = "M13"
 claim = "The fitted offsets recover how the movies truly differ."
 evidence = "site/src/mechanisms/lib/crossed.test.js > crossed random-effects bias model (A.246) > recovers the true movie offsets it was generated from"
+
+[[claims]]
+lab = "M14"
+claim = "Four ordered cut-points slice the hidden scale into one to five stars."
+evidence = "site/src/mechanisms/lib/ordinal.test.js > ordinal regression, a cumulative link model (A.246) > keeps its fitted cut-points in order"
+
+[[claims]]
+lab = "M14"
+claim = "The cut-points are learned, not assumed equally spaced."
+evidence = "site/src/mechanisms/lib/clm.test.js > the cumulative link model, as Model 14 shows it > learns cut-points that are not equally spaced"
+
+[[claims]]
+lab = "M14"
+claim = "The fit recovers the coefficients and cut-points the ratings were generated from."
+evidence = "site/src/mechanisms/lib/ordinal.test.js > ordinal regression, a cumulative link model (A.246) > recovers the coefficients and cut-points it was generated from"
+
+[[claims]]
+lab = "M14"
+claim = "Gradient ascent reaches the maximum likelihood."
+evidence = "site/src/mechanisms/lib/clm.test.js > the cumulative link model, as Model 14 shows it > reaches the maximum likelihood on its fifty ratings"
+
+[[claims]]
+lab = "M14"
+claim = "Gradient ascent raises the likelihood above its starting point."
+evidence = "site/src/mechanisms/lib/ordinal.test.js > ordinal regression, a cumulative link model (A.246) > raises the likelihood above its starting point"
+
+[[claims]]
+lab = "M14"
+claim = "Shifting the cut-points together flips no star at zero and more as the shift grows, testing the stability of the star predictions."
+evidence = "site/src/mechanisms/lib/ordinal.test.js > ordinal regression, a cumulative link model (A.246) > flips nothing at zero shift, and more ratings as the cut-offs move further"
