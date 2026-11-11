@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { dot, normalEquations } from "./linalg.js";
 import { mulberry32, resample } from "./random.js";
 import { historyRatings, ratings } from "./ratings.js";
-import { design, fit, predict, residuals, vif } from "./regression.js";
+import { design, fit, heldFit, predict, residuals, vif } from "./regression.js";
 import { mean } from "./stats.js";
 
 const solve2 = ([[a, b], [c, d]], [e, f]) => {
@@ -96,6 +96,36 @@ describe("collinearity", () => {
     const covariance = mean(pairs.map(([x, y]) => (x - a) * (y - b)));
     const sd = (values, centre) => Math.sqrt(mean(values.map((v) => (v - centre) ** 2)));
     expect(covariance / (sd(first, a) * sd(second, b))).toBeLessThan(-0.5);
+  });
+});
+
+describe("polynomial terms with the curvature held", () => {
+  const rows = historyRatings({ seed: 21, n: 400 });
+  const ys = rows.map((row) => row.rating);
+  const ubar = mean(rows.map((row) => row.user));
+  const cbar = mean(rows.map((row) => row.count));
+  const termsAt = (u0, c0) => [
+    { key: "user", value: (row) => row.user - u0 },
+    { key: "count", value: (row) => row.count - c0 },
+    { key: "square", value: (row) => (row.count - c0) ** 2 },
+    { key: "both", value: (row) => (row.user - u0) * (row.count - c0) },
+  ];
+  const drawn = (terms) => {
+    const coef = heldFit(rows, ys, terms, { square: 0.1, both: -0.2 });
+    const vector = [coef.intercept, ...terms.map((term) => coef[term.key])];
+    return rows.slice(0, 50).map((row) => predict(vector, terms, row));
+  };
+
+  it("draws the same surface whether or not the predictors are centred", () => {
+    const centred = drawn(termsAt(ubar, cbar));
+    const raw = drawn(termsAt(0, 0));
+    expect(centred).toHaveLength(50);
+    centred.forEach((value, index) => expect(value).toBeCloseTo(raw[index], 8));
+  });
+
+  it("draws its ratings on the five integer levels", () => {
+    expect(ys).toHaveLength(400);
+    expect(ys.every((y) => Number.isInteger(y) && y >= 1 && y <= 5)).toBe(true);
   });
 });
 

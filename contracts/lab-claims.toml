@@ -73,3 +73,28 @@ evidence = "site/src/mechanisms/lib/regression.test.js > the multi-linear bowl >
 lab = "M2"
 claim = "VIF = 1 / (1 - R^2) is the same for each slope, about 1 / (1 - rho^2)."
 evidence = "site/src/mechanisms/lib/regression.test.js > collinearity > raises the VIF of correlated predictors to about 1 / (1 - rho^2)"
+
+[[claims]]
+lab = "M3"
+claim = "Centring changes what the lower coefficients mean, not the predictions."
+evidence = "site/src/mechanisms/lib/regression.test.js > polynomial and interaction terms > predicts exactly the same after centring"
+
+[[claims]]
+lab = "M3"
+claim = "The count-squared and interaction coefficients are identical centred and raw."
+evidence = "site/src/mechanisms/lib/regression.test.js > polynomial and interaction terms > keeps the curvature and interaction coefficients, shifting only the lower ones"
+
+[[claims]]
+lab = "M3"
+claim = "With the curvature held at the sliders, the drawn surface does not move when centring is toggled."
+evidence = "site/src/mechanisms/lib/regression.test.js > polynomial terms with the curvature held > draws the same surface whether or not the predictors are centred"
+
+[[claims]]
+lab = "M3"
+claim = "A high VIF that centring removes was created by the scaling of the powers of count."
+evidence = "site/src/mechanisms/lib/regression.test.js > polynomial and interaction terms > cuts the VIF that uncentred powers of count create"
+
+[[claims]]
+lab = "M3"
+claim = "The ratings sit on the five levels."
+evidence = "site/src/mechanisms/lib/regression.test.js > polynomial terms with the curvature held > draws its ratings on the five integer levels"
