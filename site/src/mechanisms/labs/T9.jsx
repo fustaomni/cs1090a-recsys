@@ -127,8 +127,11 @@ export default function T9() {
         of the same movie, share error. Resampling single ratings treats them as independent and
         makes intervals too narrow. Resampling whole users fixes the first dependence;
         resampling users and movies independently, Owen's pigeonhole bootstrap, also covers the
-        second and is mildly conservative. The statistic is the paired difference in RMSE
-        between a baseline and the best model, recomputed on each resample.
+        second, and Owen (2007) shows it to be mildly conservative. The statistic is the paired
+        difference in RMSE
+        between a baseline and the best model, recomputed on each resample. Pairing cancels the
+        error the two models share, so with few users sharing almost all of it, 20 users at a
+        shared error of 0.95, the user interval comes out narrower than the row one.
       </p>
       <div className="lab-grid">
         <Plot traces={histogramTraces} layout={histogramLayout} label="Replicates by scheme" />
@@ -197,7 +200,7 @@ export default function T9() {
         which makes that cheap. Seeded synthetic test ratings with user and movie effects.
       </p>
       <Provenance
-        data="Synthetic test ratings for two models, generated in this page: crossedRatings({ seed: 151, movies: 40 }), users set by the slider; no real ratings"
+        data={`Synthetic test ratings for two models, generated in this page: crossedRatings({ seed: 151, users: ${users}, movies: 40, shared: ${fixed(shared, 2)} }); replicates seeded 23, the mean's user bootstrap seeded 5; no real ratings`}
         method="Bootstrap resampling of ratings, of users, or of users and movies, recomputing the paired RMSE difference"
       />
     </article>

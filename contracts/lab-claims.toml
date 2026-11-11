@@ -778,3 +778,43 @@ evidence = "site/src/mechanisms/lib/importance.test.js > importance > flags poin
 lab = "T8"
 claim = "Shares are each feature's rise in RMSE over the sum of positive rises."
 evidence = "site/src/mechanisms/lib/importance.test.js > importance > turns rises into shares that sum to one, ignoring negatives"
+
+[[claims]]
+lab = "T9"
+claim = "Each scheme turns a draw into weights: ratings, whole users, or users and movies with a rating weighted by the product of their counts."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > gives row, user and pigeonhole weights with the right structure"
+
+[[claims]]
+lab = "T9"
+claim = "The statistic is the paired difference in RMSE, recomputed with each resample's weights."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > computes the plain RMSE when every weight is one"
+
+[[claims]]
+lab = "T9"
+claim = "The paired difference has a narrower interval than either model's own RMSE."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > narrows the paired difference below either model's own interval"
+
+[[claims]]
+lab = "T9"
+claim = "Percentile endpoints are interpolated between the sorted replicates."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > interpolates percentiles"
+
+[[claims]]
+lab = "T9"
+claim = "Resampling single ratings makes intervals too narrow; resampling whole users widens them, and users and movies wider still."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > widens the paired interval as users, then users and movies, are resampled"
+
+[[claims]]
+lab = "T9"
+claim = "On the page's own data, at its defaults and three of its sliders' corners, intervals widen from ratings to users to users and movies."
+evidence = "site/src/mechanisms/lib/bootstrap.test.js > bootstrap inference, as Technique 9 shows it > widens from ratings to users to users and movies, at the defaults and three corners"
+
+[[claims]]
+lab = "T9"
+claim = "Pairing cancels the error the two models share, so with 20 users sharing 0.95 of it the user interval comes out narrower than the row one."
+evidence = "site/src/mechanisms/lib/bootstrap.test.js > bootstrap inference, as Technique 9 shows it > lets pairing cancel the user error when 20 users share 0.95 of it"
+
+[[claims]]
+lab = "T9"
+claim = "Percentile endpoints settle only as replicates grow into the thousands."
+evidence = "site/src/mechanisms/lib/bootstrap.test.js > bootstrap inference, as Technique 9 shows it > settles its user-clustered endpoints as replicates grow into the thousands"
