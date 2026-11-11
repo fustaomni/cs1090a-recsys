@@ -453,3 +453,33 @@ evidence = "site/src/mechanisms/lib/stacking.test.js > stacking, as Model 12 sho
 lab = "M12"
 claim = "The comparison with the best single model uses a user-clustered bootstrap, resampling users with all their ratings."
 evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > gives row, user and pigeonhole weights with the right structure"
+
+[[claims]]
+lab = "M13"
+claim = "A user who rated few movies keeps less of their own offset than one who rated many: the share is n / (n + sigma^2/tau^2)."
+evidence = "site/src/mechanisms/lib/crossed.test.js > crossed random-effects bias model (A.246) > lets a user with more ratings keep more of their own offset"
+
+[[claims]]
+lab = "M13"
+claim = "Each offset keeps that share of its mean residual after the other offsets at the same pooling."
+evidence = "site/src/mechanisms/lib/pooling.test.js > crossed offsets, as Model 13 shows them > keeps n / (n + sigma^2 / tau^2) of each mean residual after the other offsets"
+
+[[claims]]
+lab = "M13"
+claim = "The share does not apply to the unpooled offset, since the other offsets move with the pooling too."
+evidence = "site/src/mechanisms/lib/pooling.test.js > crossed offsets, as Model 13 shows them > does not keep that share of the unpooled offset, since the other offsets move too"
+
+[[claims]]
+lab = "M13"
+claim = "As the pooling grows the offsets shrink, as a whole, to zero, and every prediction becomes the grand mean."
+evidence = "site/src/mechanisms/lib/crossed.test.js > crossed random-effects bias model (A.246) > shrinks the offsets as a whole toward zero as the pooling grows"
+
+[[claims]]
+lab = "M13"
+claim = "The crossed offsets are fitted by alternating updates, run to convergence."
+evidence = "site/src/mechanisms/lib/crossed.test.js > crossed random-effects bias model (A.246) > has converged: more alternating updates change nothing"
+
+[[claims]]
+lab = "M13"
+claim = "The fitted offsets recover how the movies truly differ."
+evidence = "site/src/mechanisms/lib/crossed.test.js > crossed random-effects bias model (A.246) > recovers the true movie offsets it was generated from"
