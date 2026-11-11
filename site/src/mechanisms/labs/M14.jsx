@@ -95,8 +95,10 @@ export default function M14() {
         The model scores each rating on a hidden continuous scale, then four cut-points slice that
         scale into one to five stars. The cut-points are learned, not assumed equally spaced, which
         is exactly what the continuous models take for granted. Shift them together and count how
-        many predictions change star: if a small shift causes many flips, the ordinal assumptions
-        are too fragile to rely on.
+        many predictions change star: if a small shift causes many flips, the star predictions
+        are too fragile to rely on. A common shift of the cut-points is the same as shifting every
+        score the other way, so it tests how near the scores sit to a cut, not the ordinal
+        assumptions themselves.
       </p>
       <Plot traces={space} layout={spaceLayout} label="Hidden scores sliced into star ratings" />
       <div className="controls">
