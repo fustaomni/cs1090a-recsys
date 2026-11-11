@@ -868,3 +868,28 @@ evidence = "site/src/mechanisms/lib/t11.audit.test.js > the coverage audit, as T
 lab = "T11"
 claim = "On 30 ratings the default gap is within two binomial standard errors of the promise."
 evidence = "site/src/mechanisms/lib/t11.audit.test.js > the coverage audit, as Technique 11 shows it > finds the default gap within two binomial standard errors on 30 ratings"
+
+[[claims]]
+lab = "T12"
+claim = "The observed statistic is the mean of the per-user differences; flipping every block negates it."
+evidence = "site/src/mechanisms/lib/signflip.test.js > user-level sign-flip permutation test (A.246) > keeps the observed statistic with no flips and negates it with all flipped"
+
+[[claims]]
+lab = "T12"
+claim = "Flipping whole blocks builds the exact reference distribution over every sign pattern, symmetric about zero."
+evidence = "site/src/mechanisms/lib/signflip.test.js > user-level sign-flip permutation test (A.246) > enumerates every sign pattern, symmetric about zero"
+
+[[claims]]
+lab = "T12"
+claim = "The smallest possible two-sided p is 2 / 2^n, so with five users no result can reach 0.05."
+evidence = "site/src/mechanisms/lib/signflip.test.js > user-level sign-flip permutation test (A.246) > cannot go below 2 / 2^n, so five users can never reach 0.05"
+
+[[claims]]
+lab = "T12"
+claim = "Flipping single ratings pretends each user's ratings were independent and overstates the certainty."
+evidence = "site/src/mechanisms/lib/signflip.test.js > user-level sign-flip permutation test (A.246) > is less certain than a row-level flip that ignores the clustering by user"
+
+[[claims]]
+lab = "T12"
+claim = "The row-level flip overstates the certainty at every user count the slider allows."
+evidence = "site/src/mechanisms/lib/blocks.test.js > the sign-flip test, as Technique 12 shows it > is less certain than the row-level flip for every user count from 5 to 12"
