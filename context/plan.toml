@@ -3321,7 +3321,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.284"
-title = "Every offline evaluation follows one documented protocol fixed before any result: contracts/evaluation-protocol.toml declares the split quantiles, the baselines, the tuning budget, the metrics and the pre-registered primary test, every evidence record names its digest, and a split audit refuses a training rating dated after the test boundary and reports the cold users and movies the split creates"
+title = "Every offline evaluation follows one documented research policy fixed before any result: contracts/evaluation-protocol.toml, validated by a Pydantic contract, declares the hypotheses, the split quantiles, the baselines, the tuning budget, the metrics, the pre-registered primary test and its decision thresholds, every evidence record names its digest, and a split audit refuses a training rating dated after the test boundary and reports the cold users and movies the split creates"
 thread = "A"
 depends_on = ["A.283"]
 because = { "A.283" = "the protocol digest is a field of the evidence record" }
@@ -3332,7 +3332,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.285"
-title = "A policy gate decides whether the evidence supports each conclusion the project reports: a Rego policy over the evidence records returns a verdict, the verdict becomes a decision, and the report and site state a conclusion only through that decision, so a missing reproduction, a leaking split or an interval that overlaps the baseline blocks the conclusion, and any claim that a recommendation changed user behaviour is refused, since causal evaluation is outside the TF's offline scope"
+title = "A policy gate decides whether the evidence supports each conclusion the project reports: a Rego policy over the evidence records returns one of three typed verdicts, supported, inconclusive or not supported, each verdict becomes one decision, accept the research finding, record insufficient evidence, or reject the improvement claim, matching the pre-registered primary verdicts, and the report and site state a conclusion only through that decision, so a missing reproduction, a leaking split or an interval that overlaps the baseline blocks the conclusion, and any claim that a recommendation changed user behaviour is refused, since causal evaluation is outside the TF's offline scope"
 thread = "A"
 depends_on = ["A.283", "A.284"]
 because = { "A.283" = "the gate reads evidence records", "A.284" = "the gate judges evidence under the declared protocol" }
@@ -3441,6 +3441,52 @@ branch = "feature/site-mechanisms"
 done_when = [
   { kind = "proof", test = "tests/test_site_review.py::test_every_industry_practice_names_its_step_or_why_it_is_out_of_scope" },
   { kind = "proof", test = "tests/test_site_review.py::test_results_state_that_prediction_is_not_causal_value" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.295"
+title = "Offline experiment runs are tracked in a local MLflow file store, with no server: each fit logs its parameters, seed, runtime and metrics, each fitted model is a logged model linked to the digests of the datasets it was trained and measured on, and each evidence record names its MLflow run and model ids, so the typed record stays the source of truth and MLflow the index"
+thread = "A"
+depends_on = ["A.283"]
+because = { "A.283" = "the evidence record names the MLflow run and model it indexes" }
+branch = "feature/experiment-tracking"
+done_when = [
+  { kind = "proof", test = "tests/test_experiment_tracking.py::test_every_evidence_record_names_its_mlflow_run_and_model" },
+  { kind = "proof", test = "tests/test_experiment_tracking.py::test_mlflow_tracking_writes_only_to_a_local_store" },
+]
+[[steps]]
+id = "A.296"
+title = "Every offline prediction is recorded as typed, append-only evidence: the predicted rating, the model id, the evaluator run, and each feature's provenance, the latest rating time it was built from, so one prediction traces to its inputs, and a record that is rewritten is refused"
+thread = "A"
+depends_on = ["A.291", "A.292"]
+because = { "A.291" = "predictions are made and recorded by the independent evaluator", "A.292" = "each feature's cutoff is the point-in-time bound it was built under" }
+branch = "feature/prediction-evidence"
+done_when = [
+  { kind = "proof", test = "tests/test_prediction_evidence.py::test_every_prediction_names_its_model_and_feature_cutoffs" },
+  { kind = "proof", test = "tests/test_prediction_evidence.py::test_a_rewritten_prediction_record_is_refused" },
+]
+[[steps]]
+id = "A.297"
+title = "Each reported conclusion is sealed in an immutable evidence bundle with a reproducibility manifest: the code commit, the uv.lock digest, the data hashes, the evidence and prediction records, and the OpenTelemetry trace ids a file exporter writes offline for every stage, content-addressed so any changed artifact breaks the bundle's digest"
+thread = "A"
+depends_on = ["A.285", "A.287"]
+because = { "A.285" = "a bundle seals the decision the gate reached", "A.287" = "the manifest is what a re-run reads" }
+branch = "feature/evidence-bundle"
+done_when = [
+  { kind = "proof", test = "tests/test_evidence_bundle.py::test_a_changed_artifact_breaks_the_bundle_digest" },
+  { kind = "proof", test = "tests/test_evidence_bundle.py::test_the_manifest_names_commit_lock_data_and_traces" },
+]
+[[steps]]
+id = "A.298"
+title = "The site shows the research architecture: Models and techniques draws the flow from versioned MovieLens data through the split, the models, the evidence, the evaluator, the verdicts and the decision policy to the immutable evidence bundle, names each of the seven typed components with the step that builds it, and Results names the decision each pre-registered verdict leads to"
+thread = "A"
+depends_on = ["A.294"]
+because = { "A.294" = "the architecture extends the practices already stated on the site" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_the_architecture_names_every_component_and_its_step" },
+  { kind = "proof", test = "tests/test_site_review.py::test_each_verdict_names_its_decision" },
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:deploy" },
 ]
