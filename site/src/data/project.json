@@ -37,7 +37,10 @@
       { "item": "Predicting the next recorded rating", "form": "The value of the next rating a user submits — never a movie watched" },
       { "item": "Tabular inputs, classical methods", "form": "{models} models and {techniques} supporting techniques" }
     ],
-    "principle": "The timestamps record when a rating was submitted, not when a movie was watched. Every question, feature and metric concerns rating submissions."
+    "principle": "The timestamps record when a rating was submitted, not when a movie was watched. Every question, feature and metric concerns rating submissions.",
+    "future": [
+      { "item": "Causal recommendation effectiveness: did showing a movie cause the user to watch or enjoy it more?", "needs": "Randomized exposure or holdback data, outcomes for the recommendations that were withheld, and causal evaluation, as Spotify's 2026 incremental recommendation study required. MovieLens 1M records none of these, so this question is outside the TF's scope and left for future research." }
+    ]
   },
   "phases": [
     { "id": "0", "title": "Scope, fixed before anything runs", "points": ["Question, unit and target declared in writing before any code.", "Target: rating in {1..5}, ordinal, modelled as continuous — a limitation tested by {model:14}, not only recorded.", "Metrics: RMSE, MAE, and the macro-averaged MAEᴹ and RMSEᴹ, which an imbalanced ordinal target requires, as {technique:3} shows.", "Predictions left unrounded, so figures stay comparable with published work."] },
@@ -110,7 +113,7 @@
       { "id": 2, "name": "Decision provenance", "question": "Which data, features, model and rules produced a result?", "status": "planned", "now": "Each milestone result already names its evidence contract and digest, and every repository task run is recorded in a signed, hash-chained ledger.", "steps": ["A.283", "A.286"] },
       { "id": 3, "name": "Explainability", "question": "Which factors influenced a prediction?", "status": "planned", "now": "Coefficients for the linear rungs and permutation importance on the temporal validation set are part of the design.", "steps": ["A.288"] },
       { "id": 4, "name": "Objective evaluation", "question": "Does a model beat an appropriate baseline under a fair protocol?", "status": "planned", "now": "The temporal split, the tuned bias baseline, the shared tuning budget and the paired, user-clustered primary test are fixed before any result is seen.", "steps": ["A.284"] },
-      { "id": 5, "name": "Causal evaluation", "question": "Did showing a recommendation change what users did?", "status": "outside the TF's scope", "now": "MovieLens 1M records submitted ratings, not what users were shown, so there is no exposure to estimate an effect from.", "why": "The reviewer removed real-user logging, off-policy evaluation and the Open Bandit Dataset, so the acceptance gate refuses any claim of changed user behaviour (A.285)." },
+      { "id": 5, "name": "Causal evaluation", "question": "Did showing a recommendation change what users did?", "status": "outside the TF's scope", "now": "MovieLens 1M records submitted ratings, not what users were shown, so there is no exposure to estimate an effect from.", "why": "The reviewer removed real-user logging, off-policy evaluation and the Open Bandit Dataset, so the acceptance gate refuses any claim of changed user behaviour (A.285). Scope names it a future research extension, needing randomized exposure data." },
       { "id": 6, "name": "Continuous evaluation", "question": "Does a conclusion still hold on later data?", "status": "planned", "now": "Phase 2 already tests the split at four quantiles. No system is deployed, so post-deployment monitoring is outside the TF's scope; later time windows are re-judged offline instead.", "steps": ["A.289"] },
       { "id": 7, "name": "Policy-based governance", "question": "Does an explicit, auditable rule decide whether the evidence is sufficient?", "status": "planned", "now": "The primary comparison and its three possible verdicts are written in Phase 4, before any result is seen.", "steps": ["A.285"] }
     ],
@@ -182,6 +185,11 @@
     "statement": "The practical threshold, the smallest RMSE improvement worth claiming, is declared by the group before any result. Supported: the lower bound of the paired, user-clustered 95% interval for the improvement exceeds the threshold, and the user-level sign-flip test agrees at the declared level. Not supported: the upper bound falls below the threshold. Inconclusive: otherwise, or when the interval and the sign-flip test disagree. A leaking comparison is refused before any verdict.",
     "example": "Hypothetical example, not a result: a baseline RMSE of 0.950 against a candidate of 0.930 is an improvement of 0.020, but its interval runs from -0.005 to 0.045, so for any declared threshold from 0 up to 0.045 the verdict is inconclusive. A lower observed RMSE is an observation, not a supported claim."
   },
+  "research_questions": [
+    { "id": "Q1", "question": "Can a model accurately predict a user's next observed rating?", "answerable": "Yes", "role": "Primary research objective", "evidence": "a temporal holdout, RMSE and MAE, user-clustered intervals, and the three-sided rule" },
+    { "id": "Q2", "question": "Can a prediction be reproduced and its model-based basis explained?", "answerable": "Yes, with instrumentation", "role": "Independently testable objective, with its own criteria: reproduction within tolerance, complete lineage and feature provenance, and explanations recomputed from their recorded method and version", "evidence": "data and model versions, feature provenance and experiment artifacts" },
+    { "id": "Q3", "question": "Did showing a recommended movie cause the user to watch or enjoy it more?", "answerable": "Not established", "role": "Future research extension, outside the TF's scope", "evidence": "randomized exposure, outcomes and causal evaluation, none of which MovieLens 1M records" }
+  ],
   "excluded": [
     "A classification arm on a rating of 4 or more: a different question, whose metrics could not share the same table"
   ]

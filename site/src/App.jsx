@@ -6,6 +6,7 @@ import { bind } from "./bind.js";
 import EvidenceChain from "./EvidenceChain.jsx";
 import Architecture from "./Architecture.jsx";
 import ExampleRecord from "./ExampleRecord.jsx";
+import ResearchQuestions from "./ResearchQuestions.jsx";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
@@ -65,6 +66,7 @@ function Overview() {
       <h1>{data.title}</h1>
       <p className="lede">{overview.question}</p>
       <p>{bind(overview.summary)}</p>
+      <ResearchQuestions />
       <EvidenceChain page="overview" />
       <ul className="stats">
         {overview.stats.map((stat) => (
@@ -118,6 +120,17 @@ function Scope() {
             ))}
           </dl>
         </div>
+      </div>
+      <div className="panel">
+        <h3>Future research extension</h3>
+        <dl>
+          {scope.future.map((entry) => (
+            <div key={entry.item}>
+              <dt>{entry.item}</dt>
+              <dd>{entry.needs}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );
