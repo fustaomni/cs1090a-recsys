@@ -3343,3 +3343,15 @@ done_when = [
   { kind = "proof", test = "tests/test_secrets_scope.py::test_the_history_gate_scans_only_the_gated_branch" },
   { kind = "proof", test = "tests/test_secrets_scope.py::test_a_finding_on_another_local_branch_does_not_fail_this_gate" },
 ]
+[[steps]]
+id = "A.325"
+title = "DATA.MEMBER_UNSAFE's mutant disables the unsafe-member rule and still compiles: the iteration that binds each unsafe member name iterates an undefined input path instead of being replaced by false, so safeguards:prove judges the guard by its proof rather than reporting the trial inconclusive because the policy no longer compiles"
+thread = "A"
+depends_on = ["A.235"]
+because = { "A.235" = "data:fetch, whose ERR_DATA_MEMBER_UNSAFE rule this safeguard guards" }
+branch = "feature/data-member-mutant"
+done_when = [
+  { kind = "proof", test = "tests/test_safeguard_mutants.py::test_every_policy_safeguard_mutant_compiles" },
+  { kind = "proof", test = "tests/test_data_fetch.py::test_a_traversing_absolute_or_link_member_is_refused" },
+  { kind = "task", name = "safeguards:prove" },
+]
