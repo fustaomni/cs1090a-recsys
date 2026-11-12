@@ -256,3 +256,29 @@ def test_the_project_card_names_the_first_tf_meeting() -> None:
     # The card names the scheduled first TF meeting, never TBD.
     meeting = _project()["group"]["first_meeting"]
     assert meeting == FIRST_MEETING, meeting
+
+
+def test_every_industry_practice_names_its_step_or_why_it_is_out_of_scope() -> None:
+    # A.294: each practice names steps the plan holds, or why it is outside the TF's scope.
+    plan = PLAN.read_text(encoding="utf-8")
+    practices = _evidence().get("practices")
+    assert isinstance(practices, list), "Overview lists no industry practice"
+    for practice in nonempty(practices):
+        assert practice["org"] and practice["practice"] and practice["here"], practice
+        if practice["status"] == OUT_OF_SCOPE:
+            assert practice["why"], practice
+            continue
+        assert practice["status"] == "planned", practice
+        for step in nonempty(practice["steps"]):
+            assert f'id = "{step}"' in plan, (step, practice["org"])
+    chain = (ROOT / "site" / "src" / "EvidenceChain.jsx").read_text(encoding="utf-8")
+    assert "evidence.practices.map" in chain, "Overview does not render the practices"
+
+
+def test_results_state_that_prediction_is_not_causal_value() -> None:
+    # A.294: Results says a well-predicted rating is not evidence that recommending adds value.
+    note = _evidence().get("prediction_note")
+    assert isinstance(note, str), "Results states no prediction note"
+    assert "not evidence" in note, note
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "{data.evidence.prediction_note}" in app, "Results omits the prediction note"
