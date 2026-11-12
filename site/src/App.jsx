@@ -4,6 +4,7 @@ import results from "./data/results.json";
 import Mechanisms from "./mechanisms/Mechanisms.jsx";
 import { bind } from "./bind.js";
 import EvidenceChain from "./EvidenceChain.jsx";
+import Architecture from "./Architecture.jsx";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
@@ -171,6 +172,7 @@ function Deploys() {
   return (
     <section id="deploys" className="section">
       <h2>What the project deploys</h2>
+      <Architecture />
       <h3>{bind("{models} predictive models, simplest first")}</h3>
       <ol className="ladder">
         {groups.map((group) => (
@@ -250,6 +252,10 @@ function Results() {
           {primary.verdicts.map((verdict) => (
             <li key={verdict} className={verdict === primary.verdict ? "chosen" : ""}>
               {verdict}
+              <span className="muted">
+                {" "}
+                · {data.architecture.outcomes.find((outcome) => outcome.verdict === verdict).decision}
+              </span>
             </li>
           ))}
         </ul>

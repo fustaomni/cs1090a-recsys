@@ -128,6 +128,33 @@
       { "org": "Spotify", "when": "September 2026", "practice": "Conversational recommendation agents, tested on live listeners", "here": "No application or agent is built here.", "status": "outside the TF's scope", "why": "An application and an online recommender are outside the TF's scope." }
     ]
   },
+  "architecture": {
+    "flow": [
+      "MovieLens 1M, versioned source data",
+      "Temporal split and point-in-time features",
+      "{models} models and the regularised bias baseline",
+      "Predictions and experiment artifacts",
+      "Typed evidence records, judged against the predeclared evaluation policy",
+      "Statistical evaluator",
+      "Typed verdicts",
+      "Decision policy",
+      "Immutable evidence bundle and reproducibility manifest"
+    ],
+    "outcomes": [
+      { "verdict": "The best model beats the baseline", "decision": "Supported: accept the research finding" },
+      { "verdict": "No detectable difference from the baseline", "decision": "Inconclusive: record insufficient evidence" },
+      { "verdict": "The baseline is better", "decision": "Not supported: reject the improvement claim" }
+    ],
+    "components": [
+      { "id": 1, "name": "Research policy", "records": "Hypotheses, baselines, metrics, decision thresholds and the split protocol, fixed before any result", "tools": "Pydantic, versioned TOML", "steps": ["A.284"] },
+      { "id": 2, "name": "Data provenance", "records": "Dataset hashes, transformations, timestamps, and when each feature became available", "tools": "Content hashes, OpenLineage", "steps": ["A.283", "A.292", "A.293"] },
+      { "id": 3, "name": "Experiment tracking", "records": "Models, seeds, hyperparameters, runtime and metrics", "tools": "MLflow, as a local file store", "steps": ["A.295"] },
+      { "id": 4, "name": "Prediction evidence", "records": "Each prediction with its model, evaluator run and feature cutoffs", "tools": "Pydantic, append-only records", "steps": ["A.296"] },
+      { "id": 5, "name": "Evaluation", "records": "RMSE, MAE, user-clustered intervals, paired tests and diagnostics, computed only by the evaluator", "tools": "NumPy, SciPy, scikit-learn", "steps": ["A.291"] },
+      { "id": 6, "name": "Verdict and decision", "records": "Supported, inconclusive or not supported, and the decision each leads to", "tools": "Typed policy evaluator, in Rego", "steps": ["A.285"] },
+      { "id": 7, "name": "Reproducibility and observability", "records": "Code revision, locked environment, execution traces and the sealed evidence bundle", "tools": "uv.lock, Git, OpenTelemetry file exporter", "steps": ["A.287", "A.297"] }
+    ]
+  },
   "excluded": [
     "A classification arm on a rating of 4 or more: a different question, whose metrics could not share the same table"
   ]
