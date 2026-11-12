@@ -203,8 +203,7 @@ def test_a_typed_model_or_technique_reference_is_refused() -> None:
     assert typed == [], typed
 
 
-# A.282: THE EVIDENCE CHAIN EACH PAGE STATES, read from project.json and rendered on its page.
-PAGES = ("overview", "scope", "phases", "deploys", "mechanisms", "results")
+# A.282: THE EVIDENCE CHAIN, stated once on the Overview page and read from project.json.
 CHAIN = ("Policy as code", "Evidence as data", "Evaluator", "Verdict", "Decision", "Enforcement")
 OUT_OF_SCOPE = "outside the TF's scope"
 STATUSES = {"in place", "planned", OUT_OF_SCOPE}
@@ -217,22 +216,21 @@ def _evidence() -> dict[str, Any]:
     return evidence
 
 
-def test_every_page_states_the_evidence_chain_it_governs() -> None:
-    """Each of the six pages has its own note and renders the chain under its own id."""
+def test_the_evidence_chain_is_stated_on_the_overview_page_only() -> None:
+    """The chain is stated once, on Overview; the other pages would only repeat it."""
     evidence = _evidence()
     assert tuple(evidence["chain"]) == CHAIN, evidence["chain"]
-    pages = evidence["pages"]
-    assert set(pages) == set(PAGES), sorted(pages)
+    assert set(evidence["pages"]) == {"overview"}, sorted(evidence["pages"])
+    overview = evidence["pages"]["overview"]
+    assert overview["note"], overview
     known = {discipline["id"] for discipline in nonempty(evidence["disciplines"])}
+    assert set(nonempty(overview["disciplines"])) == known, overview["disciplines"]
     source = ROOT / "site" / "src"
     app = (source / "App.jsx").read_text(encoding="utf-8")
     labs = (source / "mechanisms" / "Mechanisms.jsx").read_text(encoding="utf-8")
-    for page in nonempty(PAGES):
-        assert pages[page]["note"], page
-        named = nonempty(pages[page]["disciplines"])
-        assert set(named) <= known, (page, named)
-        rendered = f'<EvidenceChain page="{page}" />'
-        assert rendered in (labs if page == "mechanisms" else app), f"{page} omits {rendered}"
+    assert app.count("<EvidenceChain") == 1, "the chain is rendered on more than Overview"
+    assert '<EvidenceChain page="overview" />' in app, "Overview omits the chain"
+    assert "EvidenceChain" not in labs, "Interactive mechanisms repeats the chain"
 
 
 def test_every_discipline_names_its_status_and_its_step_or_why_it_is_out_of_scope() -> None:
@@ -248,3 +246,13 @@ def test_every_discipline_names_its_status_and_its_step_or_why_it_is_out_of_scop
             continue
         for step in nonempty(discipline["steps"]):
             assert f'id = "{step}"' in plan, (step, discipline["name"])
+
+
+# A.290: THE FIRST TF MEETING, as scheduled.
+FIRST_MEETING = "Friday, November 13, 2026, at 7:00 PM ET"
+
+
+def test_the_project_card_names_the_first_tf_meeting() -> None:
+    # The card names the scheduled first TF meeting, never TBD.
+    meeting = _project()["group"]["first_meeting"]
+    assert meeting == FIRST_MEETING, meeting
