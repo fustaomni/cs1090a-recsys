@@ -3369,7 +3369,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.288"
-title = "Each model's offline predictions are explained from the model that made them, never a mimic: coefficients for the linear rungs, permutation importance on the temporal validation set, and exact tree attributions computed on the fitted tree ensembles, each explanation recorded beside the evidence run of the model it explains and naming its attribution method and version, so the explanation can be computed again"
+title = "Each model's offline predictions are explained from the model that made them, never a mimic: coefficients for the linear rungs, permutation importance on the temporal validation set, and exact tree attributions computed on the fitted tree ensembles, each explanation recorded beside the evidence run of the model it explains, naming its attribution method and version so it can be computed again, and labelled a model-based account of the prediction, never a causal reason for the user's rating"
 thread = "A"
 depends_on = ["A.283"]
 because = { "A.283" = "an explanation names the evidence run of the model it explains" }
@@ -3471,7 +3471,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.297"
-title = "Each reported conclusion is sealed in an immutable evidence bundle with a reproducibility manifest: the code commit, the uv.lock digest, the data hashes, the evidence and prediction records, and the OpenTelemetry trace ids a file exporter writes offline for every stage, content-addressed so any changed artifact breaks the bundle's digest"
+title = "Each reported conclusion is sealed in an immutable evidence bundle with a reproducibility manifest: the code commit, the uv.lock digest, the interpreter version and implementation, the platform, the compiled numerical library versions, thread counts, every seed, the execution configuration and the runtime cost, since a lockfile alone does not guarantee bit-for-bit results, together with the data hashes, the evidence and prediction records, and the OpenTelemetry trace ids a file exporter writes offline for every stage, content-addressed so any changed artifact breaks the bundle's digest"
 thread = "A"
 depends_on = ["A.285", "A.287"]
 because = { "A.285" = "a bundle seals the decision the gate reached", "A.287" = "the manifest is what a re-run reads" }
@@ -3479,6 +3479,7 @@ branch = "feature/evidence-bundle"
 done_when = [
   { kind = "proof", test = "tests/test_evidence_bundle.py::test_a_changed_artifact_breaks_the_bundle_digest" },
   { kind = "proof", test = "tests/test_evidence_bundle.py::test_the_manifest_names_commit_lock_data_and_traces" },
+  { kind = "proof", test = "tests/test_evidence_bundle.py::test_the_manifest_records_interpreter_platform_and_compiled_libraries" },
 ]
 [[steps]]
 id = "A.298"
@@ -3588,6 +3589,32 @@ branch = "feature/site-mechanisms"
 done_when = [
   { kind = "proof", test = "tests/test_site_review.py::test_overview_states_three_questions_and_which_the_data_can_answer" },
   { kind = "proof", test = "tests/test_site_review.py::test_scope_names_causal_effectiveness_as_a_future_extension" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.307"
+title = "The research system is one uv-locked package whose modules are enforced boundaries: contracts, data_pipeline, models, evaluation, evidence and governance as subpackages with an offline research runner, and Import Linter contracts in the gate so that models cannot import the evaluator, evaluation cannot import the decision layer, and governance imports only contracts and evidence, with no dashboard application since the static project site is the report"
+thread = "A"
+depends_on = ["A.291", "A.302"]
+because = { "A.291" = "the evaluator's independence becomes an import boundary", "A.302" = "the typed contracts are the lowest layer every module imports" }
+branch = "feature/module-boundaries"
+done_when = [
+  { kind = "proof", test = "tests/test_module_boundaries.py::test_models_cannot_import_the_evaluator" },
+  { kind = "proof", test = "tests/test_module_boundaries.py::test_evaluation_cannot_import_the_decision_layer" },
+  { kind = "proof", test = "tests/test_module_boundaries.py::test_governance_imports_only_contracts_and_evidence" },
+]
+[[steps]]
+id = "A.308"
+title = "The site states the research objective and why to trust it: Overview states the objective, a leakage-safe MovieLens rating prediction system whose model selection, performance, uncertainty and conclusions rest on versioned, reproducible evidence and explicit policies, and the three meanings of why, each with its steps; Phases lists the delivery priorities to December 10 as essential, useful extension or future research, each with its steps; and Models and techniques states the code organisation and its boundaries"
+thread = "A"
+depends_on = ["A.306"]
+because = { "A.306" = "the objective frames the three research questions already on Overview" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_overview_states_the_objective_and_three_meanings_of_why" },
+  { kind = "proof", test = "tests/test_site_review.py::test_phases_list_the_priorities_by_necessity" },
+  { kind = "proof", test = "tests/test_site_review.py::test_the_architecture_states_its_code_organisation" },
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:deploy" },
 ]
