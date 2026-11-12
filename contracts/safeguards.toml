@@ -1818,7 +1818,7 @@ engine = "data:fetch"
 guard = "ERR_DATA_MEMBER_UNSAFE"
 path = "policies/runs/data_fetch/data_fetch.rego"
 anchor = "\tsome name in fetch.unsafe\n"
-mutant = "\tfalse\n"
+mutant = "\tsome name in fetch.unread\n"
 proof = "tests/test_data_fetch.py::test_a_traversing_absolute_or_link_member_is_refused"
 
 [[safeguards]]
