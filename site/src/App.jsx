@@ -9,6 +9,7 @@ import ExampleRecord from "./ExampleRecord.jsx";
 import ResearchQuestions from "./ResearchQuestions.jsx";
 import Objective from "./Objective.jsx";
 import Priorities from "./Priorities.jsx";
+import Explanations from "./Explanations.jsx";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
@@ -192,6 +193,7 @@ function Deploys() {
       <h2>What the project deploys</h2>
       <Architecture />
       <ExampleRecord />
+      <Explanations />
       <h3>{bind("{models} predictive models, simplest first")}</h3>
       <ol className="ladder">
         {groups.map((group) => (

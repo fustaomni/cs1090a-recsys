@@ -436,3 +436,32 @@ def test_results_state_the_threshold_procedure_and_its_status() -> None:
         assert phrase in notes, phrase
     app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
     assert "data.threshold.notes.map" in app, "Results omits the practical threshold"
+
+
+# A.315: THIS ROUND'S PRACTICES, EACH PLANNED WITH A STEP OR OUTSIDE THE SCOPE.
+ROUND_EIGHT = {
+    "PROVE-REC": "planned",
+    "Self-evolving recommender audit": "planned",
+    "Evaluation Cards": "planned",
+    "Rank, Don't Generate": OUT_OF_SCOPE,
+    "LLM-based recommenders": OUT_OF_SCOPE,
+}
+
+
+def test_round_eight_practices_name_their_step_or_why_they_are_out_of_scope() -> None:
+    # A.315: this round's practices are listed, each planned with a step or out of scope.
+    practices = {entry["org"]: entry for entry in nonempty(_evidence()["practices"])}
+    for org, status in ROUND_EIGHT.items():
+        assert org in practices, org
+        assert practices[org]["status"] == status, practices[org]
+
+
+def test_each_model_family_names_its_explanation_and_its_check() -> None:
+    # A.315: every family states the explanation that sums to its prediction, and its check.
+    explanations = _project().get("explanations")
+    assert isinstance(explanations, list), "project.json states no explanations"
+    for entry in nonempty(explanations):
+        assert entry["family"] and entry["explanation"], entry
+        assert "A.312" in entry["check"], entry
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "<Explanations />" in app, "Models and techniques omits the explanations"
