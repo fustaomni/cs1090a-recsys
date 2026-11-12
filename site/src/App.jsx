@@ -117,7 +117,6 @@ function Scope() {
           </dl>
         </div>
       </div>
-      <EvidenceChain page="scope" />
     </section>
   );
 }
@@ -132,7 +131,6 @@ function Phases() {
       <p className="status-line">
         <span className="badge current">Status</span> {data.status}
       </p>
-      <EvidenceChain page="phases" />
       {groups.map((milestone) => (
         <div key={milestone.id} className="milestone-group">
           <h3>
@@ -173,7 +171,6 @@ function Deploys() {
   return (
     <section id="deploys" className="section">
       <h2>What the project deploys</h2>
-      <EvidenceChain page="deploys" />
       <h3>{bind("{models} predictive models, simplest first")}</h3>
       <ol className="ladder">
         {groups.map((group) => (
@@ -240,7 +237,6 @@ function Results() {
       <p className="muted">
         {results.protocol}. Updated {results.updated}.
       </p>
-      <EvidenceChain page="results" />
       <div className="opponent">
         <p className="status-line">
           <span className={`badge ${primary.status === "decided" ? "done" : "current"}`}>
