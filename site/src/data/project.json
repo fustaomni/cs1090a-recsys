@@ -133,7 +133,13 @@
       { "org": "Self-evolving recommender audit", "when": "October 2026", "practice": "An evaluator the evaluated system cannot edit", "here": "The evaluator's source digest is recorded before the test window is read, and a verdict from any other evaluator is refused.", "status": "planned", "steps": ["A.313"] },
       { "org": "Evaluation Cards", "when": "June 2026", "practice": "Evaluation results reported as cards with reproducibility, completeness, provenance and comparability signals", "here": "An Evaluation Card for the primary comparison, with every field computed from committed evidence.", "status": "planned", "steps": ["A.314"] },
       { "org": "Rank, Don't Generate", "when": "2026", "practice": "Explanations ranked from atomic statements extracted from reviews", "here": "MovieLens 1M has no review text, so there are no statements to rank.", "status": "outside the TF's scope", "why": "The statement pool it needs does not exist in MovieLens 1M." },
-      { "org": "LLM-based recommenders", "when": "2026", "practice": "Language models that rank, explain or render recommendations", "here": "No language model is part of this project.", "status": "outside the TF's scope", "why": "Language-model components and any application are outside the TF's scope." }
+      { "org": "LLM-based recommenders", "when": "2026", "practice": "Language models that rank, explain or render recommendations", "here": "No language model is part of this project.", "status": "outside the TF's scope", "why": "Language-model components and any application are outside the TF's scope." },
+      { "org": "in-toto and SLSA", "when": "2026", "practice": "Signed provenance for every ML artifact, refused at admission without it", "here": "Every fitted model and evidence bundle carries a signed SLSA provenance statement, and the gate admits none without one.", "status": "planned", "steps": ["A.316"] },
+      { "org": "MLflow autologging", "when": "2026", "practice": "Parameters, metrics, data versions and artifacts captured by autologging, never by hand", "here": "Offline runs are tracked through scikit-learn autologging into a local file store.", "status": "planned", "steps": ["A.295"] },
+      { "org": "BenchmarkCards", "when": "2026", "practice": "A benchmark's task and outcome assumptions documented before evaluation, then tested in stages", "here": "A BenchmarkCard for MovieLens 1M tests each task assumption on the data and states its outcome assumptions as untestable offline.", "status": "planned", "steps": ["A.318"] },
+      { "org": "Conformal prediction", "when": "2026", "practice": "Each prediction output with a calibrated interval beside its contributors", "here": "Each prediction carries a split-conformal interval calibrated on the validation window, with test coverage reported because a temporal split is not exchangeable.", "status": "planned", "steps": ["A.317"] },
+      { "org": "Knowledge graphs with LLM reasoning", "when": "2026", "practice": "Structured graph reasoning rendered in natural language by a language model", "here": "No language model is used, and MovieLens 1M holds only genres.", "status": "outside the TF's scope", "why": "Language-model components are outside the TF's scope." },
+      { "org": "Continuous runtime verification", "when": "2026", "practice": "Models measured continuously under real-world use", "here": "No deployment exists to monitor; later time windows are re-judged offline instead (A.289).", "status": "outside the TF's scope", "why": "Monitoring a deployment is outside the TF's offline scope." }
     ]
   },
   "architecture": {
@@ -177,6 +183,7 @@
       ["Dataset digest", "SHA-256 of ratings.dat, users.dat and movies.dat"],
       ["Experiment run", "Linked MLflow run id"],
       ["Explanation", "Attribution method and its version"],
+      ["Confidence", "A split-conformal 90% interval around the rating, calibrated on the validation window"],
       ["Outcome", "Not part of this record"]
     ],
     "outcome_fields": [
