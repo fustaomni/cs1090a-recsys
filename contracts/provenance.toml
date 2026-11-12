@@ -1451,3 +1451,30 @@ path = "contracts/mutations/A.252.toml"
 upstream_path = "contracts/mutations/d443.toml"
 sha256 = "38da52fc3698a68221e451cd6cb844c30c50bfc6620e2fdc59a403ecd58709c1"
 commit = "d1fbaf0a9e6f4c6aa623fdb26c895e6d3cf1a221"
+
+[[files]]
+path = "tests/test_secrets_report.py"
+sha256 = "6aaff7cf48a94ab32a22a27fb833ec5b434f6164a5fc759ab5bce416f74e83ae"
+commit = "1f79260332c8909e5dc125ec637737b5d52f5d74"
+
+[[files]]
+path = "scripts/secrets_report.py"
+sha256 = "3828b8d16f8a21863ed0bd16e3db7b652ad179007e8d7c55319d626f03c9ecac"
+commit = "1f79260332c8909e5dc125ec637737b5d52f5d74"
+
+[[files]]
+path = "policies/runs/secrets_report/secrets_report.rego"
+sha256 = "b446aa44c6c00d8e125b88c57740cd307507ea259fa96ded96ead28901e3458c"
+commit = "1f79260332c8909e5dc125ec637737b5d52f5d74"
+
+[[files]]
+path = "contracts/mutations/A.321.toml"
+upstream_path = "contracts/mutations/d465.toml"
+sha256 = "f745dc9a3b5d167b22596839c64531faec6fdcf00372e508e6c472e290ff8efc"
+commit = "1f79260332c8909e5dc125ec637737b5d52f5d74"
+
+[[adapted]]
+path = "contracts/mutations/A.321.toml"
+reason = "the upstream mutant some finding in [] does not compile once the rule reads finding.file, so OPA's session-wide check crashes; an undefined input path defeats the same rule and compiles"
+patch = "contracts/vendor-patches/contracts/mutations/A.321.toml.patch"
+sha256 = "d46ff16afad33c1b319d251414b5d6ae6f9bcce2acce7ff0339f717ec6c8146e"
