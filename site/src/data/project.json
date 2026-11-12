@@ -42,7 +42,7 @@
   "phases": [
     { "id": "0", "title": "Scope, fixed before anything runs", "points": ["Question, unit and target declared in writing before any code.", "Target: rating in {1..5}, ordinal, modelled as continuous — a limitation tested by {model:14}, not only recorded.", "Metrics: RMSE, MAE, and the macro-averaged MAEᴹ and RMSEᴹ, which an imbalanced ordinal target requires, as {technique:3} shows.", "Predictions left unrounded, so figures stay comparable with published work."] },
     { "id": "1A", "title": "Structural audit (all rows)", "points": ["{technique:1}, first half: the structure of every row, never a rating value.", "Load with latin-1; movies.dat is not UTF-8.", "Shape, types, duplicates, target sanity, referential integrity.", "The README's own claims checked, not assumed: whole-star ratings, at least 20 ratings per user, IDs within their stated ranges, and duplicate or test movie entries.", "Distinguish {moviesRated} movies that were rated from {moviesListed} rows in movies.dat.", "Timestamp to datetime; confirm the {firstMonth} – {lastMonth} span.", "Leakage scan: per-user first and last rating; cumulative ratings over time."] },
-    { "id": "2", "title": "Split design — before any feature is computed", "points": ["Tₜₑₛₜ at the 0.9 quantile of rating timestamps; Tᵥₐₗ at the 0.8 quantile. A quantile, never a calendar date.", "Protocol A — global temporal split. The real protocol.", "Protocol B — per-user last-k. Leaks across users; what most published work does.", "Protocol C — random k-fold. The ceiling of optimism.", "{technique:5}: folds subdivide the training window only, in time order, compared against random k-fold.", "Sensitivity across quantiles 0.8 / 0.85 / 0.9 / 0.95.", "Cost accounting: users and movies that survive A but not B.", "Leakage assertions, including the count of training ratings that postdate a test rating under B — the leak, quantified."] },
+    { "id": "2", "title": "Split design — before any feature is computed", "points": ["Tₜₑₛₜ at the 0.9 quantile of rating timestamps; Tᵥₐₗ at the 0.8 quantile. A quantile, never a calendar date.", "Protocol A — global temporal split. The real protocol.", "Protocol B — per-user last-k. Leaks across users; what most published work does.", "Protocol C — random k-fold. The ceiling of optimism.", "{technique:5}: folds subdivide the training window only, in time order, compared against random k-fold.", "Sensitivity across quantiles 0.8 / 0.85 / 0.9 / 0.95.", "Cost accounting: users and movies that survive A but not B.", "Leakage assertions, including the count of training ratings that postdate a test rating under B — the leak, quantified.", "Two times per rating: event time, when the user rated the movie, and observation time, when the system learned of it. MovieLens 1M records only event time, so the replay's observation-time assumption is declared, not measured (A.300)."] },
     { "id": "1B", "title": "Distributional EDA (training window only)", "points": ["{technique:1}, second half: rating values, inside the training window only.", "Ratings per month; per-user active-span histogram; rating distribution and skew.", "Long tails by movie and by user; demographics coverage, zip in aggregate only.", "Genre matrix, 18 binary columns.", "Post-split health checks on each subset: timestamp collisions, user lifetimes, and the cold users and movies the split creates.", "Deliverable: a risk register and a preprocessing plan — not a folder of plots."] },
     { "id": "3", "title": "Leakage-safe feature engineering", "points": ["One control, applied uniformly: rolling, time-ordered cross-fitting. Random out-of-fold folds would reintroduce exactly what Phase 2 removed.", "User and movie history: count, mean, std, median, Q20, Q80 of prior ratings; recency.", "{technique:2}: target-encoded means with smoothing toward the global mean, fitted inside the fold, which handles cold users and movies without a special case.", "Content, static and context features carry no target and need no control.", "{technique:4} on the 18-column genre block, fitted inside the fold.", "Each feature's provenance recorded: when it becomes known relative to the rating it predicts.", "Two feature views of the same statistics: one-hot for the linear rungs, target-encoded for the tree rungs.", "Diagnostics with pass thresholds: permuted target (< 1% advantage), shuffled groups (no advantage), temporal boundary assertion.", "Point-in-time correctness, stricter than a feature store's inclusive bound: every feature for a rating is built only from ratings dated strictly before it, since MovieLens timestamps collide at one-second resolution (A.292)."] },
     { "id": "4", "title": "Baselines — the real opponent", "points": ["Global mean, user mean, movie mean.", "Regularised bias model with its own tuned penalties — the opponent.", "The bias is the user and movie offsets fitted on the training window only; {model:13} estimates their shrinkage from the data instead of tuning it.", "Computed under all three protocols; a baseline's value is protocol-specific.", "Tuning budget declared before fitting, identical for the baseline and for the last model.", "The primary comparison and its three possible verdicts are written here, before any result is seen."] },
@@ -154,6 +154,29 @@
       { "id": 6, "name": "Verdict and decision", "records": "Supported, inconclusive or not supported, and the decision each leads to", "tools": "Typed policy evaluator, in Rego", "steps": ["A.285"] },
       { "id": 7, "name": "Reproducibility and observability", "records": "Code revision, locked environment, execution traces and the sealed evidence bundle", "tools": "uv.lock, Git, OpenTelemetry file exporter", "steps": ["A.287", "A.297"] }
     ]
+  },
+  "example_record": {
+    "label": "Illustrative prediction evidence",
+    "user": 42,
+    "movie": 1193,
+    "predicted": "4.3 / 5",
+    "model": "{model:4}",
+    "prediction_fields": [
+      ["Prediction id", "pred-000042"],
+      ["Written", "When the prediction is made"],
+      ["Feature cutoff", "Only ratings whose event time and observation time both precede the prediction"],
+      ["Dataset digest", "SHA-256 of ratings.dat, users.dat and movies.dat"],
+      ["Experiment run", "Linked MLflow run id"],
+      ["Explanation", "Attribution method and its version"],
+      ["Outcome", "Not part of this record"]
+    ],
+    "outcome_fields": [
+      ["References", "pred-000042"],
+      ["Written", "Only when the ground truth is observed"],
+      ["Observed rating", "The rating the user submitted, with its event time and observation time"],
+      ["Rule", "Never edits the prediction; an outcome observed before its prediction is refused"]
+    ],
+    "note": "All values are illustrative, not computed from MovieLens 1M."
   },
   "excluded": [
     "A classification arm on a rating of 4 or more: a different question, whose metrics could not share the same table"

@@ -326,3 +326,23 @@ def test_the_architecture_prints_every_component_in_full() -> None:
     assert "<table" not in source, "a printed page clips the architecture table"
     for field in nonempty(("entry.records", "entry.tools", "entry.steps")):
         assert field in source, field
+
+
+def test_the_example_record_is_labelled_illustrative_and_separates_its_outcome() -> None:
+    # A.301: the example is labelled illustrative, and its outcome is a separate record.
+    record = _project().get("example_record")
+    assert isinstance(record, dict), "project.json states no example record"
+    assert "illustrative" in record["note"].casefold(), record["note"]
+    prediction = dict(nonempty(record["prediction_fields"]))
+    outcome = dict(nonempty(record["outcome_fields"]))
+    assert prediction["Outcome"] == "Not part of this record", prediction
+    assert outcome["References"] == prediction["Prediction id"], (outcome, prediction)
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "<ExampleRecord />" in app, "Models and techniques omits the example record"
+
+
+def test_phases_state_event_and_observation_time() -> None:
+    # A.301: Phase 2 states the two times every rating carries.
+    points = _phase_points(_project())["2"]
+    stated = [point for point in points if "observation time" in point]
+    assert stated and "event time" in stated[0], points
