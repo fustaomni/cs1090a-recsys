@@ -3566,3 +3566,28 @@ done_when = [
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:deploy" },
 ]
+[[steps]]
+id = "A.305"
+title = "The research policy declares three research questions and what MovieLens 1M can answer: whether a model predicts a user's next observed rating, the primary objective; whether a prediction can be reproduced and its model-based basis explained, an independently testable objective with its own criteria, reproduction within tolerance, complete lineage and feature provenance, and explanations recomputed from their recorded method and version; and whether showing a recommendation caused a user to watch or enjoy more, a future research extension needing randomized exposure; every reported claim names its question, and a claim on the third is refused"
+thread = "A"
+depends_on = ["A.284", "A.285"]
+because = { "A.284" = "the questions are part of the research policy", "A.285" = "the gate refuses a claim on the question this data cannot answer" }
+branch = "feature/research-questions"
+done_when = [
+  { kind = "proof", test = "tests/test_research_questions.py::test_every_reported_claim_names_its_research_question" },
+  { kind = "proof", test = "tests/test_research_questions.py::test_the_reproducibility_question_has_its_own_criteria" },
+  { kind = "proof", test = "tests/test_research_questions.py::test_a_claim_on_the_causal_question_is_refused" },
+]
+[[steps]]
+id = "A.306"
+title = "The site states the three research questions: Overview gives each its answerability, its role and its evidence, laid out to print in full, Scope names causal recommendation effectiveness as a future research extension and the randomized exposure or holdback data it would need, and the causal discipline points to that extension"
+thread = "A"
+depends_on = ["A.304"]
+because = { "A.304" = "the questions frame the verdicts Results already states" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_overview_states_three_questions_and_which_the_data_can_answer" },
+  { kind = "proof", test = "tests/test_site_review.py::test_scope_names_causal_effectiveness_as_a_future_extension" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
