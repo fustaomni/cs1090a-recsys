@@ -261,6 +261,8 @@ function Results() {
             </li>
           ))}
         </ul>
+        <p>{data.decision_rule.statement}</p>
+        <p className="muted">{data.decision_rule.example}</p>
       </div>
       <div className="table-wrap">
         <table>
