@@ -30,6 +30,7 @@ export default function Architecture() {
           </div>
         ))}
       </dl>
+      <p className="muted">{architecture.organisation}</p>
     </div>
   );
 }
