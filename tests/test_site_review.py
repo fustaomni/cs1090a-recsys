@@ -465,3 +465,29 @@ def test_each_model_family_names_its_explanation_and_its_check() -> None:
         assert "A.312" in entry["check"], entry
     app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
     assert "<Explanations />" in app, "Models and techniques omits the explanations"
+
+
+# A.319: THIS ROUND'S PRACTICES, EACH PLANNED WITH A STEP OR OUTSIDE THE SCOPE.
+ROUND_NINE = {
+    "in-toto and SLSA": "planned",
+    "MLflow autologging": "planned",
+    "BenchmarkCards": "planned",
+    "Conformal prediction": "planned",
+    "Knowledge graphs with LLM reasoning": OUT_OF_SCOPE,
+    "Continuous runtime verification": OUT_OF_SCOPE,
+}
+
+
+def test_round_nine_practices_name_their_step_or_why_they_are_out_of_scope() -> None:
+    # A.319: this round's practices are listed, each planned with a step or out of scope.
+    practices = {entry["org"]: entry for entry in nonempty(_evidence()["practices"])}
+    for org, status in ROUND_NINE.items():
+        assert org in practices, org
+        assert practices[org]["status"] == status, practices[org]
+
+
+def test_the_example_record_states_its_confidence_interval() -> None:
+    # A.319: the illustrative prediction record shows its confidence beside its contributors.
+    fields = dict(nonempty(_project()["example_record"]["prediction_fields"]))
+    assert "conformal" in fields.get("Confidence", ""), fields
+    assert "validation window" in fields["Confidence"], fields
