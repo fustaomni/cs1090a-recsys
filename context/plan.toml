@@ -3193,8 +3193,8 @@ done_when = [
 id = "A.269"
 title = "Milestone 2's notebook gets, loads and cleans MovieLens 1M and restates the question the data can answer, covering Phases 0, 1A and 2, and runs top to bottom from a clean kernel under automation, with seeds set, the raw data never modified, and its logic imported from the repository's modules"
 thread = "A"
-depends_on = ["A.261"]
-because = { "A.261" = "the site work, completed before Milestone 2's deliverables begin" }
+depends_on = ["A.225", "A.237"]
+because = { "A.225" = "the notebook this step delivers as the submitted .ipynb", "A.237" = "the governed run whose executed copy is the one submitted" }
 branch = "feature/ms2-notebook"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_the_notebook_runs_top_to_bottom_from_a_clean_kernel" },
@@ -3204,8 +3204,8 @@ done_when = [
 id = "A.270"
 title = "Milestone 2's slides, delivered as a PDF of at most ten slides for an eight to ten minute talk to the project TF, run question, data, cleaning, findings and the revised plan with its next steps, carrying charts from the notebook, little text and no code"
 thread = "A"
-depends_on = ["A.269"]
-because = { "A.269" = "the notebook whose results and charts the slides present" }
+depends_on = ["A.227"]
+because = { "A.227" = "the rendered slides this step checks and delivers as the submitted PDF" }
 branch = "feature/ms2-slides"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_deliverables.py::test_the_slides_are_a_pdf_of_at_most_ten_slides" },
@@ -3215,8 +3215,8 @@ done_when = [
 id = "A.271"
 title = "Milestone 2's revised proposal, one to two pages, restates the project question the cleaned data can answer, what changed since Milestone 1 and why, and the plan for Milestone 3"
 thread = "A"
-depends_on = ["A.269"]
-because = { "A.269" = "the notebook whose findings the proposal revises the plan from" }
+depends_on = ["A.226"]
+because = { "A.226" = "the rendered proposal this step checks and delivers as the submitted pages" }
 branch = "feature/ms2-proposal"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_deliverables.py::test_the_revised_proposal_is_one_to_two_pages" },
