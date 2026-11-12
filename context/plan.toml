@@ -3633,12 +3633,25 @@ done_when = [
 ]
 [[steps]]
 id = "A.310"
-title = "Results states how the practical threshold is set and its status: the proposed formula, 1% of the baseline's RMSE on the same test window, anchored to the Netflix Prize's progress bar, the sensitivity bounds at half and double, the detectability check on the validation window, the magic-barrier caution that rating noise makes small differences harder to resolve, and that the threshold awaits the group's decision"
+title = "Results states how the practical threshold is set and its status: the declared formula, 1% of the baseline's RMSE on the same test window, anchored to the Netflix Prize's progress bar, the sensitivity bounds at half and double, the detectability check on the validation window, the magic-barrier caution that rating noise makes small differences harder to resolve, and that the threshold was declared on 12 November 2026, before any result"
 thread = "A"
 depends_on = ["A.304"]
 because = { "A.304" = "Results already states the rule the threshold completes" }
 branch = "feature/site-mechanisms"
 done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_results_state_the_threshold_procedure_and_its_status" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.311"
+title = "The practical threshold is declared before any result, as a preregistration: contracts/practical-threshold.toml, committed on 12 November 2026 while no result exists, names its method, anchor, sources, formula of 1% of the regularised bias baseline's RMSE on the test window, sensitivity bounds, detectability rule, who decided it and when; the commit's timestamp is the registration, the file is never edited, and any later change is a dated amendment file"
+thread = "A"
+depends_on = ["A.304"]
+because = { "A.304" = "the declaration completes the three-sided rule Results states" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_threshold_declaration.py::test_the_threshold_is_declared_before_any_result" },
   { kind = "proof", test = "tests/test_site_review.py::test_results_state_the_threshold_procedure_and_its_status" },
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:deploy" },
