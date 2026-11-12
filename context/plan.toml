@@ -3351,7 +3351,7 @@ depends_on = ["A.235"]
 because = { "A.235" = "data:fetch, whose ERR_DATA_MEMBER_UNSAFE rule this safeguard guards" }
 branch = "feature/data-member-mutant"
 done_when = [
-  { kind = "path", path = "contracts/safeguards.toml" },
-  { kind = "task", name = "safeguards:prove" },
+  { kind = "proof", test = "tests/test_safeguard_mutants.py::test_every_policy_safeguard_mutant_compiles" },
   { kind = "proof", test = "tests/test_data_fetch.py::test_a_traversing_absolute_or_link_member_is_refused" },
+  { kind = "task", name = "safeguards:prove" },
 ]
