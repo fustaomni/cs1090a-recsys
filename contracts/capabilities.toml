@@ -514,6 +514,12 @@ implementation = "scripts/pr_logs.py"
 emits = "command-outcome/v1"
 
 [[capabilities]]
+task = "secrets:report"
+version = "1.0.0"
+implementation = "scripts/secrets_report.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
 task = "repo:history"
 version = "1.0.0"
 implementation = "scripts/repo_history.py"
