@@ -1,0 +1,24 @@
+# contracts/mutations/d465.toml
+# D.465: a finding is refused by the policy, the scan stays redacted, and an exit its own report
+# contradicts halts rather than passing.
+
+[[mutants]]
+id = "finding-rule-blind"
+file = "policies/runs/secrets_report/secrets_report.rego"
+before = 'some finding in input.secrets_report.findings'
+after = 'some finding in input.secrets_report.unread'
+killers = ["tests/test_secrets_report.py::test_a_finding_is_refused_by_its_fingerprint"]
+
+[[mutants]]
+id = "redaction-dropped"
+file = "scripts/secrets_report.py"
+before = '"--redact",'
+after = '"--verbose",'
+killers = ["tests/test_secrets_report.py::test_the_scan_is_redacted_and_writes_a_json_report"]
+
+[[mutants]]
+id = "contradiction-ignored"
+file = "scripts/secrets_report.py"
+before = '    if (code == FOUND) != bool(findings):'
+after = '    if False:'
+killers = ["tests/test_secrets_report.py::test_an_exit_its_findings_contradict_halts"]

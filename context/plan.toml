@@ -3303,3 +3303,43 @@ done_when = [
   { kind = "proof", test = "tests/test_gate_budget.py::test_the_test_gate_deadline_is_computed_from_its_measurement" },
   { kind = "task", name = "check:offline" },
 ]
+[[steps]]
+id = "A.321"
+title = "secrets:report is ported from cscie103's D.465 at its merge commit, so this repository's failing secrets (history) gate names each finding by rule, file, line, commit and fingerprint on the spine, never its secret, halting on a failed, reshaped or self-contradicting scan, and the finding can be classified"
+thread = "A"
+depends_on = ["A.4"]
+because = { "A.4" = "the history scan gate whose unnamed finding this names" }
+branch = "feature/secrets-report"
+done_when = [
+  { kind = "task", name = "secrets:report" },
+  { kind = "path", path = "contracts/mutations/A.321.toml" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_a_clean_history_is_verified" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_a_finding_is_refused_by_its_fingerprint" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_the_evidence_never_carries_a_secret_match_author_or_email" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_a_failed_scanner_halts" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_an_exit_its_findings_contradict_halts" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_a_reshaped_report_halts" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_the_scan_is_redacted_and_writes_a_json_report" },
+]
+[[steps]]
+id = "A.322"
+title = "The secrets (history) gate's one finding is classified by its fingerprint: generic-api-key at scripts/tools_verify.py:35 in 549173b4 pins nodejs/release-keys by a public commit SHA, so it is a false positive, suppressed in .betterleaksignore by that commit-scoped fingerprint alone with its reason, reviewer, date and re-review trigger, never by a path or rule allowlist"
+thread = "A"
+depends_on = ["A.321"]
+because = { "A.321" = "secrets:report, which named the finding this classifies" }
+branch = "feature/secrets-report"
+done_when = [
+  { kind = "path", path = ".betterleaksignore" },
+  { kind = "task", name = "secrets:report" },
+]
+[[steps]]
+id = "A.323"
+title = "The secrets (history) gate judges the history of the branch it gates, not every local ref, so an unlanded local branch cannot fail another branch's gate, while secrets:report keeps scanning the whole history as the baseline"
+thread = "A"
+depends_on = ["A.321", "A.4"]
+because = { "A.321" = "the whole-history baseline this keeps", "A.4" = "the history gate whose scope this narrows" }
+branch = "feature/secrets-scope"
+done_when = [
+  { kind = "proof", test = "tests/test_secrets_scope.py::test_the_history_gate_scans_only_the_gated_branch" },
+  { kind = "proof", test = "tests/test_secrets_scope.py::test_a_finding_on_another_local_branch_does_not_fail_this_gate" },
+]

@@ -1076,3 +1076,13 @@ severity = "error"
 code = "ERR_PLAN_RESOLVE_NO_OPERATION"
 title = "A merge or a rebase is in progress"
 severity = "error"
+
+[[problems]]
+code = "ERR_SECRETS_FOUND"
+title = "No finding in the repository's history"
+severity = "error"
+
+[[problems]]
+code = "ERR_SECRETS_SCAN_INPUT_MISSING"
+title = "The scan is supplied, never assumed"
+severity = "error"
