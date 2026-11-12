@@ -128,7 +128,12 @@
       { "org": "MLflow", "when": "MLflow 3", "practice": "Metrics linked to the model and the dataset they were measured on", "here": "Each evidence record links every metric to the fitted model's identity and the dataset's digest, offline, without an MLflow server.", "status": "planned", "steps": ["A.283"] },
       { "org": "Feast", "when": "feature store", "practice": "Point-in-time-correct historical features", "here": "Stricter than Feast's inclusive bound: each feature comes only from ratings dated strictly before its target, since MovieLens timestamps collide.", "status": "planned", "steps": ["A.292"] },
       { "org": "OpenLineage", "when": "specification", "practice": "Lineage as structured run events with dataset facets", "here": "Each offline stage writes START and COMPLETE events as files, so every result traces back to the three MovieLens files.", "status": "planned", "steps": ["A.293"] },
-      { "org": "Spotify", "when": "September 2026", "practice": "Conversational recommendation agents, tested on live listeners", "here": "No application or agent is built here.", "status": "outside the TF's scope", "why": "An application and an online recommender are outside the TF's scope." }
+      { "org": "Spotify", "when": "September 2026", "practice": "Conversational recommendation agents, tested on live listeners", "here": "No application or agent is built here.", "status": "outside the TF's scope", "why": "An application and an online recommender are outside the TF's scope." },
+      { "org": "PROVE-REC", "when": "October 2026", "practice": "Explanations verified by masking the cited evidence against a comparable control", "here": "Each model's explanation must sum to its prediction, and masking its largest contributors must move the prediction more than masking controls.", "status": "planned", "steps": ["A.312"] },
+      { "org": "Self-evolving recommender audit", "when": "October 2026", "practice": "An evaluator the evaluated system cannot edit", "here": "The evaluator's source digest is recorded before the test window is read, and a verdict from any other evaluator is refused.", "status": "planned", "steps": ["A.313"] },
+      { "org": "Evaluation Cards", "when": "June 2026", "practice": "Evaluation results reported as cards with reproducibility, completeness, provenance and comparability signals", "here": "An Evaluation Card for the primary comparison, with every field computed from committed evidence.", "status": "planned", "steps": ["A.314"] },
+      { "org": "Rank, Don't Generate", "when": "2026", "practice": "Explanations ranked from atomic statements extracted from reviews", "here": "MovieLens 1M has no review text, so there are no statements to rank.", "status": "outside the TF's scope", "why": "The statement pool it needs does not exist in MovieLens 1M." },
+      { "org": "LLM-based recommenders", "when": "2026", "practice": "Language models that rank, explain or render recommendations", "here": "No language model is part of this project.", "status": "outside the TF's scope", "why": "Language-model components and any application are outside the TF's scope." }
     ]
   },
   "architecture": {
@@ -217,6 +222,12 @@
       "Noise floor: users re-rating the same movies disagree with themselves, with RMSE between 0.557 and 0.8156 in one study, so small differences near that floor are harder to resolve."
     ]
   },
+  "explanations": [
+    { "family": "Baselines and the regularised bias model", "explanation": "The global mean, plus the user's offset, plus the movie's offset, which sum exactly to the prediction.", "check": "Sums to the prediction within tolerance, and masking its largest terms moves the prediction more than masking controls (A.312)." },
+    { "family": "Linear, polynomial, ridge and lasso regression", "explanation": "The intercept plus each coefficient times its feature value, which sum exactly to the prediction.", "check": "Sums to the prediction within tolerance, and masking its largest terms moves the prediction more than masking controls (A.312)." },
+    { "family": "kNN regression", "explanation": "The neighbours' ratings and their weights, whose weighted mean is the prediction.", "check": "Reproduces the prediction within tolerance, and masking its most heavily weighted neighbours moves the prediction more than masking controls (A.312)." },
+    { "family": "Trees and tree ensembles, including bagging, random forests and boosting", "explanation": "Exact tree attributions, which sum to the prediction minus the model's expected prediction.", "check": "Sums to the prediction within tolerance, and masking its largest attributions moves the prediction more than masking controls (A.312)." }
+  ],
   "excluded": [
     "A classification arm on a rating of 4 or more: a different question, whose metrics could not share the same table"
   ]
