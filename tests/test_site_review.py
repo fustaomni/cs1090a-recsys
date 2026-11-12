@@ -346,3 +346,14 @@ def test_phases_state_event_and_observation_time() -> None:
     points = _phase_points(_project())["2"]
     stated = [point for point in points if "observation time" in point]
     assert stated and "event time" in stated[0], points
+
+
+def test_results_state_the_decision_rule_and_its_worked_example() -> None:
+    # A.304: Results states the three-sided rule and a hypothetical example ending inconclusive.
+    rule = _project().get("decision_rule")
+    assert isinstance(rule, dict), "project.json states no decision rule"
+    for phrase in nonempty(("threshold", "sign-flip", "Inconclusive", "refused")):
+        assert phrase in rule["statement"], phrase
+    assert "Hypothetical" in rule["example"] and "inconclusive" in rule["example"], rule
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "{data.decision_rule.example}" in app, "Results omits the worked example"
