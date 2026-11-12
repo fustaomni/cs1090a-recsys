@@ -422,3 +422,16 @@ def test_the_architecture_states_its_code_organisation() -> None:
         assert phrase in note, phrase
     source = (ROOT / "site" / "src" / "Architecture.jsx").read_text(encoding="utf-8")
     assert "{architecture.organisation}" in source, "Models omits the code organisation"
+
+
+def test_results_state_the_threshold_procedure_and_its_status() -> None:
+    # A.310: the proposed threshold, its anchor, sensitivity, detectability and status.
+    threshold = _project().get("threshold")
+    assert isinstance(threshold, dict), "project.json states no practical threshold"
+    assert "awaiting the group" in threshold["status"], threshold["status"]
+    assert "1%" in threshold["formula"], threshold["formula"]
+    notes = " ".join(nonempty(threshold["notes"]))
+    for phrase in nonempty(("Netflix Prize", "half and double", "validation window", "0.557")):
+        assert phrase in notes, phrase
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "data.threshold.notes.map" in app, "Results omits the practical threshold"
