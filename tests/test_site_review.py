@@ -318,3 +318,11 @@ def test_each_verdict_names_its_decision() -> None:
     assert {outcome["decision"] for outcome in outcomes} == DECISIONS, outcomes
     app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
     assert "data.architecture.outcomes.find" in app, "Results omits each verdict's decision"
+
+
+def test_the_architecture_prints_every_component_in_full() -> None:
+    # A.298: no component sits in a scrolling table, so a printed page keeps every field.
+    source = (ROOT / "site" / "src" / "Architecture.jsx").read_text(encoding="utf-8")
+    assert "<table" not in source, "a printed page clips the architecture table"
+    for field in nonempty(("entry.records", "entry.tools", "entry.steps")):
+        assert field in source, field
