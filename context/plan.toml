@@ -3487,6 +3487,7 @@ branch = "feature/site-mechanisms"
 done_when = [
   { kind = "proof", test = "tests/test_site_review.py::test_the_architecture_names_every_component_and_its_step" },
   { kind = "proof", test = "tests/test_site_review.py::test_each_verdict_names_its_decision" },
+  { kind = "proof", test = "tests/test_site_review.py::test_the_architecture_prints_every_component_in_full" },
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:deploy" },
 ]
