@@ -3,6 +3,7 @@ import data from "./data/project.json";
 import results from "./data/results.json";
 import Mechanisms from "./mechanisms/Mechanisms.jsx";
 import { bind } from "./bind.js";
+import EvidenceChain from "./EvidenceChain.jsx";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
@@ -62,6 +63,7 @@ function Overview() {
       <h1>{data.title}</h1>
       <p className="lede">{overview.question}</p>
       <p>{bind(overview.summary)}</p>
+      <EvidenceChain page="overview" />
       <ul className="stats">
         {overview.stats.map((stat) => (
           <li key={stat.label}>
@@ -115,6 +117,7 @@ function Scope() {
           </dl>
         </div>
       </div>
+      <EvidenceChain page="scope" />
     </section>
   );
 }
@@ -129,6 +132,7 @@ function Phases() {
       <p className="status-line">
         <span className="badge current">Status</span> {data.status}
       </p>
+      <EvidenceChain page="phases" />
       {groups.map((milestone) => (
         <div key={milestone.id} className="milestone-group">
           <h3>
@@ -169,6 +173,7 @@ function Deploys() {
   return (
     <section id="deploys" className="section">
       <h2>What the project deploys</h2>
+      <EvidenceChain page="deploys" />
       <h3>{bind("{models} predictive models, simplest first")}</h3>
       <ol className="ladder">
         {groups.map((group) => (
@@ -235,6 +240,7 @@ function Results() {
       <p className="muted">
         {results.protocol}. Updated {results.updated}.
       </p>
+      <EvidenceChain page="results" />
       <div className="opponent">
         <p className="status-line">
           <span className={`badge ${primary.status === "decided" ? "done" : "current"}`}>

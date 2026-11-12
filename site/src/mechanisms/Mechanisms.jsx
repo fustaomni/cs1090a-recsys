@@ -2,6 +2,7 @@ import { Component, Suspense, lazy, useState } from "react";
 import project from "../data/project.json";
 import registry from "../data/mechanisms.json";
 import { bind } from "../bind.js";
+import EvidenceChain from "../EvidenceChain.jsx";
 
 // Every model and technique has a lab; each built one is its own chunk, loaded when opened.
 const LABS = {
@@ -68,6 +69,7 @@ export default function Mechanisms() {
         One lab per model and technique, each computed live from seeded data: every number,
         curve and surface on screen is the mathematics running, not a drawing of it.
       </p>
+      <EvidenceChain page="mechanisms" />
       <ul className="lab-index">
         {registry.labs.map((lab) => (
           <li key={lab.id}>
