@@ -3449,7 +3449,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.295"
-title = "Offline experiment runs are tracked in a local MLflow file store, with no server: each fit logs its parameters, seed, runtime and metrics, each fitted model is a logged model linked to the digests of the datasets it was trained and measured on, and each evidence record names its MLflow run and model ids, so the typed record stays the source of truth and MLflow the index"
+title = "Offline experiment runs are tracked in a local MLflow file store, with no server, through MLflow's scikit-learn autologging so nothing is logged by hand: each fit records its parameters, seed, runtime and metrics, each fitted model is a logged model linked to the digests of the datasets it was trained and measured on, and each evidence record names its MLflow run and model ids, so the typed record stays the source of truth and MLflow the index"
 thread = "A"
 depends_on = ["A.283"]
 because = { "A.283" = "the evidence record names the MLflow run and model it indexes" }
@@ -3699,6 +3699,52 @@ branch = "feature/site-mechanisms"
 done_when = [
   { kind = "proof", test = "tests/test_site_review.py::test_round_eight_practices_name_their_step_or_why_they_are_out_of_scope" },
   { kind = "proof", test = "tests/test_site_review.py::test_each_model_family_names_its_explanation_and_its_check" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.316"
+title = "Every fitted model and every sealed evidence bundle carries an in-toto statement with a SLSA v1 provenance predicate: its content digest as subject, the source repository and commit, the builder, the run gateway on a named device, and the run's ledger id, signed in a DSSE envelope with the device key the run ledger already uses; the gate admits no model or bundle whose attestation is missing, unsigned, or names another digest"
+thread = "A"
+depends_on = ["A.297"]
+because = { "A.297" = "the attested bundle is the sealed evidence bundle" }
+branch = "feature/model-attestations"
+done_when = [
+  { kind = "proof", test = "tests/test_model_attestations.py::test_a_model_without_a_valid_attestation_is_not_admitted" },
+  { kind = "proof", test = "tests/test_model_attestations.py::test_an_attestation_naming_another_digest_is_refused" },
+]
+[[steps]]
+id = "A.317"
+title = "Every prediction record carries a split-conformal interval at a declared coverage, calibrated on the validation window's residuals and never on the test window; because a temporal split breaks the exchangeability conformal guarantees assume, the test window's empirical coverage is reported overall and per user-activity band, and a band below its declared coverage is reported, never hidden"
+thread = "A"
+depends_on = ["A.296", "A.303"]
+because = { "A.296" = "the interval is a field of the prediction record", "A.303" = "the evaluation package reports the coverage" }
+branch = "feature/prediction-intervals"
+done_when = [
+  { kind = "proof", test = "tests/test_prediction_intervals.py::test_intervals_are_calibrated_on_the_validation_window_only" },
+  { kind = "proof", test = "tests/test_prediction_intervals.py::test_test_coverage_is_reported_overall_and_per_user_band" },
+]
+[[steps]]
+id = "A.318"
+title = "MovieLens 1M has a BenchmarkCard committed before evaluation that separates task assumptions, that ratings are submitted preferences, that timestamps are submission times, and how users' sign-up rating bursts shape the timeline, from outcome assumptions, that a lower RMSE means better recommendations, and a staged evaluation tests each task assumption on the data while outcome assumptions are stated as untestable offline"
+thread = "A"
+depends_on = ["A.284", "A.305"]
+because = { "A.284" = "the card is part of the research policy fixed before results", "A.305" = "the outcome assumption is the third research question" }
+branch = "feature/benchmark-card"
+done_when = [
+  { kind = "proof", test = "tests/test_benchmark_card.py::test_every_task_assumption_names_its_test" },
+  { kind = "proof", test = "tests/test_benchmark_card.py::test_outcome_assumptions_are_marked_untestable_offline" },
+]
+[[steps]]
+id = "A.319"
+title = "The site states this round's practices and shows confidence beside contributors: Overview's practice list gains model attestations, MLflow autologging, a BenchmarkCard with staged evaluation and conformal confidence with their steps, and knowledge-graph and LLM reasoning and runtime verification with why they are outside scope; the illustrative evidence record gains its confidence interval"
+thread = "A"
+depends_on = ["A.301", "A.315"]
+because = { "A.301" = "the evidence record it extends", "A.315" = "the practice list it extends" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_round_nine_practices_name_their_step_or_why_they_are_out_of_scope" },
+  { kind = "proof", test = "tests/test_site_review.py::test_the_example_record_states_its_confidence_interval" },
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:deploy" },
 ]
