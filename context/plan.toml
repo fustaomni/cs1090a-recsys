@@ -3296,13 +3296,13 @@ done_when = [
 ]
 [[steps]]
 id = "A.282"
-title = "The project site states the evidence chain on every page it governs: Overview, Scope, Phases, Models and techniques, Interactive mechanisms and Results each say how a recommendation becomes a traceable decision with supporting evidence, Policy as Code to Evidence as Data to Evaluator to Verdict to Decision to Enforcement, offline and within the TF's scope, and name each of the seven disciplines with its status and the step that delivers it, or the reason it is outside the TF's scope"
+title = "The project site states the evidence chain once, on the Overview page: how a recommendation becomes a traceable decision with supporting evidence, Policy as Code to Evidence as Data to Evaluator to Verdict to Decision to Enforcement, offline and within the TF's scope, naming each of the seven disciplines with its status and the step that delivers it, or the reason it is outside the TF's scope, while the other pages do not repeat it"
 thread = "A"
 depends_on = ["A.260"]
 because = { "A.260" = "the live site is deployed from A.260's branch until it lands, so the chain is stated on the reviewed pages" }
 branch = "feature/site-mechanisms"
 done_when = [
-  { kind = "proof", test = "tests/test_site_review.py::test_every_page_states_the_evidence_chain_it_governs" },
+  { kind = "proof", test = "tests/test_site_review.py::test_the_evidence_chain_is_stated_on_the_overview_page_only" },
   { kind = "proof", test = "tests/test_site_review.py::test_every_discipline_names_its_status_and_its_step_or_why_it_is_out_of_scope" },
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:deploy" },
@@ -3384,4 +3384,16 @@ branch = "feature/rolling-evaluation"
 done_when = [
   { kind = "proof", test = "tests/test_rolling_evaluation.py::test_each_window_is_judged_by_the_same_gate" },
   { kind = "proof", test = "tests/test_rolling_evaluation.py::test_a_window_breaching_its_drift_threshold_is_reported" },
+]
+[[steps]]
+id = "A.290"
+title = "The project card names the first TF meeting as scheduled, Friday, November 13, 2026, at 7:00 PM ET, in place of TBD"
+thread = "A"
+depends_on = ["A.260"]
+because = { "A.260" = "the live site is deployed from A.260's branch until it lands" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_the_project_card_names_the_first_tf_meeting" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
 ]
