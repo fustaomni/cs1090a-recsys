@@ -3618,3 +3618,28 @@ done_when = [
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:deploy" },
 ]
+[[steps]]
+id = "A.309"
+title = "The practical threshold is a first-class decision record, contracts/practical-threshold.toml validated by a Pydantic contract: its method family, its anchor and the source that justifies it, its formula relative to the baseline's RMSE on the same test window, its sensitivity bounds, a detectability check run on the validation window only, who decided it and when; the gate reaches no verdict without the record, refuses one declared after the test window was first read, and reports the verdict at each sensitivity bound beside the primary one"
+thread = "A"
+depends_on = ["A.284", "A.285", "A.303"]
+because = { "A.284" = "the threshold is part of the research policy", "A.285" = "the gate decides against the threshold", "A.303" = "the evaluation package records when the test window was first read" }
+branch = "feature/practical-threshold"
+done_when = [
+  { kind = "proof", test = "tests/test_practical_threshold.py::test_no_verdict_is_reached_without_a_declared_threshold" },
+  { kind = "proof", test = "tests/test_practical_threshold.py::test_a_threshold_declared_after_the_test_window_was_read_is_refused" },
+  { kind = "proof", test = "tests/test_practical_threshold.py::test_the_verdict_is_reported_at_each_sensitivity_bound" },
+  { kind = "proof", test = "tests/test_practical_threshold.py::test_the_detectability_check_reads_the_validation_window_only" },
+]
+[[steps]]
+id = "A.310"
+title = "Results states how the practical threshold is set and its status: the proposed formula, 1% of the baseline's RMSE on the same test window, anchored to the Netflix Prize's progress bar, the sensitivity bounds at half and double, the detectability check on the validation window, the magic-barrier caution that rating noise makes small differences harder to resolve, and that the threshold awaits the group's decision"
+thread = "A"
+depends_on = ["A.304"]
+because = { "A.304" = "Results already states the rule the threshold completes" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_results_state_the_threshold_procedure_and_its_status" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
