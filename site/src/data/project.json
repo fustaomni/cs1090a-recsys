@@ -183,7 +183,7 @@
     "note": "All values are illustrative, not computed from MovieLens 1M."
   },
   "decision_rule": {
-    "statement": "The practical threshold, the smallest RMSE improvement worth claiming, is declared by the group before any result. Supported: the lower bound of the paired, user-clustered 95% interval for the improvement exceeds the threshold, and the user-level sign-flip test agrees at the declared level. Not supported: the upper bound falls below the threshold. Inconclusive: otherwise, or when the interval and the sign-flip test disagree. A leaking comparison is refused before any verdict.",
+    "statement": "The practical threshold, the smallest RMSE improvement worth claiming, was declared on 12 November 2026, before any result, in contracts/practical-threshold.toml. Supported: the lower bound of the paired, user-clustered 95% interval for the improvement exceeds the threshold, and the user-level sign-flip test agrees at the declared level. Not supported: the upper bound falls below the threshold. Inconclusive: otherwise, or when the interval and the sign-flip test disagree. A leaking comparison is refused before any verdict.",
     "example": "Hypothetical example, not a result: a baseline RMSE of 0.950 against a candidate of 0.930 is an improvement of 0.020, but its interval runs from -0.005 to 0.045, so for any declared threshold from 0 up to 0.045 the verdict is inconclusive. A lower observed RMSE is an observation, not a supported claim."
   },
   "research_questions": [
@@ -208,7 +208,7 @@
     { "name": "Online causal experimentation", "necessity": "Future research", "what": "Needs recommendation-exposure logs and randomized experiments in a real serving environment, outside the TF's offline scope.", "steps": [] }
   ],
   "threshold": {
-    "status": "Proposed, awaiting the group's decision",
+    "status": "Declared 12 November 2026, before any result",
     "formula": "1% of the regularised bias baseline's RMSE on the same test window, fixed as a formula so it is declared before any result is seen",
     "notes": [
       "Anchor: the Netflix Prize required at least a 1% RMSE improvement for a progress prize, on the claim that a 1% change reorders a user's top-10 list.",

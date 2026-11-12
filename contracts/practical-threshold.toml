@@ -1,0 +1,13 @@
+# The practical threshold, declared before any result (A.311); A.309 validates it.
+# This file is never edited. Any change is a dated amendment file beside it.
+method = "anchor-based, with a distribution-based detectability check reported separately"
+anchor = "The Netflix Prize required at least a 1% RMSE improvement for a progress prize, on the claim that a 1% change reorders a user's top-10 list."
+sources = [
+  "https://en.wikipedia.org/wiki/Netflix_Prize",
+  "https://arxiv.org/pdf/1207.5649",
+]
+formula = "0.01 times the RMSE of the regularised bias baseline on the test window"
+sensitivity = [0.005, 0.02]
+detectability = "Before the test window is read, the half-width of the paired, user-clustered 95% interval is estimated on the validation window; if it exceeds the threshold, an inconclusive primary result is expected and is reported as such."
+decided_by = "Project Group #34"
+declared_at = "2026-11-12"
