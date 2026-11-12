@@ -1,0 +1,9 @@
+# .betterleaksignore
+# Reviewed findings, each named by its commit-scoped fingerprint, so only that finding is
+# suppressed and the same line in any other commit is still scanned (A.322).
+#
+# KEYS_COMMIT in scripts/tools_verify.py (A.279) is the public git commit of
+# https://github.com/nodejs/release-keys, pinned to read Node's published release-signing keys.
+# It is a commit SHA, not a credential; generic-api-key matched its name and entropy.
+# Reviewed 2026-11-12 by phl690. Re-review when A.279 lands or the pin changes.
+549173b4b34794a54e165098ff0e69c19b7d2707:scripts/tools_verify.py:generic-api-key:35
