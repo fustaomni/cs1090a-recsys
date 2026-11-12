@@ -280,6 +280,15 @@ function Results() {
         </ul>
         <p>{data.decision_rule.statement}</p>
         <p className="muted">{data.decision_rule.example}</p>
+        <h3>
+          The practical threshold <span className="badge planned">{data.threshold.status}</span>
+        </h3>
+        <p>Proposed: {data.threshold.formula}.</p>
+        <ul>
+          {data.threshold.notes.map((note) => (
+            <li key={note}>{note}</li>
+          ))}
+        </ul>
       </div>
       <div className="table-wrap">
         <table>

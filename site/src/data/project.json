@@ -207,6 +207,16 @@
     { "name": "Prediction-level explanations", "necessity": "Useful extension", "what": "Store model-based feature contributions, kept distinct from causal reasons.", "steps": ["A.288"] },
     { "name": "Online causal experimentation", "necessity": "Future research", "what": "Needs recommendation-exposure logs and randomized experiments in a real serving environment, outside the TF's offline scope.", "steps": [] }
   ],
+  "threshold": {
+    "status": "Proposed, awaiting the group's decision",
+    "formula": "1% of the regularised bias baseline's RMSE on the same test window, fixed as a formula so it is declared before any result is seen",
+    "notes": [
+      "Anchor: the Netflix Prize required at least a 1% RMSE improvement for a progress prize, on the claim that a 1% change reorders a user's top-10 list.",
+      "Sensitivity: the verdict is also reported at half and double the threshold, so its dependence on the choice is visible.",
+      "Detectability: before the test window is read, the paired, user-clustered interval's width is checked on the validation window; if it is wider than the threshold, an inconclusive result is expected. This measures detectability, not importance.",
+      "Noise floor: users re-rating the same movies disagree with themselves, with RMSE between 0.557 and 0.8156 in one study, so small differences near that floor are harder to resolve."
+    ]
+  },
   "excluded": [
     "A classification arm on a rating of 4 or more: a different question, whose metrics could not share the same table"
   ]
