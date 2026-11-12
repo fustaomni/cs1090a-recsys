@@ -378,3 +378,47 @@ def test_scope_names_causal_effectiveness_as_a_future_extension() -> None:
     assert "Randomized exposure" in needs and "holdback" in needs, needs
     app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
     assert "scope.future.map" in app, "Scope omits the future research extension"
+
+
+# A.308: THE OBJECTIVE'S THREE MEANINGS OF WHY, AND THE PRIORITIES BY NECESSITY.
+WHYS = ["Why this prediction?", "Why this model?", "Why trust this conclusion?"]
+NECESSITY = ["Essential"] * 4 + ["Useful extension", "Future research"]
+
+
+def test_overview_states_the_objective_and_three_meanings_of_why() -> None:
+    # A.308: the objective, and three whys each naming steps the plan holds.
+    plan = PLAN.read_text(encoding="utf-8")
+    objective = _project().get("objective")
+    assert isinstance(objective, dict), "project.json states no research objective"
+    assert "reproducible evidence" in objective["statement"], objective["statement"]
+    whys = nonempty(objective["whys"])
+    assert [entry["why"] for entry in whys] == WHYS, whys
+    for entry in whys:
+        for step in nonempty(entry["steps"]):
+            assert f'id = "{step}"' in plan, (step, entry["why"])
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "<Objective />" in app, "Overview omits the research objective"
+
+
+def test_phases_list_the_priorities_by_necessity() -> None:
+    # A.308: six priorities in order; all but future research name steps the plan holds.
+    plan = PLAN.read_text(encoding="utf-8")
+    priorities = _project().get("priorities")
+    assert isinstance(priorities, list), "project.json states no priorities"
+    assert [entry["necessity"] for entry in nonempty(priorities)] == NECESSITY, priorities
+    for entry in priorities[:5]:
+        for step in nonempty(entry["steps"]):
+            assert f'id = "{step}"' in plan, (step, entry["name"])
+    assert priorities[5]["steps"] == [], priorities[5]
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "<Priorities />" in app, "Phases omits the priorities"
+
+
+def test_the_architecture_states_its_code_organisation() -> None:
+    # A.308: the code organisation names the enforced boundaries and no dashboard.
+    note = _project()["architecture"].get("organisation")
+    assert isinstance(note, str), "the architecture states no code organisation"
+    for phrase in nonempty(("Import Linter", "governance", "no dashboard")):
+        assert phrase in note, phrase
+    source = (ROOT / "site" / "src" / "Architecture.jsx").read_text(encoding="utf-8")
+    assert "{architecture.organisation}" in source, "Models omits the code organisation"

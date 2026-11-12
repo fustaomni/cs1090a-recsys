@@ -7,6 +7,8 @@ import EvidenceChain from "./EvidenceChain.jsx";
 import Architecture from "./Architecture.jsx";
 import ExampleRecord from "./ExampleRecord.jsx";
 import ResearchQuestions from "./ResearchQuestions.jsx";
+import Objective from "./Objective.jsx";
+import Priorities from "./Priorities.jsx";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
@@ -66,6 +68,7 @@ function Overview() {
       <h1>{data.title}</h1>
       <p className="lede">{overview.question}</p>
       <p>{bind(overview.summary)}</p>
+      <Objective />
       <ResearchQuestions />
       <EvidenceChain page="overview" />
       <ul className="stats">
@@ -146,6 +149,7 @@ function Phases() {
       <p className="status-line">
         <span className="badge current">Status</span> {data.status}
       </p>
+      <Priorities />
       {groups.map((milestone) => (
         <div key={milestone.id} className="milestone-group">
           <h3>

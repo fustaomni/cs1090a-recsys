@@ -132,6 +132,7 @@
     ]
   },
   "architecture": {
+    "organisation": "Code organisation: one uv-locked package whose subpackages, contracts, data_pipeline, models, evaluation, evidence and governance, are boundaries the gate enforces with Import Linter contracts: models cannot import the evaluator, evaluation cannot import the decision layer, and governance imports only contracts and evidence. An offline research runner drives them, and there is no dashboard application, since this site is the report (A.307).",
     "flow": [
       "MovieLens 1M, versioned source data",
       "Temporal split and point-in-time features",
@@ -189,6 +190,22 @@
     { "id": "Q1", "question": "Can a model accurately predict a user's next observed rating?", "answerable": "Yes", "role": "Primary research objective", "evidence": "a temporal holdout, RMSE and MAE, user-clustered intervals, and the three-sided rule" },
     { "id": "Q2", "question": "Can a prediction be reproduced and its model-based basis explained?", "answerable": "Yes, with instrumentation", "role": "Independently testable objective, with its own criteria: reproduction within tolerance, complete lineage and feature provenance, and explanations recomputed from their recorded method and version", "evidence": "data and model versions, feature provenance and experiment artifacts" },
     { "id": "Q3", "question": "Did showing a recommended movie cause the user to watch or enjoy it more?", "answerable": "Not established", "role": "Future research extension, outside the TF's scope", "evidence": "randomized exposure, outcomes and causal evaluation, none of which MovieLens 1M records" }
+  ],
+  "objective": {
+    "statement": "Develop and evaluate a leakage-safe MovieLens rating prediction system in which model selection, predictive performance, uncertainty and scientific conclusions are supported by versioned, reproducible evidence and explicit evaluation policies.",
+    "whys": [
+      { "why": "Why this prediction?", "answer": "Which model inputs and learned relationships produced the predicted rating: model-based attributions recorded on each prediction, never a causal reason.", "steps": ["A.288", "A.296"] },
+      { "why": "Why this model?", "answer": "Which comparative experiments justify selecting it over the baseline: paired, user-clustered comparison evidence and the three-sided verdict.", "steps": ["A.285", "A.303"] },
+      { "why": "Why trust this conclusion?", "answer": "Which data-integrity checks, statistical tests, uncertainty estimates and reproducibility records support the claim: the declared policy, the leakage and point-in-time audits, the re-run and the sealed evidence bundle.", "steps": ["A.284", "A.287", "A.292", "A.297", "A.300"] }
+    ]
+  },
+  "priorities": [
+    { "name": "Temporal data integrity", "necessity": "Essential", "what": "Prove that features and training cannot reach future ratings; a failed leakage check fails the evaluation.", "steps": ["A.284", "A.292", "A.300"] },
+    { "name": "Predeclared evaluation contracts", "necessity": "Essential", "what": "Freeze the primary comparison, metrics, interval procedure and verdict criteria before any held-out result is seen.", "steps": ["A.284", "A.302"] },
+    { "name": "Reproducible experiment evidence", "necessity": "Essential", "what": "Track dataset digests, commits, environment, seeds, model artifacts, statistical outputs and runtime cost.", "steps": ["A.283", "A.295", "A.297"] },
+    { "name": "Automated verdict generation", "necessity": "Essential", "what": "Turn validated statistical evidence into supported, not supported or inconclusive under the declared policy.", "steps": ["A.285", "A.303"] },
+    { "name": "Prediction-level explanations", "necessity": "Useful extension", "what": "Store model-based feature contributions, kept distinct from causal reasons.", "steps": ["A.288"] },
+    { "name": "Online causal experimentation", "necessity": "Future research", "what": "Needs recommendation-exposure logs and randomized experiments in a real serving environment, outside the TF's offline scope.", "steps": [] }
   ],
   "excluded": [
     "A classification arm on a rating of 4 or more: a different question, whose metrics could not share the same table"
