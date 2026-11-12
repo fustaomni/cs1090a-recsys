@@ -237,6 +237,7 @@ function Results() {
       <p className="muted">
         {results.protocol}. Updated {results.updated}.
       </p>
+      <p className="muted">{data.evidence.prediction_note}</p>
       <div className="opponent">
         <p className="status-line">
           <span className={`badge ${primary.status === "decided" ? "done" : "current"}`}>

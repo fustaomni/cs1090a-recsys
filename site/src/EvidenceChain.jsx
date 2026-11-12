@@ -33,6 +33,19 @@ export default function EvidenceChain({ page }) {
           );
         })}
       </dl>
+      <h3>Industry practice, applied offline</h3>
+      <ul>
+        {evidence.practices.map((entry) => {
+          const planned = entry.status === "planned";
+          return (
+            <li key={entry.org + entry.practice}>
+              <strong>{entry.org}</strong>, {entry.when}: {entry.practice}. {entry.here}{" "}
+              <span className={`badge ${planned ? "planned" : ""}`}>{entry.status}</span>{" "}
+              {planned ? `Delivered by ${entry.steps.join(", ")}.` : entry.why}
+            </li>
+          );
+        })}
+      </ul>
     </aside>
   );
 }
