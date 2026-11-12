@@ -282,3 +282,39 @@ def test_results_state_that_prediction_is_not_causal_value() -> None:
     assert "not evidence" in note, note
     app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
     assert "{data.evidence.prediction_note}" in app, "Results omits the prediction note"
+
+
+def test_the_architecture_names_every_component_and_its_step() -> None:
+    # A.298: seven typed components, each naming steps the plan holds, drawn on Models.
+    plan = PLAN.read_text(encoding="utf-8")
+    architecture = _project().get("architecture")
+    assert isinstance(architecture, dict), "project.json states no architecture"
+    components = nonempty(architecture["components"])
+    assert len(components) == 7, [component["name"] for component in components]
+    for component in components:
+        assert component["records"] and component["tools"], component
+        for step in nonempty(component["steps"]):
+            assert f'id = "{step}"' in plan, (step, component["name"])
+    assert "evidence bundle" in architecture["flow"][-1], architecture["flow"]
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "<Architecture />" in app, "Models and techniques omits the architecture"
+
+
+DECISIONS = {
+    "Supported: accept the research finding",
+    "Inconclusive: record insufficient evidence",
+    "Not supported: reject the improvement claim",
+}
+
+
+def test_each_verdict_names_its_decision() -> None:
+    # A.298: each pre-registered verdict leads to one decision, shown beside it on Results.
+    results = json.loads((PROJECT.parent / "results.json").read_text(encoding="utf-8"))
+    verdicts = set(nonempty(results["primary"]["verdicts"]))
+    architecture = _project().get("architecture")
+    assert isinstance(architecture, dict), "project.json states no architecture"
+    outcomes = nonempty(architecture["outcomes"])
+    assert {outcome["verdict"] for outcome in outcomes} == verdicts, outcomes
+    assert {outcome["decision"] for outcome in outcomes} == DECISIONS, outcomes
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "data.architecture.outcomes.find" in app, "Results omits each verdict's decision"
