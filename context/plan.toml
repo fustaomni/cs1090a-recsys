@@ -3309,7 +3309,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.283"
-title = "Every offline evaluation run's evidence is a validated data structure: an evaluation-evidence/v1 record per run names the data snapshot's hashes, the protocol digest, every seed, the code commit, the environment lock, the tuning budget and each metric with its user-clustered interval, its schema is committed, and a record missing any of them is refused"
+title = "Every offline evaluation run's evidence is a validated data structure: an evaluation-evidence/v1 record per run names the data snapshot's hashes, the protocol digest, every seed, the code commit, the environment lock, the tuning budget and each metric with its user-clustered interval, links each metric to the fitted model's identity and to the digest of the dataset it was measured on, as MLflow 3 links metrics to a logged model and a dataset, its schema is committed, and a record missing any of them is refused"
 thread = "A"
 depends_on = ["A.282"]
 because = { "A.282" = "the site names this step as the one that makes evidence data" }
@@ -3317,6 +3317,7 @@ branch = "feature/evaluation-evidence"
 done_when = [
   { kind = "proof", test = "tests/test_evaluation_evidence.py::test_an_evidence_record_missing_its_data_snapshot_is_refused" },
   { kind = "proof", test = "tests/test_evaluation_evidence.py::test_an_evidence_record_round_trips_the_committed_schema" },
+  { kind = "proof", test = "tests/test_evaluation_evidence.py::test_a_metric_names_the_model_and_dataset_it_was_measured_on" },
 ]
 [[steps]]
 id = "A.284"
@@ -3394,6 +3395,52 @@ because = { "A.260" = "the live site is deployed from A.260's branch until it la
 branch = "feature/site-mechanisms"
 done_when = [
   { kind = "proof", test = "tests/test_site_review.py::test_the_project_card_names_the_first_tf_meeting" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.291"
+title = "The evaluator is separate from every model, as a recommender must itself be evaluated as a treatment: the offline evaluation harness alone holds the split, the held-out ratings and the metric code, a model receives only the user, movie and time of each rating it must predict and returns predictions, and a model that reads a held-out rating is refused"
+thread = "A"
+depends_on = ["A.284"]
+because = { "A.284" = "the harness applies the declared protocol's split" }
+branch = "feature/independent-evaluator"
+done_when = [
+  { kind = "proof", test = "tests/test_independent_evaluator.py::test_a_model_never_receives_a_held_out_rating" },
+  { kind = "proof", test = "tests/test_independent_evaluator.py::test_metrics_are_computed_only_by_the_evaluator" },
+]
+[[steps]]
+id = "A.292"
+title = "Every feature is point-in-time correct, and stricter than an inclusive bound: each value for a rating is built only from ratings dated strictly before it, since MovieLens timestamps have one-second resolution and collide, so a same-second rating, the target included, never feeds its own features, and a feature built from a same-second or later rating is refused"
+thread = "A"
+depends_on = ["A.284"]
+because = { "A.284" = "the protocol's split audit and this feature audit share the boundary rule" }
+branch = "feature/point-in-time-features"
+done_when = [
+  { kind = "proof", test = "tests/test_point_in_time.py::test_every_feature_is_built_from_ratings_strictly_before_its_target" },
+  { kind = "proof", test = "tests/test_point_in_time.py::test_a_feature_built_from_a_same_second_rating_is_refused" },
+]
+[[steps]]
+id = "A.293"
+title = "Every offline pipeline stage records its lineage as OpenLineage run events: loading, the structural audit, the split, the features, each fit and each evaluation write a START and a COMPLETE event as JSON files, naming their input and output datasets with digests, so every evidence run traces back to the three MovieLens files"
+thread = "A"
+depends_on = ["A.283"]
+because = { "A.283" = "an evidence record names the run whose lineage these events carry" }
+branch = "feature/lineage"
+done_when = [
+  { kind = "proof", test = "tests/test_lineage.py::test_every_stage_emits_openlineage_start_and_complete_events" },
+  { kind = "proof", test = "tests/test_lineage.py::test_every_evidence_run_traces_back_to_the_movielens_files" },
+]
+[[steps]]
+id = "A.294"
+title = "The site states which 2026 industry practices the project applies offline and which are outside the TF's scope: Overview lists each practice with the step that applies it or its reason, Phases states the strict point-in-time rule and the lineage record, and Results states that predicting a rating well is not evidence that recommending it adds value"
+thread = "A"
+depends_on = ["A.282"]
+because = { "A.282" = "the practices join the evidence chain stated once on Overview" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_every_industry_practice_names_its_step_or_why_it_is_out_of_scope" },
+  { kind = "proof", test = "tests/test_site_review.py::test_results_state_that_prediction_is_not_causal_value" },
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:deploy" },
 ]
