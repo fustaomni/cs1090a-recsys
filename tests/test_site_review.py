@@ -428,7 +428,8 @@ def test_results_state_the_threshold_procedure_and_its_status() -> None:
     # A.310: the proposed threshold, its anchor, sensitivity, detectability and status.
     threshold = _project().get("threshold")
     assert isinstance(threshold, dict), "project.json states no practical threshold"
-    assert "awaiting the group" in threshold["status"], threshold["status"]
+    assert threshold["status"].startswith("Declared"), threshold["status"]
+    assert "before any result" in threshold["status"], threshold["status"]
     assert "1%" in threshold["formula"], threshold["formula"]
     notes = " ".join(nonempty(threshold["notes"]))
     for phrase in nonempty(("Netflix Prize", "half and double", "validation window", "0.557")):
