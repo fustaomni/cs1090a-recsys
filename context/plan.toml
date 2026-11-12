@@ -3294,3 +3294,94 @@ done_when = [
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:deploy" },
 ]
+[[steps]]
+id = "A.282"
+title = "The project site states the evidence chain on every page it governs: Overview, Scope, Phases, Models and techniques, Interactive mechanisms and Results each say how a recommendation becomes a traceable decision with supporting evidence, Policy as Code to Evidence as Data to Evaluator to Verdict to Decision to Enforcement, offline and within the TF's scope, and name each of the seven disciplines with its status and the step that delivers it, or the reason it is outside the TF's scope"
+thread = "A"
+depends_on = ["A.260"]
+because = { "A.260" = "the live site is deployed from A.260's branch until it lands, so the chain is stated on the reviewed pages" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_every_page_states_the_evidence_chain_it_governs" },
+  { kind = "proof", test = "tests/test_site_review.py::test_every_discipline_names_its_status_and_its_step_or_why_it_is_out_of_scope" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.283"
+title = "Every offline evaluation run's evidence is a validated data structure: an evaluation-evidence/v1 record per run names the data snapshot's hashes, the protocol digest, every seed, the code commit, the environment lock, the tuning budget and each metric with its user-clustered interval, its schema is committed, and a record missing any of them is refused"
+thread = "A"
+depends_on = ["A.282"]
+because = { "A.282" = "the site names this step as the one that makes evidence data" }
+branch = "feature/evaluation-evidence"
+done_when = [
+  { kind = "proof", test = "tests/test_evaluation_evidence.py::test_an_evidence_record_missing_its_data_snapshot_is_refused" },
+  { kind = "proof", test = "tests/test_evaluation_evidence.py::test_an_evidence_record_round_trips_the_committed_schema" },
+]
+[[steps]]
+id = "A.284"
+title = "Every offline evaluation follows one documented protocol fixed before any result: contracts/evaluation-protocol.toml declares the split quantiles, the baselines, the tuning budget, the metrics and the pre-registered primary test, every evidence record names its digest, and a split audit refuses a training rating dated after the test boundary and reports the cold users and movies the split creates"
+thread = "A"
+depends_on = ["A.283"]
+because = { "A.283" = "the protocol digest is a field of the evidence record" }
+branch = "feature/evaluation-protocol"
+done_when = [
+  { kind = "proof", test = "tests/test_evaluation_protocol.py::test_a_record_under_an_undeclared_protocol_is_refused" },
+  { kind = "proof", test = "tests/test_evaluation_protocol.py::test_the_split_audit_refuses_a_training_rating_after_the_test_boundary" },
+]
+[[steps]]
+id = "A.285"
+title = "A policy gate decides whether the evidence supports each conclusion the project reports: a Rego policy over the evidence records returns a verdict, the verdict becomes a decision, and the report and site state a conclusion only through that decision, so a missing reproduction, a leaking split or an interval that overlaps the baseline blocks the conclusion, and any claim that a recommendation changed user behaviour is refused, since causal evaluation is outside the TF's offline scope"
+thread = "A"
+depends_on = ["A.283", "A.284"]
+because = { "A.283" = "the gate reads evidence records", "A.284" = "the gate judges evidence under the declared protocol" }
+branch = "feature/acceptance-gate"
+done_when = [
+  { kind = "proof", test = "tests/test_acceptance_gate.py::test_a_model_without_reproduced_evidence_supports_no_conclusion" },
+  { kind = "proof", test = "tests/test_acceptance_gate.py::test_a_model_whose_interval_overlaps_the_baseline_is_not_declared_better" },
+  { kind = "proof", test = "tests/test_acceptance_gate.py::test_a_claim_of_changed_user_behaviour_is_refused" },
+]
+[[steps]]
+id = "A.286"
+title = "Every research conclusion traces to the offline run that supports it: each measured Results row and the primary verdict name their evidence record's run id and digest, and the site build refuses a result or a verdict that names none"
+thread = "A"
+depends_on = ["A.283", "A.285"]
+because = { "A.283" = "a result names an evidence record", "A.285" = "a verdict names the gate decision it came from" }
+branch = "feature/results-trace"
+done_when = [
+  { kind = "proof", test = "tests/test_results_trace.py::test_every_measured_row_names_its_evidence_run" },
+  { kind = "proof", test = "tests/test_results_trace.py::test_a_verdict_without_evidence_fails_the_build" },
+]
+[[steps]]
+id = "A.287"
+title = "Reproducibility is tested automatically: a recorded offline run is re-run from its evidence record alone, its data snapshot, seeds, protocol and commit, and its metrics must match the recorded ones within a declared tolerance, while a changed data snapshot is refused before anything re-runs"
+thread = "A"
+depends_on = ["A.283"]
+because = { "A.283" = "the re-run reads only the evidence record" }
+branch = "feature/reproduce"
+done_when = [
+  { kind = "proof", test = "tests/test_reproduce.py::test_a_rerun_from_its_evidence_reproduces_its_metrics" },
+  { kind = "proof", test = "tests/test_reproduce.py::test_a_changed_data_snapshot_is_refused_before_rerunning" },
+]
+[[steps]]
+id = "A.288"
+title = "Each model's offline predictions are explained from the model that made them, never a mimic: coefficients for the linear rungs, permutation importance on the temporal validation set, and exact tree attributions computed on the fitted tree ensembles, each explanation recorded beside the evidence run of the model it explains"
+thread = "A"
+depends_on = ["A.283"]
+because = { "A.283" = "an explanation names the evidence run of the model it explains" }
+branch = "feature/explanations"
+done_when = [
+  { kind = "proof", test = "tests/test_explanations.py::test_an_explanation_names_the_model_run_it_explains" },
+  { kind = "proof", test = "tests/test_explanations.py::test_tree_attributions_sum_to_the_prediction_less_the_base_value" },
+]
+[[steps]]
+id = "A.289"
+title = "Each conclusion is re-judged on later time windows, offline: a rolling-origin re-evaluation over the MovieLens timeline judges each later window by the same gate, measures how far each window's feature distributions have drifted from training, and reports any window that breaches its declared threshold, a temporal-robustness check with no deployment or online monitoring, which are outside the TF's scope"
+thread = "A"
+depends_on = ["A.285"]
+because = { "A.285" = "each window is judged by the same gate" }
+branch = "feature/rolling-evaluation"
+done_when = [
+  { kind = "proof", test = "tests/test_rolling_evaluation.py::test_each_window_is_judged_by_the_same_gate" },
+  { kind = "proof", test = "tests/test_rolling_evaluation.py::test_a_window_breaching_its_drift_threshold_is_reported" },
+]
