@@ -357,3 +357,24 @@ def test_results_state_the_decision_rule_and_its_worked_example() -> None:
     assert "Hypothetical" in rule["example"] and "inconclusive" in rule["example"], rule
     app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
     assert "{data.decision_rule.example}" in app, "Results omits the worked example"
+
+
+def test_overview_states_three_questions_and_which_the_data_can_answer() -> None:
+    # A.306: three questions, the causal one not established and a future extension.
+    questions = _project().get("research_questions")
+    assert isinstance(questions, list), "project.json states no research questions"
+    answerable = [entry["answerable"] for entry in nonempty(questions)]
+    assert answerable == ["Yes", "Yes, with instrumentation", "Not established"], answerable
+    assert questions[0]["role"] == "Primary research objective", questions[0]
+    assert "future research extension" in questions[2]["role"].casefold(), questions[2]
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "<ResearchQuestions />" in app, "Overview omits the research questions"
+
+
+def test_scope_names_causal_effectiveness_as_a_future_extension() -> None:
+    # A.306: Scope names the causal question as future research and the data it would need.
+    future = _scope_entries("future")
+    needs = " ".join(str(entry.get("needs")) for entry in nonempty(future))
+    assert "Randomized exposure" in needs and "holdback" in needs, needs
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "scope.future.map" in app, "Scope omits the future research extension"
