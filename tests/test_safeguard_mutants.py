@@ -13,6 +13,8 @@ import subprocess
 import tomllib
 from pathlib import Path
 
+from nonvacuous import nonempty
+
 ROOT = Path(__file__).resolve().parent.parent
 REGISTER = ROOT / "contracts" / "safeguards.toml"
 
@@ -24,10 +26,9 @@ def _policy_safeguards() -> list[dict[str, str]]:
 
 def test_every_policy_safeguard_mutant_compiles(tmp_path: Path) -> None:
     safeguards = _policy_safeguards()
-    assert safeguards, "the register holds no policy safeguard: nothing would be checked"
     shutil.copytree(ROOT / "policies", tmp_path / "policies")
     failures: list[str] = []
-    for entry in safeguards:
+    for entry in nonempty(safeguards):
         target = tmp_path / entry["path"]
         original = target.read_text(encoding="utf-8")
         assert original.count(entry["anchor"]) == 1, entry["id"]
