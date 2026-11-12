@@ -18,30 +18,18 @@ export default function Architecture() {
           <li key={outcome.verdict}>{outcome.decision}</li>
         ))}
       </ul>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Component</th>
-              <th scope="col">What it records or does</th>
-              <th scope="col">Implementation</th>
-              <th scope="col">Step</th>
-            </tr>
-          </thead>
-          <tbody>
-            {architecture.components.map((entry) => (
-              <tr key={entry.name}>
-                <th scope="row">
-                  {entry.id}. {entry.name}
-                </th>
-                <td>{entry.records}</td>
-                <td>{entry.tools}</td>
-                <td>{entry.steps.join(", ")}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <dl>
+        {architecture.components.map((entry) => (
+          <div key={entry.name}>
+            <dt>
+              {entry.id}. {entry.name}
+            </dt>
+            <dd>
+              {entry.records}. Implementation: {entry.tools}. Built by {entry.steps.join(", ")}.
+            </dd>
+          </div>
+        ))}
+      </dl>
     </div>
   );
 }
