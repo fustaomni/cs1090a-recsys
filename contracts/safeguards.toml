@@ -4,6 +4,24 @@
 contract = "safeguards-register/v1"
 
 [[safeguards]]
+id = "SA.SECRETS_SCAN_INPUT_MISSING"
+engine = "secrets:report"
+guard = "ERR_SECRETS_SCAN_INPUT_MISSING"
+path = "policies/runs/secrets_report/secrets_report.rego"
+anchor = '	not input.secrets_report'
+mutant = '	false'
+proof = "tests/test_secrets_report_policy.py::test_an_absent_scan_is_refused_by_the_policy"
+
+[[safeguards]]
+id = "SA.SECRETS_FOUND"
+engine = "secrets:report"
+guard = "ERR_SECRETS_FOUND"
+path = "policies/runs/secrets_report/secrets_report.rego"
+anchor = '	some finding in input.secrets_report.findings'
+mutant = '	some finding in input.secrets_report.unread'
+proof = "tests/test_secrets_report.py::test_a_finding_is_refused_by_its_fingerprint"
+
+[[safeguards]]
 id = "SA.INPUT_MISSING"
 engine = "source:apply"
 guard = "ERR_SOURCE_APPLY_INPUT_MISSING"
