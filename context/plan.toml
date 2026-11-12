@@ -3656,3 +3656,49 @@ done_when = [
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:deploy" },
 ]
+[[steps]]
+id = "A.312"
+title = "Every recorded explanation is checked against the model that made it: an additive explanation, the bias model's global mean and user and movie offsets, a linear model's coefficient-by-feature terms, or exact tree attributions, must sum to the prediction within a stated tolerance, and masking its k largest contributors must move the prediction more than masking k control features, the masking test 2026 recommender studies apply to explanations; an explanation that fails either is refused"
+thread = "A"
+depends_on = ["A.288"]
+because = { "A.288" = "the explanations checked here are the ones A.288 records" }
+branch = "feature/explanation-fidelity"
+done_when = [
+  { kind = "proof", test = "tests/test_explanation_fidelity.py::test_an_explanation_that_does_not_sum_to_its_prediction_is_refused" },
+  { kind = "proof", test = "tests/test_explanation_fidelity.py::test_masking_the_top_contributors_moves_the_prediction_more_than_controls" },
+]
+[[steps]]
+id = "A.313"
+title = "The evaluator cannot be edited after the declaration: before the test window is first read, the evaluation package's source digest is recorded as a dated amendment beside contracts/practical-threshold.toml, and the gate refuses any verdict whose evidence was produced by evaluator code with another digest, as 2026 audits of self-evolving recommender loops ask for an evaluator the evaluated system cannot change"
+thread = "A"
+depends_on = ["A.303", "A.311"]
+because = { "A.303" = "the digest is the statistical evaluation package's", "A.311" = "the amendment sits beside the threshold declaration" }
+branch = "feature/frozen-evaluator"
+done_when = [
+  { kind = "proof", test = "tests/test_frozen_evaluator.py::test_the_evaluator_digest_is_recorded_before_the_test_window_is_read" },
+  { kind = "proof", test = "tests/test_frozen_evaluator.py::test_a_verdict_from_an_evaluator_with_another_digest_is_refused" },
+]
+[[steps]]
+id = "A.314"
+title = "The project publishes an Evaluation Card for its primary comparison in the 2026 Evaluation Cards rollout hierarchy, MovieLens 1M, then Protocol A's split, then each metric, with its four signals, reproducibility, documentation completeness, provenance and score comparability, each computed from committed evidence and never typed by hand"
+thread = "A"
+depends_on = ["A.297", "A.313"]
+because = { "A.297" = "the card reads the sealed evidence bundle", "A.313" = "the card names the frozen evaluator's digest" }
+branch = "feature/evaluation-card"
+done_when = [
+  { kind = "proof", test = "tests/test_evaluation_card.py::test_every_card_field_resolves_to_committed_evidence" },
+  { kind = "proof", test = "tests/test_evaluation_card.py::test_each_score_resolves_to_its_split_and_metric" },
+]
+[[steps]]
+id = "A.315"
+title = "The site states this round's practices and how each prediction is explained: Overview's industry practice list gains verified masking of explanations, a frozen evaluator and Evaluation Cards with their steps, and statement ranking and LLM components with why they are outside scope; Models and techniques states, for each model family, the explanation that sums to its prediction and the masking check it must pass"
+thread = "A"
+depends_on = ["A.294", "A.298"]
+because = { "A.294" = "the practice list it extends", "A.298" = "the architecture beside which explanations are stated" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_round_eight_practices_name_their_step_or_why_they_are_out_of_scope" },
+  { kind = "proof", test = "tests/test_site_review.py::test_each_model_family_names_its_explanation_and_its_check" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
