@@ -201,3 +201,50 @@ def test_a_typed_model_or_technique_reference_is_refused() -> None:
         if TYPED.search(point)
     ]
     assert typed == [], typed
+
+
+# A.282: THE EVIDENCE CHAIN EACH PAGE STATES, read from project.json and rendered on its page.
+PAGES = ("overview", "scope", "phases", "deploys", "mechanisms", "results")
+CHAIN = ("Policy as code", "Evidence as data", "Evaluator", "Verdict", "Decision", "Enforcement")
+OUT_OF_SCOPE = "outside the TF's scope"
+STATUSES = {"in place", "planned", OUT_OF_SCOPE}
+PLAN = ROOT / "context" / "plan.toml"
+
+
+def _evidence() -> dict[str, Any]:
+    evidence = _project().get("evidence")
+    assert isinstance(evidence, dict), "project.json states no evidence chain"
+    return evidence
+
+
+def test_every_page_states_the_evidence_chain_it_governs() -> None:
+    """Each of the six pages has its own note and renders the chain under its own id."""
+    evidence = _evidence()
+    assert tuple(evidence["chain"]) == CHAIN, evidence["chain"]
+    pages = evidence["pages"]
+    assert set(pages) == set(PAGES), sorted(pages)
+    known = {discipline["id"] for discipline in nonempty(evidence["disciplines"])}
+    source = ROOT / "site" / "src"
+    app = (source / "App.jsx").read_text(encoding="utf-8")
+    labs = (source / "mechanisms" / "Mechanisms.jsx").read_text(encoding="utf-8")
+    for page in nonempty(PAGES):
+        assert pages[page]["note"], page
+        named = nonempty(pages[page]["disciplines"])
+        assert set(named) <= known, (page, named)
+        rendered = f'<EvidenceChain page="{page}" />'
+        assert rendered in (labs if page == "mechanisms" else app), f"{page} omits {rendered}"
+
+
+def test_every_discipline_names_its_status_and_its_step_or_why_it_is_out_of_scope() -> None:
+    """Seven disciplines: a planned one names steps the plan holds, an excluded one its reason."""
+    plan = PLAN.read_text(encoding="utf-8")
+    disciplines = nonempty(_evidence()["disciplines"])
+    assert len(disciplines) == 7, [discipline["name"] for discipline in disciplines]
+    for discipline in disciplines:
+        assert discipline["status"] in STATUSES, discipline
+        assert discipline["question"] and discipline["now"], discipline
+        if discipline["status"] == OUT_OF_SCOPE:
+            assert discipline["why"], discipline
+            continue
+        for step in nonempty(discipline["steps"]):
+            assert f'id = "{step}"' in plan, (step, discipline["name"])

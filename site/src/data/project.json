@@ -102,6 +102,27 @@
     { "id": 11, "name": "Prediction-interval coverage audit", "where": "Phase 11, empirical against nominal coverage, overall and by user group" },
     { "id": 12, "name": "User-level sign-flip permutation test", "where": "Phase 11, the paired per-user differences with their signs flipped per user" }
   ],
+  "evidence": {
+    "principle": "A recommendation is a traceable decision with supporting evidence, not merely a number a model returns.",
+    "chain": ["Policy as code", "Evidence as data", "Evaluator", "Verdict", "Decision", "Enforcement"],
+    "disciplines": [
+      { "id": 1, "name": "Reproducible machine learning", "question": "Can the experiment and its results be reconstructed?", "status": "planned", "now": "Every seed, grid and tuning budget is declared before fitting, and every lab runs on seeded data.", "steps": ["A.283", "A.287"] },
+      { "id": 2, "name": "Decision provenance", "question": "Which data, features, model and rules produced a result?", "status": "planned", "now": "Each milestone result already names its evidence contract and digest, and every repository task run is recorded in a signed, hash-chained ledger.", "steps": ["A.283", "A.286"] },
+      { "id": 3, "name": "Explainability", "question": "Which factors influenced a prediction?", "status": "planned", "now": "Coefficients for the linear rungs and permutation importance on the temporal validation set are part of the design.", "steps": ["A.288"] },
+      { "id": 4, "name": "Objective evaluation", "question": "Does a model beat an appropriate baseline under a fair protocol?", "status": "planned", "now": "The temporal split, the tuned bias baseline, the shared tuning budget and the paired, user-clustered primary test are fixed before any result is seen.", "steps": ["A.284"] },
+      { "id": 5, "name": "Causal evaluation", "question": "Did showing a recommendation change what users did?", "status": "outside the TF's scope", "now": "MovieLens 1M records submitted ratings, not what users were shown, so there is no exposure to estimate an effect from.", "why": "The reviewer removed real-user logging, off-policy evaluation and the Open Bandit Dataset, so the acceptance gate refuses any claim of changed user behaviour (A.285)." },
+      { "id": 6, "name": "Continuous evaluation", "question": "Does a conclusion still hold on later data?", "status": "planned", "now": "Phase 2 already tests the split at four quantiles. No system is deployed, so post-deployment monitoring is outside the TF's scope; later time windows are re-judged offline instead.", "steps": ["A.289"] },
+      { "id": 7, "name": "Policy-based governance", "question": "Does an explicit, auditable rule decide whether the evidence is sufficient?", "status": "planned", "now": "The primary comparison and its three possible verdicts are written in Phase 4, before any result is seen.", "steps": ["A.285"] }
+    ],
+    "pages": {
+      "overview": { "note": "A recommendation is a traceable decision with supporting evidence, not merely a number a model returns. Every conclusion this project reports passes through one chain, offline and within the TF's scope: a policy written as code judges evidence recorded as data, and only its verdict becomes a reported decision.", "disciplines": [1, 2, 3, 4, 5, 6, 7] },
+      "scope": { "note": "The chain applies to what the TF scoped: MovieLens 1M offline, with no application and no online recommender. Causal evaluation is outside that scope, so a policy refuses any causal claim rather than estimating one.", "disciplines": [5, 6, 7] },
+      "phases": { "note": "Each phase leaves evidence the chain reads: the split and its audit in Phase 2, the pre-registered verdicts in Phase 4, the tests in Phase 11 and the reproducibility record in Phase 13.", "disciplines": [1, 4, 7] },
+      "deploys": { "note": "No model is reported as better on a number alone: each must carry its evidence record, be judged against the tuned baseline by the same gate, and be explained from the model itself.", "disciplines": [2, 3, 4] },
+      "mechanisms": { "note": "Each lab is evidence for one mechanism: its numbers are computed live from seeded data, and its provenance block names every parameter and seed, so the claim on screen can be derived again.", "disciplines": [1, 2, 3] },
+      "results": { "note": "A row is filled only from an evidence record, and the primary verdict only from the gate's decision; until then each stays pending.", "disciplines": [2, 4, 7] }
+    }
+  },
   "excluded": [
     "A classification arm on a rating of 4 or more: a different question, whose metrics could not share the same table"
   ]
