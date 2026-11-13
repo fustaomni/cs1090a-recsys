@@ -1,0 +1,9 @@
+# contracts/mutations/A.340.toml
+# A.340: the integration gate's deadline is its measured run times the backstop, never typed.
+
+[[mutants]]
+id = "integration-deadline-typed"
+file = "scripts/check_all.py"
+before = '        timeout_seconds=INTEGRATION_MEASURED_SECONDS * TEST_HEADROOM,'
+after = '        timeout_seconds=1200.0,'
+killers = ["tests/test_gate_budget.py::test_the_integration_gate_deadline_is_computed_from_its_measurement"]
