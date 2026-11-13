@@ -105,12 +105,12 @@ def judge(
 ) -> Quality:
     """ratings-quality/v1: one rule per check, each with its status and the count it found."""
     people = {user.user_id for user in users}
-    films = {movie.movie_id for movie in movies}
+    known_movies = {movie.movie_id for movie in movies}
     pairs = Counter((r.user_id, r.movie_id) for r in ratings)
     out_of_range = sum(not LOWEST <= r.rating <= HIGHEST for r in ratings)
     repeated = sum(count - 1 for count in pairs.values())
     orphan_users = sum(r.user_id not in people for r in ratings)
-    orphan_movies = sum(r.movie_id not in films for r in ratings)
+    orphan_movies = sum(r.movie_id not in known_movies for r in ratings)
     blank = sum(not u.gender or not u.zip_code for u in users) + sum(not m.title for m in movies)
     return Quality(
         rules=(
