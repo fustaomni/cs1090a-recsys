@@ -3306,6 +3306,18 @@ done_when = [
   { kind = "task", name = "check:offline" },
 ]
 [[steps]]
+id = "A.320"
+title = "Every raw_args task declares its arguments as its script states them: each of the twelve tasks that forward arguments unparsed carries a mise usage spec, which mise tasks info and --help show while the arguments still pass unchanged, and A.44's capability findings refuse a raw_args task with no usage spec or with an argument its script's own usage line does not name; it is the first slice of A.178's declared inputs, later moved into A.162's typed input schemas"
+thread = "A"
+depends_on = ["A.44"]
+because = { "A.44" = "the capability register whose findings check each task against its own code" }
+branch = "feature/task-usage"
+done_when = [
+  { kind = "proof", test = "tests/test_capabilities.py::test_every_raw_args_task_declares_its_arguments_as_its_script_states_them" },
+  { kind = "proof", test = "tests/test_capabilities.py::test_a_raw_args_task_without_its_declared_arguments_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
 id = "A.321"
 title = "secrets:report is ported from cscie103's D.465 at its merge commit, so this repository's failing secrets (history) gate names each finding by rule, file, line, commit and fingerprint on the spine, never its secret, halting on a failed, reshaped or self-contradicting scan, and the finding can be classified"
 thread = "A"
