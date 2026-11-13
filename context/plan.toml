@@ -3395,3 +3395,14 @@ branch = "feature/ms2-retirements"
 done_when = [
   { kind = "proof", test = "tests/test_plan_decisions.py::test_the_milestone_2_retirements_are_decisions_with_reasons" },
 ]
+[[steps]]
+id = "A.340"
+title = "The integration gate's deadline is computed as A.278 computes the test gate's: check_all.py declares the slowest passing integration run measured, with its host and date, and the gate's timeout is that times the runaway-backstop multiplier, so the integration tier that passes in 1130 s on FAS node cr-2 is never killed at a typed 1200 s, and a hung one still fails"
+thread = "A"
+depends_on = ["A.278"]
+because = { "A.278" = "the measured-deadline rule for the test gate, which this extends to the integration gate" }
+branch = "feature/integration-budget"
+done_when = [
+  { kind = "path", path = "contracts/mutations/A.340.toml" },
+  { kind = "proof", test = "tests/test_gate_budget.py::test_the_integration_gate_deadline_is_computed_from_its_measurement" },
+]
