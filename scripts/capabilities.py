@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parent.parent
 REGISTER = Path("contracts") / "capabilities.toml"
 ENVELOPE = "command-outcome/v1"
 BUILDS_ENVELOPE = ("CommandOutcome", "announce(")
+MISE = "mise.toml"
 
 
 class Capability(Contract):
@@ -81,6 +82,58 @@ def _problem(entry: Capability, root: Path) -> str | None:
     return None
 
 
+def _tasks(root: Path) -> dict[str, dict[str, object]]:
+    """mise.toml's tasks under root, or none when root holds no mise.toml."""
+    path = root / MISE
+    if not path.is_file():
+        return {}
+    document = tomllib.loads(path.read_text(encoding="utf-8"))
+    tasks: dict[str, dict[str, object]] = document.get("tasks", {})
+    return tasks
+
+
+def _declared(usage: str) -> list[str]:
+    """Each argument or flag a usage spec declares, by its first word: <slug>, --yes."""
+    declared: list[str] = []
+    for line in usage.splitlines():
+        kind, _, rest = line.strip().partition(" ")
+        if kind in ("arg", "flag") and rest.startswith('"'):
+            declared.append(rest.split('"')[1].split(" ")[0])
+    return declared
+
+
+def _stated(token: str, source: str) -> bool:
+    """A flag is stated by its name, an argument by its name after an opening bracket."""
+    if token.startswith("-"):
+        return token in source
+    name = token.removesuffix("...").strip("<>[]")
+    return f"<{name}" in source or f"[{name}" in source
+
+
+def usage_findings(
+    tasks: dict[str, dict[str, object]], register: Capabilities, root: Path
+) -> list[str]:
+    """A.320: each raw_args task declares its arguments, each one its implementation states."""
+    places = {entry.task: entry.implementation for entry in register.capabilities}
+    found: list[str] = []
+    for task, body in sorted(tasks.items()):
+        if body.get("raw_args") is not True:
+            continue
+        usage = body.get("usage")
+        declared = _declared(usage) if isinstance(usage, str) else []
+        if not declared:
+            found.append(f"{task}: raw_args with no usage spec")
+            continue
+        place = places.get(task, MISE)
+        path = root / place
+        if place == MISE or not path.is_file():
+            continue
+        source = path.read_text(encoding="utf-8")
+        missing = [token for token in declared if not _stated(token, source)]
+        found += [f"{task}: {place} does not state {token}" for token in missing]
+    return found
+
+
 def findings(
     register: Capabilities, declared: Iterable[str], read_only: Iterable[str], root: Path
 ) -> list[str]:
@@ -92,6 +145,7 @@ def findings(
     found += [f"{task}: registered {n} times" for task, n in sorted(named.items()) if n > 1]
     problems = (_problem(entry, root) for entry in register.capabilities)
     found += [problem for problem in problems if problem is not None]
+    found += usage_findings(_tasks(root), register, root)
     stray = sorted(set(read_only) - tasks)
     found += [f"{task}: read-only but not a declared task" for task in stray]
     return found
