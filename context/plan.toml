@@ -3433,3 +3433,18 @@ done_when = [
   { kind = "proof", test = "tests/test_ms2_execute.py::test_the_notebook_is_executed_in_a_fresh_kernel_and_saved_with_its_outputs" },
   { kind = "proof", test = "tests/test_ms2_execute.py::test_a_folder_without_the_verified_tables_is_refused_before_any_kernel_starts" },
 ]
+[[steps]]
+id = "A.330"
+title = "The Milestone 2 notebook answers its review: it reports the joined table's rows and columns after cleaning, audits the time-point split for test ratings whose user or movie never appears in training, shows every time as its UTC date, replaces the all-zero missing-data plot with ratings per user, prints each finding on one readable line with class shares, names TF mentor Sukanya Krishna in its header, and ends its cleaning with a data wrangling summary table of check, finding and decision computed from the data"
+thread = "A"
+depends_on = ["A.225", "A.328", "A.329"]
+because = { "A.225" = "the notebook this revises", "A.328" = "the wrangling checks these extend", "A.329" = "ms2:execute, which re-runs it on the verified data" }
+branch = "feature/ms2-review"
+done_when = [
+  { kind = "path", path = "contracts/mutations/A.330.toml" },
+  { kind = "proof", test = "tests/test_wrangling_checks.py::test_a_unix_time_is_reported_as_its_utc_date" },
+  { kind = "proof", test = "tests/test_wrangling_checks.py::test_the_joined_table_counts_only_ratings_whose_user_and_movie_are_known" },
+  { kind = "proof", test = "tests/test_wrangling_checks.py::test_test_ratings_whose_user_or_movie_never_trained_are_counted" },
+  { kind = "proof", test = "tests/test_wrangling_checks.py::test_ratings_per_user_are_counted_for_every_user_who_rated" },
+  { kind = "proof", test = "tests/test_ms2_notebook.py::test_the_wrangling_summary_tabulates_every_check" },
+]

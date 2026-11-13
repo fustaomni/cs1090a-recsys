@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Literal
 
@@ -212,3 +213,38 @@ def rating_balance(ratings: tuple[Rating, ...]) -> dict[int, int]:
     """Ratings per star, every class from the lowest to the highest present even when empty."""
     counts = Counter(r.rating for r in ratings)
     return {star: counts.get(star, 0) for star in range(LOWEST, HIGHEST + 1)}
+
+
+# THE JOINED TABLE (A.330): a rating's four fields, its user's four and its movie's two.
+JOINED_COLUMNS = 10
+
+
+def utc_date(stamp: int) -> str:
+    """A Unix time as its UTC calendar date, YYYY-MM-DD."""
+    return datetime.fromtimestamp(stamp, UTC).date().isoformat()
+
+
+def joined_shape(
+    ratings: tuple[Rating, ...], users: tuple[User, ...], movies: tuple[Movie, ...]
+) -> tuple[int, int]:
+    """Rows and columns of ratings joined to their user and movie; only known pairs join."""
+    known_users = {u.user_id for u in users}
+    known_movies = {m.movie_id for m in movies}
+    rows = sum(r.user_id in known_users and r.movie_id in known_movies for r in ratings)
+    return rows, JOINED_COLUMNS
+
+
+def cold_start(split: Split) -> dict[str, int]:
+    """Test ratings whose user, or whose movie, has no rating in the training set."""
+    users = {r.user_id for r in split.train}
+    movies = {r.movie_id for r in split.train}
+    return {
+        "test": len(split.test),
+        "user-unseen": sum(r.user_id not in users for r in split.test),
+        "movie-unseen": sum(r.movie_id not in movies for r in split.test),
+    }
+
+
+def ratings_per_user(ratings: tuple[Rating, ...]) -> dict[int, int]:
+    """How many ratings each user who rated has made."""
+    return dict(Counter(r.user_id for r in ratings))
