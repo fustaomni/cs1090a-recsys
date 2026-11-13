@@ -39,7 +39,7 @@ def _subject() -> ModuleType:
 
 def _file(directory: Path, name: str, rows: tuple[str, ...]) -> Path:
     path = directory / name
-    path.write_bytes(("\\n".join(rows) + "\\n").encode("latin-1"))
+    path.write_bytes(("\n".join(rows) + "\n").encode("latin-1"))
     return path
 
 
