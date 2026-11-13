@@ -20,7 +20,6 @@ from nbclient import NotebookClient
 ROOT = Path(__file__).resolve().parent.parent
 NOTEBOOK = ROOT / "notebooks" / "milestone2.ipynb"
 SECTIONS = (
-    "Canvas project group",
     "Getting the data",
     "Understanding the data",
     "Cleaning and preprocessing",
@@ -108,7 +107,8 @@ def test_every_section_the_milestone_requires_is_present_in_order(
     ]
     positions = [next((i for i, h in enumerate(headings) if s in h), -1) for s in SECTIONS]
     assert -1 not in positions and positions == sorted(positions), headings
-    assert "34" in notebook.cells[0].source, notebook.cells[0].source
+    header = notebook.cells[0].source
+    assert "Canvas project group 34" in header and "data:image/png;base64," in header, header[:200]
 
 
 def test_every_number_the_milestone_requires_is_a_results_field(
@@ -127,8 +127,9 @@ def test_each_quality_rule_reports_pass_fail_or_unknown_with_its_count(
     _, results = _run(_data(tmp_path), monkeypatch)
     rules = results["quality"]
     assert len(rules) == 5, rules
-    assert all(rule["status"] in {"pass", "fail", "unknown"} for rule in rules), rules
-    assert all(isinstance(rule["count"], int) for rule in rules), rules
+    outside = [rule for rule in rules if rule["status"] not in {"pass", "fail", "unknown"}]
+    assert outside == [], rules
+    assert [type(rule["count"]) for rule in rules] == [int] * 5, rules
 
 
 def test_a_rating_outside_one_to_five_or_an_orphan_user_fails_its_rule(
@@ -167,9 +168,10 @@ def test_each_check_the_brief_lists_reports_its_finding_and_decision(
     notebook, _ = _run(_data(tmp_path), monkeypatch)
     printed = _printed(notebook)
     written = [cell.source for cell in notebook.cells if cell.cell_type == "markdown"]
-    for check in CHECKS:
-        assert f"{check} finding:" in printed, (check, printed)
-        assert any(check in text and "Decision:" in text for text in written), check
+    unprinted = [check for check in CHECKS if f"{check} finding:" not in printed]
+    assert unprinted == [], (unprinted, printed)
+    undecided = [c for c in CHECKS if not [t for t in written if c in t and "Decision:" in t]]
+    assert undecided == [], undecided
 
 
 def test_every_plot_has_a_title_and_labelled_axes(
@@ -177,6 +179,6 @@ def test_every_plot_has_a_title_and_labelled_axes(
 ) -> None:
     _, results = _run(_data(tmp_path), monkeypatch)
     figures = results["figures"]
-    assert figures, results
-    for figure in figures:
-        assert figure["title"] and figure["xlabel"] and figure["ylabel"], figure
+    assert len(figures) == 3, results
+    unlabelled = [f for f in figures if not (f["title"] and f["xlabel"] and f["ylabel"])]
+    assert unlabelled == [], unlabelled
