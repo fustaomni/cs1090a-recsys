@@ -788,6 +788,15 @@ description = "Retry once a CI run on this branch's head that failed before any 
 usage = 'arg "<run-id>" help="The failed run, as pr:logs reports it"'
 run = 'uv run --no-sync python scripts/ci_rerun.py "${usage_run_id?}"'
 
+[tasks."secrets:report"]
+description = "Name each finding in the repository's history by its fingerprint, on the spine"
+# THE GATE'S SUMMARY IS NOT EVIDENCE (A.321, ported from cscie103 D.465). betterleaks' redacted
+# JSON report is: a finding is refused by its rule, file, line, commit and fingerprint, never
+# its secret, and a scan that failed or contradicted itself halts, never passes.
+#
+#   mise run run secrets:report
+run = "uv run --no-sync python scripts/secrets_report.py"
+
 [tasks."repo:history"]
 description = "Read commit history as data: subject, authored time, trailers and files, newest first"
 # NUL- AND CONTROL-BYTE-SEPARATED, as git's own %(trailers) options allow: nothing can break the parse.
