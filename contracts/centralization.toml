@@ -6,6 +6,16 @@
 contract = "centralization/v1"
 
 [[capabilities]]
+id = "script:scripts/secrets_report.py"
+class = "generic"
+reason = "a failing history gate's findings named by fingerprint, ported from cscie103 D.465 (A.321)"
+
+[[capabilities]]
+id = "task:secrets:report"
+class = "generic"
+reason = "a failing history gate's findings named by fingerprint, ported from cscie103 D.465 (A.321)"
+
+[[capabilities]]
 id = "script:scripts/branch_push.py"
 class = "generic"
 reason = "a feature branch reaches GitHub only through branch:push, never a protected ref (A.91)"

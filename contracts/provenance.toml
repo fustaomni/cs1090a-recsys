@@ -411,9 +411,9 @@ sha256 = "bcbcf81b839c521bd70c27eb0a560d2bc9c5c9ce9992d786e7bb317e2826674d"
 
 [[adapted]]
 path = "contracts/task-effects.toml"
-reason = "read_only scoped to the tasks recsys declares; each kept entry keeps its cscie103 classification; check:ci, recsys's own, is read-only as check:offline is (A.104); pr:logs returns read-only with its task, as cscie103 classifies it (A.142); upstream:tip, which only resolves a ref, is read-only (A.204)"
+reason = "secrets:report is read-only: it reads the history and writes its report to a temporary file (A.321)"
 patch = "contracts/vendor-patches/contracts/task-effects.toml.patch"
-sha256 = "7e0582e270ae36cc6e656ce7a0a9d7def214092a1e34093b63a51d91a3cc2822"
+sha256 = "d831d695fe8ee7e36662a3a860083d1df6b23bd6804e8515eb1bc47df8907363"
 
 [[adapted]]
 path = "tests/test_run_gateway.py"
@@ -823,9 +823,9 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 
 [[adapted]]
 path = "contracts/problems.toml"
-reason = "cscie103's header only: the entries are this repository's own declared codes, written by problems:register, since cscie103's are codes no policy here declares (A.108); the status_paths codes (A.248) and the plan_resolve codes (A.249) registered"
+reason = "secrets:report's two codes, ERR_SECRETS_FOUND and ERR_SECRETS_SCAN_INPUT_MISSING, registered by problems:register (A.321)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "2d9884c5857e80b911e0b5b8b0079a0914e179d853257c812f77799894246dca"
+sha256 = "3764679be0d642b6631b983f1ccf8aeb75c0288bdab8c84a1e3114f728868e70"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
@@ -1451,3 +1451,30 @@ path = "contracts/mutations/A.252.toml"
 upstream_path = "contracts/mutations/d443.toml"
 sha256 = "38da52fc3698a68221e451cd6cb844c30c50bfc6620e2fdc59a403ecd58709c1"
 commit = "d1fbaf0a9e6f4c6aa623fdb26c895e6d3cf1a221"
+
+[[files]]
+path = "tests/test_secrets_report.py"
+sha256 = "6aaff7cf48a94ab32a22a27fb833ec5b434f6164a5fc759ab5bce416f74e83ae"
+commit = "1f79260332c8909e5dc125ec637737b5d52f5d74"
+
+[[files]]
+path = "scripts/secrets_report.py"
+sha256 = "3828b8d16f8a21863ed0bd16e3db7b652ad179007e8d7c55319d626f03c9ecac"
+commit = "1f79260332c8909e5dc125ec637737b5d52f5d74"
+
+[[files]]
+path = "policies/runs/secrets_report/secrets_report.rego"
+sha256 = "b446aa44c6c00d8e125b88c57740cd307507ea259fa96ded96ead28901e3458c"
+commit = "1f79260332c8909e5dc125ec637737b5d52f5d74"
+
+[[files]]
+path = "contracts/mutations/A.321.toml"
+upstream_path = "contracts/mutations/d465.toml"
+sha256 = "f745dc9a3b5d167b22596839c64531faec6fdcf00372e508e6c472e290ff8efc"
+commit = "1f79260332c8909e5dc125ec637737b5d52f5d74"
+
+[[adapted]]
+path = "contracts/mutations/A.321.toml"
+reason = "the upstream mutant some finding in [] does not compile once the rule reads finding.file, so OPA's session-wide check crashes; an undefined input path defeats the same rule and compiles"
+patch = "contracts/vendor-patches/contracts/mutations/A.321.toml.patch"
+sha256 = "d46ff16afad33c1b319d251414b5d6ae6f9bcce2acce7ff0339f717ec6c8146e"
