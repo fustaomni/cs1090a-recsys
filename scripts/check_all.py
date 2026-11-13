@@ -119,6 +119,15 @@ class GateReport(Contract):
 # Hooks: policy, policy decisions,
 # mutation anchors,
 # schemas, nix contract. CI-only: pii, fixtures, prereqs, env-parity, nix flake.
+# THE TEST GATE'S DEADLINE IS COMPUTED, NOT TYPED (A.278): the slowest passing run measured,
+# times the runaway-backstop multiplier, so a slow but passing suite is never killed and a hung
+# one still is. Measured 2026-11-10 on FAS node cr-2: 1108 s, every test passing (cr-6, that
+# morning: 397 to 490 s). A slower host re-measures here; the number is never retyped alone.
+TEST_MEASURED_SECONDS = 1108.0
+TEST_HEADROOM = 3.0
+# THE INTEGRATION GATE'S DEADLINE IS COMPUTED THE SAME WAY (A.340): measured 2026-11-13 on FAS
+# node cr-2, all six integration tests passing in 1130.37 s, where a typed 1200 s had killed it.
+INTEGRATION_MEASURED_SECONDS = 1131.0
 GATES: tuple[GateSpec, ...] = (
     GateSpec(
         name="lint",
@@ -152,7 +161,7 @@ GATES: tuple[GateSpec, ...] = (
         name="test",
         command=("uv", "run", "pytest", "-q"),
         runs_in_hooks=True,
-        timeout_seconds=900.0,
+        timeout_seconds=TEST_MEASURED_SECONDS * TEST_HEADROOM,
     ),
     # FULL HISTORY, NOT THE WORKING TREE. A pre-commit hook only ever sees the
     # incoming change, so anything committed before hooks existed -- or pushed
@@ -245,7 +254,7 @@ GATES: tuple[GateSpec, ...] = (
         command=("uv", "run", "pytest", "-m", "integration"),
         runs_in_hooks=False,
         may_be_empty=True,
-        timeout_seconds=1200.0,
+        timeout_seconds=INTEGRATION_MEASURED_SECONDS * TEST_HEADROOM,
     ),
     # CLAIMS ABOUT THIS MACHINE (A.104): A.8's proofs that its mise state and new files are
     # owner-only. The hooks and the snapshot before every publication run them here; CI's

@@ -2366,15 +2366,17 @@ done_when = [
 ]
 [[steps]]
 id = "A.206"
-title = "Every generic capability in contracts/centralization.toml names the cscie103 step and commit that carry it, so a capability born here is centralized, and a generic entry without them is refused by the gate"
+title = "Every capability contracts/centralization.toml lists as one cscie103 lacks names its upstream disposition exactly as cscie103's ledger for this sibling records it, ported to a hub step or declined by a hub decision, the register names the hub commit it was checked at, a class contradicting the hub's disposition is reclassified with that decision as its reason, and a generic entry without its disposition is refused"
 thread = "A"
-depends_on = ["A.205", "A.203"]
-because = { "A.205" = "the classified inventory this gate holds to account", "A.203" = "cscie103 set up on FAS, so its own tasks record each port in its plan, trace and ledger" }
+depends_on = ["A.205", "A.203", "A.277"]
+because = { "A.205" = "the classified inventory this gate holds to account", "A.203" = "cscie103 set up on FAS, so its own tasks record each port in its plan, trace and ledger", "A.277" = "the hermetic classification proof whose register this extends" }
 done_when = [
   { kind = "proof", test = "tests/test_centralization.py::test_a_generic_capability_without_its_central_step_is_refused" },
   { kind = "proof", test = "tests/test_centralization.py::test_a_project_specific_capability_needs_its_reason" },
+  { kind = "proof", test = "tests/test_centralization_record.py::test_every_generic_capability_names_its_upstream_disposition" },
   { kind = "task", name = "check" },
 ]
+branch = "feature/central-dispositions"
 [[steps]]
 id = "A.207"
 title = "worktree:refresh merges without committing, gates and trusts a merged mise.toml that changed, and only then commits the merge, so the merge commit's own hooks run against a trusted config; a refused config is never committed"
@@ -3747,4 +3749,102 @@ done_when = [
   { kind = "proof", test = "tests/test_site_review.py::test_the_example_record_states_its_confidence_interval" },
   { kind = "task", name = "site:build" },
   { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.277"
+title = "Every task and script cscie103 lacks is classified in contracts/centralization.toml: types:staged and its script, rebase_state.py and site_deployed.py now; centralization:record writes cscie103's capabilities at its resolved develop tip to contracts/centralization-upstream.toml, an explicit action, and a hermetic proof refuses any capability the record lacks that is unclassified, so every gate runs it, the snapshot gate and CI included"
+thread = "A"
+depends_on = ["A.205", "A.267", "A.273"]
+because = { "A.205" = "the inventory and its classification register", "A.267" = "the staged type check left unclassified", "A.273" = "the site's deploy module left unclassified" }
+branch = "feature/centralization-classify"
+done_when = [
+  { kind = "proof", test = "tests/test_centralization_record.py::test_every_capability_the_recorded_upstream_lacks_is_classified" },
+  { kind = "task", name = "centralization:record" },
+  { kind = "task", name = "centralization:inventory" },
+]
+[[steps]]
+id = "A.278"
+title = "The hermetic test gate's deadline is computed, not typed: check_all.py declares the slowest passing run measured, with its host and date, and the runaway-backstop multiplier, and the gate's timeout is their product, so a suite that is slow but passing is never killed and a hung one still fails; a proof holds the arithmetic"
+thread = "A"
+depends_on = []
+because = {  }
+branch = "feature/gate-budget"
+done_when = [
+  { kind = "proof", test = "tests/test_gate_budget.py::test_the_test_gate_deadline_is_computed_from_its_measurement" },
+  { kind = "task", name = "check:offline" },
+]
+[[steps]]
+id = "A.320"
+title = "Every raw_args task declares its arguments as its script states them: each of the twelve tasks that forward arguments unparsed carries a mise usage spec, which mise tasks info and --help show while the arguments still pass unchanged, and A.44's capability findings refuse a raw_args task with no usage spec or with an argument its script's own usage line does not name; it is the first slice of A.178's declared inputs, later moved into A.162's typed input schemas"
+thread = "A"
+depends_on = ["A.44"]
+because = { "A.44" = "the capability register whose findings check each task against its own code" }
+branch = "feature/task-usage"
+done_when = [
+  { kind = "proof", test = "tests/test_capabilities.py::test_every_raw_args_task_declares_its_arguments_as_its_script_states_them" },
+  { kind = "proof", test = "tests/test_capabilities.py::test_a_raw_args_task_without_its_declared_arguments_is_refused" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.321"
+title = "secrets:report is ported from cscie103's D.465 at its merge commit, so this repository's failing secrets (history) gate names each finding by rule, file, line, commit and fingerprint on the spine, never its secret, halting on a failed, reshaped or self-contradicting scan, and the finding can be classified"
+thread = "A"
+depends_on = ["A.4"]
+because = { "A.4" = "the history scan gate whose unnamed finding this names" }
+branch = "feature/secrets-report"
+done_when = [
+  { kind = "task", name = "secrets:report" },
+  { kind = "path", path = "contracts/mutations/A.321.toml" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_a_clean_history_is_verified" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_a_finding_is_refused_by_its_fingerprint" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_the_evidence_never_carries_a_secret_match_author_or_email" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_a_failed_scanner_halts" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_an_exit_its_findings_contradict_halts" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_a_reshaped_report_halts" },
+  { kind = "proof", test = "tests/test_secrets_report.py::test_the_scan_is_redacted_and_writes_a_json_report" },
+]
+[[steps]]
+id = "A.322"
+title = "The secrets (history) gate's one finding is classified by its fingerprint: generic-api-key at scripts/tools_verify.py:35 in 549173b4 pins nodejs/release-keys by a public commit SHA, so it is a false positive, suppressed in .betterleaksignore by that commit-scoped fingerprint alone with its reason, reviewer, date and re-review trigger, never by a path or rule allowlist"
+thread = "A"
+depends_on = ["A.321"]
+because = { "A.321" = "secrets:report, which named the finding this classifies" }
+branch = "feature/secrets-report"
+done_when = [
+  { kind = "path", path = ".betterleaksignore" },
+  { kind = "task", name = "secrets:report" },
+]
+[[steps]]
+id = "A.323"
+title = "The secrets (history) gate judges the history of the branch it gates, not every local ref, so an unlanded local branch cannot fail another branch's gate, while secrets:report keeps scanning the whole history as the baseline"
+thread = "A"
+depends_on = ["A.321", "A.4"]
+because = { "A.321" = "the whole-history baseline this keeps", "A.4" = "the history gate whose scope this narrows" }
+branch = "feature/secrets-scope"
+done_when = [
+  { kind = "proof", test = "tests/test_secrets_scope.py::test_the_history_gate_scans_only_the_gated_branch" },
+  { kind = "proof", test = "tests/test_secrets_scope.py::test_a_finding_on_another_local_branch_does_not_fail_this_gate" },
+]
+[[steps]]
+id = "A.325"
+title = "DATA.MEMBER_UNSAFE's mutant disables the unsafe-member rule and still compiles: the iteration that binds each unsafe member name iterates an undefined input path instead of being replaced by false, so safeguards:prove judges the guard by its proof rather than reporting the trial inconclusive because the policy no longer compiles"
+thread = "A"
+depends_on = ["A.235"]
+because = { "A.235" = "data:fetch, whose ERR_DATA_MEMBER_UNSAFE rule this safeguard guards" }
+branch = "feature/data-member-mutant"
+done_when = [
+  { kind = "proof", test = "tests/test_safeguard_mutants.py::test_every_policy_safeguard_mutant_compiles" },
+  { kind = "proof", test = "tests/test_data_fetch.py::test_a_traversing_absolute_or_link_member_is_refused" },
+  { kind = "task", name = "safeguards:prove" },
+]
+[[steps]]
+id = "A.340"
+title = "The integration gate's deadline is computed as A.278 computes the test gate's: check_all.py declares the slowest passing integration run measured, with its host and date, and the gate's timeout is that times the runaway-backstop multiplier, so the integration tier that passes in 1130 s on FAS node cr-2 is never killed at a typed 1200 s, and a hung one still fails"
+thread = "A"
+depends_on = ["A.278"]
+because = { "A.278" = "the measured-deadline rule for the test gate, which this extends to the integration gate" }
+branch = "feature/integration-budget"
+done_when = [
+  { kind = "path", path = "contracts/mutations/A.340.toml" },
+  { kind = "proof", test = "tests/test_gate_budget.py::test_the_integration_gate_deadline_is_computed_from_its_measurement" },
 ]

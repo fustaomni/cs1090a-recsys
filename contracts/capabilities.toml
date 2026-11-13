@@ -292,6 +292,12 @@ implementation = "scripts/site_record.py"
 emits = "text"
 
 [[capabilities]]
+task = "centralization:record"
+version = "1.0.0"
+implementation = "scripts/centralization.py"
+emits = "text"
+
+[[capabilities]]
 task = "data:fetch"
 version = "1.0.0"
 implementation = "scripts/data_fetch.py"
@@ -505,6 +511,12 @@ emits = "command-outcome/v1"
 task = "pr:logs"
 version = "1.0.0"
 implementation = "scripts/pr_logs.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "secrets:report"
+version = "1.0.0"
+implementation = "scripts/secrets_report.py"
 emits = "command-outcome/v1"
 
 [[capabilities]]

@@ -1,0 +1,11 @@
+--- a/contracts/mutations/A.321.toml
++++ b/contracts/mutations/A.321.toml
+@@ -6,7 +6,7 @@
+ id = "finding-rule-blind"
+ file = "policies/runs/secrets_report/secrets_report.rego"
+ before = 'some finding in input.secrets_report.findings'
+-after = 'some finding in []'
++after = 'some finding in input.secrets_report.unread'
+ killers = ["tests/test_secrets_report.py::test_a_finding_is_refused_by_its_fingerprint"]
+ 
+ [[mutants]]

@@ -23,7 +23,7 @@
  
  
  class GateRun(Contract):
-@@ -106,6 +113,12 @@
+@@ -106,6 +113,21 @@
  # runs_in_hooks=False means "CI only": either it needs the network and valid
  # Databricks auth, or it is slow enough that including it would train people to
  # bypass the hook. Both make a gate that belongs in CI, where a bypass is caught.
@@ -33,13 +33,23 @@
 +# Hooks: policy, policy decisions,
 +# mutation anchors,
 +# schemas, nix contract. CI-only: pii, fixtures, prereqs, env-parity, nix flake.
++# THE TEST GATE'S DEADLINE IS COMPUTED, NOT TYPED (A.278): the slowest passing run measured,
++# times the runaway-backstop multiplier, so a slow but passing suite is never killed and a hung
++# one still is. Measured 2026-11-10 on FAS node cr-2: 1108 s, every test passing (cr-6, that
++# morning: 397 to 490 s). A slower host re-measures here; the number is never retyped alone.
++TEST_MEASURED_SECONDS = 1108.0
++TEST_HEADROOM = 3.0
++# THE INTEGRATION GATE'S DEADLINE IS COMPUTED THE SAME WAY (A.340): measured 2026-11-13 on FAS
++# node cr-2, all six integration tests passing in 1130.37 s, where a typed 1200 s had killed it.
++INTEGRATION_MEASURED_SECONDS = 1131.0
  GATES: tuple[GateSpec, ...] = (
      GateSpec(
          name="lint",
-@@ -140,20 +153,6 @@
+@@ -139,21 +161,7 @@
+         name="test",
          command=("uv", "run", "pytest", "-q"),
          runs_in_hooks=True,
-         timeout_seconds=900.0,
+-        timeout_seconds=900.0,
 -    ),
 -    # Policy gets the same treatment as the Python: well-formed and tested, then
 -    # evaluated against the actual repo. Both are offline.
@@ -54,10 +64,11 @@
 -        command=("uv", "run", "python", "scripts/evaluate_policies.py"),
 -        runs_in_hooks=True,
 -        timeout_seconds=300.0,
++        timeout_seconds=TEST_MEASURED_SECONDS * TEST_HEADROOM,
      ),
      # FULL HISTORY, NOT THE WORKING TREE. A pre-commit hook only ever sees the
      # incoming change, so anything committed before hooks existed -- or pushed
-@@ -240,123 +239,32 @@
+@@ -240,123 +248,32 @@
          runs_in_hooks=True,
          timeout_seconds=300.0,
      ),
@@ -118,9 +129,8 @@
          name="test (integration)",
          command=("uv", "run", "pytest", "-m", "integration"),
          runs_in_hooks=False,
-+        may_be_empty=True,
-         timeout_seconds=1200.0,
-     ),
+-        timeout_seconds=1200.0,
+-    ),
 -    GateSpec(
 -        name="prereqs",
 -        command=("uv", "run", "python", "scripts/check_prereqs.py"),
@@ -171,6 +181,9 @@
 -        name="env-parity",
 -        command=("uv", "run", "python", "scripts/check_env_parity.py"),
 -        runs_in_hooks=False,
++        may_be_empty=True,
++        timeout_seconds=INTEGRATION_MEASURED_SECONDS * TEST_HEADROOM,
++    ),
 +    # CLAIMS ABOUT THIS MACHINE (A.104): A.8's proofs that its mise state and new files are
 +    # owner-only. The hooks and the snapshot before every publication run them here; CI's
 +    # runner is not this machine, so the gate is declared out of CI, never detected there.
@@ -195,7 +208,7 @@
  
  
  def run_gate(spec: GateSpec) -> GateRun:
-@@ -368,6 +276,8 @@
+@@ -368,6 +285,8 @@
          state: State = "timed_out"
      elif isinstance(ended, Exited) and ended.code == 0:
          state = "executed_passed"
@@ -204,7 +217,7 @@
      else:
          state = "executed_failed"
      return GateRun(
-@@ -387,7 +297,11 @@
+@@ -387,7 +306,11 @@
  
  def main() -> int:
      offline = "--offline" in sys.argv
@@ -217,7 +230,7 @@
  
      if offline:
          skipped = [spec.name for spec in GATES if not spec.runs_in_hooks]
-@@ -399,13 +313,14 @@
+@@ -399,13 +322,14 @@
          ran = run_gate(spec)
          runs.append(ran)
          late = f" (timed out after {spec.timeout_seconds:g}s)" if ran.state == "timed_out" else ""
@@ -234,7 +247,7 @@
  
      if failed:
          for ran in failed:
-@@ -417,7 +332,9 @@
+@@ -417,7 +341,9 @@
          )
          return 1
  
