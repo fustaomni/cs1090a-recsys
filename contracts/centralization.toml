@@ -291,6 +291,11 @@ class = "project"
 reason = "this recommender Milestone 2 walking skeleton, from the verified archive to the proposal line (A.244)"
 
 [[capabilities]]
+id = "script:scripts/wrangling.py"
+class = "project"
+reason = "this recommender Milestone 2 wrangling: MovieLens 1M read, judged by ratings-quality/v1 and split at one time point, by pure functions (A.326)"
+
+[[capabilities]]
 id = "script:scripts/site_record.py"
 class = "project"
 reason = "this project public site and its labs (A.95, A.98, A.99)"

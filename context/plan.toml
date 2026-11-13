@@ -2681,11 +2681,11 @@ done_when = [
 ]
 [[steps]]
 id = "A.225"
-title = "The Milestone 2 notebook is a Jupyter notebook (.ipynb) that runs top to bottom in a fresh kernel on the verified MovieLens 1M archive, widening the walking skeleton A.244 proved, and shows in order: the Canvas group number and its members, getting the data with its size in megabytes, what a row and each column mean with shape, types and summary statistics, cleaning driven by a ratings-quality/v1 contract whose validity, uniqueness, referential-integrity and completeness rules each produce pass, fail or unknown with its count, the brief's checks each reported with its finding and decision (missing data and its pattern, unusual values, the balance of the rating classes, each numerical feature's range, and information leakage, with a temporal split before any feature is computed), a few plots each titled with labelled axes, and the revised question stated so its answer can be judged, recording every number it reports into milestone2-results/v1 as it computes it"
+title = "The Milestone 2 notebook is a Jupyter notebook (.ipynb) that runs top to bottom in a fresh kernel on the verified MovieLens 1M archive, widening the walking skeleton A.244 proved, and shows in order: the Canvas group number and its members, getting the data with its size in megabytes, what a row and each column mean with shape, types and summary statistics, cleaning driven by a ratings-quality/v1 contract whose validity, uniqueness, referential-integrity and completeness rules each produce pass, fail or unknown with its count, the brief's checks each reported with its finding and decision (missing data and its pattern, unusual values, the balance of the rating classes, each numerical feature's range, and information leakage, with a temporal split before any feature is computed), a few plots each titled with labelled axes, and the revised question stated so its answer can be judged, recording every number it reports into milestone2-results/v1 as it computes it, with seeds set, the raw data never modified, and every piece of its logic imported from the wrangling module A.326 builds"
 thread = "A"
-depends_on = ["A.224", "A.244", "A.235"]
-because = { "A.224" = "the one-command checkout, kernel and data every member opens the notebook in", "A.244" = "the walking skeleton whose runner and results contract this widens", "A.235" = "the verified MovieLens 1M archive the notebook reads" }
-branch = "feature/ms2-notebook"
+depends_on = ["A.326", "A.244", "A.235"]
+because = { "A.326" = "the wrangling module whose pure functions the notebook only calls", "A.244" = "the walking skeleton whose runner and results contract this widens", "A.235" = "the verified MovieLens 1M archive the notebook reads" }
+branch = "feature/ms2-wrangling"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_every_section_the_milestone_requires_is_present_in_order" },
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_every_number_the_milestone_requires_is_a_results_field" },
@@ -3368,6 +3368,32 @@ done_when = [
   { kind = "proof", test = "tests/test_safeguard_mutants.py::test_every_policy_safeguard_mutant_compiles" },
   { kind = "proof", test = "tests/test_data_fetch.py::test_a_traversing_absolute_or_link_member_is_refused" },
   { kind = "task", name = "safeguards:prove" },
+]
+[[steps]]
+id = "A.326"
+title = "Milestone 2's wrangling is a module of pure functions, scripts/wrangling.py, that the notebook only calls: it reads MovieLens 1M's ratings, users and movies as their documented columns and types, judges them by a ratings-quality/v1 contract whose validity, uniqueness, referential-integrity and completeness rules each give pass, fail or unknown with its count, splits the ratings at one absolute time point so every training rating precedes every test rating, and refuses a feature computed from a rating after that point, each proven by pytest on rows the test writes, the raw files never modified"
+thread = "A"
+depends_on = ["A.244", "A.235"]
+because = { "A.244" = "the walking skeleton whose verified archive and results contract this widens", "A.235" = "the verified MovieLens 1M archive whose members this reads" }
+branch = "feature/ms2-wrangling"
+done_when = [
+  { kind = "path", path = "contracts/mutations/A.326.toml" },
+  { kind = "proof", test = "tests/test_wrangling.py::test_the_three_tables_load_with_their_documented_columns_and_types" },
+  { kind = "proof", test = "tests/test_wrangling.py::test_each_quality_rule_reports_pass_fail_or_unknown_with_its_count" },
+  { kind = "proof", test = "tests/test_wrangling.py::test_a_rating_outside_one_to_five_or_an_orphan_user_fails_its_rule" },
+  { kind = "proof", test = "tests/test_wrangling.py::test_the_temporal_split_puts_every_training_rating_before_the_cutoff" },
+  { kind = "proof", test = "tests/test_wrangling.py::test_a_feature_computed_from_a_later_rating_is_refused" },
+  { kind = "proof", test = "tests/test_wrangling.py::test_the_raw_files_are_never_modified" },
+]
+[[steps]]
+id = "A.327"
+title = "The steps done outside this repository or bound to FAS OnDemand are retired as decisions, each with its reason, once A.82's plan:decide records one: A.224 because FAS OnDemand is closed and development moved to the MacBook Pro; A.226, A.227, A.238, A.253, A.270 and A.271 because the group prepares the revised proposal, the slides and the presentation outside the repository; and A.269 because A.225 supersedes it"
+thread = "A"
+depends_on = ["A.82"]
+because = { "A.82" = "plan:decide, the one writer of a decision with its reason, which recsys has not built yet" }
+branch = "feature/ms2-retirements"
+done_when = [
+  { kind = "proof", test = "tests/test_plan_decisions.py::test_the_milestone_2_retirements_are_decisions_with_reasons" },
 ]
 [[steps]]
 id = "A.340"
