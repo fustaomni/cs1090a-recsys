@@ -3421,3 +3421,15 @@ done_when = [
   { kind = "proof", test = "tests/test_wrangling_checks.py::test_impossible_demographic_values_are_counted_by_rule" },
   { kind = "proof", test = "tests/test_wrangling_checks.py::test_every_rating_class_is_counted_even_when_empty" },
 ]
+[[steps]]
+id = "A.329"
+title = "ms2:execute runs the committed Milestone 2 notebook in a fresh kernel by nbclient on the MovieLens 1M folder data:fetch verified and published, and saves the executed notebook with its outputs and figures and its results file into a named folder, refusing a folder that lacks any of the three tables before any kernel starts, so the notebook submitted for Milestone 2 shows its findings on the real data"
+thread = "A"
+depends_on = ["A.225", "A.235"]
+because = { "A.225" = "the committed notebook this executes, kept free of outputs", "A.235" = "data:fetch, which verifies and publishes the folder this reads" }
+branch = "feature/ms2-execute"
+done_when = [
+  { kind = "path", path = "contracts/mutations/A.329.toml" },
+  { kind = "proof", test = "tests/test_ms2_execute.py::test_the_notebook_is_executed_in_a_fresh_kernel_and_saved_with_its_outputs" },
+  { kind = "proof", test = "tests/test_ms2_execute.py::test_a_folder_without_the_verified_tables_is_refused_before_any_kernel_starts" },
+]

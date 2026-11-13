@@ -276,6 +276,16 @@ class = "project"
 reason = "the MovieLens data this recommender is built on (A.99, A.100)"
 
 [[capabilities]]
+id = "script:scripts/ms2_execute.py"
+class = "project"
+reason = "this recommender Milestone 2 notebook, run in a fresh kernel on the verified MovieLens 1M and saved with its outputs (A.329)"
+
+[[capabilities]]
+id = "task:ms2:execute"
+class = "project"
+reason = "this recommender Milestone 2 notebook, run in a fresh kernel on the verified MovieLens 1M and saved with its outputs (A.329)"
+
+[[capabilities]]
 id = "script:scripts/model_run.py"
 class = "project"
 reason = "this recommender fitted model as a governed artifact (A.100)"
