@@ -3406,3 +3406,18 @@ done_when = [
   { kind = "path", path = "contracts/mutations/A.340.toml" },
   { kind = "proof", test = "tests/test_gate_budget.py::test_the_integration_gate_deadline_is_computed_from_its_measurement" },
 ]
+[[steps]]
+id = "A.328"
+title = "Every cleaning check the Milestone 2 brief lists is a pure function of MovieLens 1M's raw files in the wrangling module the notebook only calls: the archive's size in megabytes, each numerical column's count, mean, minimum and maximum, the missing fields per column and by group counted on the raw text, each impossible demographic value counted by the documented rule it breaks, and every rating class counted even when empty, so the notebook reports each with its finding and decision"
+thread = "A"
+depends_on = ["A.326"]
+because = { "A.326" = "the wrangling module whose readers, quality contract and time-point split these checks extend" }
+branch = "feature/ms2-notebook"
+done_when = [
+  { kind = "path", path = "contracts/mutations/A.328.toml" },
+  { kind = "proof", test = "tests/test_wrangling_checks.py::test_the_archive_size_is_reported_in_megabytes" },
+  { kind = "proof", test = "tests/test_wrangling_checks.py::test_each_numerical_column_is_summarised_by_count_mean_minimum_and_maximum" },
+  { kind = "proof", test = "tests/test_wrangling_checks.py::test_missing_values_are_counted_per_column_and_by_group" },
+  { kind = "proof", test = "tests/test_wrangling_checks.py::test_impossible_demographic_values_are_counted_by_rule" },
+  { kind = "proof", test = "tests/test_wrangling_checks.py::test_every_rating_class_is_counted_even_when_empty" },
+]

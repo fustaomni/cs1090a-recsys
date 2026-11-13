@@ -139,3 +139,76 @@ def user_means(ratings: tuple[Rating, ...], cutoff: int) -> dict[int, float]:
     for r in ratings:
         given.setdefault(r.user_id, []).append(r.rating)
     return {user: sum(scores) / len(scores) for user, scores in given.items()}
+
+
+USER_COLUMNS = ("user_id", "gender", "age", "occupation", "zip_code")
+# THE README'S OWN DOMAINS (A.328): gender M or F, age one of seven bucket codes, occupation 0
+# to 20. The README says the demographics are self-reported and unchecked, so they are counted.
+GENDERS = frozenset({"F", "M"})
+AGE_CODES = frozenset({1, 18, 25, 35, 45, 50, 56})
+OCCUPATIONS = range(21)
+BYTES_PER_MEGABYTE = 1_000_000
+
+
+@dataclass(frozen=True)
+class Summary:
+    count: int
+    mean: float | None
+    minimum: int | None
+    maximum: int | None
+
+
+def size_megabytes(path: Path) -> float:
+    """The file's size in megabytes, a megabyte being one million bytes."""
+    return path.stat().st_size / BYTES_PER_MEGABYTE
+
+
+def summarize(values: tuple[int, ...]) -> Summary:
+    """Count, mean, minimum and maximum; an empty column has none of the last three."""
+    if not values:
+        return Summary(0, None, None, None)
+    return Summary(len(values), sum(values) / len(values), min(values), max(values))
+
+
+def missing_by_column(path: Path, columns: tuple[str, ...]) -> dict[str, int]:
+    """Empty fields per column, counted on the raw text before any field is parsed."""
+    counts = dict.fromkeys(columns, 0)
+    for row in _rows(path):
+        for name, value in zip(columns, row, strict=True):
+            counts[name] += 0 if value else 1
+    return counts
+
+
+def missing_by_group(path: Path, columns: tuple[str, ...], group: str) -> dict[str, int]:
+    """Rows with any empty field, per value of one column, to see whether missingness follows it."""
+    where = columns.index(group)
+    counts: dict[str, int] = {}
+    for row in _rows(path):
+        counts[row[where]] = counts.get(row[where], 0) + (0 if all(row) else 1)
+    return counts
+
+
+def _five_digits(zip_code: str) -> bool:
+    return len(zip_code) == 5 and zip_code.isdigit()
+
+
+def unusual_users(users: tuple[User, ...]) -> dict[str, int]:
+    """Values outside the README's documented domains, counted by the rule each breaks."""
+    return {
+        "gender-not-F-or-M": sum(u.gender not in GENDERS for u in users),
+        "age-not-a-documented-code": sum(u.age not in AGE_CODES for u in users),
+        "occupation-outside-0-to-20": sum(u.occupation not in OCCUPATIONS for u in users),
+        "zip-not-five-digits": sum(not _five_digits(u.zip_code) for u in users),
+    }
+
+
+def time_cutoff(ratings: tuple[Rating, ...], fraction: float) -> int:
+    """The timestamp at the training fraction: ratings strictly before it are the training set."""
+    ordered = sorted(r.timestamp for r in ratings)
+    return ordered[int(fraction * len(ordered))]
+
+
+def rating_balance(ratings: tuple[Rating, ...]) -> dict[int, int]:
+    """Ratings per star, every class from the lowest to the highest present even when empty."""
+    counts = Counter(r.rating for r in ratings)
+    return {star: counts.get(star, 0) for star in range(LOWEST, HIGHEST + 1)}
