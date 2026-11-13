@@ -25,6 +25,7 @@ read_only = [
     "repo:history",
     "repo:state",
     "runs:verify",
+    "secrets:report",
     "start:check",
     "status",
     "test",
