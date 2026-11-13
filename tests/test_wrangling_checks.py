@@ -28,7 +28,7 @@ def _file(directory: Path, name: str, rows: tuple[str, ...]) -> Path:
 def test_the_archive_size_is_reported_in_megabytes(tmp_path: Path) -> None:
     wrangling = _subject("size_megabytes")
     archive = tmp_path / "ml-1m.zip"
-    archive.write_bytes(b"\\0" * 2_500_000)
+    archive.write_bytes(b"\0" * 2_500_000)
     assert wrangling.size_megabytes(archive) == 2.5
 
 
