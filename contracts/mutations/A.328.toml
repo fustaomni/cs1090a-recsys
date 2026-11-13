@@ -35,3 +35,10 @@ file = "scripts/wrangling.py"
 before = '    if not values:'
 after = '    if False:'
 killers = ["tests/test_wrangling_checks.py::test_each_numerical_column_is_summarised_by_count_mean_minimum_and_maximum"]
+
+[[mutants]]
+id = "cutoff-at-the-end"
+file = "scripts/wrangling.py"
+before = '    return ordered[int(fraction * len(ordered))]'
+after = '    return ordered[-1]'
+killers = ["tests/test_wrangling_checks.py::test_the_cutoff_is_the_timestamp_at_the_training_fraction"]

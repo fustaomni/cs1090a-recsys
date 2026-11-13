@@ -202,6 +202,12 @@ def unusual_users(users: tuple[User, ...]) -> dict[str, int]:
     }
 
 
+def time_cutoff(ratings: tuple[Rating, ...], fraction: float) -> int:
+    """The timestamp at the training fraction: ratings strictly before it are the training set."""
+    ordered = sorted(r.timestamp for r in ratings)
+    return ordered[int(fraction * len(ordered))]
+
+
 def rating_balance(ratings: tuple[Rating, ...]) -> dict[int, int]:
     """Ratings per star, every class from the lowest to the highest present even when empty."""
     counts = Counter(r.rating for r in ratings)
