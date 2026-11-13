@@ -23,6 +23,7 @@ SECTIONS = (
     "Getting the data",
     "Understanding the data",
     "Cleaning and preprocessing",
+    "Data wrangling summary",
     "Project question",
 )
 CHECKS = (
@@ -44,6 +45,8 @@ FIELDS = (
     "split",
     "leakage_refused",
     "figures",
+    "joined_table",
+    "cold_start",
 )
 USERS = ("1::F::1::10::48067", "2::M::56::16::70072")
 MOVIES = (
@@ -96,6 +99,26 @@ def _printed(notebook: Any) -> str:
     return "".join(texts)
 
 
+def _displayed(notebook: Any) -> str:
+    texts = [
+        str(output.get("data", {}).get("text/markdown", ""))
+        for cell in notebook.cells
+        if cell.cell_type == "code"
+        for output in cell.outputs
+    ]
+    return "".join(texts)
+
+
+def test_the_wrangling_summary_tabulates_every_check(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    notebook, _ = _run(_data(tmp_path), monkeypatch)
+    shown = _displayed(notebook)
+    assert "| Check | Finding | Decision |" in shown, shown[:300]
+    absent = [check for check in CHECKS if f"| {check} |" not in shown]
+    assert absent == [], (absent, shown[:500])
+
+
 def test_every_section_the_milestone_requires_is_present_in_order(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -109,6 +132,7 @@ def test_every_section_the_milestone_requires_is_present_in_order(
     assert -1 not in positions and positions == sorted(positions), headings
     header = notebook.cells[0].source
     assert "Canvas project group 34" in header and "data:image/png;base64," in header, header[:200]
+    assert "TF mentor" in header and "Sukanya Krishna" in header, header[-600:]
 
 
 def test_every_number_the_milestone_requires_is_a_results_field(
@@ -179,6 +203,6 @@ def test_every_plot_has_a_title_and_labelled_axes(
 ) -> None:
     _, results = _run(_data(tmp_path), monkeypatch)
     figures = results["figures"]
-    assert len(figures) == 3, results
+    assert len(figures) == 4, results
     unlabelled = [f for f in figures if not (f["title"] and f["xlabel"] and f["ylabel"])]
     assert unlabelled == [], unlabelled
