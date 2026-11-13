@@ -1,0 +1,37 @@
+# contracts/mutations/A.326.toml
+# A.326: the wrangling module judges, splits and guards as its proofs say, and no looser.
+
+[[mutants]]
+id = "range-widened"
+file = "scripts/wrangling.py"
+before = 'LOWEST, HIGHEST = 1, 5'
+after = 'LOWEST, HIGHEST = 1, 6'
+killers = ["tests/test_wrangling.py::test_a_rating_outside_one_to_five_or_an_orphan_user_fails_its_rule"]
+
+[[mutants]]
+id = "unknown-reported-as-pass"
+file = "scripts/wrangling.py"
+before = '    if not ratings:'
+after = '    if False:'
+killers = ["tests/test_wrangling.py::test_each_quality_rule_reports_pass_fail_or_unknown_with_its_count"]
+
+[[mutants]]
+id = "orphan-user-unseen"
+file = "scripts/wrangling.py"
+before = '    orphan_users = sum(r.user_id not in people for r in ratings)'
+after = '    orphan_users = 0'
+killers = ["tests/test_wrangling.py::test_a_rating_outside_one_to_five_or_an_orphan_user_fails_its_rule"]
+
+[[mutants]]
+id = "training-unfiltered"
+file = "scripts/wrangling.py"
+before = '    train = tuple(r for r in ratings if r.timestamp < cutoff)'
+after = '    train = tuple(ratings)'
+killers = ["tests/test_wrangling.py::test_the_temporal_split_puts_every_training_rating_before_the_cutoff"]
+
+[[mutants]]
+id = "leakage-unguarded"
+file = "scripts/wrangling.py"
+before = '    if late:'
+after = '    if False:'
+killers = ["tests/test_wrangling.py::test_a_feature_computed_from_a_later_rating_is_refused"]
