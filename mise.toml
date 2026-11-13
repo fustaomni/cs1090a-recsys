@@ -522,6 +522,11 @@ run = "mise run site:install && mise run site:link && cd site && mise exec node@
 description = "Download MovieLens 1M, check its published MD5, and unpack it only if nothing is refused"
 run = "uv run --no-sync python scripts/data_fetch.py"
 
+[tasks."ms2:execute"]
+description = "Run the Milestone 2 notebook in a fresh kernel on verified MovieLens 1M and save it with its outputs"
+usage = 'arg "<data>" help="The ml-1m folder data:fetch verified and published"; arg "<out>" help="Where the executed notebook and results.json are saved"'
+run = 'uv run --no-sync python scripts/ms2_execute.py "${usage_data?}" "${usage_out?}"'
+
 [tasks."model:fit"]
 description = "Fit the declared baseline from committed code on the verified data, record and admit it"
 run = "uv run --no-sync python scripts/model_run.py"
