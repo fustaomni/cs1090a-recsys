@@ -2681,11 +2681,11 @@ done_when = [
 ]
 [[steps]]
 id = "A.225"
-title = "The Milestone 2 notebook is a Jupyter notebook (.ipynb) that runs top to bottom in a fresh kernel on the verified MovieLens 1M archive, widening the walking skeleton A.244 proved, and shows in order: the Canvas group number and its members, getting the data with its size in megabytes, what a row and each column mean with shape, types and summary statistics, cleaning driven by a ratings-quality/v1 contract whose validity, uniqueness, referential-integrity and completeness rules each produce pass, fail or unknown with its count, the brief's checks each reported with its finding and decision (missing data and its pattern, unusual values, the balance of the rating classes, each numerical feature's range, and information leakage, with a temporal split before any feature is computed), a few plots each titled with labelled axes, and the revised question stated so its answer can be judged, recording every number it reports into milestone2-results/v1 as it computes it"
+title = "The Milestone 2 notebook is a Jupyter notebook (.ipynb) that runs top to bottom in a fresh kernel on the verified MovieLens 1M archive, widening the walking skeleton A.244 proved, and shows in order: the Canvas group number and its members, getting the data with its size in megabytes, what a row and each column mean with shape, types and summary statistics, cleaning driven by a ratings-quality/v1 contract whose validity, uniqueness, referential-integrity and completeness rules each produce pass, fail or unknown with its count, the brief's checks each reported with its finding and decision (missing data and its pattern, unusual values, the balance of the rating classes, each numerical feature's range, and information leakage, with a temporal split before any feature is computed), a few plots each titled with labelled axes, and the revised question stated so its answer can be judged, recording every number it reports into milestone2-results/v1 as it computes it, with seeds set, the raw data never modified, and every piece of its logic imported from the wrangling module A.326 builds"
 thread = "A"
-depends_on = ["A.224", "A.244", "A.235"]
-because = { "A.224" = "the one-command checkout, kernel and data every member opens the notebook in", "A.244" = "the walking skeleton whose runner and results contract this widens", "A.235" = "the verified MovieLens 1M archive the notebook reads" }
-branch = "feature/ms2-notebook"
+depends_on = ["A.326", "A.244", "A.235"]
+because = { "A.326" = "the wrangling module whose pure functions the notebook only calls", "A.244" = "the walking skeleton whose runner and results contract this widens", "A.235" = "the verified MovieLens 1M archive the notebook reads" }
+branch = "feature/ms2-wrangling"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_every_section_the_milestone_requires_is_present_in_order" },
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_every_number_the_milestone_requires_is_a_results_field" },
