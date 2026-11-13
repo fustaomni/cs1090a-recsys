@@ -103,6 +103,23 @@ def test_ratings_per_user_are_counted_for_every_user_who_rated(tmp_path: Path) -
     assert wrangling.ratings_per_user(ratings) == {1: 2, 2: 1}
 
 
+def test_each_test_rating_falls_in_one_bucket_by_its_training_history(
+    tmp_path: Path,
+) -> None:
+    wrangling = _subject("test_buckets")
+    rows = (
+        "1::10::5::1",
+        "1::11::4::2",
+        "2::10::3::3",
+        "1::12::4::4",
+        "3::13::2::5",
+        "1::11::5::6",
+    )
+    ratings = wrangling.read_ratings(_file(tmp_path, "ratings.dat", rows))
+    found = wrangling.test_buckets(wrangling.split_at(ratings, 3))
+    assert found == {"warm": 1, "new-user": 1, "new-movie": 1, "both-new": 1}, found
+
+
 def test_the_cutoff_is_the_timestamp_at_the_training_fraction(tmp_path: Path) -> None:
     wrangling = _subject("time_cutoff")
     stamps = range(10, 0, -1)

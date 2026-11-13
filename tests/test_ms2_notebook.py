@@ -47,6 +47,35 @@ FIELDS = (
     "figures",
     "joined_table",
     "cold_start",
+    "test_buckets",
+)
+JOINED = (
+    "user_id",
+    "movie_id",
+    "rating",
+    "timestamp",
+    "gender",
+    "age",
+    "occupation",
+    "zip_code",
+    "title",
+    "genres",
+)
+ANSWERED = (
+    "Source and size",
+    "One row",
+    "Shape",
+    "Columns and types",
+    "Summary statistics",
+    "Missing data",
+    "Missing data pattern",
+    "Unusual values",
+    "Class balance",
+    "Scale of the features",
+    "Information leakage",
+    "Cold start",
+    "Usable table",
+    "Project question",
 )
 USERS = ("1::F::1::10::48067", "2::M::56::16::70072")
 MOVIES = (
@@ -109,13 +138,23 @@ def _displayed(notebook: Any) -> str:
     return "".join(texts)
 
 
+def test_the_joined_table_lists_each_column_with_its_type(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    notebook, _ = _run(_data(tmp_path), monkeypatch)
+    shown = _displayed(notebook)
+    assert "| Column | Type | Meaning |" in shown, shown[:300]
+    absent = [column for column in JOINED if f"| `{column}` |" not in shown]
+    assert absent == [], (absent, shown[:500])
+
+
 def test_the_wrangling_summary_tabulates_every_check(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     notebook, _ = _run(_data(tmp_path), monkeypatch)
     shown = _displayed(notebook)
     assert "| Check | Finding | Decision |" in shown, shown[:300]
-    absent = [check for check in CHECKS if f"| {check} |" not in shown]
+    absent = [row for row in ANSWERED if f"| {row} |" not in shown]
     assert absent == [], (absent, shown[:500])
 
 

@@ -248,3 +248,21 @@ def cold_start(split: Split) -> dict[str, int]:
 def ratings_per_user(ratings: tuple[Rating, ...]) -> dict[int, int]:
     """How many ratings each user who rated has made."""
     return dict(Counter(r.user_id for r in ratings))
+
+
+def test_buckets(split: Split) -> dict[str, int]:
+    """Each test rating in exactly one bucket by its user's and movie's training history."""
+    users = {r.user_id for r in split.train}
+    movies = {r.movie_id for r in split.train}
+    buckets = dict.fromkeys(("warm", "new-user", "new-movie", "both-new"), 0)
+    for r in split.test:
+        user_seen, movie_seen = r.user_id in users, r.movie_id in movies
+        if user_seen and movie_seen:
+            buckets["warm"] += 1
+        elif movie_seen:
+            buckets["new-user"] += 1
+        elif user_seen:
+            buckets["new-movie"] += 1
+        else:
+            buckets["both-new"] += 1
+    return buckets

@@ -3448,3 +3448,15 @@ done_when = [
   { kind = "proof", test = "tests/test_wrangling_checks.py::test_ratings_per_user_are_counted_for_every_user_who_rated" },
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_the_wrangling_summary_tabulates_every_check" },
 ]
+[[steps]]
+id = "A.331"
+title = "The Milestone 2 notebook puts each test rating in exactly one bucket by its training history, warm, new user, new movie or both new, reports the buckets and plans the evaluation per bucket with a new user predicted by the movie's training mean, and lists each of the joined table's ten columns with its type and meaning"
+thread = "A"
+depends_on = ["A.330"]
+because = { "A.330" = "the reviewed notebook and its cold-start audit, which found nearly half the test ratings by users new after the split" }
+branch = "feature/ms2-buckets"
+done_when = [
+  { kind = "path", path = "contracts/mutations/A.331.toml" },
+  { kind = "proof", test = "tests/test_wrangling_checks.py::test_each_test_rating_falls_in_one_bucket_by_its_training_history" },
+  { kind = "proof", test = "tests/test_ms2_notebook.py::test_the_joined_table_lists_each_column_with_its_type" },
+]
