@@ -61,6 +61,22 @@ JOINED = (
     "title",
     "genres",
 )
+ANSWERED = (
+    "Source and size",
+    "One row",
+    "Shape",
+    "Columns and types",
+    "Summary statistics",
+    "Missing data",
+    "Missing data pattern",
+    "Unusual values",
+    "Class balance",
+    "Scale of the features",
+    "Information leakage",
+    "Cold start",
+    "Usable table",
+    "Project question",
+)
 USERS = ("1::F::1::10::48067", "2::M::56::16::70072")
 MOVIES = (
     "1193::One Flew Over the Cuckoo's Nest (1975)::Drama",
@@ -138,7 +154,7 @@ def test_the_wrangling_summary_tabulates_every_check(
     notebook, _ = _run(_data(tmp_path), monkeypatch)
     shown = _displayed(notebook)
     assert "| Check | Finding | Decision |" in shown, shown[:300]
-    absent = [check for check in CHECKS if f"| {check} |" not in shown]
+    absent = [row for row in ANSWERED if f"| {row} |" not in shown]
     assert absent == [], (absent, shown[:500])
 
 
