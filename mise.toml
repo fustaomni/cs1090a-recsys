@@ -342,8 +342,12 @@ run = "uv run --no-sync python scripts/run_ledger.py"
 [tasks.run]
 description = "Run any task, stream its output to the console, and record the run in the ledger"
 # EVERY OPERATION GOES THROUGH HERE: mise run run <task> [arguments...]. raw_args passes
-# every argument -- --help included -- untouched, and no usage spec reinterprets any.
+# every argument -- --help included -- untouched; the usage spec only declares them (A.320).
 raw_args = true
+usage = '''
+arg "<task>" help="A task this mise.toml declares"
+arg "[arguments]..." help="Passed to the task unchanged"
+'''
 run = "uv run --no-sync python scripts/run_task.py"
 
 [tasks."plan:step"]
@@ -427,11 +431,19 @@ run = 'uv run --no-sync python scripts/machine_trust.py ${usage_checkout:-}'
 [tasks."policies:admit"]
 description = "Refuse any policy domain the manifest declares but cannot admit, or plan one's admission"
 raw_args = true
+usage = '''
+flag "--plan" help="Plan one domain's admission: --plan <domain> <root> <test-file>"
+flag "--out <spec.toml>" help="Where the planned spec is written"
+'''
 run = "uv run --no-sync python scripts/policy_admission.py"
 
 [tasks."worktree:add"]
 description = "Cut a sibling worktree on a new feature branch from [base] or a fresh develop, trusted and set up"
 raw_args = true
+usage = '''
+arg "<slug>" help="Lowercase kebab-case; the branch is feature/<slug>"
+arg "[base]" help="The ref to cut from; a fresh origin/develop when omitted"
+'''
 run = "uv run --no-sync python scripts/worktree.py add"
 
 [tasks."worktree:list"]
@@ -439,13 +451,18 @@ description = "List worktrees, their branches, and any locked or prunable flags"
 run = "uv run --no-sync python scripts/worktree.py list"
 
 [tasks."worktree:refresh"]
-description = "Rebase a worktree's branch onto current origin/develop; its environment follows the lock"
+description = "Merge current origin/develop into a worktree's branch by a commit naming its step; its environment follows the lock"
 raw_args = true
+usage = '''
+arg "<slug>" help="The slug worktree:add was given"
+arg "<step>" help="The plan step the branch serves, named by the merge commit's Plan-Step trailer"
+'''
 run = "uv run --no-sync python scripts/worktree.py refresh"
 
 [tasks."worktree:remove"]
 description = "Remove a worktree and delete its branch, refusing to force either"
 raw_args = true
+usage = 'arg "<slug>" help="The slug worktree:add was given"'
 run = "uv run --no-sync python scripts/worktree.py remove"
 
 [tasks."site:lock"]
@@ -480,6 +497,7 @@ run = "mise run site:build && uv run --no-sync python scripts/site_record.py dep
 [tasks."site:domain"]
 description = "Attach a custom domain to the site (or generate one), printing the DNS records it needs"
 raw_args = true
+usage = 'arg "[domain]" help="A custom domain to attach; Railway generates one when omitted"'
 run = "mise run site:install && cd site && mise exec node@24 -- npm run --silent railway -- domain"
 
 [tasks."site:status"]
@@ -516,6 +534,12 @@ run = 'cd site && mise exec node@24 -- node scripts/movielens-summary.mjs "${usa
 [tasks."site:record"]
 description = "Turn one measured result into a source-apply spec that updates the site's results"
 raw_args = true
+usage = '''
+flag "--out <spec.toml>" help="Where the source-apply spec is written"
+arg "<row-key>" help="The results row to update"
+arg "<run-id>" help="The recorded run the result came from"
+arg "<metrics.json>" help="The measured metrics"
+'''
 run = "uv run --no-sync python scripts/site_record.py"
 
 [tasks."site:test"]
@@ -561,6 +585,10 @@ run = "uv run --no-sync python scripts/upstream.py --tip"
 [tasks."centralization:inventory"]
 description = "List every task and script cscie103 lacks at its resolved develop tip, refusing any unclassified"
 run = "uv run --no-sync python scripts/centralization.py"
+
+[tasks."centralization:record"]
+description = "Record cscie103's capabilities at its resolved develop tip, for the offline classification proof"
+run = "uv run --no-sync python scripts/centralization.py --record"
 
 [tasks."provenance:adapt"]
 description = "Plan a ported file's change as its recorded, reversible vendor patch and provenance entry"
@@ -706,6 +734,11 @@ description = "Drop a worktree's stopped rebase commit, only when another named 
 # skip-plan/v1 judged by runs.worktree_skip before git skips anything. raw_args passes
 # <slug> <preserving-ref> <reason> untouched, so a reason with spaces arrives whole.
 raw_args = true
+usage = '''
+arg "<slug>" help="The slug worktree:add was given"
+arg "<preserving-ref>" help="Another ref that keeps the commit being dropped"
+arg "<reason>" help="Why the commit is dropped"
+'''
 run = "uv run --no-sync python scripts/rebase_skip.py"
 
 # Ported from cscie103-data-engineering at 25061c1 (plan A.137): cscie103 built it after this
@@ -724,6 +757,12 @@ run = "uv run --no-sync python scripts/branches_retire.py"
 [tasks."upstream:copies"]
 description = "Remove a checkout's untracked copies of an upstream only where they match its pinned tree"
 raw_args = true
+usage = '''
+arg "<checkout>" help="The checkout holding the untracked copies"
+arg "<repository-url-or-path>" help="The upstream repository"
+arg "<full-commit-sha>" help="The pinned 40-character commit"
+flag "--yes" help="Remove the matching copies; a dry run when omitted"
+'''
 run = "uv run --no-sync python scripts/upstream_copies.py"
 
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.118).
@@ -731,6 +770,10 @@ run = "uv run --no-sync python scripts/upstream_copies.py"
 description = "Discard changes to tracked paths, back to HEAD; a dry run unless --yes, refusing untracked paths"
 # NEVER DROPS A NEW FILE: a path HEAD has never seen is refused. raw_args passes --yes.
 raw_args = true
+usage = '''
+flag "--yes" help="Restore; a dry run when omitted"
+arg "<path>..." help="Tracked paths to restore to HEAD"
+'''
 run = "uv run --no-sync python scripts/source_restore.py"
 
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.142): pr_logs.py and its proof
@@ -745,10 +788,24 @@ description = "Retry once a CI run on this branch's head that failed before any 
 usage = 'arg "<run-id>" help="The failed run, as pr:logs reports it"'
 run = 'uv run --no-sync python scripts/ci_rerun.py "${usage_run_id?}"'
 
+[tasks."secrets:report"]
+description = "Name each finding in the repository's history by its fingerprint, on the spine"
+# THE GATE'S SUMMARY IS NOT EVIDENCE (A.321, ported from cscie103 D.465). betterleaks' redacted
+# JSON report is: a finding is refused by its rule, file, line, commit and fingerprint, never
+# its secret, and a scan that failed or contradicted itself halts, never passes.
+#
+#   mise run run secrets:report
+run = "uv run --no-sync python scripts/secrets_report.py"
+
 [tasks."repo:history"]
 description = "Read commit history as data: subject, authored time, trailers and files, newest first"
 # NUL- AND CONTROL-BYTE-SEPARATED, as git's own %(trailers) options allow: nothing can break the parse.
 raw_args = true
+usage = '''
+arg "[revision]" help="Any git revision or range; HEAD when omitted"
+flag "--limit <N>" help="At most N commits"
+flag "--repository <CLONE>" help="Read a clone upstream:checkout made"
+'''
 run = "uv run --no-sync python scripts/repo_history.py"
 
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.101).
@@ -887,6 +944,10 @@ description = "Add a dependency with uv and its lock, refusing any change to pac
 # AN ADDITION ONLY ADDS: a stale lock, or any locked package changed or removed, is
 # refused and both files restored. raw_args passes --group <name> through untouched.
 raw_args = true
+usage = '''
+arg "<requirement>" help="A requirement uv accepts"
+flag "--group <name>" help="Add it to this dependency group"
+'''
 run = "uv run --no-sync python scripts/deps_add.py"
 
 [tasks."deps:install"]

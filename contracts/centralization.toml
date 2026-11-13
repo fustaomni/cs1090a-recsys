@@ -6,6 +6,16 @@
 contract = "centralization/v1"
 
 [[capabilities]]
+id = "script:scripts/secrets_report.py"
+class = "generic"
+reason = "a failing history gate's findings named by fingerprint, ported from cscie103 D.465 (A.321)"
+
+[[capabilities]]
+id = "task:secrets:report"
+class = "generic"
+reason = "a failing history gate's findings named by fingerprint, ported from cscie103 D.465 (A.321)"
+
+[[capabilities]]
 id = "script:scripts/branch_push.py"
 class = "generic"
 reason = "a feature branch reaches GitHub only through branch:push, never a protected ref (A.91)"
@@ -34,6 +44,11 @@ reason = "a capability born in a sibling is listed and classified until centrali
 id = "task:centralization:inventory"
 class = "generic"
 reason = "a capability born in a sibling is listed and classified until centralized (A.205)"
+
+[[capabilities]]
+id = "task:centralization:record"
+class = "generic"
+reason = "the upstream's capabilities are recorded as data, so the classification proof is hermetic (A.277)"
 
 [[capabilities]]
 id = "script:scripts/claims_audit.py"
@@ -226,6 +241,21 @@ class = "generic"
 reason = "a merge is concluded by its merge commit, so lineage is never rewritten (A.191)"
 
 [[capabilities]]
+id = "script:scripts/rebase_state.py"
+class = "generic"
+reason = "the engine behind worktree:abort and worktree:conclude, by merge commit (A.191, A.266)"
+
+[[capabilities]]
+id = "script:scripts/types_staged.py"
+class = "generic"
+reason = "pre-commit type-checks the staged Python files, per platform and incrementally (A.267, A.274, A.275)"
+
+[[capabilities]]
+id = "task:types:staged"
+class = "generic"
+reason = "pre-commit type-checks the staged Python files, per platform and incrementally (A.267, A.274, A.275)"
+
+[[capabilities]]
 id = "script:scripts/rebase_skip.py"
 class = "project"
 reason = "worktree:skip rewrites lineage and retires here under A.193, so it is not centralized"
@@ -264,6 +294,11 @@ reason = "this recommender Milestone 2 walking skeleton, from the verified archi
 id = "script:scripts/site_record.py"
 class = "project"
 reason = "this project public site and its labs (A.95, A.98, A.99)"
+
+[[capabilities]]
+id = "script:scripts/site_deployed.py"
+class = "project"
+reason = "this project public site and its labs (A.95, A.98, A.99, A.254, A.273)"
 
 [[capabilities]]
 id = "task:site:build"
