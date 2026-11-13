@@ -69,3 +69,12 @@ def test_every_rating_class_is_counted_even_when_empty(tmp_path: Path) -> None:
     rows = ("1::1::5::1", "1::2::5::2", "2::1::3::3")
     ratings = wrangling.read_ratings(_file(tmp_path, "ratings.dat", rows))
     assert wrangling.rating_balance(ratings) == {1: 0, 2: 0, 3: 1, 4: 0, 5: 2}
+
+
+def test_the_cutoff_is_the_timestamp_at_the_training_fraction(tmp_path: Path) -> None:
+    wrangling = _subject("time_cutoff")
+    stamps = range(10, 0, -1)
+    rows = tuple(f"1::{movie}::4::{stamp}" for movie, stamp in enumerate(stamps))
+    ratings = wrangling.read_ratings(_file(tmp_path, "ratings.dat", rows))
+    assert wrangling.time_cutoff(ratings, 0.8) == 9
+    assert len(wrangling.split_at(ratings, wrangling.time_cutoff(ratings, 0.8)).train) == 8
