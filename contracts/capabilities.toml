@@ -304,6 +304,12 @@ implementation = "scripts/data_fetch.py"
 emits = "command-outcome/v1"
 
 [[capabilities]]
+task = "ms2:execute"
+version = "1.0.0"
+implementation = "scripts/ms2_execute.py"
+emits = "text"
+
+[[capabilities]]
 task = "model:fit"
 version = "1.0.0"
 implementation = "scripts/model_run.py"
