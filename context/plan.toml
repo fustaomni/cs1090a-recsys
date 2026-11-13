@@ -2366,15 +2366,17 @@ done_when = [
 ]
 [[steps]]
 id = "A.206"
-title = "Every generic capability in contracts/centralization.toml names the cscie103 step and commit that carry it, so a capability born here is centralized, and a generic entry without them is refused by the gate"
+title = "Every capability contracts/centralization.toml lists as one cscie103 lacks names its upstream disposition exactly as cscie103's ledger for this sibling records it, ported to a hub step or declined by a hub decision, the register names the hub commit it was checked at, a class contradicting the hub's disposition is reclassified with that decision as its reason, and a generic entry without its disposition is refused"
 thread = "A"
-depends_on = ["A.205", "A.203"]
-because = { "A.205" = "the classified inventory this gate holds to account", "A.203" = "cscie103 set up on FAS, so its own tasks record each port in its plan, trace and ledger" }
+depends_on = ["A.205", "A.203", "A.277"]
+because = { "A.205" = "the classified inventory this gate holds to account", "A.203" = "cscie103 set up on FAS, so its own tasks record each port in its plan, trace and ledger", "A.277" = "the hermetic classification proof whose register this extends" }
 done_when = [
   { kind = "proof", test = "tests/test_centralization.py::test_a_generic_capability_without_its_central_step_is_refused" },
   { kind = "proof", test = "tests/test_centralization.py::test_a_project_specific_capability_needs_its_reason" },
+  { kind = "proof", test = "tests/test_centralization_record.py::test_every_generic_capability_names_its_upstream_disposition" },
   { kind = "task", name = "check" },
 ]
+branch = "feature/central-dispositions"
 [[steps]]
 id = "A.207"
 title = "worktree:refresh merges without committing, gates and trusts a merged mise.toml that changed, and only then commits the merge, so the merge commit's own hooks run against a trusted config; a refused config is never committed"
