@@ -76,14 +76,14 @@ def test_the_three_tables_load_with_their_documented_columns_and_types(tmp_path:
 def test_each_quality_rule_reports_pass_fail_or_unknown_with_its_count(tmp_path: Path) -> None:
     wrangling = _subject()
     ratings, users, movies = _write(tmp_path)
-    people, films = wrangling.read_users(users), wrangling.read_movies(movies)
-    report = wrangling.judge(wrangling.read_ratings(ratings), people, films)
+    people, catalogue = wrangling.read_users(users), wrangling.read_movies(movies)
+    report = wrangling.judge(wrangling.read_ratings(ratings), people, catalogue)
     assert report.contract == "ratings-quality/v1", report
     kinds = {rule.kind for rule in report.rules}
     assert kinds == {"validity", "uniqueness", "referential-integrity", "completeness"}, kinds
     statuses = [(rule.status, rule.count) for rule in report.rules]
     assert statuses == [("pass", 0)] * len(statuses), statuses
-    empty = wrangling.judge((), people, films)
+    empty = wrangling.judge((), people, catalogue)
     assert {rule.status for rule in empty.rules} == {"unknown"}, empty
 
 
