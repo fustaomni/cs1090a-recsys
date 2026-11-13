@@ -71,6 +71,38 @@ def test_every_rating_class_is_counted_even_when_empty(tmp_path: Path) -> None:
     assert wrangling.rating_balance(ratings) == {1: 0, 2: 0, 3: 1, 4: 0, 5: 2}
 
 
+def test_a_unix_time_is_reported_as_its_utc_date() -> None:
+    wrangling = _subject("utc_date")
+    assert wrangling.utc_date(975768738) == "2000-12-02"
+
+
+def test_the_joined_table_counts_only_ratings_whose_user_and_movie_are_known(
+    tmp_path: Path,
+) -> None:
+    wrangling = _subject("joined_shape")
+    rows = ("1::10::5::1", "2::10::4::2", "1::99::3::3")
+    ratings = wrangling.read_ratings(_file(tmp_path, "ratings.dat", rows))
+    people = ("1::F::1::10::48067", "2::M::25::5::02138")
+    users = wrangling.read_users(_file(tmp_path, "users.dat", people))
+    movies = wrangling.read_movies(_file(tmp_path, "movies.dat", ("10::Heat (1995)::Action",)))
+    assert wrangling.joined_shape(ratings, users, movies) == (2, 10)
+
+
+def test_test_ratings_whose_user_or_movie_never_trained_are_counted(tmp_path: Path) -> None:
+    wrangling = _subject("cold_start")
+    rows = ("1::10::5::1", "1::11::4::2", "2::10::3::3", "1::12::4::4")
+    ratings = wrangling.read_ratings(_file(tmp_path, "ratings.dat", rows))
+    found = wrangling.cold_start(wrangling.split_at(ratings, 3))
+    assert found == {"test": 2, "user-unseen": 1, "movie-unseen": 1}, found
+
+
+def test_ratings_per_user_are_counted_for_every_user_who_rated(tmp_path: Path) -> None:
+    wrangling = _subject("ratings_per_user")
+    rows = ("1::10::5::1", "1::11::4::2", "2::10::3::3")
+    ratings = wrangling.read_ratings(_file(tmp_path, "ratings.dat", rows))
+    assert wrangling.ratings_per_user(ratings) == {1: 2, 2: 1}
+
+
 def test_the_cutoff_is_the_timestamp_at_the_training_fraction(tmp_path: Path) -> None:
     wrangling = _subject("time_cutoff")
     stamps = range(10, 0, -1)
