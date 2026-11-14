@@ -3460,3 +3460,13 @@ done_when = [
   { kind = "proof", test = "tests/test_wrangling_checks.py::test_each_test_rating_falls_in_one_bucket_by_its_training_history" },
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_the_joined_table_lists_each_column_with_its_type" },
 ]
+[[steps]]
+id = "A.332"
+title = "Every figure in the Milestone 2 notebook is shown with alternative text built from the run's own numbers, carried in its image output's metadata, so the executed notebook and its HTML give a screen reader what each plot shows"
+thread = "A"
+depends_on = ["A.331"]
+because = { "A.331" = "the notebook whose four figures this describes" }
+branch = "feature/ms2-alt-text"
+done_when = [
+  { kind = "proof", test = "tests/test_ms2_notebook.py::test_every_figure_carries_its_alternative_text" },
+]
