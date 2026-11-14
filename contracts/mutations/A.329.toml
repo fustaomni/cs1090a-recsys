@@ -1,0 +1,16 @@
+# contracts/mutations/A.329.toml
+# A.329: ms2:execute refuses a folder without its tables, and saves the executed notebook.
+
+[[mutants]]
+id = "missing-tables-admitted"
+file = "scripts/ms2_execute.py"
+before = '    if missing:'
+after = '    if False:'
+killers = ["tests/test_ms2_execute.py::test_a_folder_without_the_verified_tables_is_refused_before_any_kernel_starts"]
+
+[[mutants]]
+id = "executed-copy-unsaved"
+file = "scripts/ms2_execute.py"
+before = '    nbformat.write(source, executed)'
+after = '    executed.touch()'
+killers = ["tests/test_ms2_execute.py::test_the_notebook_is_executed_in_a_fresh_kernel_and_saved_with_its_outputs"]

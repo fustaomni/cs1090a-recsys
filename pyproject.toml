@@ -27,6 +27,10 @@ dev = [
   "types-pyyaml>=6.0.12.20260906",
   "types-defusedxml==0.7.0.20260504",
   "copier>=9.17",
+  "nbformat>=5.10",
+  "nbclient>=0.10",
+  "ipykernel>=6.30",
+  "matplotlib>=3.10",
 ]
 
 [tool.ruff]
@@ -53,6 +57,9 @@ files = ["scripts", "tests"]
 # WHERE PYTEST IMPORTS FROM (A.274): scripts/ is a module root for both, so a test checked
 # alone, as the staged check does, resolves its scripts/ imports exactly as the test run does.
 mypy_path = ["scripts"]
+# AN UNTYPED THIRD-PARTY CALL IS EXCUSED BY PACKAGE, NEVER BY DROPPING STRICT (A.225): nbformat's
+# read and validate carry no annotations, and mypy's untyped_calls_exclude names exactly that.
+untyped_calls_exclude = ["nbformat"]
 # Fail closed: silence becomes failure.
 warn_unused_configs = true
 warn_unreachable = true

@@ -1,0 +1,44 @@
+# contracts/mutations/A.328.toml
+# A.328: each Milestone 2 cleaning check computes what its proof says, and no looser.
+
+[[mutants]]
+id = "age-code-admitted"
+file = "scripts/wrangling.py"
+before = 'AGE_CODES = frozenset({1, 18, 25, 35, 45, 50, 56})'
+after = 'AGE_CODES = frozenset({1, 18, 25, 35, 45, 50, 56, 57})'
+killers = ["tests/test_wrangling_checks.py::test_impossible_demographic_values_are_counted_by_rule"]
+
+[[mutants]]
+id = "binary-megabytes"
+file = "scripts/wrangling.py"
+before = 'BYTES_PER_MEGABYTE = 1_000_000'
+after = 'BYTES_PER_MEGABYTE = 1_048_576'
+killers = ["tests/test_wrangling_checks.py::test_the_archive_size_is_reported_in_megabytes"]
+
+[[mutants]]
+id = "empty-class-dropped"
+file = "scripts/wrangling.py"
+before = '    return {star: counts.get(star, 0) for star in range(LOWEST, HIGHEST + 1)}'
+after = '    return dict(counts)'
+killers = ["tests/test_wrangling_checks.py::test_every_rating_class_is_counted_even_when_empty"]
+
+[[mutants]]
+id = "group-missingness-unseen"
+file = "scripts/wrangling.py"
+before = '        counts[row[where]] = counts.get(row[where], 0) + (0 if all(row) else 1)'
+after = '        counts[row[where]] = counts.get(row[where], 0)'
+killers = ["tests/test_wrangling_checks.py::test_missing_values_are_counted_per_column_and_by_group"]
+
+[[mutants]]
+id = "empty-column-summarised"
+file = "scripts/wrangling.py"
+before = '    if not values:'
+after = '    if False:'
+killers = ["tests/test_wrangling_checks.py::test_each_numerical_column_is_summarised_by_count_mean_minimum_and_maximum"]
+
+[[mutants]]
+id = "cutoff-at-the-end"
+file = "scripts/wrangling.py"
+before = '    return ordered[int(fraction * len(ordered))]'
+after = '    return ordered[-1]'
+killers = ["tests/test_wrangling_checks.py::test_the_cutoff_is_the_timestamp_at_the_training_fraction"]

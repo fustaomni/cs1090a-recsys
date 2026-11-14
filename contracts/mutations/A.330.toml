@@ -1,0 +1,30 @@
+# contracts/mutations/A.330.toml
+# A.330: the review's four checks compute what their proofs say, and no looser.
+
+[[mutants]]
+id = "date-not-a-date"
+file = "scripts/wrangling.py"
+before = '    return datetime.fromtimestamp(stamp, UTC).date().isoformat()'
+after = '    return str(stamp)'
+killers = ["tests/test_wrangling_checks.py::test_a_unix_time_is_reported_as_its_utc_date"]
+
+[[mutants]]
+id = "orphans-joined"
+file = "scripts/wrangling.py"
+before = '    rows = sum(r.user_id in known_users and r.movie_id in known_movies for r in ratings)'
+after = '    rows = len(ratings)'
+killers = ["tests/test_wrangling_checks.py::test_the_joined_table_counts_only_ratings_whose_user_and_movie_are_known"]
+
+[[mutants]]
+id = "cold-users-unseen"
+file = "scripts/wrangling.py"
+before = '        "user-unseen": sum(r.user_id not in users for r in split.test),'
+after = '        "user-unseen": 0,'
+killers = ["tests/test_wrangling_checks.py::test_test_ratings_whose_user_or_movie_never_trained_are_counted"]
+
+[[mutants]]
+id = "counted-per-movie"
+file = "scripts/wrangling.py"
+before = '    return dict(Counter(r.user_id for r in ratings))'
+after = '    return dict(Counter(r.movie_id for r in ratings))'
+killers = ["tests/test_wrangling_checks.py::test_ratings_per_user_are_counted_for_every_user_who_rated"]
