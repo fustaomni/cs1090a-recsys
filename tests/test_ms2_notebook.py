@@ -9,12 +9,14 @@ its results, its quality rules, its findings and decisions and its figures are r
 from __future__ import annotations
 
 import json
+import tempfile
 import zipfile
 from pathlib import Path
 from typing import Any
 
 import nbformat
 import pytest
+from jupyter_client.manager import KernelManager
 from nbclient import NotebookClient
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -113,7 +115,11 @@ def _run(directory: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[Any, dict[st
     monkeypatch.setenv("MS2_RESULTS", str(results))
     notebook = nbformat.read(NOTEBOOK, as_version=4)
     where = {"metadata": {"path": str(NOTEBOOK.parent)}}
-    NotebookClient(notebook, kernel_name="python3", timeout=180, resources=where).execute()
+    # IPC, NEVER UNENCRYPTED TCP (A.334): the sockets live in a short temporary folder, since a
+    # Unix socket's path is at most 103 characters and pytest's own folders are longer.
+    with tempfile.TemporaryDirectory() as sockets:
+        manager = KernelManager(kernel_name="python3", transport="ipc", ip=f"{sockets}/kernel")
+        NotebookClient(notebook, km=manager, timeout=180, resources=where).execute()
     found: dict[str, Any] = json.loads(results.read_text(encoding="utf-8"))
     return notebook, found
 
