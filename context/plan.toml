@@ -4003,3 +4003,37 @@ done_when = [
   { kind = "proof", test = "tests/test_betterleaks_ignore.py::test_the_reviewed_finding_is_ignored_in_every_commit_of_its_line" },
   { kind = "proof", test = "tests/integration/test_generated_gate.py::test_a_generated_project_with_its_own_identity_passes_its_own_gate" },
 ]
+[[steps]]
+id = "A.342"
+title = "site:record fills a milestone's results section from the run that recorded it: each entry's value is read by a JSON pointer from that run's results file, the entry names the file's contract and SHA-256, and a pointer the file lacks is refused before anything is written"
+thread = "A"
+depends_on = ["A.95", "A.329"]
+because = { "A.95" = "the site's one results document the section lives in", "A.329" = "ms2:execute, which writes the notebook's results file" }
+branch = "feature/site-ms2-results"
+done_when = [
+  { kind = "path", path = "contracts/mutations/A.342.toml" },
+  { kind = "proof", test = "tests/test_site_record.py::test_a_milestone_section_is_recorded_from_its_results_file" },
+  { kind = "proof", test = "tests/test_site_record.py::test_a_pointer_the_results_file_lacks_is_refused" },
+]
+[[steps]]
+id = "A.343"
+title = "The site states where the project stands from data: the group card names the next meeting, Milestone 3 TF Meeting, TBD, while the first meeting stays recorded; Milestones 1 and 2 are done and 3 is current, so their phases follow; and the protocol header separates the split Milestone 2 ran from the validation and test boundaries Milestone 3 plans"
+thread = "A"
+depends_on = ["A.245", "A.256"]
+because = { "A.245" = "the group card and its first meeting, proven by its own test", "A.256" = "the milestone statuses the phases follow" }
+branch = "feature/site-ms2-results"
+done_when = [
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_group_card_names_the_next_meeting" },
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_delivered_milestones_are_done_and_the_next_is_current" },
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_protocol_separates_what_ran_from_what_is_planned" },
+]
+[[steps]]
+id = "A.344"
+title = "Results' Milestone 2 section holds the notebook run's findings, recorded by site:record from the results file ms2:execute wrote, so every value it shows is read from that file and names its digest"
+thread = "A"
+depends_on = ["A.342"]
+because = { "A.342" = "the writer that records a section from a results file" }
+branch = "feature/site-ms2-results"
+done_when = [
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_m2_results_are_recorded_from_the_notebook_run" },
+]
