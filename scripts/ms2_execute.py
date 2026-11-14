@@ -47,7 +47,13 @@ def execute(notebook: Path, data: Path, out: Path) -> Path:
             ip=str(Path(sockets) / "kernel"),
         )
         client = NotebookClient(source, km=manager, timeout=CELL_SECONDS, resources=where)
-        client.execute(env=env)
+        # NBCLIENT KEEPS ALIVE A KERNEL IT WAS GIVEN (A.335): this one is shut down however the
+        # run ends, so no kernel outlives ms2:execute.
+        try:
+            client.execute(env=env)
+        finally:
+            if manager.has_kernel:
+                manager.shutdown_kernel()
     executed = out / notebook.name
     nbformat.write(source, executed)
     return executed

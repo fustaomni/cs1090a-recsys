@@ -3480,3 +3480,13 @@ branch = "feature/ms2-ipc"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_execute.py::test_the_kernel_talks_over_ipc_never_unencrypted_tcp" },
 ]
+[[steps]]
+id = "A.335"
+title = "The kernel a Milestone 2 run starts, in ms2:execute and in every notebook proof, is shut down when the run ends, success or failure, since nbclient keeps alive a kernel manager it was given rather than created"
+thread = "A"
+depends_on = ["A.334"]
+because = { "A.334" = "the IPC kernel manager ms2:execute now gives nbclient, which nbclient therefore does not shut down" }
+branch = "feature/ms2-kernel-shutdown"
+done_when = [
+  { kind = "proof", test = "tests/test_ms2_execute.py::test_no_kernel_outlives_the_run" },
+]
