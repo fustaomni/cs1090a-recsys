@@ -108,3 +108,30 @@ def test_each_milestone_has_a_results_section_filled_only_from_recorded_evidence
         or not entry.get("evidence", {}).get("contract")
     ]
     assert unrecorded == [], unrecorded
+
+
+def test_the_group_card_names_the_next_meeting() -> None:
+    """A.343: the card shows the next meeting from data; the first meeting stays recorded."""
+    group = _load("project.json").get("group")
+    assert isinstance(group, dict), group
+    assert group.get("next_meeting") == {"label": "Milestone 3 TF Meeting", "when": "TBD"}, group
+    app = (SITE / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "group.next_meeting.label" in app, "the card does not render the next meeting"
+    assert "First TF Meeting:" not in app, "the card still names the first meeting"
+
+
+def test_the_delivered_milestones_are_done_and_the_next_is_current() -> None:
+    """A.343: Milestones 1 and 2 are delivered and 3 is current; no status says otherwise."""
+    data = _load("project.json")
+    milestones = data.get("milestones")
+    assert isinstance(milestones, list), milestones
+    states = {entry["id"]: entry["status"] for entry in nonempty(milestones)}
+    assert states == {"M1": "done", "M2": "done", "M3": "current", "M4": "planned"}, states
+    assert "under way" not in str(data.get("status")), data.get("status")
+
+
+def test_the_protocol_separates_what_ran_from_what_is_planned() -> None:
+    """A.343: the header names the split Milestone 2 ran apart from what Milestone 3 plans."""
+    protocol = str(_load("results.json").get("protocol"))
+    assert "Milestone 2" in protocol, protocol
+    assert "Milestone 3" in protocol and "planned" in protocol, protocol
