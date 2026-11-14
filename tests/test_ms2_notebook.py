@@ -138,6 +138,22 @@ def _displayed(notebook: Any) -> str:
     return "".join(texts)
 
 
+def test_every_figure_carries_its_alternative_text(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    notebook, _ = _run(_data(tmp_path), monkeypatch)
+    images = [
+        output.get("metadata", {}).get("image/png", {})
+        for cell in notebook.cells
+        if cell.cell_type == "code"
+        for output in cell.outputs
+        if "image/png" in output.get("data", {})
+    ]
+    assert len(images) == 4, images
+    missing = [image for image in images if not image.get("alt")]
+    assert missing == [], missing
+
+
 def test_the_joined_table_lists_each_column_with_its_type(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
