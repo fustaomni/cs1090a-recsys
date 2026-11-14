@@ -119,7 +119,11 @@ def _run(directory: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[Any, dict[st
     # Unix socket's path is at most 103 characters and pytest's own folders are longer.
     with tempfile.TemporaryDirectory() as sockets:
         manager = KernelManager(kernel_name="python3", transport="ipc", ip=f"{sockets}/kernel")
-        NotebookClient(notebook, km=manager, timeout=180, resources=where).execute()
+        try:
+            NotebookClient(notebook, km=manager, timeout=180, resources=where).execute()
+        finally:
+            if manager.has_kernel:
+                manager.shutdown_kernel()
     found: dict[str, Any] = json.loads(results.read_text(encoding="utf-8"))
     return notebook, found
 
