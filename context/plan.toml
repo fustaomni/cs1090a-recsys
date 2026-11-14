@@ -3774,6 +3774,29 @@ done_when = [
   { kind = "task", name = "check:offline" },
 ]
 [[steps]]
+id = "A.279"
+title = "tools:verify verifies every locked tool whose provenance mise.lock does not record, by the method its publisher provides, and records the evidence in contracts/tool-provenance.toml: a GitHub immutable release by gh release verify-asset, node by a release key's OpenPGP signature on SHASUMS256.txt, checked in Python with pysequoia against nodejs/release-keys pinned by commit, and an npm package by npm audit signatures with its integrity equal to the aube lock's; test_tool_provenance accepts an npm-backend entry only through its recorded verification"
+thread = "A"
+depends_on = ["A.9", "A.278"]
+because = { "A.9" = "the provenance register and its proof", "A.278" = "the gate that must stay within its deadline while the new proofs run" }
+branch = "feature/tools-verify"
+done_when = [
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_every_locked_tool_names_its_provenance" },
+  { kind = "proof", test = "tests/test_tools_verify.py::test_each_publisher_kind_is_verified_by_its_own_method" },
+  { kind = "task", name = "tools:verify" },
+]
+[[steps]]
+id = "A.280"
+title = "tools:which records, for every tool mise.toml declares, the binary mise resolves and the version it reports, as typed evidence, so which npm or node a task runs is observed through a task, never a raw mise which or mise exec probe"
+thread = "A"
+depends_on = ["A.279"]
+because = { "A.279" = "the verified tools whose resolution this records" }
+branch = "feature/tools-which"
+done_when = [
+  { kind = "proof", test = "tests/test_tools_which.py::test_each_tool_resolves_to_its_locked_install" },
+  { kind = "task", name = "tools:which" },
+]
+[[steps]]
 id = "A.320"
 title = "Every raw_args task declares its arguments as its script states them: each of the twelve tasks that forward arguments unparsed carries a mise usage spec, which mise tasks info and --help show while the arguments still pass unchanged, and A.44's capability findings refuse a raw_args task with no usage spec or with an argument its script's own usage line does not name; it is the first slice of A.178's declared inputs, later moved into A.162's typed input schemas"
 thread = "A"
@@ -3967,4 +3990,16 @@ because = { "A.334" = "the IPC kernel manager ms2:execute now gives nbclient, wh
 branch = "feature/ms2-kernel-shutdown"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_execute.py::test_no_kernel_outlives_the_run" },
+]
+[[steps]]
+id = "A.341"
+title = "A generated project inherits A.322's reviewed finding: .betterleaksignore also lists its commit-less fingerprint scripts/tools_verify.py:generic-api-key:35, so the same reviewed line passes the secrets (history) gate in a project whose history re-commits it"
+thread = "A"
+depends_on = ["A.322", "A.279"]
+because = { "A.322" = "the reviewed finding, suppressed only in commit 549173b4", "A.279" = "tools:verify, whose pinned KEYS_COMMIT is the finding" }
+branch = "feature/tools-verify"
+done_when = [
+  { kind = "path", path = ".betterleaksignore" },
+  { kind = "proof", test = "tests/test_betterleaks_ignore.py::test_the_reviewed_finding_is_ignored_in_every_commit_of_its_line" },
+  { kind = "proof", test = "tests/integration/test_generated_gate.py::test_a_generated_project_with_its_own_identity_passes_its_own_gate" },
 ]

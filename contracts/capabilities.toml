@@ -298,6 +298,12 @@ implementation = "scripts/centralization.py"
 emits = "text"
 
 [[capabilities]]
+task = "tools:verify"
+version = "1.0.0"
+implementation = "scripts/tools_verify.py"
+emits = "text"
+
+[[capabilities]]
 task = "data:fetch"
 version = "1.0.0"
 implementation = "scripts/data_fetch.py"
