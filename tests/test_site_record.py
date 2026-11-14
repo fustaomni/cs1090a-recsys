@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
+import json
+from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
 
+import site_record
 from nonvacuous import nonempty
 from site_record import ROOT, Estimate, Metrics, load, recorded
 
@@ -42,3 +46,26 @@ def test_an_unknown_row_is_refused() -> None:
 def test_an_interval_that_excludes_its_value_is_refused() -> None:
     with pytest.raises(ValidationError, match="excludes"):
         Estimate(value=0.95, low=0.88, high=0.92)
+
+
+def test_a_milestone_section_is_recorded_from_its_results_file(tmp_path: Path) -> None:
+    """A.342: each entry is read by its JSON pointer and names its file's digest."""
+    found = tmp_path / "results.json"
+    found.write_text(json.dumps({"split": {"train": 8, "test": 2}}), encoding="utf-8")
+    pointers = {"training ratings": "/split/train", "test ratings": "/split/test"}
+    updated = site_record.sectioned(load(ROOT), "M2", found, "ms2-results/v1", pointers, TODAY)
+    section = next(entry for entry in updated.milestones if entry.milestone == "M2")
+    shown = [(entry.label, entry.value) for entry in section.entries]
+    assert shown == [("training ratings", 8), ("test ratings", 2)], shown
+    digest = hashlib.sha256(found.read_bytes()).hexdigest()
+    named = {(e.evidence.contract, e.evidence.sha256) for e in nonempty(section.entries)}
+    assert named == {("ms2-results/v1", digest)}, named
+
+
+def test_a_pointer_the_results_file_lacks_is_refused(tmp_path: Path) -> None:
+    """A.342: a pointer the file lacks is refused, by name, before anything is written."""
+    found = tmp_path / "results.json"
+    found.write_text(json.dumps({"split": {"train": 8}}), encoding="utf-8")
+    pointers = {"missing": "/split/missing"}
+    with pytest.raises(SystemExit, match="/split/missing"):
+        site_record.sectioned(load(ROOT), "M2", found, "ms2-results/v1", pointers, TODAY)

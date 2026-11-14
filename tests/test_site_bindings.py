@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import re
+import tomllib
 from pathlib import Path
 
 from nonvacuous import nonempty
@@ -108,3 +109,45 @@ def test_each_milestone_has_a_results_section_filled_only_from_recorded_evidence
         or not entry.get("evidence", {}).get("contract")
     ]
     assert unrecorded == [], unrecorded
+
+
+def test_the_group_card_names_the_next_meeting() -> None:
+    """A.343: the card shows the next meeting from data; the first meeting stays recorded."""
+    group = _load("project.json").get("group")
+    assert isinstance(group, dict), group
+    assert group.get("next_meeting") == {"label": "Milestone 3 TF Meeting", "when": "TBD"}, group
+    app = (SITE / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "group.next_meeting.label" in app, "the card does not render the next meeting"
+    assert "First TF Meeting:" not in app, "the card still names the first meeting"
+
+
+def test_the_delivered_milestones_are_done_and_the_next_is_current() -> None:
+    """A.343: Milestones 1 and 2 are delivered and 3 is current; no status says otherwise."""
+    data = _load("project.json")
+    milestones = data.get("milestones")
+    assert isinstance(milestones, list), milestones
+    states = {entry["id"]: entry["status"] for entry in nonempty(milestones)}
+    assert states == {"M1": "done", "M2": "done", "M3": "current", "M4": "planned"}, states
+    assert "under way" not in str(data.get("status")), data.get("status")
+
+
+def test_the_protocol_separates_what_ran_from_what_is_planned() -> None:
+    """A.343: the header names the split Milestone 2 ran apart from what Milestone 3 plans."""
+    protocol = str(_load("results.json").get("protocol"))
+    assert "Milestone 2" in protocol, protocol
+    assert "Milestone 3" in protocol and "planned" in protocol, protocol
+
+
+def test_the_m2_results_are_recorded_from_the_notebook_run() -> None:
+    """A.344: M2 shows every label its pointers file names, all read from one recorded run."""
+    pointers = ROOT / "contracts" / "site-sections" / "M2.toml"
+    labels = list(tomllib.loads(pointers.read_text(encoding="utf-8"))["pointers"])
+    assert labels, "the M2 pointers file names no label"
+    sections = _load("results.json").get("milestones")
+    assert isinstance(sections, list), sections
+    section = next(entry for entry in sections if entry.get("milestone") == "M2")
+    entries = section.get("entries", [])
+    assert [entry.get("label") for entry in entries] == labels, entries
+    digests = {entry["evidence"]["sha256"] for entry in nonempty(entries)}
+    contracts = {entry["evidence"]["contract"] for entry in entries}
+    assert len(digests) == 1 and contracts == {"ms2-results/v1"}, (digests, contracts)

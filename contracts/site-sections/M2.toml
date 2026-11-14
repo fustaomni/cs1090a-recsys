@@ -1,0 +1,32 @@
+# contracts/site-sections/M2.toml
+# A.344: what Results' Milestone 2 section shows, each label read by its RFC 6901 pointer from
+# the results file the notebook wrote (ms2:execute). site:record reads the values; none is typed.
+
+[pointers]
+"Size of the three files (MB)" = "/size_megabytes"
+"Ratings" = "/tables/ratings/0"
+"Users" = "/tables/users/0"
+"Movies listed" = "/tables/movies/0"
+"Joined table rows" = "/joined_table/0"
+"Joined table columns" = "/joined_table/1"
+"Mean rating (stars)" = "/summaries/rating/mean"
+"Ratings outside 1 to 5" = "/quality/0/count"
+"Duplicate user and movie pairs" = "/quality/1/count"
+"Ratings by unknown users" = "/quality/2/count"
+"Ratings of unknown movies" = "/quality/3/count"
+"Empty fields" = "/quality/4/count"
+"Zip codes not five digits" = "/unusual_users/zip-not-five-digits"
+"1-star ratings" = "/rating_balance/1"
+"2-star ratings" = "/rating_balance/2"
+"3-star ratings" = "/rating_balance/3"
+"4-star ratings" = "/rating_balance/4"
+"5-star ratings" = "/rating_balance/5"
+"Split cutoff (Unix time)" = "/split/cutoff"
+"Training ratings" = "/split/train"
+"Test ratings" = "/split/test"
+"Test ratings by users unseen in training" = "/cold_start/user-unseen"
+"Test ratings of movies unseen in training" = "/cold_start/movie-unseen"
+"Warm test ratings" = "/test_buckets/warm"
+"New-user test ratings" = "/test_buckets/new-user"
+"New-movie test ratings" = "/test_buckets/new-movie"
+"Both-new test ratings" = "/test_buckets/both-new"

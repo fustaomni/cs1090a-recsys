@@ -55,7 +55,9 @@ function GroupCard() {
         ))}
       </ol>
       <p className="group-label">TF mentor: {group.mentor}</p>
-      <p className="group-label">First TF Meeting: {group.first_meeting}</p>
+      <p className="group-label">
+        {group.next_meeting.label}: {group.next_meeting.when}
+      </p>
     </aside>
   );
 }

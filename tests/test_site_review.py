@@ -63,13 +63,13 @@ def _phase_ids(milestone: dict[str, object]) -> list[str]:
 
 
 def test_milestone_statuses_run_done_then_current_then_planned() -> None:
-    """Milestone 1 has passed and Milestone 2 is under way, as the calendar stood at review."""
+    """Milestones run done, then exactly one current, then planned, in that order."""
     milestones = _milestones()
     statuses = [str(milestone.get("status")) for milestone in nonempty(milestones)]
     current = [
         milestone.get("id") for milestone in milestones if milestone.get("status") == "current"
     ]
-    assert current == ["M2"], statuses
+    assert len(current) == 1, statuses
     position = statuses.index("current")
     assert set(statuses[:position]) == {"done"}, statuses
     assert set(statuses[position + 1 :]) == {"planned"}, statuses
