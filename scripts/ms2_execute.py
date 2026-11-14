@@ -10,10 +10,12 @@ from __future__ import annotations
 
 import os
 import sys
+import tempfile
 from collections.abc import Sequence
 from pathlib import Path
 
 import nbformat
+from jupyter_client.manager import KernelManager
 from nbclient import NotebookClient
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -36,8 +38,16 @@ def execute(notebook: Path, data: Path, out: Path) -> Path:
     }
     source = nbformat.read(notebook, as_version=4)
     where = {"metadata": {"path": str(notebook.parent)}}
-    client = NotebookClient(source, kernel_name="python3", timeout=CELL_SECONDS, resources=where)
-    client.execute(env=env)
+    # IPC, NEVER UNENCRYPTED TCP (A.334): the sockets live in a private temporary directory,
+    # guarded by the filesystem's permissions, as jupyter_client documents for IPC transport.
+    with tempfile.TemporaryDirectory() as sockets:
+        manager = KernelManager(
+            kernel_name="python3",
+            transport="ipc",
+            ip=str(Path(sockets) / "kernel"),
+        )
+        client = NotebookClient(source, km=manager, timeout=CELL_SECONDS, resources=where)
+        client.execute(env=env)
     executed = out / notebook.name
     nbformat.write(source, executed)
     return executed
