@@ -324,4 +324,5 @@ issued = [
   { id = "A.333", first_title = "Each type gate's deadline is computed as A.278 and A.340 compute the test tiers': the slowest recorded run of the type checks on FAS node cr-2 times the runaway-backstop headroom, so a passing type check is never killed under check's load and a hung one still is" },
   { id = "A.332", first_title = "Every figure in the Milestone 2 notebook is shown with alternative text built from the run's own numbers, carried in its image output's metadata, so the executed notebook and its HTML give a screen reader what each plot shows" },
   { id = "A.334", first_title = "The Milestone 2 notebook's kernel, in ms2:execute and in every notebook proof, talks to its client over IPC sockets in a private temporary directory, which the filesystem's permissions guard, never over unencrypted TCP, so no run prints the kernel's unencrypted-transport warning" },
+  { id = "A.335", first_title = "The kernel a Milestone 2 run starts, in ms2:execute and in every notebook proof, is shut down when the run ends, success or failure, since nbclient keeps alive a kernel manager it was given rather than created" },
 ]
