@@ -6,7 +6,7 @@ import { fixed } from "../lib/format.js";
 import { steps, surface } from "../lib/grid.js";
 import { clip, outOfRange, rmse } from "../lib/metrics.js";
 import { historyRatings } from "../lib/ratings.js";
-import { fit, predict, vif } from "../lib/regression.js";
+import { fit, heldFit, predict, vif } from "../lib/regression.js";
 import { mean } from "../lib/stats.js";
 
 const USER = steps(-2.5, 2.5, 41);
@@ -25,32 +25,14 @@ function termsFor(centre, { square, both }) {
   return terms;
 }
 
-// With the curvature and interaction coefficients held where the reader set them, the
-// intercept and linear terms are refitted by least squares to what remains.
-function conditional(rows, ys, terms, held) {
-  const free = terms.filter((term) => !(term.key in held));
-  const rest = ys.map(
-    (y, index) =>
-      y -
-      terms
-        .filter((term) => term.key in held)
-        .reduce((total, term) => total + held[term.key] * term.value(rows[index]), 0),
-  );
-  const coef = fit(rows, free, rest);
-  const byKey = { intercept: coef[0] };
-  free.forEach((term, index) => {
-    byKey[term.key] = coef[index + 1];
-  });
-  return { ...byKey, ...held };
-}
-
 function shape(square, both) {
   if (both !== 0) {
     const angle = (0.5 * Math.atan(both / (0 - square)) * 180) / Math.PI;
     const turned = Number.isFinite(angle) ? Math.abs(angle) : 45;
     const discriminant = fixed(both * both, 4);
     return (
-      `a saddle: the discriminant b₅² − 4·0·b₃ = ${discriminant} is positive, and the ` +
+      `a saddle: the discriminant b₅² − 4·b₄·b₃, with b₄ = 0 since no user² term is fitted, ` +
+      `is ${discriminant}, positive, and the ` +
       `interaction turns its axes by ${fixed(turned, 1)}°`
     );
   }
@@ -84,7 +66,7 @@ export default function M3() {
   const held = {};
   if (withSquare) held.square = b3;
   if (withBoth) held.both = b5;
-  const coef = conditional(train, ys, terms, held);
+  const coef = heldFit(train, ys, terms, held);
   const vector = [coef.intercept, ...terms.map((term) => coef[term.key])];
   const at = (row) => predict(vector, terms, row);
 
@@ -162,7 +144,6 @@ export default function M3() {
   const names = centredTerms.map((term) => term.label);
   return (
     <article className="lab">
-      <h3>Model 3 · Polynomial and interaction terms</h3>
       <p>
         A squared count term lets the surface bend, and a user × count term lets the effect of a
         user's mean depend on how much they have rated. The surface is drawn unclipped: the

@@ -51,7 +51,7 @@ def test_the_group_is_three_members_with_its_mentor_and_first_meeting() -> None:
     assert isinstance(group, dict), data
     assert group.get("members") == MEMBERS, group
     assert group.get("mentor") == "Sukanya Krishna", group
-    assert group.get("first_meeting") == "TBD", group
+    assert group.get("first_meeting") == "Friday, November 13, 2026, at 7:00 PM ET", group
     assert "seats" not in group, group
     assert data.get("title") == TITLE, data.get("title")
 

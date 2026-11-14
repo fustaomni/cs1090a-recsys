@@ -2,59 +2,13 @@ import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
 import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
-import { ensemblePredict, forest, outOfBag } from "../lib/ensemble.js";
 import { fixed } from "../lib/format.js";
-import { randomFolds, rmseOf } from "../lib/importance.js";
-import { mulberry32 } from "../lib/random.js";
+import { estimates, oobRmse } from "../lib/oob.js";
 import { driftRatings } from "../lib/ratings.js";
 
-const FEATURES = ["user", "movie", "genre", "noise"];
 const TRAIN = 240;
 const TREES = 30;
-const SETTINGS = { trees: TREES, mtry: 2, minLeaf: 5 };
 const ESTIMATES = ["Out of bag", "Random 3-fold CV", "Within-period random", "Temporal"];
-
-function oobRmse(members, rows, count) {
-  const values = outOfBag(members, rows, count);
-  const kept = values.map((v, i) => [v, rows[i].rating]).filter(([v]) => !Number.isNaN(v));
-  return Math.sqrt(kept.reduce((s, [v, y]) => s + (v - y) ** 2, 0) / kept.length);
-}
-
-// One seed's four estimates of the same forest's error: out of bag and random folds on the
-// training period, a random split that lets the later period into training, and the honest
-// temporal one, trained on the past and scored on the later window.
-function estimates(train, later, seed) {
-  const members = forest(train, FEATURES, { ...SETTINGS, seed });
-  const rng = mulberry32(500 + seed);
-  let squares = 0;
-  for (const fold of randomFolds(train.length, 3, rng)) {
-    const held = new Set(fold);
-    const fitted = forest(
-      train.filter((_, i) => !held.has(i)),
-      FEATURES,
-      { ...SETTINGS, trees: 15, seed },
-    );
-    for (const i of fold) squares += (ensemblePredict(fitted, train[i]) - train[i].rating) ** 2;
-  }
-  const [inside, outside] = randomFolds(later.length, 2, rng);
-  const pooled = forest(
-    [...train, ...inside.map((i) => later[i])],
-    FEATURES,
-    { ...SETTINGS, seed },
-  );
-  return {
-    members,
-    values: [
-      oobRmse(members, train),
-      Math.sqrt(squares / train.length),
-      rmseOf(
-        (row) => ensemblePredict(pooled, row),
-        outside.map((i) => later[i]),
-      ),
-      rmseOf((row) => ensemblePredict(members, row), later),
-    ],
-  };
-}
 
 function summary(values) {
   const mean = values.reduce((s, v) => s + v, 0) / values.length;
@@ -73,8 +27,8 @@ export default function T7() {
     [train, later, seeds],
   );
   const columns = ESTIMATES.map((_, k) => summary(runs.map((run) => run.values[k])));
-  const gap = summary(runs.map((run) => run.values[3] - run.values[0]));
-  const change = summary(runs.map((run) => run.values[3] - run.values[2]));
+  const gap = summary(runs.map((run) => run.temporalHeld - run.values[0]));
+  const change = summary(runs.map((run) => run.temporalHeld - run.values[2]));
   const period = summary(runs.map((run) => run.values[2] - run.values[0]));
   const agreement = summary(runs.map((run) => Math.abs(run.values[0] - run.values[1])));
   const growth = useMemo(
@@ -167,7 +121,6 @@ export default function T7() {
 
   return (
     <article className="lab">
-      <h3>Technique · Out-of-bag error and the optimism gap</h3>
       <p>
         Out-of-bag error grades each training row with the trees that never saw it, about a
         third of them. That makes it nearly the same estimate as random cross-validation, so the
@@ -203,8 +156,9 @@ export default function T7() {
         <div>
           <dt>Decomposed</dt>
           <dd>
-            Time change {fixed(change.mean)} (training only on the past costs this much in the
-            later period) plus later period {fixed(period.mean)} (that period is this much easier
+            On the half of the later window held out by the within-period split: time change{" "}
+            {fixed(change.mean)} (training only on the past costs this much there) plus later
+            period {fixed(period.mean)} (that period is this much easier
             or harder to predict at all)
           </dd>
         </div>

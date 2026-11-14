@@ -195,7 +195,6 @@ export default function T10() {
 
   return (
     <article className="lab">
-      <h3>Technique · Hypothesis tests and intervals</h3>
       <p>
         Two models scored on the same test ratings make correlated errors. Their separate RMSE
         intervals can overlap heavily while the paired difference, recomputed on each resample
@@ -280,11 +279,13 @@ export default function T10() {
         One comparison is pre-specified, so it needs no correction; every other model-against-
         baseline row on the results board is exploratory or Holm-corrected. With thousands of
         test users even a tiny difference can exclude zero, which is why the verdict also asks
-        whether it clears a difference worth having. Seeded synthetic test ratings for two
-        models with user and movie effects.
+        whether it clears a difference worth having. A test of the mean difference says nothing
+        about one new rating: the prediction intervals in this technique's name are audited for
+        coverage in Technique 11. Seeded synthetic test ratings for two models with user and
+        movie effects.
       </p>
       <Provenance
-        data="Synthetic test ratings for two models, generated in this page: crossedRatings({ seed: 171, users: 60, movies: 40 }); no real ratings"
+        data={`Synthetic test ratings for two models, generated in this page: crossedRatings({ seed: 171, users: 60, movies: 40, shared: ${fixed(shared, 2)} }); replicates seeded 29, the width sweep 300 replicates seeded 31; no real ratings`}
         method="Paired bootstrap of the RMSE difference, resampling users or users and movies"
       />
     </article>

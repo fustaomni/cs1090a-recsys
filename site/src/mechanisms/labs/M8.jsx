@@ -245,7 +245,6 @@ export default function M8() {
 
   return (
     <article className="lab">
-      <h3>Model 8 · Bagging</h3>
       <p>
         Bagging grows many deep trees, each on a bootstrap sample of the rows, and averages them.
         Each tree is a step function with high variance and low bias; their average is still a
@@ -293,7 +292,7 @@ export default function M8() {
           </dd>
         </div>
         <div>
-          <dt>RMSE with {count} trees</dt>
+          <dt>RMSE with {count === 1 ? "1 tree" : `${count} trees`}</dt>
           <dd>
             Training {fixed(rmse(train.map(predict), train.map((row) => row.rating)))}, out of
             bag{" "}
@@ -321,7 +320,7 @@ export default function M8() {
         ratings on five levels.
       </p>
       <Provenance
-        data="Synthetic ratings, generated in this page: forestRatings({ seed: 101, n: 240 }), query rows forestRatings({ seed: 9, n: 20 }); no real ratings"
+        data="Synthetic ratings, generated in this page: forestRatings({ seed: 101, n: 240 }); for the variance across datasets, six training sets forestRatings({ seed: 1000 to 1005, n: 200 }) scored on query rows forestRatings({ seed: 9, n: 20 }); no real ratings"
         split="The first 200 rows train; the remaining 40 are the later window"
         features="user, movie, genre, noise"
         method="Bagged regression trees on bootstrap resamples"

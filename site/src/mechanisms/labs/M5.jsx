@@ -218,9 +218,9 @@ export default function M5() {
 
   return (
     <article className="lab">
-      <h3>Model 5 · Lasso regression</h3>
       <p>
-        Lasso adds λ‖b‖₁, which puts creases in the objective along each axis. It has no closed
+        Lasso adds λ‖b‖₁ to half the mean squared error, which puts creases in the objective
+        along each axis. It has no closed
         form: coordinate descent updates one coefficient at a time by soft-thresholding, and a
         coefficient whose z lands inside ±λ is set exactly to zero. With correlated predictors
         the choice between them is fragile, so selection is judged over many half-samples.
@@ -325,7 +325,7 @@ export default function M5() {
         later ratings on five levels; the noise predictor has no effect.
       </p>
       <Provenance
-        data="Synthetic ratings, generated in this page: selectionRatings({ seed: 61, n: 200 }); no real ratings"
+        data={`Synthetic ratings, generated in this page: selectionRatings({ seed: 61, n: 200, rho: ${fixed(rho, 2)} }); no real ratings`}
         split="The first 160 rows train; the remaining 40 are the later window"
         method="Lasso, by cyclic coordinate descent with soft-thresholding"
       />

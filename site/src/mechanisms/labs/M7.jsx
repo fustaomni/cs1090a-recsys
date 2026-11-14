@@ -209,13 +209,13 @@ export default function M7() {
 
   return (
     <article className="lab">
-      <h3>Model 7 · Decision tree regression, with pruning</h3>
       <p>
         A regression tree cuts the feature space with one axis-aligned threshold at a time and
         predicts the mean training rating in each box, so its surface is flat steps with vertical
         walls, and a prediction can never leave [1, 5]. Each cut is chosen greedily: the feature
-        and threshold that leave the least squared error on the two sides. Grown to the end it
-        memorises; cost-complexity pruning removes the splits that buy the least.
+        and threshold that leave the least squared error on the two sides. Grown to the end, to
+        leaves of at least five rows, it keeps every split that lowers training error at all;
+        cost-complexity pruning removes the splits that buy the least.
       </p>
       <Plot traces={surfaceTraces} layout={surfaceLayout} label="Tree surface" height={480} />
       <div className="controls">
@@ -330,8 +330,9 @@ export default function M7() {
       </div>
       <p className="muted">
         The split search shows, for the {next ? "next leaf to split" : "root"} ({node.n} rows),
-        the squared error left by every threshold of every feature; the binary genre offers a
-        single point, a continuous mean hundreds, which is why trees favour continuous features.
+        the squared error left by every threshold of every feature, one per gap between its
+        distinct values that leaves five rows a side: the binary genre offers a single point and a
+        continuous mean nearly one per row, which is why trees favour continuous features.
       </p>
       <h4>Importance: impurity against permutation on the later window</h4>
       <div className="bars">
