@@ -238,7 +238,7 @@ def test_every_discipline_names_its_status_and_its_step_or_why_it_is_out_of_scop
     plan = PLAN.read_text(encoding="utf-8")
     disciplines = nonempty(_evidence()["disciplines"])
     assert len(disciplines) == 7, [discipline["name"] for discipline in disciplines]
-    for discipline in disciplines:
+    for discipline in nonempty(disciplines):
         assert discipline["status"] in STATUSES, discipline
         assert discipline["question"] and discipline["now"], discipline
         if discipline["status"] == OUT_OF_SCOPE:
@@ -291,7 +291,7 @@ def test_the_architecture_names_every_component_and_its_step() -> None:
     assert isinstance(architecture, dict), "project.json states no architecture"
     components = nonempty(architecture["components"])
     assert len(components) == 7, [component["name"] for component in components]
-    for component in components:
+    for component in nonempty(components):
         assert component["records"] and component["tools"], component
         for step in nonempty(component["steps"]):
             assert f'id = "{step}"' in plan, (step, component["name"])
@@ -393,7 +393,7 @@ def test_overview_states_the_objective_and_three_meanings_of_why() -> None:
     assert "reproducible evidence" in objective["statement"], objective["statement"]
     whys = nonempty(objective["whys"])
     assert [entry["why"] for entry in whys] == WHYS, whys
-    for entry in whys:
+    for entry in nonempty(whys):
         for step in nonempty(entry["steps"]):
             assert f'id = "{step}"' in plan, (step, entry["why"])
     app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
@@ -406,7 +406,7 @@ def test_phases_list_the_priorities_by_necessity() -> None:
     priorities = _project().get("priorities")
     assert isinstance(priorities, list), "project.json states no priorities"
     assert [entry["necessity"] for entry in nonempty(priorities)] == NECESSITY, priorities
-    for entry in priorities[:5]:
+    for entry in nonempty(priorities[:5]):
         for step in nonempty(entry["steps"]):
             assert f'id = "{step}"' in plan, (step, entry["name"])
     assert priorities[5]["steps"] == [], priorities[5]
@@ -451,7 +451,7 @@ ROUND_EIGHT = {
 def test_round_eight_practices_name_their_step_or_why_they_are_out_of_scope() -> None:
     # A.315: this round's practices are listed, each planned with a step or out of scope.
     practices = {entry["org"]: entry for entry in nonempty(_evidence()["practices"])}
-    for org, status in ROUND_EIGHT.items():
+    for org, status in nonempty(list(ROUND_EIGHT.items())):
         assert org in practices, org
         assert practices[org]["status"] == status, practices[org]
 
@@ -481,7 +481,7 @@ ROUND_NINE = {
 def test_round_nine_practices_name_their_step_or_why_they_are_out_of_scope() -> None:
     # A.319: this round's practices are listed, each planned with a step or out of scope.
     practices = {entry["org"]: entry for entry in nonempty(_evidence()["practices"])}
-    for org, status in ROUND_NINE.items():
+    for org, status in nonempty(list(ROUND_NINE.items())):
         assert org in practices, org
         assert practices[org]["status"] == status, practices[org]
 
