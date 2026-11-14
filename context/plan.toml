@@ -3928,3 +3928,13 @@ done_when = [
   { kind = "proof", test = "tests/test_wrangling_checks.py::test_each_test_rating_falls_in_one_bucket_by_its_training_history" },
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_the_joined_table_lists_each_column_with_its_type" },
 ]
+[[steps]]
+id = "A.333"
+title = "Each type gate's deadline is computed as A.278 and A.340 compute the test tiers': the slowest recorded run of the type checks on FAS node cr-2 times the runaway-backstop headroom, so a passing type check is never killed under check's load and a hung one still is"
+thread = "A"
+depends_on = ["A.340"]
+because = { "A.340" = "the integration deadline computed from its measured runtime, the form this follows" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_types_budget.py::test_each_type_gate_deadline_is_its_measured_runtime_times_the_headroom" },
+]
