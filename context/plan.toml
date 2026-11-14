@@ -3470,3 +3470,13 @@ branch = "feature/ms2-alt-text"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_every_figure_carries_its_alternative_text" },
 ]
+[[steps]]
+id = "A.334"
+title = "The Milestone 2 notebook's kernel, in ms2:execute and in every notebook proof, talks to its client over IPC sockets in a private temporary directory, which the filesystem's permissions guard, never over unencrypted TCP, so no run prints the kernel's unencrypted-transport warning"
+thread = "A"
+depends_on = ["A.329"]
+because = { "A.329" = "ms2:execute, whose kernel this moves off unencrypted TCP" }
+branch = "feature/ms2-ipc"
+done_when = [
+  { kind = "proof", test = "tests/test_ms2_execute.py::test_the_kernel_talks_over_ipc_never_unencrypted_tcp" },
+]
