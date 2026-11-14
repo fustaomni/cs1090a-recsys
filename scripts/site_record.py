@@ -9,8 +9,10 @@ interval that does not contain its own value, is refused before anything is writ
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import json
 import sys
+import tomllib
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Literal, Self
@@ -23,7 +25,10 @@ from contract_base import Contract, from_document
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = Path("site") / "src" / "data" / "results.json"
 QUOTE = "'" * 3
-USAGE = "usage: site:record --out <spec.toml> <row-key> <run-id> <metrics.json>"
+USAGE = (
+    "usage: site:record --out <spec.toml> <row-key> <run-id> <metrics.json>"
+    " | --out <spec.toml> --section <milestone> <results.json> <contract> <pointers.toml>"
+)
 
 
 class Estimate(Contract):
@@ -118,6 +123,30 @@ def recorded(results: Results, key: str, run_id: str, metrics: Metrics, today: d
     return results.model_copy(update={"rows": rows, "updated": today.isoformat()})
 
 
+class SectionPointers(Contract):
+    """The labels a milestone section shows, each with the RFC 6901 pointer it is read from."""
+
+    pointers: dict[str, str]
+
+
+def _resolved(document: object, pointer: str, source: Path) -> str | int | float:
+    """The value an RFC 6901 pointer names in a results file; a pointer it lacks is refused."""
+    if not pointer.startswith("/"):
+        raise SystemExit(f"{pointer!r} is not a JSON pointer; it must start with /")
+    found: object = document
+    for token in pointer.split("/")[1:]:
+        key = token.replace("~1", "/").replace("~0", "~")
+        if isinstance(found, dict) and key in found:
+            found = found[key]
+        elif isinstance(found, list) and key.isdigit() and int(key) < len(found):
+            found = found[int(key)]
+        else:
+            raise SystemExit(f"{source} has no value at {pointer}")
+    if isinstance(found, bool) or not isinstance(found, str | int | float):
+        raise SystemExit(f"{source} holds no single value at {pointer}")
+    return found
+
+
 def sectioned(
     results: Results,
     milestone: str,
@@ -126,9 +155,27 @@ def sectioned(
     pointers: Mapping[str, str],
     today: dt.date,
 ) -> Results:
-    """A milestone's section recorded from a run's results file (A.342); not written yet."""
-    del results, milestone, source, contract, pointers, today
-    raise NotImplementedError("site:record has no section writer yet (A.342)")
+    """A milestone's section recorded from a run's results file, each value by its pointer.
+
+    A.342: the entries are read from the file's own bytes, whose SHA-256 every entry names, so
+    the section shows only what the run recorded; a pointer the file lacks is refused first.
+    """
+    raw = source.read_bytes()
+    document: object = json.loads(raw)
+    evidence = Evidence(contract=contract, sha256=hashlib.sha256(raw).hexdigest())
+    entries = tuple(
+        Entry(label=label, value=_resolved(document, pointer, source), evidence=evidence)
+        for label, pointer in pointers.items()
+    )
+    names = [section.milestone for section in results.milestones]
+    if milestone not in names:
+        raise SystemExit(f"no results section {milestone!r}; sections are {', '.join(names)}")
+    filled = {"entries": entries}
+    sections = tuple(
+        section.model_copy(update=filled) if section.milestone == milestone else section
+        for section in results.milestones
+    )
+    return results.model_copy(update={"milestones": sections, "updated": today.isoformat()})
 
 
 def render(results: Results) -> str:
@@ -156,6 +203,16 @@ def main(argv: Sequence[str] | None = None) -> int:
             Path(out).parent.mkdir(parents=True, exist_ok=True)
             Path(out).write_text(_spec(current, render(updated)), encoding="utf-8")
             print(f"recorded {key} from {run_id}; apply it with source:apply {out}")
+            return 0
+        case ["--out", out, "--section", milestone, source, contract, pointers_path]:
+            current = (ROOT / RESULTS).read_text(encoding="utf-8")
+            text = Path(pointers_path).read_text(encoding="utf-8")
+            pointers = from_document(SectionPointers, tomllib.loads(text)).pointers
+            today = dt.datetime.now(dt.UTC).date()
+            updated = sectioned(load(ROOT), milestone, Path(source), contract, pointers, today)
+            Path(out).parent.mkdir(parents=True, exist_ok=True)
+            Path(out).write_text(_spec(current, render(updated)), encoding="utf-8")
+            print(f"recorded {milestone} from {source}; apply it with source:apply {out}")
             return 0
         case ["deploy"]:
             # TO THE DECLARED SERVICE ONLY (A.254): never a directory's link, never a new project.
