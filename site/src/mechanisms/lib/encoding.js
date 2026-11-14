@@ -4,6 +4,8 @@
 // only that user's earlier ratings, the time-ordered form of out-of-fold encoding.
 
 export function smoothed(n, ybar, m, mu) {
+  // With no history and no prior weight there is only the global mean to use.
+  if (n + m === 0) return mu;
   return (n * ybar + m * mu) / (n + m);
 }
 

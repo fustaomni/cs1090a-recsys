@@ -3082,13 +3082,14 @@ done_when = [
 ]
 [[steps]]
 id = "A.260"
-title = "The Interactive mechanisms page is reviewed from its source: each of the twenty-six labs is titled Model N or Technique N from the data, in the data's order, and every claim a lab states is checked against its computation; then the site is deployed and the deployment recorded"
+title = "The Interactive mechanisms page is reviewed from its source: each of the twenty-six labs is titled Model N or Technique N from the data, in the data's order, and every claim a lab states is checked against its computation, recorded in contracts/lab-claims.toml with the vitest test or binding that checks it, a claim the computation contradicts corrected in the prose; then the site is deployed and the deployment recorded"
 thread = "A"
 depends_on = ["A.259"]
 because = { "A.259" = "the page before it, revised and deployed one at a time" }
 branch = "feature/site-mechanisms"
 done_when = [
   { kind = "proof", test = "tests/test_site_review.py::test_every_lab_is_titled_by_its_model_or_technique_number" },
+  { kind = "proof", test = "tests/test_site_review.py::test_every_lab_claim_names_the_computation_that_checks_it" },
   { kind = "task", name = "site:test" },
   { kind = "task", name = "site:deploy" },
 ]
@@ -3194,8 +3195,8 @@ done_when = [
 id = "A.269"
 title = "Milestone 2's notebook gets, loads and cleans MovieLens 1M and restates the question the data can answer, covering Phases 0, 1A and 2, and runs top to bottom from a clean kernel under automation, with seeds set, the raw data never modified, and its logic imported from the repository's modules"
 thread = "A"
-depends_on = ["A.261"]
-because = { "A.261" = "the site work, completed before Milestone 2's deliverables begin" }
+depends_on = ["A.225", "A.237"]
+because = { "A.225" = "the notebook this step delivers as the submitted .ipynb", "A.237" = "the governed run whose executed copy is the one submitted" }
 branch = "feature/ms2-notebook"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_the_notebook_runs_top_to_bottom_from_a_clean_kernel" },
@@ -3205,8 +3206,8 @@ done_when = [
 id = "A.270"
 title = "Milestone 2's slides, delivered as a PDF of at most ten slides for an eight to ten minute talk to the project TF, run question, data, cleaning, findings and the revised plan with its next steps, carrying charts from the notebook, little text and no code"
 thread = "A"
-depends_on = ["A.269"]
-because = { "A.269" = "the notebook whose results and charts the slides present" }
+depends_on = ["A.227"]
+because = { "A.227" = "the rendered slides this step checks and delivers as the submitted PDF" }
 branch = "feature/ms2-slides"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_deliverables.py::test_the_slides_are_a_pdf_of_at_most_ten_slides" },
@@ -3216,8 +3217,8 @@ done_when = [
 id = "A.271"
 title = "Milestone 2's revised proposal, one to two pages, restates the project question the cleaned data can answer, what changed since Milestone 1 and why, and the plan for Milestone 3"
 thread = "A"
-depends_on = ["A.269"]
-because = { "A.269" = "the notebook whose findings the proposal revises the plan from" }
+depends_on = ["A.226"]
+because = { "A.226" = "the rendered proposal this step checks and delivers as the submitted pages" }
 branch = "feature/ms2-proposal"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_deliverables.py::test_the_revised_proposal_is_one_to_two_pages" },
@@ -3281,6 +3282,473 @@ done_when = [
   { kind = "proof", test = "tests/test_site_railway_cli.py::test_no_task_runs_any_tool_through_npx" },
   { kind = "proof", test = "tests/test_site_railway_cli.py::test_site_test_installs_the_locked_site_first" },
   { kind = "task", name = "site:test" },
+]
+[[steps]]
+id = "A.281"
+title = "The project site prints its content and nothing covers it: a print stylesheet, by CSS media query and never by script, hides the sticky navigation and other screen-only controls or makes them static, keeps every page's text, readouts, provenance and footer, and lets no fixed element repeat over content on any printed page, proven against the built stylesheet and confirmed on a printed page of the live site"
+thread = "A"
+depends_on = ["A.260"]
+because = { "A.260" = "the lab review whose printed pages show the overlap, finished before the page's styles change" }
+branch = "feature/site-print"
+done_when = [
+  { kind = "proof", test = "tests/test_site_print.py::test_printing_hides_the_sticky_navigation_by_media_query" },
+  { kind = "proof", test = "tests/test_site_print.py::test_printing_keeps_the_provenance_and_the_footer" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.282"
+title = "The project site states the evidence chain once, on the Overview page: how a recommendation becomes a traceable decision with supporting evidence, Policy as Code to Evidence as Data to Evaluator to Verdict to Decision to Enforcement, offline and within the TF's scope, naming each of the seven disciplines with its status and the step that delivers it, or the reason it is outside the TF's scope, while the other pages do not repeat it"
+thread = "A"
+depends_on = ["A.260"]
+because = { "A.260" = "the live site is deployed from A.260's branch until it lands, so the chain is stated on the reviewed pages" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_the_evidence_chain_is_stated_on_the_overview_page_only" },
+  { kind = "proof", test = "tests/test_site_review.py::test_every_discipline_names_its_status_and_its_step_or_why_it_is_out_of_scope" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.283"
+title = "Every offline evaluation run's evidence is a validated data structure: an evaluation-evidence/v1 record per run names the data snapshot's hashes, the protocol digest, every seed, the code commit, the environment lock, the tuning budget and each metric with its user-clustered interval, links each metric to the fitted model's identity and to the digest of the dataset it was measured on, as MLflow 3 links metrics to a logged model and a dataset, its schema is committed, and a record missing any of them is refused"
+thread = "A"
+depends_on = ["A.282"]
+because = { "A.282" = "the site names this step as the one that makes evidence data" }
+branch = "feature/evaluation-evidence"
+done_when = [
+  { kind = "proof", test = "tests/test_evaluation_evidence.py::test_an_evidence_record_missing_its_data_snapshot_is_refused" },
+  { kind = "proof", test = "tests/test_evaluation_evidence.py::test_an_evidence_record_round_trips_the_committed_schema" },
+  { kind = "proof", test = "tests/test_evaluation_evidence.py::test_a_metric_names_the_model_and_dataset_it_was_measured_on" },
+]
+[[steps]]
+id = "A.284"
+title = "Every offline evaluation follows one documented research policy fixed before any result: contracts/evaluation-protocol.toml, validated by a Pydantic contract, declares the hypotheses, the split quantiles, the baselines, the tuning budget, the metrics, the pre-registered primary test and its decision thresholds, every evidence record names its digest, and a split audit refuses a training rating dated after the test boundary and reports the cold users and movies the split creates"
+thread = "A"
+depends_on = ["A.283"]
+because = { "A.283" = "the protocol digest is a field of the evidence record" }
+branch = "feature/evaluation-protocol"
+done_when = [
+  { kind = "proof", test = "tests/test_evaluation_protocol.py::test_a_record_under_an_undeclared_protocol_is_refused" },
+  { kind = "proof", test = "tests/test_evaluation_protocol.py::test_the_split_audit_refuses_a_training_rating_after_the_test_boundary" },
+]
+[[steps]]
+id = "A.285"
+title = "A policy gate decides whether the evidence supports each conclusion the project reports: given comparison evidence and the declared policy, a Rego policy returns one of three typed verdicts by three-sided testing against the practical threshold, supported when the interval's lower bound exceeds it and the sign-flip test agrees at the declared level, not supported when the upper bound falls below it, and inconclusive otherwise or when the interval and the test disagree, each verdict becoming one decision, accept the research finding, reject the improvement claim, or record insufficient evidence, and the report and site state a conclusion only through that decision; a leaking split, a missing reproduction or evidence built outside the declared policy is refused before any verdict, and any claim that a recommendation changed user behaviour is refused, since causal evaluation is outside the TF's offline scope"
+thread = "A"
+depends_on = ["A.283", "A.284"]
+because = { "A.283" = "the gate reads evidence records", "A.284" = "the gate judges evidence under the declared protocol" }
+branch = "feature/acceptance-gate"
+done_when = [
+  { kind = "proof", test = "tests/test_acceptance_gate.py::test_a_model_without_reproduced_evidence_supports_no_conclusion" },
+  { kind = "proof", test = "tests/test_acceptance_gate.py::test_a_model_whose_interval_overlaps_the_baseline_is_not_declared_better" },
+  { kind = "proof", test = "tests/test_acceptance_gate.py::test_a_claim_of_changed_user_behaviour_is_refused" },
+  { kind = "proof", test = "tests/test_acceptance_gate.py::test_the_worked_example_is_inconclusive" },
+  { kind = "proof", test = "tests/test_acceptance_gate.py::test_an_interval_and_a_test_that_disagree_are_inconclusive" },
+  { kind = "proof", test = "tests/test_acceptance_gate.py::test_a_leaking_comparison_is_refused_not_judged" },
+]
+[[steps]]
+id = "A.286"
+title = "Every research conclusion traces to the offline run that supports it: each measured Results row and the primary verdict name their evidence record's run id and digest, and the site build refuses a result or a verdict that names none"
+thread = "A"
+depends_on = ["A.283", "A.285"]
+because = { "A.283" = "a result names an evidence record", "A.285" = "a verdict names the gate decision it came from" }
+branch = "feature/results-trace"
+done_when = [
+  { kind = "proof", test = "tests/test_results_trace.py::test_every_measured_row_names_its_evidence_run" },
+  { kind = "proof", test = "tests/test_results_trace.py::test_a_verdict_without_evidence_fails_the_build" },
+]
+[[steps]]
+id = "A.287"
+title = "Reproducibility is tested automatically: a recorded offline run is re-run from its evidence record alone, its data snapshot, seeds, protocol and commit, and its metrics must match the recorded ones within a declared tolerance, while a changed data snapshot is refused before anything re-runs"
+thread = "A"
+depends_on = ["A.283"]
+because = { "A.283" = "the re-run reads only the evidence record" }
+branch = "feature/reproduce"
+done_when = [
+  { kind = "proof", test = "tests/test_reproduce.py::test_a_rerun_from_its_evidence_reproduces_its_metrics" },
+  { kind = "proof", test = "tests/test_reproduce.py::test_a_changed_data_snapshot_is_refused_before_rerunning" },
+]
+[[steps]]
+id = "A.288"
+title = "Each model's offline predictions are explained from the model that made them, never a mimic: coefficients for the linear rungs, permutation importance on the temporal validation set, and exact tree attributions computed on the fitted tree ensembles, each explanation recorded beside the evidence run of the model it explains, naming its attribution method and version so it can be computed again, and labelled a model-based account of the prediction, never a causal reason for the user's rating"
+thread = "A"
+depends_on = ["A.283"]
+because = { "A.283" = "an explanation names the evidence run of the model it explains" }
+branch = "feature/explanations"
+done_when = [
+  { kind = "proof", test = "tests/test_explanations.py::test_an_explanation_names_the_model_run_it_explains" },
+  { kind = "proof", test = "tests/test_explanations.py::test_tree_attributions_sum_to_the_prediction_less_the_base_value" },
+]
+[[steps]]
+id = "A.289"
+title = "Each conclusion is re-judged on later time windows, offline: a rolling-origin re-evaluation over the MovieLens timeline judges each later window by the same gate, measures how far each window's feature distributions have drifted from training, and reports any window that breaches its declared threshold, a temporal-robustness check with no deployment or online monitoring, which are outside the TF's scope"
+thread = "A"
+depends_on = ["A.285"]
+because = { "A.285" = "each window is judged by the same gate" }
+branch = "feature/rolling-evaluation"
+done_when = [
+  { kind = "proof", test = "tests/test_rolling_evaluation.py::test_each_window_is_judged_by_the_same_gate" },
+  { kind = "proof", test = "tests/test_rolling_evaluation.py::test_a_window_breaching_its_drift_threshold_is_reported" },
+]
+[[steps]]
+id = "A.290"
+title = "The project card names the first TF meeting as scheduled, Friday, November 13, 2026, at 7:00 PM ET, in place of TBD"
+thread = "A"
+depends_on = ["A.260"]
+because = { "A.260" = "the live site is deployed from A.260's branch until it lands" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_the_project_card_names_the_first_tf_meeting" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.291"
+title = "The evaluator is separate from every model, as a recommender must itself be evaluated as a treatment: the offline evaluation harness alone holds the split, the held-out ratings and the metric code, a model receives only the user, movie and time of each rating it must predict and returns predictions, and a model that reads a held-out rating is refused"
+thread = "A"
+depends_on = ["A.284"]
+because = { "A.284" = "the harness applies the declared protocol's split" }
+branch = "feature/independent-evaluator"
+done_when = [
+  { kind = "proof", test = "tests/test_independent_evaluator.py::test_a_model_never_receives_a_held_out_rating" },
+  { kind = "proof", test = "tests/test_independent_evaluator.py::test_metrics_are_computed_only_by_the_evaluator" },
+]
+[[steps]]
+id = "A.292"
+title = "Every feature is point-in-time correct, and stricter than an inclusive bound: each value for a rating is built only from ratings dated strictly before it, since MovieLens timestamps have one-second resolution and collide, so a same-second rating, the target included, never feeds its own features, and a feature built from a same-second or later rating is refused"
+thread = "A"
+depends_on = ["A.284"]
+because = { "A.284" = "the protocol's split audit and this feature audit share the boundary rule" }
+branch = "feature/point-in-time-features"
+done_when = [
+  { kind = "proof", test = "tests/test_point_in_time.py::test_every_feature_is_built_from_ratings_strictly_before_its_target" },
+  { kind = "proof", test = "tests/test_point_in_time.py::test_a_feature_built_from_a_same_second_rating_is_refused" },
+]
+[[steps]]
+id = "A.293"
+title = "Every offline pipeline stage records its lineage as OpenLineage run events: loading, the structural audit, the split, the features, each fit and each evaluation write a START and a COMPLETE event as JSON files, naming their input and output datasets with digests, so every evidence run traces back to the three MovieLens files"
+thread = "A"
+depends_on = ["A.283"]
+because = { "A.283" = "an evidence record names the run whose lineage these events carry" }
+branch = "feature/lineage"
+done_when = [
+  { kind = "proof", test = "tests/test_lineage.py::test_every_stage_emits_openlineage_start_and_complete_events" },
+  { kind = "proof", test = "tests/test_lineage.py::test_every_evidence_run_traces_back_to_the_movielens_files" },
+]
+[[steps]]
+id = "A.294"
+title = "The site states which 2026 industry practices the project applies offline and which are outside the TF's scope: Overview lists each practice with the step that applies it or its reason, Phases states the strict point-in-time rule and the lineage record, and Results states that predicting a rating well is not evidence that recommending it adds value"
+thread = "A"
+depends_on = ["A.282"]
+because = { "A.282" = "the practices join the evidence chain stated once on Overview" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_every_industry_practice_names_its_step_or_why_it_is_out_of_scope" },
+  { kind = "proof", test = "tests/test_site_review.py::test_results_state_that_prediction_is_not_causal_value" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.295"
+title = "Offline experiment runs are tracked in a local MLflow file store, with no server, through MLflow's scikit-learn autologging so nothing is logged by hand: each fit records its parameters, seed, runtime and metrics, each fitted model is a logged model linked to the digests of the datasets it was trained and measured on, and each evidence record names its MLflow run and model ids, so the typed record stays the source of truth and MLflow the index"
+thread = "A"
+depends_on = ["A.283"]
+because = { "A.283" = "the evidence record names the MLflow run and model it indexes" }
+branch = "feature/experiment-tracking"
+done_when = [
+  { kind = "proof", test = "tests/test_experiment_tracking.py::test_every_evidence_record_names_its_mlflow_run_and_model" },
+  { kind = "proof", test = "tests/test_experiment_tracking.py::test_mlflow_tracking_writes_only_to_a_local_store" },
+]
+[[steps]]
+id = "A.296"
+title = "Every offline prediction is recorded as typed, append-only evidence written at prediction time: a prediction id, the predicted rating, the model id and version, the evaluator run, the MLflow run, the dataset digest, the explanation method and its version, and each feature's provenance, the latest rating it was built from by both event time and observation time, while the outcome is never part of it, so one prediction traces to what was known when it was made, and a record that is rewritten is refused"
+thread = "A"
+depends_on = ["A.291", "A.292"]
+because = { "A.291" = "predictions are made and recorded by the independent evaluator", "A.292" = "each feature's cutoff is the point-in-time bound it was built under" }
+branch = "feature/prediction-evidence"
+done_when = [
+  { kind = "proof", test = "tests/test_prediction_evidence.py::test_every_prediction_names_its_model_and_feature_cutoffs" },
+  { kind = "proof", test = "tests/test_prediction_evidence.py::test_a_rewritten_prediction_record_is_refused" },
+]
+[[steps]]
+id = "A.297"
+title = "Each reported conclusion is sealed in an immutable evidence bundle with a reproducibility manifest: the code commit, the uv.lock digest, the interpreter version and implementation, the platform, the compiled numerical library versions, thread counts, every seed, the execution configuration and the runtime cost, since a lockfile alone does not guarantee bit-for-bit results, together with the data hashes, the evidence and prediction records, and the OpenTelemetry trace ids a file exporter writes offline for every stage, content-addressed so any changed artifact breaks the bundle's digest"
+thread = "A"
+depends_on = ["A.285", "A.287"]
+because = { "A.285" = "a bundle seals the decision the gate reached", "A.287" = "the manifest is what a re-run reads" }
+branch = "feature/evidence-bundle"
+done_when = [
+  { kind = "proof", test = "tests/test_evidence_bundle.py::test_a_changed_artifact_breaks_the_bundle_digest" },
+  { kind = "proof", test = "tests/test_evidence_bundle.py::test_the_manifest_names_commit_lock_data_and_traces" },
+  { kind = "proof", test = "tests/test_evidence_bundle.py::test_the_manifest_records_interpreter_platform_and_compiled_libraries" },
+]
+[[steps]]
+id = "A.298"
+title = "The site shows the research architecture: Models and techniques draws the flow from versioned MovieLens data through the split, the models, the evidence, the evaluator, the verdicts and the decision policy to the immutable evidence bundle, names each of the seven typed components with the step that builds it, and Results names the decision each pre-registered verdict leads to"
+thread = "A"
+depends_on = ["A.294"]
+because = { "A.294" = "the architecture extends the practices already stated on the site" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_the_architecture_names_every_component_and_its_step" },
+  { kind = "proof", test = "tests/test_site_review.py::test_each_verdict_names_its_decision" },
+  { kind = "proof", test = "tests/test_site_review.py::test_the_architecture_prints_every_component_in_full" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.299"
+title = "Each prediction's outcome is a separate, append-only record written only when its ground truth is observed: it references the prediction id and holds the observed rating with its event and observation times, a prediction record never carries or is edited to carry its outcome, an outcome observed before its prediction was made is refused, and evaluation joins outcomes to predictions as of a stated time, as monitoring platforms join delayed actuals by prediction id"
+thread = "A"
+depends_on = ["A.296"]
+because = { "A.296" = "an outcome references the prediction record it evaluates" }
+branch = "feature/outcome-records"
+done_when = [
+  { kind = "proof", test = "tests/test_outcome_records.py::test_an_outcome_is_appended_separately_and_never_edits_its_prediction" },
+  { kind = "proof", test = "tests/test_outcome_records.py::test_an_outcome_observed_before_its_prediction_is_refused" },
+]
+[[steps]]
+id = "A.300"
+title = "Every rating carries two times, its event time, when the user rated the movie, and its observation time, when the system learned of it: MovieLens 1M records only the event time, so the research policy declares the observation-time assumption a time-ordered replay uses, the files' acquisition time and digest are recorded as their real observation, and a feature built from a rating observed after the prediction time is refused"
+thread = "A"
+depends_on = ["A.284", "A.292"]
+because = { "A.284" = "the research policy declares the observation-time assumption", "A.292" = "the point-in-time bound is applied to observation time as well as event time" }
+branch = "feature/bitemporal-ratings"
+done_when = [
+  { kind = "proof", test = "tests/test_bitemporal.py::test_every_rating_carries_its_event_and_observation_time" },
+  { kind = "proof", test = "tests/test_bitemporal.py::test_a_feature_from_a_rating_observed_after_the_prediction_is_refused" },
+]
+[[steps]]
+id = "A.301"
+title = "The site shows an illustrative prediction evidence record, labelled as simulated and never computed from MovieLens: Models and techniques sets the prediction record, written when the prediction is made, beside its separate outcome record, written only when the ground truth is observed, and Phases states the event-time and observation-time rule"
+thread = "A"
+depends_on = ["A.298"]
+because = { "A.298" = "the example record illustrates the architecture's prediction evidence component" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_the_example_record_is_labelled_illustrative_and_separates_its_outcome" },
+  { kind = "proof", test = "tests/test_site_review.py::test_phases_state_event_and_observation_time" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.302"
+title = "The evidence, verdict and decision boundary is typed in Pydantic v2: frozen models and StrEnum verdicts and actions; an EvaluationPolicy that declares the test statistic, the interval method, the significance level, the practical threshold and the rule for a test and an interval that disagree; a ComparisonEvidence whose validators refuse an interval out of order, one that excludes its own point estimate, or one built by a method the policy does not declare; and an EvaluationResult naming the policy and evidence digests it was reached from, with every schema committed"
+thread = "A"
+depends_on = ["A.283", "A.284"]
+because = { "A.283" = "comparison evidence is a kind of evidence record", "A.284" = "the evaluation policy is the research policy's decision section" }
+branch = "feature/evaluation-contracts"
+done_when = [
+  { kind = "proof", test = "tests/test_evaluation_contracts.py::test_an_interval_that_excludes_its_estimate_is_refused" },
+  { kind = "proof", test = "tests/test_evaluation_contracts.py::test_evidence_built_by_an_undeclared_interval_method_is_refused" },
+  { kind = "proof", test = "tests/test_evaluation_contracts.py::test_a_result_names_its_policy_and_evidence_digests" },
+]
+[[steps]]
+id = "A.303"
+title = "The statistical evaluation package produces comparison evidence and never a decision: the paired improvement's interval from a bootstrap that resamples users, not ratings, the pre-declared user-level sign-flip test, Holm adjustment across the exploratory comparisons, a test window evaluated exactly once, and practical and statistical significance reported apart"
+thread = "A"
+depends_on = ["A.291", "A.302"]
+because = { "A.291" = "the package is the independent evaluator's statistics", "A.302" = "its output is ComparisonEvidence" }
+branch = "feature/statistical-evaluation"
+done_when = [
+  { kind = "proof", test = "tests/test_statistical_evaluation.py::test_the_paired_interval_resamples_users_not_ratings" },
+  { kind = "proof", test = "tests/test_statistical_evaluation.py::test_exploratory_comparisons_are_holm_adjusted" },
+  { kind = "proof", test = "tests/test_statistical_evaluation.py::test_the_test_window_is_evaluated_once" },
+]
+[[steps]]
+id = "A.304"
+title = "Results states how a verdict is reached: the pre-registered verdicts restated against the practical threshold declared before any result, the three-sided rule and the agreement it requires between the interval and the sign-flip test, and a worked example, labelled hypothetical, in which a lower observed RMSE with an interval from minus 0.005 to 0.045 is inconclusive"
+thread = "A"
+depends_on = ["A.298"]
+because = { "A.298" = "Results already names the decision each verdict leads to" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_results_state_the_decision_rule_and_its_worked_example" },
+  { kind = "proof", test = "tests/test_site_review.py::test_each_verdict_names_its_decision" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.305"
+title = "The research policy declares three research questions and what MovieLens 1M can answer: whether a model predicts a user's next observed rating, the primary objective; whether a prediction can be reproduced and its model-based basis explained, an independently testable objective with its own criteria, reproduction within tolerance, complete lineage and feature provenance, and explanations recomputed from their recorded method and version; and whether showing a recommendation caused a user to watch or enjoy more, a future research extension needing randomized exposure; every reported claim names its question, and a claim on the third is refused"
+thread = "A"
+depends_on = ["A.284", "A.285"]
+because = { "A.284" = "the questions are part of the research policy", "A.285" = "the gate refuses a claim on the question this data cannot answer" }
+branch = "feature/research-questions"
+done_when = [
+  { kind = "proof", test = "tests/test_research_questions.py::test_every_reported_claim_names_its_research_question" },
+  { kind = "proof", test = "tests/test_research_questions.py::test_the_reproducibility_question_has_its_own_criteria" },
+  { kind = "proof", test = "tests/test_research_questions.py::test_a_claim_on_the_causal_question_is_refused" },
+]
+[[steps]]
+id = "A.306"
+title = "The site states the three research questions: Overview gives each its answerability, its role and its evidence, laid out to print in full, Scope names causal recommendation effectiveness as a future research extension and the randomized exposure or holdback data it would need, and the causal discipline points to that extension"
+thread = "A"
+depends_on = ["A.304"]
+because = { "A.304" = "the questions frame the verdicts Results already states" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_overview_states_three_questions_and_which_the_data_can_answer" },
+  { kind = "proof", test = "tests/test_site_review.py::test_scope_names_causal_effectiveness_as_a_future_extension" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.307"
+title = "The research system is one uv-locked package whose modules are enforced boundaries: contracts, data_pipeline, models, evaluation, evidence and governance as subpackages with an offline research runner, and Import Linter contracts in the gate so that models cannot import the evaluator, evaluation cannot import the decision layer, and governance imports only contracts and evidence, with no dashboard application since the static project site is the report"
+thread = "A"
+depends_on = ["A.291", "A.302"]
+because = { "A.291" = "the evaluator's independence becomes an import boundary", "A.302" = "the typed contracts are the lowest layer every module imports" }
+branch = "feature/module-boundaries"
+done_when = [
+  { kind = "proof", test = "tests/test_module_boundaries.py::test_models_cannot_import_the_evaluator" },
+  { kind = "proof", test = "tests/test_module_boundaries.py::test_evaluation_cannot_import_the_decision_layer" },
+  { kind = "proof", test = "tests/test_module_boundaries.py::test_governance_imports_only_contracts_and_evidence" },
+]
+[[steps]]
+id = "A.308"
+title = "The site states the research objective and why to trust it: Overview states the objective, a leakage-safe MovieLens rating prediction system whose model selection, performance, uncertainty and conclusions rest on versioned, reproducible evidence and explicit policies, and the three meanings of why, each with its steps; Phases lists the delivery priorities to December 10 as essential, useful extension or future research, each with its steps; and Models and techniques states the code organisation and its boundaries"
+thread = "A"
+depends_on = ["A.306"]
+because = { "A.306" = "the objective frames the three research questions already on Overview" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_overview_states_the_objective_and_three_meanings_of_why" },
+  { kind = "proof", test = "tests/test_site_review.py::test_phases_list_the_priorities_by_necessity" },
+  { kind = "proof", test = "tests/test_site_review.py::test_the_architecture_states_its_code_organisation" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.309"
+title = "The practical threshold is a first-class decision record, contracts/practical-threshold.toml validated by a Pydantic contract: its method family, its anchor and the source that justifies it, its formula relative to the baseline's RMSE on the same test window, its sensitivity bounds, a detectability check run on the validation window only, who decided it and when; the gate reaches no verdict without the record, refuses one declared after the test window was first read, and reports the verdict at each sensitivity bound beside the primary one"
+thread = "A"
+depends_on = ["A.284", "A.285", "A.303"]
+because = { "A.284" = "the threshold is part of the research policy", "A.285" = "the gate decides against the threshold", "A.303" = "the evaluation package records when the test window was first read" }
+branch = "feature/practical-threshold"
+done_when = [
+  { kind = "proof", test = "tests/test_practical_threshold.py::test_no_verdict_is_reached_without_a_declared_threshold" },
+  { kind = "proof", test = "tests/test_practical_threshold.py::test_a_threshold_declared_after_the_test_window_was_read_is_refused" },
+  { kind = "proof", test = "tests/test_practical_threshold.py::test_the_verdict_is_reported_at_each_sensitivity_bound" },
+  { kind = "proof", test = "tests/test_practical_threshold.py::test_the_detectability_check_reads_the_validation_window_only" },
+]
+[[steps]]
+id = "A.310"
+title = "Results states how the practical threshold is set and its status: the declared formula, 1% of the baseline's RMSE on the same test window, anchored to the Netflix Prize's progress bar, the sensitivity bounds at half and double, the detectability check on the validation window, the magic-barrier caution that rating noise makes small differences harder to resolve, and that the threshold was declared on 12 November 2026, before any result"
+thread = "A"
+depends_on = ["A.304"]
+because = { "A.304" = "Results already states the rule the threshold completes" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_results_state_the_threshold_procedure_and_its_status" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.311"
+title = "The practical threshold is declared before any result, as a preregistration: contracts/practical-threshold.toml, committed on 12 November 2026 while no result exists, names its method, anchor, sources, formula of 1% of the regularised bias baseline's RMSE on the test window, sensitivity bounds, detectability rule, who decided it and when; the commit's timestamp is the registration, the file is never edited, and any later change is a dated amendment file"
+thread = "A"
+depends_on = ["A.304"]
+because = { "A.304" = "the declaration completes the three-sided rule Results states" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_threshold_declaration.py::test_the_threshold_is_declared_before_any_result" },
+  { kind = "proof", test = "tests/test_site_review.py::test_results_state_the_threshold_procedure_and_its_status" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.312"
+title = "Every recorded explanation is checked against the model that made it: an additive explanation, the bias model's global mean and user and movie offsets, a linear model's coefficient-by-feature terms, or exact tree attributions, must sum to the prediction within a stated tolerance, and masking its k largest contributors must move the prediction more than masking k control features, the masking test 2026 recommender studies apply to explanations; an explanation that fails either is refused"
+thread = "A"
+depends_on = ["A.288"]
+because = { "A.288" = "the explanations checked here are the ones A.288 records" }
+branch = "feature/explanation-fidelity"
+done_when = [
+  { kind = "proof", test = "tests/test_explanation_fidelity.py::test_an_explanation_that_does_not_sum_to_its_prediction_is_refused" },
+  { kind = "proof", test = "tests/test_explanation_fidelity.py::test_masking_the_top_contributors_moves_the_prediction_more_than_controls" },
+]
+[[steps]]
+id = "A.313"
+title = "The evaluator cannot be edited after the declaration: before the test window is first read, the evaluation package's source digest is recorded as a dated amendment beside contracts/practical-threshold.toml, and the gate refuses any verdict whose evidence was produced by evaluator code with another digest, as 2026 audits of self-evolving recommender loops ask for an evaluator the evaluated system cannot change"
+thread = "A"
+depends_on = ["A.303", "A.311"]
+because = { "A.303" = "the digest is the statistical evaluation package's", "A.311" = "the amendment sits beside the threshold declaration" }
+branch = "feature/frozen-evaluator"
+done_when = [
+  { kind = "proof", test = "tests/test_frozen_evaluator.py::test_the_evaluator_digest_is_recorded_before_the_test_window_is_read" },
+  { kind = "proof", test = "tests/test_frozen_evaluator.py::test_a_verdict_from_an_evaluator_with_another_digest_is_refused" },
+]
+[[steps]]
+id = "A.314"
+title = "The project publishes an Evaluation Card for its primary comparison in the 2026 Evaluation Cards rollout hierarchy, MovieLens 1M, then Protocol A's split, then each metric, with its four signals, reproducibility, documentation completeness, provenance and score comparability, each computed from committed evidence and never typed by hand"
+thread = "A"
+depends_on = ["A.297", "A.313"]
+because = { "A.297" = "the card reads the sealed evidence bundle", "A.313" = "the card names the frozen evaluator's digest" }
+branch = "feature/evaluation-card"
+done_when = [
+  { kind = "proof", test = "tests/test_evaluation_card.py::test_every_card_field_resolves_to_committed_evidence" },
+  { kind = "proof", test = "tests/test_evaluation_card.py::test_each_score_resolves_to_its_split_and_metric" },
+]
+[[steps]]
+id = "A.315"
+title = "The site states this round's practices and how each prediction is explained: Overview's industry practice list gains verified masking of explanations, a frozen evaluator and Evaluation Cards with their steps, and statement ranking and LLM components with why they are outside scope; Models and techniques states, for each model family, the explanation that sums to its prediction and the masking check it must pass"
+thread = "A"
+depends_on = ["A.294", "A.298"]
+because = { "A.294" = "the practice list it extends", "A.298" = "the architecture beside which explanations are stated" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_round_eight_practices_name_their_step_or_why_they_are_out_of_scope" },
+  { kind = "proof", test = "tests/test_site_review.py::test_each_model_family_names_its_explanation_and_its_check" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
+]
+[[steps]]
+id = "A.316"
+title = "Every fitted model and every sealed evidence bundle carries an in-toto statement with a SLSA v1 provenance predicate: its content digest as subject, the source repository and commit, the builder, the run gateway on a named device, and the run's ledger id, signed in a DSSE envelope with the device key the run ledger already uses; the gate admits no model or bundle whose attestation is missing, unsigned, or names another digest"
+thread = "A"
+depends_on = ["A.297"]
+because = { "A.297" = "the attested bundle is the sealed evidence bundle" }
+branch = "feature/model-attestations"
+done_when = [
+  { kind = "proof", test = "tests/test_model_attestations.py::test_a_model_without_a_valid_attestation_is_not_admitted" },
+  { kind = "proof", test = "tests/test_model_attestations.py::test_an_attestation_naming_another_digest_is_refused" },
+]
+[[steps]]
+id = "A.317"
+title = "Every prediction record carries a split-conformal interval at a declared coverage, calibrated on the validation window's residuals and never on the test window; because a temporal split breaks the exchangeability conformal guarantees assume, the test window's empirical coverage is reported overall and per user-activity band, and a band below its declared coverage is reported, never hidden"
+thread = "A"
+depends_on = ["A.296", "A.303"]
+because = { "A.296" = "the interval is a field of the prediction record", "A.303" = "the evaluation package reports the coverage" }
+branch = "feature/prediction-intervals"
+done_when = [
+  { kind = "proof", test = "tests/test_prediction_intervals.py::test_intervals_are_calibrated_on_the_validation_window_only" },
+  { kind = "proof", test = "tests/test_prediction_intervals.py::test_test_coverage_is_reported_overall_and_per_user_band" },
+]
+[[steps]]
+id = "A.318"
+title = "MovieLens 1M has a BenchmarkCard committed before evaluation that separates task assumptions, that ratings are submitted preferences, that timestamps are submission times, and how users' sign-up rating bursts shape the timeline, from outcome assumptions, that a lower RMSE means better recommendations, and a staged evaluation tests each task assumption on the data while outcome assumptions are stated as untestable offline"
+thread = "A"
+depends_on = ["A.284", "A.305"]
+because = { "A.284" = "the card is part of the research policy fixed before results", "A.305" = "the outcome assumption is the third research question" }
+branch = "feature/benchmark-card"
+done_when = [
+  { kind = "proof", test = "tests/test_benchmark_card.py::test_every_task_assumption_names_its_test" },
+  { kind = "proof", test = "tests/test_benchmark_card.py::test_outcome_assumptions_are_marked_untestable_offline" },
+]
+[[steps]]
+id = "A.319"
+title = "The site states this round's practices and shows confidence beside contributors: Overview's practice list gains model attestations, MLflow autologging, a BenchmarkCard with staged evaluation and conformal confidence with their steps, and knowledge-graph and LLM reasoning and runtime verification with why they are outside scope; the illustrative evidence record gains its confidence interval"
+thread = "A"
+depends_on = ["A.301", "A.315"]
+because = { "A.301" = "the evidence record it extends", "A.315" = "the practice list it extends" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_site_review.py::test_round_nine_practices_name_their_step_or_why_they_are_out_of_scope" },
+  { kind = "proof", test = "tests/test_site_review.py::test_the_example_record_states_its_confidence_interval" },
+  { kind = "task", name = "site:build" },
+  { kind = "task", name = "site:deploy" },
 ]
 [[steps]]
 id = "A.277"
@@ -3459,6 +3927,16 @@ done_when = [
   { kind = "path", path = "contracts/mutations/A.331.toml" },
   { kind = "proof", test = "tests/test_wrangling_checks.py::test_each_test_rating_falls_in_one_bucket_by_its_training_history" },
   { kind = "proof", test = "tests/test_ms2_notebook.py::test_the_joined_table_lists_each_column_with_its_type" },
+]
+[[steps]]
+id = "A.333"
+title = "Each type gate's deadline is computed as A.278 and A.340 compute the test tiers': the slowest recorded run of the type checks on FAS node cr-2 times the runaway-backstop headroom, so a passing type check is never killed under check's load and a hung one still is"
+thread = "A"
+depends_on = ["A.340"]
+because = { "A.340" = "the integration deadline computed from its measured runtime, the form this follows" }
+branch = "feature/site-mechanisms"
+done_when = [
+  { kind = "proof", test = "tests/test_types_budget.py::test_each_type_gate_deadline_is_its_measured_runtime_times_the_headroom" },
 ]
 [[steps]]
 id = "A.332"

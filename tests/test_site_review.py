@@ -172,6 +172,25 @@ def test_the_baseline_note_names_its_model_by_binding() -> None:
     assert "{bind(data.baseline_note)}" in app, "the baseline note is rendered without bind"
 
 
+def test_every_lab_is_titled_by_its_model_or_technique_number() -> None:
+    """Each lab's heading is bound from the data as Model N or Technique N, in its order (A.260)."""
+    project = _project()
+    mechanisms = ROOT / "site" / "src" / "mechanisms"
+    registry = json.loads((PROJECT.parent / "mechanisms.json").read_text(encoding="utf-8"))
+    expected = [("model", model["id"]) for model in project["models"]] + [
+        ("technique", technique["id"]) for technique in project["techniques"]
+    ]
+    labs = nonempty(registry["labs"])
+    assert [(lab["kind"], lab["ref"]) for lab in labs] == expected, labs
+    for lab in nonempty(labs):
+        assert lab["id"] == f"{lab['kind'][0].upper()}{lab['ref']}", lab
+    files = nonempty(sorted((mechanisms / "labs").glob("*.jsx")))
+    typed = [path.name for path in files if "<h3>" in path.read_text(encoding="utf-8")]
+    assert typed == [], typed
+    page = (mechanisms / "Mechanisms.jsx").read_text(encoding="utf-8")
+    assert "{bind(`{${current.kind}:${current.ref}}`)}" in page, "the lab heading is not bound"
+
+
 def test_a_typed_model_or_technique_reference_is_refused() -> None:
     """No phase point types a model or technique number; each is a binding instead."""
     points = _phase_points(_project())
@@ -182,3 +201,293 @@ def test_a_typed_model_or_technique_reference_is_refused() -> None:
         if TYPED.search(point)
     ]
     assert typed == [], typed
+
+
+# A.282: THE EVIDENCE CHAIN, stated once on the Overview page and read from project.json.
+CHAIN = ("Policy as code", "Evidence as data", "Evaluator", "Verdict", "Decision", "Enforcement")
+OUT_OF_SCOPE = "outside the TF's scope"
+STATUSES = {"in place", "planned", OUT_OF_SCOPE}
+PLAN = ROOT / "context" / "plan.toml"
+
+
+def _evidence() -> dict[str, Any]:
+    evidence = _project().get("evidence")
+    assert isinstance(evidence, dict), "project.json states no evidence chain"
+    return evidence
+
+
+def test_the_evidence_chain_is_stated_on_the_overview_page_only() -> None:
+    """The chain is stated once, on Overview; the other pages would only repeat it."""
+    evidence = _evidence()
+    assert tuple(evidence["chain"]) == CHAIN, evidence["chain"]
+    assert set(evidence["pages"]) == {"overview"}, sorted(evidence["pages"])
+    overview = evidence["pages"]["overview"]
+    assert overview["note"], overview
+    known = {discipline["id"] for discipline in nonempty(evidence["disciplines"])}
+    assert set(nonempty(overview["disciplines"])) == known, overview["disciplines"]
+    source = ROOT / "site" / "src"
+    app = (source / "App.jsx").read_text(encoding="utf-8")
+    labs = (source / "mechanisms" / "Mechanisms.jsx").read_text(encoding="utf-8")
+    assert app.count("<EvidenceChain") == 1, "the chain is rendered on more than Overview"
+    assert '<EvidenceChain page="overview" />' in app, "Overview omits the chain"
+    assert "EvidenceChain" not in labs, "Interactive mechanisms repeats the chain"
+
+
+def test_every_discipline_names_its_status_and_its_step_or_why_it_is_out_of_scope() -> None:
+    """Seven disciplines: a planned one names steps the plan holds, an excluded one its reason."""
+    plan = PLAN.read_text(encoding="utf-8")
+    disciplines = nonempty(_evidence()["disciplines"])
+    assert len(disciplines) == 7, [discipline["name"] for discipline in disciplines]
+    for discipline in nonempty(disciplines):
+        assert discipline["status"] in STATUSES, discipline
+        assert discipline["question"] and discipline["now"], discipline
+        if discipline["status"] == OUT_OF_SCOPE:
+            assert discipline["why"], discipline
+            continue
+        for step in nonempty(discipline["steps"]):
+            assert f'id = "{step}"' in plan, (step, discipline["name"])
+
+
+# A.290: THE FIRST TF MEETING, as scheduled.
+FIRST_MEETING = "Friday, November 13, 2026, at 7:00 PM ET"
+
+
+def test_the_project_card_names_the_first_tf_meeting() -> None:
+    # The card names the scheduled first TF meeting, never TBD.
+    meeting = _project()["group"]["first_meeting"]
+    assert meeting == FIRST_MEETING, meeting
+
+
+def test_every_industry_practice_names_its_step_or_why_it_is_out_of_scope() -> None:
+    # A.294: each practice names steps the plan holds, or why it is outside the TF's scope.
+    plan = PLAN.read_text(encoding="utf-8")
+    practices = _evidence().get("practices")
+    assert isinstance(practices, list), "Overview lists no industry practice"
+    for practice in nonempty(practices):
+        assert practice["org"] and practice["practice"] and practice["here"], practice
+        if practice["status"] == OUT_OF_SCOPE:
+            assert practice["why"], practice
+            continue
+        assert practice["status"] == "planned", practice
+        for step in nonempty(practice["steps"]):
+            assert f'id = "{step}"' in plan, (step, practice["org"])
+    chain = (ROOT / "site" / "src" / "EvidenceChain.jsx").read_text(encoding="utf-8")
+    assert "evidence.practices.map" in chain, "Overview does not render the practices"
+
+
+def test_results_state_that_prediction_is_not_causal_value() -> None:
+    # A.294: Results says a well-predicted rating is not evidence that recommending adds value.
+    note = _evidence().get("prediction_note")
+    assert isinstance(note, str), "Results states no prediction note"
+    assert "not evidence" in note, note
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "{data.evidence.prediction_note}" in app, "Results omits the prediction note"
+
+
+def test_the_architecture_names_every_component_and_its_step() -> None:
+    # A.298: seven typed components, each naming steps the plan holds, drawn on Models.
+    plan = PLAN.read_text(encoding="utf-8")
+    architecture = _project().get("architecture")
+    assert isinstance(architecture, dict), "project.json states no architecture"
+    components = nonempty(architecture["components"])
+    assert len(components) == 7, [component["name"] for component in components]
+    for component in nonempty(components):
+        assert component["records"] and component["tools"], component
+        for step in nonempty(component["steps"]):
+            assert f'id = "{step}"' in plan, (step, component["name"])
+    assert "evidence bundle" in architecture["flow"][-1], architecture["flow"]
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "<Architecture />" in app, "Models and techniques omits the architecture"
+
+
+DECISIONS = {
+    "Supported: accept the research finding",
+    "Inconclusive: record insufficient evidence",
+    "Not supported: reject the improvement claim",
+}
+
+
+def test_each_verdict_names_its_decision() -> None:
+    # A.298: each pre-registered verdict leads to one decision, shown beside it on Results.
+    results = json.loads((PROJECT.parent / "results.json").read_text(encoding="utf-8"))
+    verdicts = set(nonempty(results["primary"]["verdicts"]))
+    architecture = _project().get("architecture")
+    assert isinstance(architecture, dict), "project.json states no architecture"
+    outcomes = nonempty(architecture["outcomes"])
+    assert {outcome["verdict"] for outcome in outcomes} == verdicts, outcomes
+    assert {outcome["decision"] for outcome in outcomes} == DECISIONS, outcomes
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "data.architecture.outcomes.find" in app, "Results omits each verdict's decision"
+
+
+def test_the_architecture_prints_every_component_in_full() -> None:
+    # A.298: no component sits in a scrolling table, so a printed page keeps every field.
+    source = (ROOT / "site" / "src" / "Architecture.jsx").read_text(encoding="utf-8")
+    assert "<table" not in source, "a printed page clips the architecture table"
+    for field in nonempty(("entry.records", "entry.tools", "entry.steps")):
+        assert field in source, field
+
+
+def test_the_example_record_is_labelled_illustrative_and_separates_its_outcome() -> None:
+    # A.301: the example is labelled illustrative, and its outcome is a separate record.
+    record = _project().get("example_record")
+    assert isinstance(record, dict), "project.json states no example record"
+    assert "illustrative" in record["note"].casefold(), record["note"]
+    prediction = dict(nonempty(record["prediction_fields"]))
+    outcome = dict(nonempty(record["outcome_fields"]))
+    assert prediction["Outcome"] == "Not part of this record", prediction
+    assert outcome["References"] == prediction["Prediction id"], (outcome, prediction)
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "<ExampleRecord />" in app, "Models and techniques omits the example record"
+
+
+def test_phases_state_event_and_observation_time() -> None:
+    # A.301: Phase 2 states the two times every rating carries.
+    points = _phase_points(_project())["2"]
+    stated = [point for point in points if "observation time" in point]
+    assert stated and "event time" in stated[0], points
+
+
+def test_results_state_the_decision_rule_and_its_worked_example() -> None:
+    # A.304: Results states the three-sided rule and a hypothetical example ending inconclusive.
+    rule = _project().get("decision_rule")
+    assert isinstance(rule, dict), "project.json states no decision rule"
+    for phrase in nonempty(("threshold", "sign-flip", "Inconclusive", "refused")):
+        assert phrase in rule["statement"], phrase
+    assert "Hypothetical" in rule["example"] and "inconclusive" in rule["example"], rule
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "{data.decision_rule.example}" in app, "Results omits the worked example"
+
+
+def test_overview_states_three_questions_and_which_the_data_can_answer() -> None:
+    # A.306: three questions, the causal one not established and a future extension.
+    questions = _project().get("research_questions")
+    assert isinstance(questions, list), "project.json states no research questions"
+    answerable = [entry["answerable"] for entry in nonempty(questions)]
+    assert answerable == ["Yes", "Yes, with instrumentation", "Not established"], answerable
+    assert questions[0]["role"] == "Primary research objective", questions[0]
+    assert "future research extension" in questions[2]["role"].casefold(), questions[2]
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "<ResearchQuestions />" in app, "Overview omits the research questions"
+
+
+def test_scope_names_causal_effectiveness_as_a_future_extension() -> None:
+    # A.306: Scope names the causal question as future research and the data it would need.
+    future = _scope_entries("future")
+    needs = " ".join(str(entry.get("needs")) for entry in nonempty(future))
+    assert "Randomized exposure" in needs and "holdback" in needs, needs
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "scope.future.map" in app, "Scope omits the future research extension"
+
+
+# A.308: THE OBJECTIVE'S THREE MEANINGS OF WHY, AND THE PRIORITIES BY NECESSITY.
+WHYS = ["Why this prediction?", "Why this model?", "Why trust this conclusion?"]
+NECESSITY = ["Essential"] * 4 + ["Useful extension", "Future research"]
+
+
+def test_overview_states_the_objective_and_three_meanings_of_why() -> None:
+    # A.308: the objective, and three whys each naming steps the plan holds.
+    plan = PLAN.read_text(encoding="utf-8")
+    objective = _project().get("objective")
+    assert isinstance(objective, dict), "project.json states no research objective"
+    assert "reproducible evidence" in objective["statement"], objective["statement"]
+    whys = nonempty(objective["whys"])
+    assert [entry["why"] for entry in whys] == WHYS, whys
+    for entry in nonempty(whys):
+        for step in nonempty(entry["steps"]):
+            assert f'id = "{step}"' in plan, (step, entry["why"])
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "<Objective />" in app, "Overview omits the research objective"
+
+
+def test_phases_list_the_priorities_by_necessity() -> None:
+    # A.308: six priorities in order; all but future research name steps the plan holds.
+    plan = PLAN.read_text(encoding="utf-8")
+    priorities = _project().get("priorities")
+    assert isinstance(priorities, list), "project.json states no priorities"
+    assert [entry["necessity"] for entry in nonempty(priorities)] == NECESSITY, priorities
+    for entry in nonempty(priorities[:5]):
+        for step in nonempty(entry["steps"]):
+            assert f'id = "{step}"' in plan, (step, entry["name"])
+    assert priorities[5]["steps"] == [], priorities[5]
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "<Priorities />" in app, "Phases omits the priorities"
+
+
+def test_the_architecture_states_its_code_organisation() -> None:
+    # A.308: the code organisation names the enforced boundaries and no dashboard.
+    note = _project()["architecture"].get("organisation")
+    assert isinstance(note, str), "the architecture states no code organisation"
+    for phrase in nonempty(("Import Linter", "governance", "no dashboard")):
+        assert phrase in note, phrase
+    source = (ROOT / "site" / "src" / "Architecture.jsx").read_text(encoding="utf-8")
+    assert "{architecture.organisation}" in source, "Models omits the code organisation"
+
+
+def test_results_state_the_threshold_procedure_and_its_status() -> None:
+    # A.310: the proposed threshold, its anchor, sensitivity, detectability and status.
+    threshold = _project().get("threshold")
+    assert isinstance(threshold, dict), "project.json states no practical threshold"
+    assert threshold["status"].startswith("Declared"), threshold["status"]
+    assert "before any result" in threshold["status"], threshold["status"]
+    assert "1%" in threshold["formula"], threshold["formula"]
+    notes = " ".join(nonempty(threshold["notes"]))
+    for phrase in nonempty(("Netflix Prize", "half and double", "validation window", "0.557")):
+        assert phrase in notes, phrase
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "data.threshold.notes.map" in app, "Results omits the practical threshold"
+
+
+# A.315: THIS ROUND'S PRACTICES, EACH PLANNED WITH A STEP OR OUTSIDE THE SCOPE.
+ROUND_EIGHT = {
+    "PROVE-REC": "planned",
+    "Self-evolving recommender audit": "planned",
+    "Evaluation Cards": "planned",
+    "Rank, Don't Generate": OUT_OF_SCOPE,
+    "LLM-based recommenders": OUT_OF_SCOPE,
+}
+
+
+def test_round_eight_practices_name_their_step_or_why_they_are_out_of_scope() -> None:
+    # A.315: this round's practices are listed, each planned with a step or out of scope.
+    practices = {entry["org"]: entry for entry in nonempty(_evidence()["practices"])}
+    for org, status in nonempty(list(ROUND_EIGHT.items())):
+        assert org in practices, org
+        assert practices[org]["status"] == status, practices[org]
+
+
+def test_each_model_family_names_its_explanation_and_its_check() -> None:
+    # A.315: every family states the explanation that sums to its prediction, and its check.
+    explanations = _project().get("explanations")
+    assert isinstance(explanations, list), "project.json states no explanations"
+    for entry in nonempty(explanations):
+        assert entry["family"] and entry["explanation"], entry
+        assert "A.312" in entry["check"], entry
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert "<Explanations />" in app, "Models and techniques omits the explanations"
+
+
+# A.319: THIS ROUND'S PRACTICES, EACH PLANNED WITH A STEP OR OUTSIDE THE SCOPE.
+ROUND_NINE = {
+    "in-toto and SLSA": "planned",
+    "MLflow autologging": "planned",
+    "BenchmarkCards": "planned",
+    "Conformal prediction": "planned",
+    "Knowledge graphs with LLM reasoning": OUT_OF_SCOPE,
+    "Continuous runtime verification": OUT_OF_SCOPE,
+}
+
+
+def test_round_nine_practices_name_their_step_or_why_they_are_out_of_scope() -> None:
+    # A.319: this round's practices are listed, each planned with a step or out of scope.
+    practices = {entry["org"]: entry for entry in nonempty(_evidence()["practices"])}
+    for org, status in nonempty(list(ROUND_NINE.items())):
+        assert org in practices, org
+        assert practices[org]["status"] == status, practices[org]
+
+
+def test_the_example_record_states_its_confidence_interval() -> None:
+    # A.319: the illustrative prediction record shows its confidence beside its contributors.
+    fields = dict(nonempty(_project()["example_record"]["prediction_fields"]))
+    assert "conformal" in fields.get("Confidence", ""), fields
+    assert "validation window" in fields["Confidence"], fields

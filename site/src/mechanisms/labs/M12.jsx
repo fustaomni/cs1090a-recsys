@@ -153,7 +153,6 @@ export default function M12() {
 
   return (
     <article className="lab">
-      <h3>Model 12 · Stacking and blending</h3>
       <p>
         A meta-learner weights the base models' out-of-fold predictions. Because those
         predictions all track the same rating they are highly correlated, so least squares can
@@ -186,7 +185,7 @@ export default function M12() {
           />
         )}
         <Slider
-          label="Correlation of the base models' errors"
+          label="Correlation of the base models' own noise (their errors also share the rating's)"
           value={rho}
           min={0}
           max={0.97}
@@ -199,7 +198,7 @@ export default function M12() {
             checked={sumToOne}
             onChange={(event) => setSumToOne(event.target.checked)}
           />
-          <span>Weights sum to one (otherwise an unpenalised intercept)</span>
+          <span>Weights sum to one (the unpenalised intercept stays either way)</span>
         </label>
       </div>
       <dl className="readouts">
@@ -259,7 +258,7 @@ export default function M12() {
         meta-training and {test.length} test ratings.
       </p>
       <Provenance
-        data="Synthetic out-of-fold predictions, generated in this page: stackingRatings({ seed: 161, n: 500 }); no real ratings"
+        data={`Synthetic out-of-fold predictions, generated in this page: stackingRatings({ seed: 161, n: 500, correlation: ${fixed(rho, 2)} }); no real ratings`}
         split="Five blocks of 100 in time order: the first has no out-of-fold predictions, blocks two to four train the weights, the fifth scores them"
         method="Meta-learner: least squares, non-negative least squares or non-negative ridge, with an unpenalised intercept"
       />

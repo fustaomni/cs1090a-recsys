@@ -1,7 +1,7 @@
 {
   "contract": "site-deployment/v1",
-  "commit": "b752a380d01c891307aeab79eed60ee9c9c705f6",
-  "deployment": "a185115e-1c3c-4d0d-af04-f9fafd133c44",
+  "commit": "0a6c917ccfea5d996c32140fca58524816c9e0c3",
+  "deployment": "cbb9c7b0-534d-417c-bdf1-4301fd95d0ef",
   "project": "58907094-aacd-463b-9a80-e72af4a76db2",
   "service": "2c8c5ceb-618a-4439-b675-3e8c30bea68d",
   "status": "SUCCESS",

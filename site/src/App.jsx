@@ -3,6 +3,13 @@ import data from "./data/project.json";
 import results from "./data/results.json";
 import Mechanisms from "./mechanisms/Mechanisms.jsx";
 import { bind } from "./bind.js";
+import EvidenceChain from "./EvidenceChain.jsx";
+import Architecture from "./Architecture.jsx";
+import ExampleRecord from "./ExampleRecord.jsx";
+import ResearchQuestions from "./ResearchQuestions.jsx";
+import Objective from "./Objective.jsx";
+import Priorities from "./Priorities.jsx";
+import Explanations from "./Explanations.jsx";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
@@ -62,6 +69,9 @@ function Overview() {
       <h1>{data.title}</h1>
       <p className="lede">{overview.question}</p>
       <p>{bind(overview.summary)}</p>
+      <Objective />
+      <ResearchQuestions />
+      <EvidenceChain page="overview" />
       <ul className="stats">
         {overview.stats.map((stat) => (
           <li key={stat.label}>
@@ -115,6 +125,17 @@ function Scope() {
           </dl>
         </div>
       </div>
+      <div className="panel">
+        <h3>Future research extension</h3>
+        <dl>
+          {scope.future.map((entry) => (
+            <div key={entry.item}>
+              <dt>{entry.item}</dt>
+              <dd>{entry.needs}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </section>
   );
 }
@@ -129,6 +150,7 @@ function Phases() {
       <p className="status-line">
         <span className="badge current">Status</span> {data.status}
       </p>
+      <Priorities />
       {groups.map((milestone) => (
         <div key={milestone.id} className="milestone-group">
           <h3>
@@ -169,6 +191,9 @@ function Deploys() {
   return (
     <section id="deploys" className="section">
       <h2>What the project deploys</h2>
+      <Architecture />
+      <ExampleRecord />
+      <Explanations />
       <h3>{bind("{models} predictive models, simplest first")}</h3>
       <ol className="ladder">
         {groups.map((group) => (
@@ -235,6 +260,7 @@ function Results() {
       <p className="muted">
         {results.protocol}. Updated {results.updated}.
       </p>
+      <p className="muted">{data.evidence.prediction_note}</p>
       <div className="opponent">
         <p className="status-line">
           <span className={`badge ${primary.status === "decided" ? "done" : "current"}`}>
@@ -247,7 +273,22 @@ function Results() {
           {primary.verdicts.map((verdict) => (
             <li key={verdict} className={verdict === primary.verdict ? "chosen" : ""}>
               {verdict}
+              <span className="muted">
+                {" "}
+                · {data.architecture.outcomes.find((outcome) => outcome.verdict === verdict).decision}
+              </span>
             </li>
+          ))}
+        </ul>
+        <p>{data.decision_rule.statement}</p>
+        <p className="muted">{data.decision_rule.example}</p>
+        <h3>
+          The practical threshold <span className="badge done">{data.threshold.status}</span>
+        </h3>
+        <p>Declared: {data.threshold.formula}.</p>
+        <ul>
+          {data.threshold.notes.map((note) => (
+            <li key={note}>{note}</li>
           ))}
         </ul>
       </div>

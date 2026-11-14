@@ -138,13 +138,12 @@ export default function M10() {
 
   return (
     <article className="lab">
-      <h3>Model 10 · AdaBoost for regression (AdaBoost.R2)</h3>
       <p>
         Each round draws rows in proportion to their weights and fits a shallow tree. Every
         row's loss is its error over the round's largest error D, the weighted average loss L̄
-        sets β = L̄ / (1 − L̄), and rows the tree predicted well are multiplied by β^(1 − L), so
+        sets β = L̄ / (1 − L̄), and rows the tree predicted well are multiplied by β^(ν(1 − L)) at learning rate ν, so
         the poorly predicted ones gain share once weights are renormalised. The ensemble
-        predicts the weighted median of its trees, each weighted by log(1 / β).
+        predicts the weighted median of its trees, each weighted by ν log(1 / β).
       </p>
       <Plot traces={surfaceTraces} layout={surfaceLayout} label="Median surface" height={460} />
       <div className="controls">
@@ -198,7 +197,7 @@ export default function M10() {
           <dt>Round {count}</dt>
           <dd>
             D = {fixed(step.largest, 2)}, L̄ = {fixed(step.average)}, β = {fixed(step.beta)}, tree
-            weight log(1/β) = {fixed(step.weight)}
+            weight ν log(1/β) = {fixed(step.weight)}
             {fit.history.at(-1).stopped
               ? `; boosting stopped after round ${fit.fitted.length} because L̄ reached 0.5`
               : ""}
@@ -215,7 +214,7 @@ export default function M10() {
           </div>
         )}
         <div>
-          <dt>Later-window RMSE after {count} rounds</dt>
+          <dt>Later-window RMSE after {count === 1 ? "1 round" : `${count} rounds`}</dt>
           <dd>
             {fixed(curves.clean[Math.min(count, curves.clean.length) - 1])} clean,{" "}
             {fixed(curves.noisy[Math.min(count, curves.noisy.length) - 1])} with the outlier
@@ -232,7 +231,7 @@ export default function M10() {
                 <th scope="col">D</th>
                 <th scope="col">L̄</th>
                 <th scope="col">β</th>
-                <th scope="col">log(1/β)</th>
+                <th scope="col">ν log(1/β)</th>
               </tr>
             </thead>
             <tbody>
@@ -252,11 +251,12 @@ export default function M10() {
       <p className="muted">
         One huge error sets D, which shrinks every other row's loss toward zero, so L̄ and β fall
         and almost every other row loses weight at once; square and exponential losses amplify
-        it. The weighted median keeps the outlier's pull on the final prediction limited. Seeded
+        it. A weighted median ignores a few extreme trees, but once enough tree weight chases the
+        outlier it follows them, as the readout at the outlier's location shows. Seeded
         synthetic data: {clean.length} training and {later.length} later ratings on five levels.
       </p>
       <Provenance
-        data="Synthetic ratings, generated in this page: forestRatings({ seed: 131, n: 260 }); no real ratings"
+        data="Synthetic ratings, generated in this page: forestRatings({ seed: 131, n: 260 }), plus, when ticked, one outlier row { user: 1.6, movie: 1.4, rating: 1 }; no real ratings"
         split="The first 200 rows train; the remaining 60 are the later window"
         features="user, movie"
         method="AdaBoost.R2 on shallow trees, weighted median, boosting seed 7"

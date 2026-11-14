@@ -284,13 +284,14 @@ export default function M6() {
 
   return (
     <article className="lab">
-      <h3>Model 6 · k-nearest-neighbour regression</h3>
       <p>
         kNN learns no equation. To predict a rating it finds the k training rows nearest the
         query and averages their ratings. The shape drawn around the query is the neighbourhood
         that holds exactly those k rows; its radius is the distance to the k-th one, so it grows
         with k. The distance itself is a choice: a ball for Euclidean, an octahedron for
-        Manhattan, and Gower for mixed numeric and categorical features.
+        Manhattan, and Gower for mixed numeric and categorical features, whose stretched
+        octahedron holds the neighbours in the query's own group, since a row in another group
+        pays a quarter of the distance for its group alone.
       </p>
       <Plot traces={spaceTraces} layout={spaceLayout} label="Neighbours in space" height={480} />
       <div className="controls">

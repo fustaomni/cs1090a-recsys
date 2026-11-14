@@ -58,7 +58,6 @@ export default function T2() {
     const mine = rows.filter((r) => r.user === busiest);
     return { mine, coded: encodings(mine, m, MU.train) };
   }, [rows, m]);
-  const gap = study.naiveIn - study.outside;
 
   const lineTraces = useCallback(
     (colors) => {
@@ -144,7 +143,6 @@ export default function T2() {
 
   return (
     <article className="lab">
-      <h3>Technique · Missingness and imputation</h3>
       <p>
         A user or movie with no history yet has no mean to use. The smoothed encoding fills it
         without a special case: S = (n·ȳ + m·μ) / (n + m) becomes μ when n = 0 and the user's
@@ -210,7 +208,7 @@ export default function T2() {
           <dt>S, with a count feature beside it</dt>
           <dd>
             S = ({count} × {fixed(average, 2)} + {m} × {fixed(mu, 3)}) / ({count} + {m}) ={" "}
-            {fixed(shown, 3)}; count = {n}, so the model knows when S is the prior rather than
+            {fixed(shown, 3)}; count = {count}, so the model knows when S is the prior rather than
             evidence
           </dd>
         </div>
@@ -218,8 +216,9 @@ export default function T2() {
           <dt>MovieLens 1M means</dt>
           <dd>
             Training window {fixed(MU.train, 3)}, validation window {fixed(SPLIT.validMean, 3)},
-            all rows {fixed(MU.all, 3)}: a shift of {fixed(SPLIT.validMean - MU.train, 3)}, so the
-            fallback's leak is small here; the row's own rating is the larger one
+            all rows {fixed(MU.all, 3)}: fitting μ on all rows moves it by{" "}
+            {fixed(MU.all - MU.train, 3)}, so the fallback's leak is small here; the row's own
+            rating is the larger one
           </dd>
         </div>
         <div>
@@ -227,7 +226,9 @@ export default function T2() {
           <dd>
             Correlation with the rating: naive in-sample {fixed(study.naiveIn, 3)}, prior-only{" "}
             {fixed(study.priorIn, 3)}, the training mean on later rows {fixed(study.outside, 3)}.
-            The gap of {fixed(gap, 3)} between in-sample and later is the leak.
+            Naive exceeds prior-only by {fixed(study.naiveIn - study.priorIn, 3)}: that is the
+            own-rating leak. The further drop of {fixed(study.priorIn - study.outside, 3)} to later
+            rows is what an in-sample correlation overstates even without it.
           </dd>
         </div>
       </dl>

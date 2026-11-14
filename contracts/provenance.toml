@@ -442,9 +442,9 @@ patch = "contracts/vendor-patches/tests/test_signing.py.patch"
 sha256 = "e79583063db873058c6af6a2e3129fbee985d965f177bc249940cf2f0bb0b62d"
 [[adapted]]
 path = "scripts/check_all.py"
-reason = "A.278 and A.340: the test and integration gate deadlines are computed from their slowest passing runs times a runaway-backstop multiplier, instead of a typed 900 s and 1200 s"
+reason = "A.278, A.340 and A.333: the test, integration and type gate deadlines are computed from their slowest passing runs times a runaway-backstop multiplier, instead of a typed 900 s, 1200 s and 300 s"
 patch = "contracts/vendor-patches/scripts/check_all.py.patch"
-sha256 = "6801df539e3ee56fd3892212047ec5d5f1307c0ab43b1be365db5023e6ca0f0a"
+sha256 = "8623a42840e2399c81a462e55f5d8eb1ad1f6fe60ba55558c2c807cae510b267"
 [[adapted]]
 path = "scripts/commit.py"
 reason = "the root commit names its branch (A.5); nothing staged is refused and git reasons kept (A.12)"
@@ -989,9 +989,9 @@ sha256 = "48cb399c2caa9ffac9db7a5c53b2f9c2cb0da1d169b7988243866d88e3e5e1c4"
 
 [[adapted]]
 path = "copier.yml"
-reason = "the run-ledger anchor is excluded, since a generated project starts its own ledger as it starts its own plan (A.121); the provenance record of this repository, its vendor patches and the two proofs that verify them are excluded as its own port history, and the generated-project gate is excluded where it now lives, at tests/integration (A.123); the proof that tracked references name cscie103 where it lives is excluded with that record, since a generated project has none (A.183); this project's live-site Railway identity, its deployment record and their proof are excluded as this project's own, so a generated project never deploys into this site (A.254)"
+reason = "the run-ledger anchor is excluded, since a generated project starts its own ledger as it starts its own plan (A.121); the provenance record of this repository, its vendor patches and the two proofs that verify them are excluded as its own port history, and the generated-project gate is excluded where it now lives, at tests/integration (A.123); the proof that tracked references name cscie103 where it lives is excluded with that record, since a generated project has none (A.183); this project's live-site Railway identity, its deployment record and their proof are excluded as this project's own, so a generated project never deploys into this site (A.254); the site review proof, which asserts this project's own plan steps, is excluded as this project's own (A.260)"
 patch = "contracts/vendor-patches/copier.yml.patch"
-sha256 = "e29393bc8081a77148deb09946b2dec3d6882941ea99731314a76fb846834058"
+sha256 = "9a8af338f0b96afcfed33d1c9f22188f77fd581b64a8bcd3872650fb18d96c4c"
 
 [[files]]
 path = "contracts/project-identity.toml"
