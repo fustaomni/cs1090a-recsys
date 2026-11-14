@@ -346,11 +346,68 @@ def record(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
     )
 
 
+class _Retirement(Contract):
+    """One step to retire, and why."""
+
+    id: str = Field(min_length=1)
+    reason: str = Field(min_length=1)
+
+
+class RetireSpec(Contract):
+    """plan:retire's spec: the steps to supersede, each with its reason (A.82, from D.260)."""
+
+    steps: tuple[_Retirement, ...] = Field(min_length=1)
+
+
 def retire(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
-    """plan:retire <spec> -- not yet ported (A.82); refused, so its proof fails on behaviour."""
-    del argv, root
-    message = "plan:retire is not yet ported from cscie103 (A.82)"
-    return _report("plan:retire", "refused", "not_ported", message, {})
+    """plan:retire <spec> -- supersede steps with their reasons, keeping every id (A.82).
+
+    Ported from cscie103 (D.260): a retired step becomes a decision with the same id and title,
+    state superseded, so the commits naming it still trace to it and its ledger entry stays issued.
+    """
+    try:
+        spec = from_document(RetireSpec, tomllib.loads(_spec_text(argv, "retire")))
+    except ValidationError as error:
+        first = str(error).splitlines()[0]
+        return _report("plan:retire", "refused", "spec_invalid", first, {"errors": _errors(error)})
+    documents = {PLAN: _parse(root, PLAN)}
+    steps = _steps(documents[PLAN])
+    reasons = {r.id: r.reason for r in spec.steps}
+    live = {str(entry["id"]) for entry in steps if isinstance(entry, dict)}
+    not_live = sorted(set(reasons) - live)
+    if not_live:
+        message = f"not a live step: {', '.join(not_live)}"
+        return _report("plan:retire", "refused", "step_unknown", message, {"unknown": [*not_live]})
+    if "decisions" not in documents[PLAN]:
+        documents[PLAN].append("decisions", tomlkit.aot())
+    decisions = documents[PLAN]["decisions"]
+    if not isinstance(decisions, AoT):
+        raise SystemExit("decisions is not an array of tables")
+    for index in reversed(range(len(steps))):
+        entry = steps[index]
+        if str(entry["id"]) in reasons:
+            step_id = str(entry["id"])
+            decision = tomlkit.table()
+            decision.add("id", step_id)
+            decision.add("title", str(entry["title"]))
+            decision.add("state", "superseded")
+            decision.add("reason", reasons[step_id])
+            decisions.append(decision)
+            del steps[index]
+    try:
+        checked = _validated(documents)
+    except ValidationError as error:
+        first = str(error).splitlines()[0]
+        return _report("plan:retire", "refused", "contract_violated", first, {})
+    (root / PLAN).write_text(checked[PLAN], encoding="utf-8")
+    retired = [f"{r.id}: {r.reason}" for r in spec.steps]
+    return _report(
+        "plan:retire",
+        "success",
+        "steps_retired",
+        f"retired {len(retired)} step(s)",
+        {"retired": [*retired]},
+    )
 
 
 class _Retraction(Contract):
