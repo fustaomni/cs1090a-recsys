@@ -1,7 +1,7 @@
 {
   "contract": "site-results/v1",
   "updated": "2026-10-16",
-  "protocol": "Protocol A: global temporal split, testing on ratings after the 0.9 quantile of timestamps",
+  "protocol": "Protocol A, a global temporal split. Milestone 2 split the ratings once in time, its recorded cutoff and counts below; Milestone 3's validation and test boundaries are planned",
   "milestones": [
     {
       "milestone": "M1",
