@@ -71,6 +71,22 @@ def test_the_kernel_talks_over_ipc_never_unencrypted_tcp(
     assert "without encryption" not in printed, printed
 
 
+def test_no_kernel_outlives_the_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    subject = _subject()
+    original = subject.KernelManager
+    made: list[Any] = []
+
+    def recording(**options: Any) -> Any:
+        manager = original(**options)
+        made.append(manager)
+        return manager
+
+    monkeypatch.setattr(subject, "KernelManager", recording)
+    subject.execute(NOTEBOOK, _folder(tmp_path), tmp_path / "out")
+    assert len(made) == 1, made
+    assert made[0].is_alive() is False, "the kernel outlived the run"
+
+
 def test_a_folder_without_the_verified_tables_is_refused_before_any_kernel_starts(
     tmp_path: Path,
 ) -> None:
