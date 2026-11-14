@@ -11,7 +11,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import sys
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Literal, Self
 
@@ -116,6 +116,19 @@ def recorded(results: Results, key: str, run_id: str, metrics: Metrics, today: d
     measured = {"status": "measured", "metrics": metrics, "run_id": run_id}
     rows = tuple(row.model_copy(update=measured) if row.key == key else row for row in results.rows)
     return results.model_copy(update={"rows": rows, "updated": today.isoformat()})
+
+
+def sectioned(
+    results: Results,
+    milestone: str,
+    source: Path,
+    contract: str,
+    pointers: Mapping[str, str],
+    today: dt.date,
+) -> Results:
+    """A milestone's section recorded from a run's results file (A.342); not written yet."""
+    del results, milestone, source, contract, pointers, today
+    raise NotImplementedError("site:record has no section writer yet (A.342)")
 
 
 def render(results: Results) -> str:
