@@ -442,9 +442,9 @@ patch = "contracts/vendor-patches/tests/test_signing.py.patch"
 sha256 = "e79583063db873058c6af6a2e3129fbee985d965f177bc249940cf2f0bb0b62d"
 [[adapted]]
 path = "scripts/check_all.py"
-reason = "A.278 and A.340: the test and integration gate deadlines are computed from their slowest passing runs times a runaway-backstop multiplier, instead of a typed 900 s and 1200 s"
+reason = "A.278, A.340 and A.333: the test, integration and type gate deadlines are computed from their slowest passing runs times a runaway-backstop multiplier, instead of a typed 900 s, 1200 s and 300 s"
 patch = "contracts/vendor-patches/scripts/check_all.py.patch"
-sha256 = "6801df539e3ee56fd3892212047ec5d5f1307c0ab43b1be365db5023e6ca0f0a"
+sha256 = "8623a42840e2399c81a462e55f5d8eb1ad1f6fe60ba55558c2c807cae510b267"
 [[adapted]]
 path = "scripts/commit.py"
 reason = "the root commit names its branch (A.5); nothing staged is refused and git reasons kept (A.12)"
