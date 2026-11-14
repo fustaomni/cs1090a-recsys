@@ -15,6 +15,8 @@ import json
 import tomllib
 from pathlib import Path
 
+from tools_verify import aube_integrity
+
 ROOT = Path(__file__).resolve().parent.parent
 PLATFORM = "platforms.linux-x64"
 MISE_KINDS = frozenset({"slsa", "cosign", "minisign", "github-attestations"})
@@ -22,6 +24,19 @@ MISE_KINDS = frozenset({"slsa", "cosign", "minisign", "github-attestations"})
 
 def _load(path: Path) -> dict[str, object]:
     return tomllib.loads(path.read_text(encoding="utf-8"))
+
+
+def _npm_unverified(name: str, entry: dict[str, object], found: object) -> list[str]:
+    """An npm-backend tool is verified only by its record of npm audit signatures (A.279)."""
+    if not isinstance(found, dict) or found.get("kind") != "npm-registry-provenance":
+        return [f"{name}: an npm-backend tool with no recorded registry provenance"]
+    aube = entry.get("aube")
+    assert isinstance(aube, dict), entry
+    lock_dir = ROOT / str(aube["path"])
+    integrity = aube_integrity(lock_dir, name.removeprefix("npm:"), str(entry["version"]))
+    if (found.get("version"), found.get("integrity")) != (entry["version"], integrity):
+        return [f"{name}: the recorded verification is not of the locked package"]
+    return []
 
 
 def _unverified(lock: dict[str, object], record: dict[str, object]) -> list[str]:
@@ -33,6 +48,9 @@ def _unverified(lock: dict[str, object], record: dict[str, object]) -> list[str]
     problems = []
     for name, entries in tools.items():
         entry = entries[0]
+        if PLATFORM not in entry:
+            problems.extend(_npm_unverified(name, entry, by_name.get(name)))
+            continue
         platform = entry[PLATFORM]
         if platform.get("provenance") in MISE_KINDS:
             continue
@@ -95,3 +113,21 @@ def test_gh_is_pinned_and_its_provenance_verified() -> None:
     assert "gh" in lock, "gh is not locked"
     platform = lock["gh"][0]["platforms.linux-x64"]
     assert platform.get("provenance") == "github-attestations", platform
+
+
+def test_an_npm_tool_is_verified_only_by_its_recorded_provenance(tmp_path: Path) -> None:
+    """The paired negative control for npm: no record, and a record of other bytes, are named."""
+    lock_dir = tmp_path / "npm-npm" / "12.2.0"
+    lock_dir.mkdir(parents=True)
+    aube = "packages:\n  npm@12.2.0:\n    resolution: {integrity: sha512-locked}\n"
+    (lock_dir / "aube-lock.yaml").write_text(aube, encoding="utf-8")
+    entry = {"version": "12.2.0", "backend": "npm:npm", "aube": {"path": str(lock_dir)}}
+    lock: dict[str, object] = {"tools": {"npm:npm": [entry]}}
+    kind = "npm-registry-provenance"
+    stale = {"name": "npm:npm", "version": "12.2.0", "kind": kind, "integrity": "sha512-other"}
+    good = {**stale, "integrity": "sha512-locked"}
+    absent = ["npm:npm: an npm-backend tool with no recorded registry provenance"]
+    assert _unverified(lock, {"tools": []}) == absent
+    named = ["npm:npm: the recorded verification is not of the locked package"]
+    assert _unverified(lock, {"tools": [stale]}) == named
+    assert _unverified(lock, {"tools": [good]}) == []
