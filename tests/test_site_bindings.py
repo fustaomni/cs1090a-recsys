@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import re
+import tomllib
 from pathlib import Path
 
 from nonvacuous import nonempty
@@ -135,3 +136,18 @@ def test_the_protocol_separates_what_ran_from_what_is_planned() -> None:
     protocol = str(_load("results.json").get("protocol"))
     assert "Milestone 2" in protocol, protocol
     assert "Milestone 3" in protocol and "planned" in protocol, protocol
+
+
+def test_the_m2_results_are_recorded_from_the_notebook_run() -> None:
+    """A.344: M2 shows every label its pointers file names, all read from one recorded run."""
+    pointers = ROOT / "contracts" / "site-sections" / "M2.toml"
+    labels = list(tomllib.loads(pointers.read_text(encoding="utf-8"))["pointers"])
+    assert labels, "the M2 pointers file names no label"
+    sections = _load("results.json").get("milestones")
+    assert isinstance(sections, list), sections
+    section = next(entry for entry in sections if entry.get("milestone") == "M2")
+    entries = section.get("entries", [])
+    assert [entry.get("label") for entry in entries] == labels, entries
+    digests = {entry["evidence"]["sha256"] for entry in nonempty(entries)}
+    contracts = {entry["evidence"]["contract"] for entry in entries}
+    assert len(digests) == 1 and contracts == {"ms2-results/v1"}, (digests, contracts)
