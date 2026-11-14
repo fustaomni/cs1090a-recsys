@@ -1,0 +1,895 @@
+# contracts/lab-claims.toml
+# lab-claims/v1 (A.260): every claim a lab's prose states, with the vitest case that checks it
+# against the lab's computation, named as file > describe > it. Each lab is verified against
+# the rendered Interactive mechanisms page before its prose is corrected.
+contract = "lab-claims/v1"
+
+[[claims]]
+lab = "M1"
+claim = "Ratings only take the values 1 to 5."
+evidence = "site/src/mechanisms/lib/lib.test.js > seeded data > gives ratings only on the five integer levels"
+
+[[claims]]
+lab = "M1"
+claim = "User and movie history are standardised, with correlation rho."
+evidence = "site/src/mechanisms/lib/lib.test.js > seeded data > draws user and movie history standard normal, correlated rho"
+
+[[claims]]
+lab = "M1"
+claim = "Least squares is the lowest point of the bowl, where the sum of squared residuals is smallest."
+evidence = "site/src/mechanisms/lib/lib.test.js > simple least squares > computes the same SSE from sums as directly, and is the bowl's lowest point"
+
+[[claims]]
+lab = "M1"
+claim = "b1 = cov(x, y) / var(x), and b0 is the mean rating since x is centred."
+evidence = "site/src/mechanisms/lib/lib.test.js > simple least squares > has slope cov/var and intercept the mean rating once x is centred"
+
+[[claims]]
+lab = "M1"
+claim = "Predictions outside [1, 5] are counted, and the residuals use the unclipped predictions."
+evidence = "site/src/mechanisms/lib/lib.test.js > errors in and out of range > counts predictions outside [1, 5] and never scores worse after clipping"
+
+[[claims]]
+lab = "M1"
+claim = "Leaving movie history out, the slope absorbs rho times its effect: in expectation, before rounding, it is the user effect plus rho times the movie effect."
+evidence = "site/src/mechanisms/lib/lib.test.js > omitted-variable bias > absorbs rho times the movie effect when movie history is correlated"
+
+[[claims]]
+lab = "M1"
+claim = "Rounding to the five levels, which also caps ratings at 1 and 5, flattens the slope."
+evidence = "site/src/mechanisms/lib/lib.test.js > rounding to levels > flattens the fitted slope, since the levels cap ratings at 1 and 5"
+
+[[claims]]
+lab = "M2"
+claim = "Both predictors are centred, so the intercept is the mean rating."
+evidence = "site/src/mechanisms/lib/regression.test.js > least squares by QR > solves the centred normal equations, with the intercept at the mean rating"
+
+[[claims]]
+lab = "M2"
+claim = "The bowl is the sum of squared residuals over the two slopes."
+evidence = "site/src/mechanisms/lib/regression.test.js > the multi-linear bowl > is the sum of squared residuals, expanded through the normal equations"
+
+[[claims]]
+lab = "M2"
+claim = "As the predictors correlate, resampled slopes spread out."
+evidence = "site/src/mechanisms/lib/regression.test.js > collinearity > spreads resampled coefficients more as the predictors correlate"
+
+[[claims]]
+lab = "M2"
+claim = "Slopes that fit equally well trade off: resampled fits scatter along the valley floor."
+evidence = "site/src/mechanisms/lib/regression.test.js > collinearity > trades the slopes off along the valley as the predictors correlate"
+
+[[claims]]
+lab = "M2"
+claim = "The least squares slopes solve the centred normal equations."
+evidence = "site/src/mechanisms/lib/regression.test.js > least squares by QR > satisfies the normal equations X'X b = X'y"
+
+[[claims]]
+lab = "M2"
+claim = "The residual sum is zero for any slopes because b0 is the mean rating; the other two sums vanish only at the least squares fit."
+evidence = "site/src/mechanisms/lib/regression.test.js > the multi-linear bowl > leaves residuals summing to zero for any slopes once the intercept is the mean"
+
+[[claims]]
+lab = "M2"
+claim = "VIF = 1 / (1 - R^2) is the same for each slope, about 1 / (1 - rho^2)."
+evidence = "site/src/mechanisms/lib/regression.test.js > collinearity > raises the VIF of correlated predictors to about 1 / (1 - rho^2)"
+
+[[claims]]
+lab = "M3"
+claim = "Centring changes what the lower coefficients mean, not the predictions."
+evidence = "site/src/mechanisms/lib/regression.test.js > polynomial and interaction terms > predicts exactly the same after centring"
+
+[[claims]]
+lab = "M3"
+claim = "The count-squared and interaction coefficients are identical centred and raw."
+evidence = "site/src/mechanisms/lib/regression.test.js > polynomial and interaction terms > keeps the curvature and interaction coefficients, shifting only the lower ones"
+
+[[claims]]
+lab = "M3"
+claim = "With the curvature held at the sliders, the drawn surface does not move when centring is toggled."
+evidence = "site/src/mechanisms/lib/regression.test.js > polynomial terms with the curvature held > draws the same surface whether or not the predictors are centred"
+
+[[claims]]
+lab = "M3"
+claim = "A high VIF that centring removes was created by the scaling of the powers of count."
+evidence = "site/src/mechanisms/lib/regression.test.js > polynomial and interaction terms > cuts the VIF that uncentred powers of count create"
+
+[[claims]]
+lab = "M3"
+claim = "The ratings sit on the five levels."
+evidence = "site/src/mechanisms/lib/regression.test.js > polynomial terms with the curvature held > draws its ratings on the five integer levels"
+
+[[claims]]
+lab = "M4"
+claim = "Ridge adds lambda times the squared norm to the mean squared error, solving (X'X/n + lambda I) b = X'y/n."
+evidence = "site/src/mechanisms/lib/penalized.test.js > ridge > is least squares at lambda = 0 and solves (X'X/n + lambda I) b = X'y/n"
+
+[[claims]]
+lab = "M4"
+claim = "As lambda grows the coefficients are pulled toward each other, never exactly to zero."
+evidence = "site/src/mechanisms/lib/penalized.test.js > ridge > pulls correlated coefficients toward each other, never exactly to zero"
+
+[[claims]]
+lab = "M4"
+claim = "Resampled least squares fits scatter along the valley while the ridge fits stay close together."
+evidence = "site/src/mechanisms/lib/ridge.test.js > ridge, as Model 4 shows it > scatters resampled fits less than least squares does"
+
+[[claims]]
+lab = "M4"
+claim = "Each direction keeps d / (d + lambda) of its least squares value, so the weak, collinear direction is shrunk hardest."
+evidence = "site/src/mechanisms/lib/ridge.test.js > ridge, as Model 4 shows it > keeps d / (d + lambda) of least squares along each eigen-direction"
+
+[[claims]]
+lab = "M4"
+claim = "The effective degrees of freedom are the sum of the directions' shrinkage factors."
+evidence = "site/src/mechanisms/lib/penalized.test.js > ridge > has effective degrees of freedom equal to the trace of its hat matrix"
+
+[[claims]]
+lab = "M4"
+claim = "Lambda is chosen on time-ordered folds, each validated on rows later than its training rows."
+evidence = "site/src/mechanisms/lib/penalized.test.js > selection and tuning > validates every fold on rows later than all its training rows"
+
+[[claims]]
+lab = "M4"
+claim = "The 1-SE rule takes the largest lambda within one standard error of the minimum."
+evidence = "site/src/mechanisms/lib/penalized.test.js > selection and tuning > takes the largest lambda within one standard error of the minimum"
+
+[[claims]]
+lab = "M4"
+claim = "The predictors are standardised on the training rows, and the intercept, the mean rating, is never penalised."
+evidence = "site/src/mechanisms/lib/ridge.test.js > ridge, as Model 4 shows it > standardises each predictor on the rows it is given, to mean 0 and variance 1"
+
+[[claims]]
+lab = "M5"
+claim = "Coordinate descent soft-thresholds each coefficient, and one whose z lands inside plus or minus lambda is set exactly to zero."
+evidence = "site/src/mechanisms/lib/penalized.test.js > lasso by coordinate descent > soft-thresholds: shrinks by lambda and zeroes anything within it"
+
+[[claims]]
+lab = "M5"
+claim = "Lasso adds lambda times the L1 norm to half the mean squared error, so at its solution |x'r| / n equals lambda for each kept predictor and is at most lambda for each zeroed one."
+evidence = "site/src/mechanisms/lib/penalized.test.js > lasso by coordinate descent > satisfies the KKT conditions at its solution"
+
+[[claims]]
+lab = "M5"
+claim = "Every coefficient is zero at or above lambda max."
+evidence = "site/src/mechanisms/lib/penalized.test.js > lasso by coordinate descent > zeroes every coefficient from lambda_max up, and frees one just below it"
+
+[[claims]]
+lab = "M5"
+claim = "The drawn path is coordinate descent from zero, ending at the lasso solution."
+evidence = "site/src/mechanisms/lib/penalized.test.js > lasso by coordinate descent > records a path that starts at zero and ends at the solution"
+
+[[claims]]
+lab = "M5"
+claim = "Over half-samples the noise predictor, which has no effect, is selected far less often than the histories."
+evidence = "site/src/mechanisms/lib/penalized.test.js > selection and tuning > selects the irrelevant predictor far less often than the ones that matter"
+
+[[claims]]
+lab = "M5"
+claim = "Raise rho and the two correlated histories trade places from sample to sample."
+evidence = "site/src/mechanisms/lib/lasso.test.js > lasso, as Model 5 shows it > lets the two correlated histories trade places across half-samples at high rho"
+
+[[claims]]
+lab = "M5"
+claim = "Ridge never sets a coefficient to zero; lasso does."
+evidence = "site/src/mechanisms/lib/penalized.test.js > ridge > pulls correlated coefficients toward each other, never exactly to zero"
+
+[[claims]]
+lab = "M5"
+claim = "The 1-SE lambda is the largest within one standard error of the minimum on time-ordered folds."
+evidence = "site/src/mechanisms/lib/penalized.test.js > selection and tuning > takes the largest lambda within one standard error of the minimum"
+
+[[claims]]
+lab = "M6"
+claim = "kNN learns no equation: a prediction is the mean rating of the k nearest training rows."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > nearest neighbours > predicts the mean rating of those neighbours"
+
+[[claims]]
+lab = "M6"
+claim = "The k nearest rows are found in order of distance."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > nearest neighbours > returns the k closest rows in order of distance"
+
+[[claims]]
+lab = "M6"
+claim = "The drawn neighbourhood holds exactly the k rows; its radius is the distance to the k-th, so it grows with k."
+evidence = "site/src/mechanisms/lib/knn.test.js > kNN, as Model 6 shows it > draws a neighbourhood holding exactly the k nearest rows, its radius growing with k"
+
+[[claims]]
+lab = "M6"
+claim = "Manhattan distance is never below Euclidean, and Gower lies in [0, 1] for mixed features."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > nearest neighbours > keeps Manhattan at or above Euclidean, and Gower within [0, 1]"
+
+[[claims]]
+lab = "M6"
+claim = "Gower's octahedron holds the query's own group, since a row in another group pays a quarter of the distance for that alone."
+evidence = "site/src/mechanisms/lib/knn.test.js > kNN, as Model 6 shows it > charges a row in another group a quarter of the Gower distance for that alone"
+
+[[claims]]
+lab = "M6"
+claim = "The k-d tree finds exactly what brute force finds while visiting fewer rows."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > nearest neighbours > finds exactly what brute force finds with a k-d tree, visiting fewer rows"
+
+[[claims]]
+lab = "M6"
+claim = "Tree indexes lose that advantage as dimensions grow."
+evidence = "site/src/mechanisms/lib/knn.test.js > kNN, as Model 6 shows it > loses the k-d tree's advantage as the dimension grows"
+
+[[claims]]
+lab = "M6"
+claim = "As the dimension grows every point sits at nearly the same distance: the relative contrast collapses."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > nearest neighbours > concentrates distances as the dimension grows"
+
+[[claims]]
+lab = "M7"
+claim = "A regression tree predicts the mean training rating in each box, so a prediction can never leave [1, 5]."
+evidence = "site/src/mechanisms/lib/tree.test.js > growing a regression tree > predicts a leaf mean, so every prediction stays within [1, 5]"
+
+[[claims]]
+lab = "M7"
+claim = "Each cut is chosen greedily: the feature and threshold that leave the least squared error on the two sides."
+evidence = "site/src/mechanisms/lib/tree.test.js > growing a regression tree > splits the root where the two sides' squared error is smallest, over every feature"
+
+[[claims]]
+lab = "M7"
+claim = "The split search's lowest point is the threshold the tree chooses."
+evidence = "site/src/mechanisms/lib/tree.test.js > growing a regression tree > returns a split curve whose minimum is the chosen threshold"
+
+[[claims]]
+lab = "M7"
+claim = "Grown to the end it keeps every split that lowers training error at all."
+evidence = "site/src/mechanisms/lib/tree.test.js > growing a regression tree > never raises training error as splits are added"
+
+[[claims]]
+lab = "M7"
+claim = "Cost-complexity pruning removes the splits that buy the least, giving nested subtrees."
+evidence = "site/src/mechanisms/lib/tree.test.js > cost-complexity pruning > produces nested subtrees with rising alpha and falling leaf counts"
+
+[[claims]]
+lab = "M7"
+claim = "The subtree in effect at alpha minimises training SSE plus alpha times its leaves."
+evidence = "site/src/mechanisms/lib/tree.test.js > cost-complexity pruning > chooses the subtree minimising SSE + alpha x leaves among the sequence"
+
+[[claims]]
+lab = "M7"
+claim = "A feature offers one threshold per gap between its distinct values: the binary genre one, a continuous mean nearly one per row."
+evidence = "site/src/mechanisms/lib/cart.test.js > the split search, as Model 7 shows it > offers one threshold per gap between distinct values: one for genre, nearly one per row for a mean"
+
+[[claims]]
+lab = "M7"
+claim = "Impurity importance gives each feature's share of the squared error its training splits removed."
+evidence = "site/src/mechanisms/lib/tree.test.js > importance and drawing > gives impurity shares that sum to one"
+
+[[claims]]
+lab = "M7"
+claim = "Permutation importance is the rise in later-window RMSE when a feature is shuffled, none for a feature the model never uses."
+evidence = "site/src/mechanisms/lib/tree.test.js > importance and drawing > measures no permutation importance for a feature the model never uses"
+
+[[claims]]
+lab = "M7"
+claim = "The surface is flat steps with vertical walls at the split thresholds."
+evidence = "site/src/mechanisms/lib/tree.test.js > importance and drawing > draws a surface whose cells are flat between the split thresholds"
+
+[[claims]]
+lab = "M8"
+claim = "Bagging averages deep trees, each grown on a bootstrap sample of the rows."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > predicts the mean of its trees"
+
+[[claims]]
+lab = "M8"
+claim = "The average of step functions is still a step function, only with finer steps."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > drawing an average of trees > keeps every cell flat with vertical walls between cells"
+
+[[claims]]
+lab = "M8"
+claim = "Averaging lowers variance but not bias: the average keeps one bootstrap tree's expected prediction."
+evidence = "site/src/mechanisms/lib/bagging.test.js > bagging, as Model 8 shows it > keeps one bootstrap tree's expected prediction, so averaging lowers variance, not bias"
+
+[[claims]]
+lab = "M8"
+claim = "Trees grown from the same data are correlated, so the variance falls toward a floor rho sigma squared, not to zero."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > lowers variance across datasets toward a floor above zero"
+
+[[claims]]
+lab = "M8"
+claim = "A bootstrap sample leaves out about 1/e, 36.8 percent, of the rows."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > leaves about 36.8% of rows out of each bootstrap sample"
+
+[[claims]]
+lab = "M8"
+claim = "Out-of-bag error predicts each training row only with the trees that left it out."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > predicts each training row out of bag only with trees that never saw it"
+
+[[claims]]
+lab = "M9"
+claim = "Trying all four features at every split is plain bagging."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > random forests > grow exactly the plain tree when every feature is allowed at every split"
+
+[[claims]]
+lab = "M9"
+claim = "With a random subset of max_features at each split, roots stop being the same split in every tree."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > random forests > spread their root splits across features when mtry is small"
+
+[[claims]]
+lab = "M9"
+claim = "The trees decorrelate as each split sees fewer features."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > random forests > decorrelate their trees when each split sees fewer features"
+
+[[claims]]
+lab = "M9"
+claim = "The variance floor rho sigma squared drops as each split sees fewer features."
+evidence = "site/src/mechanisms/lib/forest.test.js > random forests, as Model 9 shows them > lower the variance floor rho sigma squared when each split sees fewer features"
+
+[[claims]]
+lab = "M9"
+claim = "The usual price is weaker individual trees, yet here, on the later window, a tree that sees one feature per split is no worse than one that sees all four."
+evidence = "site/src/mechanisms/lib/forest.test.js > random forests, as Model 9 shows them > find single trees with one feature per split no worse on the later window"
+
+[[claims]]
+lab = "M9"
+claim = "Impurity importance, computed on training data, gives the pure-noise column a share; permutation importance on later rows gives it almost none."
+evidence = "site/src/mechanisms/lib/forest.test.js > random forests, as Model 9 shows them > credit the noise column by impurity on training data, far less by permutation later"
+
+[[claims]]
+lab = "M9"
+claim = "Out-of-bag error predicts each training row only with the trees that left it out."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > predicts each training row out of bag only with trees that never saw it"
+
+[[claims]]
+lab = "M10"
+claim = "The weighted average loss sets beta = Lbar / (1 - Lbar), and each tree is weighted by log(1 / beta) at learning rate 1."
+evidence = "site/src/mechanisms/lib/boosting.test.js > AdaBoost.R2 > sets beta from the average loss and weights each tree by log(1 / beta)"
+
+[[claims]]
+lab = "M10"
+claim = "At learning rate nu, rows are multiplied by beta^(nu(1 - L)) and each tree is weighted by nu log(1 / beta)."
+evidence = "site/src/mechanisms/lib/adaboost.test.js > AdaBoost.R2, as Model 10 shows it > scales each tree's weight and every row's update by the learning rate"
+
+[[claims]]
+lab = "M10"
+claim = "Rows the tree predicted poorly gain share once weights are renormalised."
+evidence = "site/src/mechanisms/lib/boosting.test.js > AdaBoost.R2 > shifts weight toward the rows the round predicted worst"
+
+[[claims]]
+lab = "M10"
+claim = "The ensemble predicts the weighted median of its trees."
+evidence = "site/src/mechanisms/lib/boosting.test.js > AdaBoost.R2 > takes the weighted median, not the mean"
+
+[[claims]]
+lab = "M10"
+claim = "Boosting stops when the weighted average loss reaches 0.5."
+evidence = "site/src/mechanisms/lib/boosting.test.js > AdaBoost.R2 > stops when the average loss reaches one half"
+
+[[claims]]
+lab = "M10"
+claim = "One huge error sets D, so every other row's loss shrinks and the outlier keeps the most weight."
+evidence = "site/src/mechanisms/lib/adaboost.test.js > AdaBoost.R2, as Model 10 shows it > lets one huge error set D and leave the outlier the heaviest row after a round"
+
+[[claims]]
+lab = "M10"
+claim = "Square and exponential losses amplify it, lowering the average loss further."
+evidence = "site/src/mechanisms/lib/adaboost.test.js > AdaBoost.R2, as Model 10 shows it > lowers the average loss further under square and exponential losses"
+
+[[claims]]
+lab = "M10"
+claim = "A weighted median ignores a few extreme trees, but once enough tree weight chases the outlier it follows them, nearer the outlier than a weighted mean."
+evidence = "site/src/mechanisms/lib/adaboost.test.js > AdaBoost.R2, as Model 10 shows it > lets the weighted median follow the outlier once enough tree weight chases it"
+
+[[claims]]
+lab = "M11"
+claim = "Gradient boosting starts from the mean rating under squared loss."
+evidence = "site/src/mechanisms/lib/boosting.test.js > gradient boosting > starts from the mean, so the first residuals sum to zero"
+
+[[claims]]
+lab = "M11"
+claim = "Under absolute loss it starts from the median."
+evidence = "site/src/mechanisms/lib/boosting.test.js > gradient boosting > starts from the median under absolute loss"
+
+[[claims]]
+lab = "M11"
+claim = "Each tree is fitted to the negative gradient of the loss, for squared error the residual y - F."
+evidence = "site/src/mechanisms/lib/boosting.test.js > gradient boosting > fits each stage to the residual y - F, the negative gradient of squared loss"
+
+[[claims]]
+lab = "M11"
+claim = "Only a fraction nu of each tree is added to the prediction."
+evidence = "site/src/mechanisms/lib/gbm.test.js > gradient boosting, as Model 11 shows it > adds only a fraction nu of each tree to the prediction"
+
+[[claims]]
+lab = "M11"
+claim = "Adding stages never raises the training error."
+evidence = "site/src/mechanisms/lib/boosting.test.js > gradient boosting > never raises training error from one stage to the next"
+
+[[claims]]
+lab = "M11"
+claim = "Early stopping keeps the best validation stage once no improvement has come for the patience window."
+evidence = "site/src/mechanisms/lib/boosting.test.js > gradient boosting > stops after the patience window and keeps the best stage"
+
+[[claims]]
+lab = "M11"
+claim = "A sum of shrunken trees can step past the rating scale."
+evidence = "site/src/mechanisms/lib/gbm.test.js > gradient boosting, as Model 11 shows it > can step past the rating scale, since a sum of trees is not bounded by it"
+
+[[claims]]
+lab = "M12"
+claim = "Least squares can put a negative weight on one model; a non-negativity constraint forbids that and finds the constrained minimum."
+evidence = "site/src/mechanisms/lib/inference.test.js > stacking > finds the constrained minimum when a weight wants to go negative"
+
+[[claims]]
+lab = "M12"
+claim = "When the unconstrained weights are already non-negative, the constraint changes nothing."
+evidence = "site/src/mechanisms/lib/inference.test.js > stacking > keeps the unconstrained solution when it is already non-negative"
+
+[[claims]]
+lab = "M12"
+claim = "A ridge penalty pulls correlated weights toward each other."
+evidence = "site/src/mechanisms/lib/stacking.test.js > stacking, as Model 12 shows it > pulls the two weights toward each other as the ridge penalty grows"
+
+[[claims]]
+lab = "M12"
+claim = "A weight lands exactly on zero only when the constraint binds, where the unconstrained minimum lies outside the feasible region."
+evidence = "site/src/mechanisms/lib/stacking.test.js > stacking, as Model 12 shows it > sets a weight exactly to zero only where the constraint binds"
+
+[[claims]]
+lab = "M12"
+claim = "The weights can be made to sum to one."
+evidence = "site/src/mechanisms/lib/inference.test.js > stacking > makes the weights sum to one when asked"
+
+[[claims]]
+lab = "M12"
+claim = "The unpenalised intercept stays whether or not the weights sum to one."
+evidence = "site/src/mechanisms/lib/stacking.test.js > stacking, as Model 12 shows it > keeps an unpenalised intercept when the weights sum to one"
+
+[[claims]]
+lab = "M12"
+claim = "For an average, ensemble error is member error minus ambiguity."
+evidence = "site/src/mechanisms/lib/inference.test.js > stacking > splits ensemble error into member error minus ambiguity"
+
+[[claims]]
+lab = "M12"
+claim = "The slider sets the correlation of the base models' own noise; their errors also share the rating's noise and correlate higher."
+evidence = "site/src/mechanisms/lib/stacking.test.js > stacking, as Model 12 shows it > keeps the errors more correlated than the slider sets, through the rating noise they share"
+
+[[claims]]
+lab = "M12"
+claim = "The comparison with the best single model uses a user-clustered bootstrap, resampling users with all their ratings."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > gives row, user and pigeonhole weights with the right structure"
+
+[[claims]]
+lab = "M13"
+claim = "A user who rated few movies keeps less of their own offset than one who rated many: the share is n / (n + sigma^2/tau^2)."
+evidence = "site/src/mechanisms/lib/crossed.test.js > crossed random-effects bias model (A.246) > lets a user with more ratings keep more of their own offset"
+
+[[claims]]
+lab = "M13"
+claim = "Each offset keeps that share of its mean residual after the other offsets at the same pooling."
+evidence = "site/src/mechanisms/lib/pooling.test.js > crossed offsets, as Model 13 shows them > keeps n / (n + sigma^2 / tau^2) of each mean residual after the other offsets"
+
+[[claims]]
+lab = "M13"
+claim = "The share does not apply to the unpooled offset, since the other offsets move with the pooling too."
+evidence = "site/src/mechanisms/lib/pooling.test.js > crossed offsets, as Model 13 shows them > does not keep that share of the unpooled offset, since the other offsets move too"
+
+[[claims]]
+lab = "M13"
+claim = "As the pooling grows the offsets shrink, as a whole, to zero, and every prediction becomes the grand mean."
+evidence = "site/src/mechanisms/lib/crossed.test.js > crossed random-effects bias model (A.246) > shrinks the offsets as a whole toward zero as the pooling grows"
+
+[[claims]]
+lab = "M13"
+claim = "The crossed offsets are fitted by alternating updates, run to convergence."
+evidence = "site/src/mechanisms/lib/crossed.test.js > crossed random-effects bias model (A.246) > has converged: more alternating updates change nothing"
+
+[[claims]]
+lab = "M13"
+claim = "The fitted offsets recover how the movies truly differ."
+evidence = "site/src/mechanisms/lib/crossed.test.js > crossed random-effects bias model (A.246) > recovers the true movie offsets it was generated from"
+
+[[claims]]
+lab = "M14"
+claim = "Four ordered cut-points slice the hidden scale into one to five stars."
+evidence = "site/src/mechanisms/lib/ordinal.test.js > ordinal regression, a cumulative link model (A.246) > keeps its fitted cut-points in order"
+
+[[claims]]
+lab = "M14"
+claim = "The cut-points are learned, not assumed equally spaced."
+evidence = "site/src/mechanisms/lib/clm.test.js > the cumulative link model, as Model 14 shows it > learns cut-points that are not equally spaced"
+
+[[claims]]
+lab = "M14"
+claim = "The fit recovers the coefficients and cut-points the ratings were generated from."
+evidence = "site/src/mechanisms/lib/ordinal.test.js > ordinal regression, a cumulative link model (A.246) > recovers the coefficients and cut-points it was generated from"
+
+[[claims]]
+lab = "M14"
+claim = "Gradient ascent reaches the maximum likelihood."
+evidence = "site/src/mechanisms/lib/clm.test.js > the cumulative link model, as Model 14 shows it > reaches the maximum likelihood on its fifty ratings"
+
+[[claims]]
+lab = "M14"
+claim = "Gradient ascent raises the likelihood above its starting point."
+evidence = "site/src/mechanisms/lib/ordinal.test.js > ordinal regression, a cumulative link model (A.246) > raises the likelihood above its starting point"
+
+[[claims]]
+lab = "M14"
+claim = "Shifting the cut-points together flips no star at zero and more as the shift grows, testing the stability of the star predictions."
+evidence = "site/src/mechanisms/lib/ordinal.test.js > ordinal regression, a cumulative link model (A.246) > flips nothing at zero shift, and more ratings as the cut-offs move further"
+
+[[claims]]
+lab = "T1"
+claim = "Rating values stay locked until the split is made, the risk register included."
+evidence = "site/src/mechanisms/lib/register.test.js > the risk register, as Technique 1 shows it > shows no rating value until the split is made, for either pair of cutoffs"
+
+[[claims]]
+lab = "T1"
+claim = "The register counts the movies with fewer than 8 training ratings."
+evidence = "site/src/mechanisms/lib/register.test.js > the risk register, as Technique 1 shows it > counts the movies with fewer than 8 training ratings from the bins 1, 2-3 and 4-7"
+
+[[claims]]
+lab = "T1"
+claim = "Every number is computed from MovieLens 1M itself: 1,000,209 ratings by 6,040 users, each with at least 20, on 3,706 of 3,883 listed movies."
+evidence = "site/src/mechanisms/lib/movielens.test.js > the committed MovieLens 1M summary > matches the dataset's published facts"
+
+[[claims]]
+lab = "T1"
+claim = "The cutoffs are quantiles of time, in time order, and every split's windows partition the ratings."
+evidence = "site/src/mechanisms/lib/movielens.test.js > the committed MovieLens 1M summary > puts the cutoffs in time order and partitions every split"
+
+[[claims]]
+lab = "T1"
+claim = "A cutoff moves past any rating sharing its timestamp, so no moment is split across windows."
+evidence = "site/src/mechanisms/lib/movielens.test.js > summarising the MovieLens files > cuts at a quantile and moves past a shared timestamp"
+
+[[claims]]
+lab = "T1"
+claim = "Phase 1A audits structure over all rows: counts, encoding and integrity."
+evidence = "site/src/mechanisms/lib/movielens.test.js > summarising the MovieLens files > counts the structure"
+
+[[claims]]
+lab = "T2"
+claim = "The smoothed encoding S = (n ybar + m mu) / (n + m) becomes mu when n = 0, at every prior weight, with no special case in the formula's use."
+evidence = "site/src/mechanisms/lib/encoding.test.js > the smoothed encoding, as Technique 2 shows it > becomes the global mean with no history at every prior weight, m = 0 included"
+
+[[claims]]
+lab = "T2"
+claim = "S becomes the user's own mean as n grows against m."
+evidence = "site/src/mechanisms/lib/macro.test.js > encoding a user's history > falls back to the global mean with no history and to the user's mean as m shrinks"
+
+[[claims]]
+lab = "T2"
+claim = "Prior-only means are built from each user's earlier ratings only, the time-ordered form of out-of-fold encoding."
+evidence = "site/src/mechanisms/lib/macro.test.js > encoding a user's history > uses only earlier ratings in the prior-only encoding"
+
+[[claims]]
+lab = "T2"
+claim = "A user mean that includes the rating being predicted leaks the target: the naive encoding is flattered in sample."
+evidence = "site/src/mechanisms/lib/macro.test.js > encoding a user's history > flatters the naive encoding in sample, the leak the prior-only one avoids"
+
+[[claims]]
+lab = "T2"
+claim = "Naive exceeds prior-only in sample by the own-rating leak, and prior-only exceeds the later rows by what in-sample correlation overstates even without it."
+evidence = "site/src/mechanisms/lib/encoding.test.js > the smoothed encoding, as Technique 2 shows it > splits the in-sample excess into the own-rating leak and the further drop to later rows"
+
+[[claims]]
+lab = "T3"
+claim = "The constant floors every model must beat are 1.20 for MAE^M and the square root of two for RMSE^M, both at a constant 3."
+evidence = "site/src/mechanisms/lib/macro.test.js > pooled against macro error > gives the macro floors 1.20 and the square root of two at a constant 3"
+
+[[claims]]
+lab = "T3"
+claim = "For a constant prediction the macro score depends only on the constant, not on how common each rating is, while pooled error moves with the class mix."
+evidence = "site/src/mechanisms/lib/macro.test.js > pooled against macro error > makes the macro score of a constant independent of the class mix"
+
+[[claims]]
+lab = "T3"
+claim = "Pooled RMSE is minimised at the mean rating and macro RMSE at 3."
+evidence = "site/src/mechanisms/lib/macro.test.js > pooled against macro error > minimises pooled RMSE at the mean rating and macro RMSE at 3"
+
+[[claims]]
+lab = "T3"
+claim = "Weighting training rows by 1 / n_k trades pooled error for macro error."
+evidence = "site/src/mechanisms/lib/macro.test.js > pooled against macro error > trades pooled error for macro error when training weights levels by 1 / n_k"
+
+[[claims]]
+lab = "T3"
+claim = "With the real shares, turning on the 1 / n_k weights makes macro error fall while pooled error rises."
+evidence = "site/src/mechanisms/lib/imbalance.test.js > class weights, as Technique 3 shows them > lower macro error and raise pooled error with the real shares"
+
+[[claims]]
+lab = "T3"
+claim = "At a uniform mix the 1 / n_k weights are nearly equal and change almost nothing."
+evidence = "site/src/mechanisms/lib/imbalance.test.js > class weights, as Technique 3 shows them > change almost nothing at a uniform mix, where the weights are nearly equal"
+
+[[claims]]
+lab = "T4"
+claim = "PCA rotates the features onto orthonormal axes ordered by the variance each captures."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > principal components > diagonalises a symmetric matrix into orthonormal eigenvectors"
+
+[[claims]]
+lab = "T4"
+claim = "The components are uncorrelated and their variances are the scree's eigenvalues."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > principal components > gives uncorrelated scores whose variances are the eigenvalues"
+
+[[claims]]
+lab = "T4"
+claim = "Turn standardising off and the rating count, measured in large units, takes over the first component on its own."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > principal components > lets a large-unit column dominate the first component unless scaled"
+
+[[claims]]
+lab = "T4"
+claim = "With the hidden signal planted, least squares on the components only recovers it once the last, lowest-variance component is kept."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > principal components > finds a planted low-variance signal only once the last component is kept"
+
+[[claims]]
+lab = "T4"
+claim = "kNN, which weighs each direction by its spread, barely sees the planted direction at all."
+evidence = "site/src/mechanisms/lib/projection.test.js > PCA, as Technique 4 shows it > lets kNN barely change when the planted last component is added"
+
+[[claims]]
+lab = "T4"
+claim = "Keeping every component reproduces the distances between the centred, and when the box is on standardised, features exactly."
+evidence = "site/src/mechanisms/lib/projection.test.js > PCA, as Technique 4 shows it > reproduces the prepared distances exactly when every component is kept, scaled or not"
+
+[[claims]]
+lab = "T4"
+claim = "The pipeline can prefer the fewest components within one standard error of the best."
+evidence = "site/src/mechanisms/lib/neighbours.test.js > principal components > can prefer the fewest components within one standard error"
+
+[[claims]]
+lab = "T5"
+claim = "Ratings are front-loaded in time, so blocks are cut by row count, not calendar time."
+evidence = "site/src/mechanisms/lib/timecv.test.js > time-ordered folds > front-loads the ratings: over 40% arrive in the first fifth of the time span"
+
+[[claims]]
+lab = "T5"
+claim = "The training window ends at T_val, cut at a timestamp boundary."
+evidence = "site/src/mechanisms/lib/timecv.test.js > time-ordered folds > cuts the training window at a timestamp boundary"
+
+[[claims]]
+lab = "T5"
+claim = "The window is cut into blocks of equal row count, each cut moved to a timestamp boundary."
+evidence = "site/src/mechanisms/lib/timecv.test.js > time-ordered folds > makes blocks of nearly equal row count that never split a timestamp"
+
+[[claims]]
+lab = "T5"
+claim = "Fold k trains on the blocks before block k + 1 and validates on it, before T_val, with any gap dropped."
+evidence = "site/src/mechanisms/lib/timecv.test.js > time-ordered folds > validates every rolling fold strictly after its training rows, before T_val"
+
+[[claims]]
+lab = "T5"
+claim = "A sliding window keeps only the latest blocks."
+evidence = "site/src/mechanisms/lib/timecv.test.js > time-ordered folds > keeps only the latest blocks in a sliding window"
+
+[[claims]]
+lab = "T5"
+claim = "Rolling folds validate no row with statistics from its user's later ratings; random folds validate many."
+evidence = "site/src/mechanisms/lib/timecv.test.js > leaks > finds no future leaks in rolling folds and many in random folds"
+
+[[claims]]
+lab = "T5"
+claim = "Random folds also train on more rows than the first rolling fold, so their optimism is not all leak."
+evidence = "site/src/mechanisms/lib/cv.test.js > cross-validation, as Technique 5 shows it > trains every random fold on more rows than the first rolling fold, for every k"
+
+[[claims]]
+lab = "T5"
+claim = "Each fold refits shrunk user and movie offsets on its own training rows, a baseline that beats the mean on later rows."
+evidence = "site/src/mechanisms/lib/timecv.test.js > leaks > fits a shrunk user-and-movie baseline that beats the mean on later rows"
+
+[[claims]]
+lab = "T6"
+claim = "As splits are added, training error keeps falling."
+evidence = "site/src/mechanisms/lib/tree.test.js > growing a regression tree > never raises training error as splits are added"
+
+[[claims]]
+lab = "T6"
+claim = "Error on held-out rows falls and then rises again as splits are added."
+evidence = "site/src/mechanisms/lib/biasvariance.test.js > bias and variance, as Technique 6 shows them > lets fold error fall and then rise as splits are added"
+
+[[claims]]
+lab = "T6"
+claim = "Low ratings are over-predicted and high ones under-predicted even by the best squared-error predictor."
+evidence = "site/src/mechanisms/lib/calibration.test.js > shrinkage and calibration > slants error by level even for the true conditional mean"
+
+[[claims]]
+lab = "T6"
+claim = "A calibration slope near one means the shrinkage is the expected kind."
+evidence = "site/src/mechanisms/lib/calibration.test.js > shrinkage and calibration > is calibrated with slope near one for the true conditional mean"
+
+[[claims]]
+lab = "T6"
+claim = "A slope well above one means the predictions are flatter than the data supports."
+evidence = "site/src/mechanisms/lib/calibration.test.js > shrinkage and calibration > reads excess shrinkage as a slope above one"
+
+[[claims]]
+lab = "T6"
+claim = "Below one the predictions spread wider than the data supports, the mark of overfitting."
+evidence = "site/src/mechanisms/lib/biasvariance.test.js > bias and variance, as Technique 6 shows them > spreads the deepest tree's later predictions wider than the data supports"
+
+[[claims]]
+lab = "T6"
+claim = "The calibration slope is undefined for a constant prediction."
+evidence = "site/src/mechanisms/lib/calibration.test.js > shrinkage and calibration > leaves the slope undefined for a constant prediction"
+
+[[claims]]
+lab = "T6"
+claim = "Across twelve independent datasets the tree trades bias for variance as it grows."
+evidence = "site/src/mechanisms/lib/calibration.test.js > bias and variance on synthetic data > trades bias for variance as the tree grows"
+
+[[claims]]
+lab = "T6"
+claim = "The rounded ratings carry more noise than the latent sigma squared plotted, so the parts approximate the error rather than sum to it."
+evidence = "site/src/mechanisms/lib/biasvariance.test.js > bias and variance, as Technique 6 shows them > finds more noise in the rounded ratings than the latent sigma squared"
+
+[[claims]]
+lab = "T7"
+claim = "Out-of-bag error grades each training row only with the trees that never saw it."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > predicts each training row out of bag only with trees that never saw it"
+
+[[claims]]
+lab = "T7"
+claim = "About a third of the trees leave each training row out."
+evidence = "site/src/mechanisms/lib/ensemble.test.js > bagging > leaves about 36.8% of rows out of each bootstrap sample"
+
+[[claims]]
+lab = "T7"
+claim = "Out-of-bag error is nearly the same estimate as random cross-validation; both ignore time."
+evidence = "site/src/mechanisms/lib/oob.test.js > out-of-bag error, as Technique 7 shows it > agrees closely with random cross-validation, both ignoring time"
+
+[[claims]]
+lab = "T7"
+claim = "A random split inside the later period separates the gap into the time change and the later period, both scored on the same held-out rows."
+evidence = "site/src/mechanisms/lib/oob.test.js > out-of-bag error, as Technique 7 shows it > scores the temporal forest on the same held-out later rows as the within-period one"
+
+[[claims]]
+lab = "T7"
+claim = "With few trees the out-of-bag estimate starts high and only settles as B grows."
+evidence = "site/src/mechanisms/lib/oob.test.js > out-of-bag error, as Technique 7 shows it > starts higher with few trees and settles as B grows"
+
+[[claims]]
+lab = "T7"
+claim = "In these drifting ratings the later period is easier to predict, which can hide the cost of training on the past."
+evidence = "site/src/mechanisms/lib/oob.test.js > out-of-bag error, as Technique 7 shows it > finds the later period easier to predict on these drifting ratings"
+
+[[claims]]
+lab = "T8"
+claim = "The rise in error when a feature is shuffled is its importance; a feature the model never reads has none."
+evidence = "site/src/mechanisms/lib/importance.test.js > importance > finds no rise for a feature the model never reads"
+
+[[claims]]
+lab = "T8"
+claim = "Error is measured as root mean squared error on the later rows."
+evidence = "site/src/mechanisms/lib/importance.test.js > importance > measures error as root mean squared error"
+
+[[claims]]
+lab = "T8"
+claim = "A conditional shuffle stays within strata of the correlated feature."
+evidence = "site/src/mechanisms/lib/importance.test.js > shuffling > keeps a conditional shuffle inside each stratum of the given feature"
+
+[[claims]]
+lab = "T8"
+claim = "With correlated features a plain shuffle invents combinations the training data never contained; a conditional shuffle keeps them realistic."
+evidence = "site/src/mechanisms/lib/permutation.test.js > permutation importance, as Technique 8 shows it > sends more shuffled points outside the training data plainly than conditionally"
+
+[[claims]]
+lab = "T8"
+claim = "A shuffled point is outside the training data when its nearest training point is beyond the support radius."
+evidence = "site/src/mechanisms/lib/importance.test.js > importance > flags points far from every training point as outside the support"
+
+[[claims]]
+lab = "T8"
+claim = "Shares are each feature's rise in RMSE over the sum of positive rises."
+evidence = "site/src/mechanisms/lib/importance.test.js > importance > turns rises into shares that sum to one, ignoring negatives"
+
+[[claims]]
+lab = "T9"
+claim = "Each scheme turns a draw into weights: ratings, whole users, or users and movies with a rating weighted by the product of their counts."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > gives row, user and pigeonhole weights with the right structure"
+
+[[claims]]
+lab = "T9"
+claim = "The statistic is the paired difference in RMSE, recomputed with each resample's weights."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > computes the plain RMSE when every weight is one"
+
+[[claims]]
+lab = "T9"
+claim = "The paired difference has a narrower interval than either model's own RMSE."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > narrows the paired difference below either model's own interval"
+
+[[claims]]
+lab = "T9"
+claim = "Percentile endpoints are interpolated between the sorted replicates."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > interpolates percentiles"
+
+[[claims]]
+lab = "T9"
+claim = "Resampling single ratings makes intervals too narrow; resampling whole users widens them, and users and movies wider still."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > widens the paired interval as users, then users and movies, are resampled"
+
+[[claims]]
+lab = "T9"
+claim = "On the page's own data, at its defaults and three of its sliders' corners, intervals widen from ratings to users to users and movies."
+evidence = "site/src/mechanisms/lib/bootstrap.test.js > bootstrap inference, as Technique 9 shows it > widens from ratings to users to users and movies, at the defaults and three corners"
+
+[[claims]]
+lab = "T9"
+claim = "Pairing cancels the error the two models share, so with 20 users sharing 0.95 of it the user interval comes out narrower than the row one."
+evidence = "site/src/mechanisms/lib/bootstrap.test.js > bootstrap inference, as Technique 9 shows it > lets pairing cancel the user error when 20 users share 0.95 of it"
+
+[[claims]]
+lab = "T9"
+claim = "Percentile endpoints settle only as replicates grow into the thousands."
+evidence = "site/src/mechanisms/lib/bootstrap.test.js > bootstrap inference, as Technique 9 shows it > settles its user-clustered endpoints as replicates grow into the thousands"
+
+[[claims]]
+lab = "T10"
+claim = "The paired difference, recomputed on each resample of the same users, has a narrower interval than either model's own RMSE."
+evidence = "site/src/mechanisms/lib/inference.test.js > resampling crossed ratings > narrows the paired difference below either model's own interval"
+
+[[claims]]
+lab = "T10"
+claim = "The separate RMSE intervals can overlap while the paired difference sits clearly away from zero, so overlap is not a test of a paired difference."
+evidence = "site/src/mechanisms/lib/hypothesis.test.js > the paired test, as Technique 10 shows it > overlaps the marginal intervals while the paired one excludes zero, at the defaults"
+
+[[claims]]
+lab = "T10"
+claim = "The paired interval narrows as the two models share more of their error."
+evidence = "site/src/mechanisms/lib/hypothesis.test.js > the paired test, as Technique 10 shows it > narrows the paired interval as the two models share more of their error"
+
+[[claims]]
+lab = "T11"
+claim = "The interval score is the width plus 2/alpha times how far each miss falls outside."
+evidence = "site/src/mechanisms/lib/coverage.test.js > prediction-interval coverage audit (A.246) > scores an interval by its width, plus 2/alpha times any miss"
+
+[[claims]]
+lab = "T11"
+claim = "Intervals sized on a separate calibration set widen as the nominal level rises."
+evidence = "site/src/mechanisms/lib/coverage.test.js > prediction-interval coverage audit (A.246) > widens the interval as the nominal level rises"
+
+[[claims]]
+lab = "T11"
+claim = "In the long run the stated share of ratings falls inside: split conformal covers marginally."
+evidence = "site/src/mechanisms/lib/coverage.test.js > prediction-interval coverage audit (A.246) > covers close to its nominal level overall, as split conformal guarantees marginally"
+
+[[claims]]
+lab = "T11"
+claim = "One width for everyone under-covers the noisier raters, which only a group-level audit reveals."
+evidence = "site/src/mechanisms/lib/coverage.test.js > prediction-interval coverage audit (A.246) > covers the noisier light raters less than the heavy raters with one width for all"
+
+[[claims]]
+lab = "T11"
+claim = "On the page's 30 test ratings both groups are covered in full at 95%."
+evidence = "site/src/mechanisms/lib/t11.audit.test.js > the coverage audit, as Technique 11 shows it > covers both groups in full at 95% on the page's 30 test ratings"
+
+[[claims]]
+lab = "T11"
+claim = "Lower the level to 80% and the noisier light raters fall short of the heavy ones."
+evidence = "site/src/mechanisms/lib/t11.audit.test.js > the coverage audit, as Technique 11 shows it > lets the noisier light raters fall short of the heavy ones at 80%"
+
+[[claims]]
+lab = "T11"
+claim = "On 30 ratings the default gap is within two binomial standard errors of the promise."
+evidence = "site/src/mechanisms/lib/t11.audit.test.js > the coverage audit, as Technique 11 shows it > finds the default gap within two binomial standard errors on 30 ratings"
+
+[[claims]]
+lab = "T12"
+claim = "The observed statistic is the mean of the per-user differences; flipping every block negates it."
+evidence = "site/src/mechanisms/lib/signflip.test.js > user-level sign-flip permutation test (A.246) > keeps the observed statistic with no flips and negates it with all flipped"
+
+[[claims]]
+lab = "T12"
+claim = "Flipping whole blocks builds the exact reference distribution over every sign pattern, symmetric about zero."
+evidence = "site/src/mechanisms/lib/signflip.test.js > user-level sign-flip permutation test (A.246) > enumerates every sign pattern, symmetric about zero"
+
+[[claims]]
+lab = "T12"
+claim = "The smallest possible two-sided p is 2 / 2^n, so with five users no result can reach 0.05."
+evidence = "site/src/mechanisms/lib/signflip.test.js > user-level sign-flip permutation test (A.246) > cannot go below 2 / 2^n, so five users can never reach 0.05"
+
+[[claims]]
+lab = "T12"
+claim = "Flipping single ratings pretends each user's ratings were independent and overstates the certainty."
+evidence = "site/src/mechanisms/lib/signflip.test.js > user-level sign-flip permutation test (A.246) > is less certain than a row-level flip that ignores the clustering by user"
+
+[[claims]]
+lab = "T12"
+claim = "The row-level flip overstates the certainty at every user count the slider allows."
+evidence = "site/src/mechanisms/lib/blocks.test.js > the sign-flip test, as Technique 12 shows it > is less certain than the row-level flip for every user count from 5 to 12"

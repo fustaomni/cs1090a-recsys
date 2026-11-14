@@ -39,3 +39,19 @@ export function vif(rows, terms) {
     return 1 / (1 - rSquared(target, fitted));
   });
 }
+
+// With some coefficients held where the reader set them, the intercept and the other terms
+// are refitted by least squares to what remains: M3's surface under its sliders.
+export function heldFit(rows, ys, terms, held) {
+  const free = terms.filter((term) => !(term.key in held));
+  const heldPart = (row) =>
+    terms
+      .filter((term) => term.key in held)
+      .reduce((total, term) => total + held[term.key] * term.value(row), 0);
+  const coef = fit(rows, free, ys.map((y, index) => y - heldPart(rows[index])));
+  const byKey = { intercept: coef[0] };
+  free.forEach((term, index) => {
+    byKey[term.key] = coef[index + 1];
+  });
+  return { ...byKey, ...held };
+}

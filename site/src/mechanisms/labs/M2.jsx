@@ -136,7 +136,6 @@ export default function M2() {
 
   return (
     <article className="lab">
-      <h3>Model 2 · Multi-linear regression</h3>
       <p>
         Two predictors, user and movie history, both centred so the intercept is the mean rating.
         The bowl is the sum of squared residuals over the two slopes. As the predictors become
@@ -217,7 +216,7 @@ export default function M2() {
         stretch along the valley.
       </p>
       <Provenance
-        data="Synthetic ratings, generated in this page: training ratings({ seed: 31, n: 300 }), validation ratings({ seed: 32, n: 300 }); no real ratings"
+        data={`Synthetic ratings, generated in this page: training ratings({ seed: 31, n: 300, rho: ${fixed(rho, 2)} }), validation ratings({ seed: 32, n: 300, rho: ${fixed(rho, 2)} }); no real ratings`}
         split="Training and validation are independent draws"
         method="Least squares, solved by Householder QR"
       />

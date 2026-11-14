@@ -1,6 +1,7 @@
 import { Component, Suspense, lazy, useState } from "react";
 import project from "../data/project.json";
 import registry from "../data/mechanisms.json";
+import { bind } from "../bind.js";
 
 // Every model and technique has a lab; each built one is its own chunk, loaded when opened.
 const LABS = {
@@ -59,6 +60,7 @@ export default function Mechanisms() {
   const built = registry.labs.filter((lab) => lab.status === "built");
   const [open, setOpen] = useState(built[0]?.id);
   const Lab = LABS[open];
+  const current = registry.labs.find((lab) => lab.id === open);
   return (
     <section id="mechanisms" className="section">
       <h2>Interactive mechanisms</h2>
@@ -87,6 +89,7 @@ export default function Mechanisms() {
           </li>
         ))}
       </ul>
+      {Lab && <h3>{bind(`{${current.kind}:${current.ref}}`)}</h3>}
       {Lab && (
         <LabBoundary key={open}>
           <Suspense fallback={<p className="in-progress">Loading the lab…</p>}>
