@@ -63,6 +63,14 @@ def test_the_notebook_is_executed_in_a_fresh_kernel_and_saved_with_its_outputs(
     assert results["tables"]["ratings"] == [len(RATINGS), 4], results["tables"]
 
 
+def test_the_kernel_talks_over_ipc_never_unencrypted_tcp(
+    tmp_path: Path, capfd: pytest.CaptureFixture[str]
+) -> None:
+    _subject().execute(NOTEBOOK, _folder(tmp_path), tmp_path / "out")
+    printed = capfd.readouterr().err
+    assert "without encryption" not in printed, printed
+
+
 def test_a_folder_without_the_verified_tables_is_refused_before_any_kernel_starts(
     tmp_path: Path,
 ) -> None:
