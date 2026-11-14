@@ -346,6 +346,13 @@ def record(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
     )
 
 
+def retire(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
+    """plan:retire <spec> -- not yet ported (A.82); refused, so its proof fails on behaviour."""
+    del argv, root
+    message = "plan:retire is not yet ported from cscie103 (A.82)"
+    return _report("plan:retire", "refused", "not_ported", message, {})
+
+
 class _Retraction(Contract):
     source: str = Field(min_length=1)
     ref: str = Field(min_length=1)
