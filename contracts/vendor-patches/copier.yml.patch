@@ -1,6 +1,6 @@
 --- a/copier.yml
 +++ b/copier.yml
-@@ -29,9 +29,24 @@
+@@ -29,9 +29,25 @@
    - "context/plan.toml"
    - "context/plan-ids.toml"
    - "context/plan-trace.toml"
@@ -24,5 +24,6 @@
 +  - "contracts/site-railway.toml"
 +  - "contracts/site-deployment.json"
 +  - "tests/test_site_deployed.py"
++  - "tests/test_site_review.py"
    # THIS COURSE'S OWN RESOURCES: a project has its own schema (D.64).
    - "resources/coursework.yml"

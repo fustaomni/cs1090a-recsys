@@ -21,11 +21,11 @@
     }
   ],
   "primary": {
-    "question": "Does the best model beat the regularised bias baseline on RMSE, compared paired and clustered by user?",
+    "question": "Does the best model beat the regularised bias baseline on RMSE by at least the declared practical threshold, compared paired and clustered by user?",
     "verdicts": [
-      "The best model beats the baseline",
-      "No detectable difference from the baseline",
-      "The baseline is better"
+      "The best model improves on the baseline by at least the declared threshold",
+      "The interval cannot separate the improvement from the threshold",
+      "Any improvement is smaller than the declared threshold"
     ],
     "status": "pending",
     "verdict": null

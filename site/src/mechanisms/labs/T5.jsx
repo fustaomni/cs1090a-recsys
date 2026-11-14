@@ -163,7 +163,6 @@ export default function T5() {
 
   return (
     <article className="lab">
-      <h3>Technique · Time-aware cross-validation</h3>
       <p>
         Folds subdivide only the training window, before T_val; the validation and test windows
         stay fenced off until the end. The window is cut into blocks of equal row count, not
@@ -250,9 +249,11 @@ export default function T5() {
       <Plot traces={rmseTraces} layout={rmseLayout} label="RMSE per fold" height={300} />
       <p className="muted">
         Time folds are not independent and later folds train on more data, so the ± 1 standard
-        error behind the one-standard-error rule is approximate. Random folds look better because
-        a validated rating's user and movie averages can include ratings that came after it, the
-        leak that Phase 2's Protocol C measures. Seeded synthetic ratings, {rows.length} in all,
+        error behind the one-standard-error rule is approximate. Random folds look better partly
+        because a validated rating's user and movie averages can include ratings that came after
+        it, the leak that Phase 2's Protocol C measures, and partly because every random fold
+        trains on (k − 1)/k of the window while the first rolling fold trains on one block, so the
+        optimism is not all leak. Seeded synthetic ratings, {rows.length} in all,
         with T_val and T_test at the 0.8 and 0.9 quantiles of time.
       </p>
       <Provenance

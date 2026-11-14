@@ -1,0 +1,9 @@
+# contracts/mutations/A.331.toml
+# A.331: a test rating's bucket follows its training history exactly.
+
+[[mutants]]
+id = "new-user-and-new-movie-swapped"
+file = "scripts/wrangling.py"
+before = '        elif movie_seen:'
+after = '        elif user_seen:'
+killers = ["tests/test_wrangling_checks.py::test_each_test_rating_falls_in_one_bucket_by_its_training_history"]

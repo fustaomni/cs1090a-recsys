@@ -19,6 +19,17 @@ describe("seeded data", () => {
     expect([...levels].every((level) => [1, 2, 3, 4, 5].includes(level))).toBe(true);
     expect(ratings({ seed: 3 })).toEqual(ratings({ seed: 3 }));
   });
+
+  it("draws user and movie history standard normal, correlated rho", () => {
+    const rows = ratings({ n: 40000, rho: 0.5, levels: false });
+    const users = rows.map((row) => row.user);
+    const movies = rows.map((row) => row.movie);
+    expect(Math.abs(mean(users))).toBeLessThan(0.03);
+    expect(Math.abs(variance(users) - 1)).toBeLessThan(0.03);
+    expect(Math.abs(variance(movies) - 1)).toBeLessThan(0.03);
+    const correlation = covariance(users, movies) / Math.sqrt(variance(users) * variance(movies));
+    expect(Math.abs(correlation - 0.5)).toBeLessThan(0.02);
+  });
 });
 
 describe("simple least squares", () => {
@@ -63,6 +74,18 @@ describe("omitted-variable bias", () => {
 
   it("absorbs rho times the movie effect when movie history is correlated", () => {
     expect(Math.abs(slopeAt(0.6) - (TRUTH.user + TRUTH.movie * 0.6))).toBeLessThan(0.03);
+  });
+});
+
+describe("rounding to levels", () => {
+  it("flattens the fitted slope, since the levels cap ratings at 1 and 5", () => {
+    for (const rho of [0, 0.5, 0.9]) {
+      const slope = (levels) => {
+        const rows = ratings({ seed: 5, n: 20000, rho, levels });
+        return simpleFit(rows.map((row) => row.user), rows.map((row) => row.rating)).b1;
+      };
+      expect(slope(true)).toBeLessThan(slope(false));
+    }
   });
 });
 
