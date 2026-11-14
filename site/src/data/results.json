@@ -1,6 +1,6 @@
 {
   "contract": "site-results/v1",
-  "updated": "2026-10-16",
+  "updated": "2026-11-14",
   "protocol": "Protocol A, a global temporal split. Milestone 2 split the ratings once in time, its recorded cutoff and counts below; Milestone 3's validation and test boundaries are planned",
   "milestones": [
     {
@@ -9,7 +9,224 @@
     },
     {
       "milestone": "M2",
-      "entries": []
+      "entries": [
+        {
+          "label": "Size of the three files (MB)",
+          "value": 24.899807,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Ratings",
+          "value": 1000209,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Users",
+          "value": 6040,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Movies listed",
+          "value": 3883,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Joined table rows",
+          "value": 1000209,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Joined table columns",
+          "value": 10,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Mean rating (stars)",
+          "value": 3.581564453029317,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Ratings outside 1 to 5",
+          "value": 0,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Duplicate user and movie pairs",
+          "value": 0,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Ratings by unknown users",
+          "value": 0,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Ratings of unknown movies",
+          "value": 0,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Empty fields",
+          "value": 0,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Zip codes not five digits",
+          "value": 81,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "1-star ratings",
+          "value": 56174,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "2-star ratings",
+          "value": 107557,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "3-star ratings",
+          "value": 261197,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "4-star ratings",
+          "value": 348971,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "5-star ratings",
+          "value": 226310,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Split cutoff (Unix time)",
+          "value": 975768738,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Training ratings",
+          "value": 800164,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Test ratings",
+          "value": 200045,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Test ratings by users unseen in training",
+          "value": 95502,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Test ratings of movies unseen in training",
+          "value": 115,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Warm test ratings",
+          "value": 104452,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "New-user test ratings",
+          "value": 95478,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "New-movie test ratings",
+          "value": 91,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        },
+        {
+          "label": "Both-new test ratings",
+          "value": 24,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+          }
+        }
+      ]
     },
     {
       "milestone": "M3",
