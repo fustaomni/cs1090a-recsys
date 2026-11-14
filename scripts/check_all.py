@@ -128,6 +128,10 @@ TEST_HEADROOM = 3.0
 # THE INTEGRATION GATE'S DEADLINE IS COMPUTED THE SAME WAY (A.340): measured 2026-11-13 on FAS
 # node cr-2, all six integration tests passing in 1130.37 s, where a typed 1200 s had killed it.
 INTEGRATION_MEASURED_SECONDS = 1131.0
+# THE TYPE GATES' DEADLINE IS COMPUTED THE SAME WAY (A.333): measured 2026-11-13 on FAS node
+# cr-2, both platforms' type checks passing in 303.1 s with cold caches, where a typed 300 s had
+# killed both inside check, twice.
+TYPES_MEASURED_SECONDS = 304.0
 GATES: tuple[GateSpec, ...] = (
     GateSpec(
         name="lint",
@@ -149,13 +153,13 @@ GATES: tuple[GateSpec, ...] = (
         name="types (darwin)",
         command=("uv", "run", "mypy", "--platform", "darwin"),
         runs_in_hooks=True,
-        timeout_seconds=300.0,
+        timeout_seconds=TYPES_MEASURED_SECONDS * TEST_HEADROOM,
     ),
     GateSpec(
         name="types (linux)",
         command=("uv", "run", "mypy", "--platform", "linux"),
         runs_in_hooks=True,
-        timeout_seconds=300.0,
+        timeout_seconds=TYPES_MEASURED_SECONDS * TEST_HEADROOM,
     ),
     GateSpec(
         name="test",

@@ -23,7 +23,7 @@
  
  
  class GateRun(Contract):
-@@ -106,6 +113,21 @@
+@@ -106,6 +113,25 @@
  # runs_in_hooks=False means "CI only": either it needs the network and valid
  # Databricks auth, or it is slow enough that including it would train people to
  # bypass the hook. Both make a gate that belongs in CI, where a bypass is caught.
@@ -42,10 +42,28 @@
 +# THE INTEGRATION GATE'S DEADLINE IS COMPUTED THE SAME WAY (A.340): measured 2026-11-13 on FAS
 +# node cr-2, all six integration tests passing in 1130.37 s, where a typed 1200 s had killed it.
 +INTEGRATION_MEASURED_SECONDS = 1131.0
++# THE TYPE GATES' DEADLINE IS COMPUTED THE SAME WAY (A.333): measured 2026-11-13 on FAS node
++# cr-2, both platforms' type checks passing in 303.1 s with cold caches, where a typed 300 s had
++# killed both inside check, twice.
++TYPES_MEASURED_SECONDS = 304.0
  GATES: tuple[GateSpec, ...] = (
      GateSpec(
          name="lint",
-@@ -139,21 +161,7 @@
+@@ -127,33 +153,19 @@
+         name="types (darwin)",
+         command=("uv", "run", "mypy", "--platform", "darwin"),
+         runs_in_hooks=True,
+-        timeout_seconds=300.0,
++        timeout_seconds=TYPES_MEASURED_SECONDS * TEST_HEADROOM,
+     ),
+     GateSpec(
+         name="types (linux)",
+         command=("uv", "run", "mypy", "--platform", "linux"),
+         runs_in_hooks=True,
+-        timeout_seconds=300.0,
++        timeout_seconds=TYPES_MEASURED_SECONDS * TEST_HEADROOM,
+     ),
+     GateSpec(
          name="test",
          command=("uv", "run", "pytest", "-q"),
          runs_in_hooks=True,
@@ -68,7 +86,7 @@
      ),
      # FULL HISTORY, NOT THE WORKING TREE. A pre-commit hook only ever sees the
      # incoming change, so anything committed before hooks existed -- or pushed
-@@ -240,123 +248,32 @@
+@@ -240,123 +252,32 @@
          runs_in_hooks=True,
          timeout_seconds=300.0,
      ),
@@ -208,7 +226,7 @@
  
  
  def run_gate(spec: GateSpec) -> GateRun:
-@@ -368,6 +285,8 @@
+@@ -368,6 +289,8 @@
          state: State = "timed_out"
      elif isinstance(ended, Exited) and ended.code == 0:
          state = "executed_passed"
@@ -217,7 +235,7 @@
      else:
          state = "executed_failed"
      return GateRun(
-@@ -387,7 +306,11 @@
+@@ -387,7 +310,11 @@
  
  def main() -> int:
      offline = "--offline" in sys.argv
@@ -230,7 +248,7 @@
  
      if offline:
          skipped = [spec.name for spec in GATES if not spec.runs_in_hooks]
-@@ -399,13 +322,14 @@
+@@ -399,13 +326,14 @@
          ran = run_gate(spec)
          runs.append(ran)
          late = f" (timed out after {spec.timeout_seconds:g}s)" if ran.state == "timed_out" else ""
@@ -247,7 +265,7 @@
  
      if failed:
          for ran in failed:
-@@ -417,7 +341,9 @@
+@@ -417,7 +345,9 @@
          )
          return 1
  
