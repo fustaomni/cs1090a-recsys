@@ -84,6 +84,7 @@ MOVIES = (
     "1193::One Flew Over the Cuckoo's Nest (1975)::Drama",
     "661::James and the Giant Peach (1996)::Animation|Children's|Musical",
     "1357::Shine (1996)::Drama|Romance",
+    "2355::A Bug's Life (1998)::Animation|Children's|Comedy",
 )
 RATINGS = (
     "1::1193::5::978300760",
@@ -92,6 +93,7 @@ RATINGS = (
     "2::1357::5::978298709",
     "2::1193::4::978299000",
     "2::661::2::978301000",
+    "1::2355::4::978302150",
 )
 
 
