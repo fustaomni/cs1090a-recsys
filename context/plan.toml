@@ -4048,3 +4048,28 @@ done_when = [
   { kind = "proof", test = "tests/test_tools_lock.py::test_every_locked_tool_has_an_entry_for_each_development_platform" },
   { kind = "task", name = "tools:install" },
 ]
+[[steps]]
+id = "A.345"
+title = "A gated mixture of experts predicts each rating: the bias baseline is its shared expert and the movie mean, regularised linear and kNN rungs are its specialists, mixed by a softmax gate over features computed strictly before the rating, trained on the training window and judged under Protocol A for each cold-start bucket against the bias baseline"
+thread = "A"
+depends_on = ["A.292", "A.284", "A.331"]
+because = { "A.292" = "the point-in-time rule every gate feature obeys", "A.284" = "the declared protocol the mixture is judged under", "A.331" = "the four training-history buckets the experts specialise in" }
+branch = "feature/moe"
+done_when = [
+  { kind = "path", path = "contracts/mutations/A.345.toml" },
+  { kind = "proof", test = "tests/test_moe.py::test_gate_weights_are_non_negative_and_sum_to_one" },
+  { kind = "proof", test = "tests/test_moe.py::test_a_gate_collapsed_to_one_expert_reproduces_that_expert" },
+  { kind = "proof", test = "tests/test_moe.py::test_no_gate_feature_reads_the_test_window" },
+  { kind = "proof", test = "tests/test_moe.py::test_each_bucket_reports_its_rmse_beside_the_baseline" },
+]
+[[steps]]
+id = "A.346"
+title = "The site shows the mixture of experts from data: Models and techniques lists it as a model with its shared and specialist experts and its gate, Results' board holds its pending row for Milestone 4, and the overview's model count follows the data"
+thread = "A"
+depends_on = ["A.345", "A.95", "A.245"]
+because = { "A.345" = "the mixture this shows", "A.95" = "the results board its row joins", "A.245" = "the rule that every count on the page comes from its source" }
+branch = "feature/site-moe"
+done_when = [
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_mixture_of_experts_is_listed_from_data" },
+  { kind = "proof", test = "tests/test_site_record.py::test_the_board_holds_a_pending_mixture_row" },
+]
