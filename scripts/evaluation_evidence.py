@@ -33,8 +33,8 @@ class Metric(Contract):
     value: float
     low: float
     high: float
-    model_id: str | None = None
-    dataset_digest: str | None = None
+    model_id: str = Field(min_length=1)
+    dataset_digest: str = Field(pattern=SHA256)
 
     @model_validator(mode="after")
     def _contains_its_value(self) -> Self:
@@ -48,7 +48,7 @@ class EvaluationEvidence(Contract):
 
     contract: Literal["evaluation-evidence/v1"] = "evaluation-evidence/v1"
     run_id: str = Field(min_length=1)
-    data_snapshot: DataSnapshot | None = None
+    data_snapshot: DataSnapshot
     protocol_digest: str = Field(pattern=SHA256)
     seeds: tuple[int, ...] = Field(min_length=1)
     code_commit: str = Field(pattern=r"^[0-9a-f]{40}$")
