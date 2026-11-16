@@ -1,6 +1,6 @@
 {
   "contract": "site-results/v1",
-  "updated": "2026-11-14",
+  "updated": "2026-11-16",
   "protocol": "Protocol A, a global temporal split. Milestone 2 split the ratings once in time, its recorded cutoff and counts below; Milestone 3's validation and test boundaries are planned",
   "milestones": [
     {
@@ -15,7 +15,7 @@
           "value": 24.899807,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -23,7 +23,7 @@
           "value": 1000209,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -31,7 +31,7 @@
           "value": 6040,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -39,7 +39,7 @@
           "value": 3883,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -47,7 +47,7 @@
           "value": 1000209,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -55,7 +55,7 @@
           "value": 10,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -63,7 +63,7 @@
           "value": 3.581564453029317,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -71,7 +71,7 @@
           "value": 0,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -79,7 +79,7 @@
           "value": 0,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -87,7 +87,7 @@
           "value": 0,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -95,7 +95,7 @@
           "value": 0,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -103,7 +103,7 @@
           "value": 0,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -111,7 +111,7 @@
           "value": 81,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -119,7 +119,7 @@
           "value": 56174,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -127,7 +127,7 @@
           "value": 107557,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -135,7 +135,7 @@
           "value": 261197,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -143,7 +143,7 @@
           "value": 348971,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -151,7 +151,7 @@
           "value": 226310,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -159,7 +159,7 @@
           "value": 975768738,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -167,7 +167,7 @@
           "value": 800164,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -175,7 +175,7 @@
           "value": 200045,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -183,7 +183,7 @@
           "value": 95502,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -191,7 +191,7 @@
           "value": 115,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -199,7 +199,7 @@
           "value": 104452,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -207,7 +207,7 @@
           "value": 95478,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -215,7 +215,7 @@
           "value": 91,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         },
         {
@@ -223,7 +223,135 @@
           "value": 24,
           "evidence": {
             "contract": "ms2-results/v1",
-            "sha256": "05d7db48074e6391cfd5e0e43be15a2e241a8964deaa3189b026e93b7dc9674f"
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Split audit: leakage",
+          "value": "pass",
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Training window: ratings",
+          "value": 700144,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Training window: users",
+          "value": 4870,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Training window: movies",
+          "value": 3633,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Training window: first (Unix time)",
+          "value": 956703932,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Training window: last (Unix time)",
+          "value": 974862369,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Validation window: ratings",
+          "value": 100020,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Validation window: users",
+          "value": 945,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Validation window: movies",
+          "value": 3367,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Validation window: first (Unix time)",
+          "value": 974862386,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Validation window: last (Unix time)",
+          "value": 975768719,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Test window: ratings",
+          "value": 200045,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Test window: users",
+          "value": 1783,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Test window: movies",
+          "value": 3511,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Test window: first (Unix time)",
+          "value": 975768738,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+          }
+        },
+        {
+          "label": "Test window: last (Unix time)",
+          "value": 1046454590,
+          "evidence": {
+            "contract": "ms2-results/v1",
+            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
           }
         }
       ]
