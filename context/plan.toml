@@ -4062,3 +4062,13 @@ done_when = [
   { kind = "proof", test = "tests/test_site_bindings.py::test_the_mixture_of_experts_is_listed_from_data" },
   { kind = "proof", test = "tests/test_site_record.py::test_the_board_holds_a_pending_mixture_row" },
 ]
+[[steps]]
+id = "A.347"
+title = "recsys imports the hub's never-rewrite layers: a plain push, no amend, no rebase continue or skip, a merge-based refresh, a pre-push fast-forward guard and the reference-transaction hook"
+thread = "A"
+depends_on = ["A.191"]
+branch = "feature/never-rewrite-import"
+because = { "A.191" = "the publication whose leased push becomes a plain one" }
+done_when = [
+  { kind = "proof", test = "tests/test_lineage_audit.py::test_the_repository_rewrites_no_lineage" },
+]
