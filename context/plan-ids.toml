@@ -333,4 +333,5 @@ issued = [
   { id = "A.344", first_title = "Results' Milestone 2 section holds the notebook run's findings, recorded by site:record from the results file ms2:execute wrote, so every value it shows is read from that file and names its digest" },
   { id = "A.345", first_title = "A gated mixture of experts predicts each rating: the bias baseline is its shared expert and the movie mean, regularised linear and kNN rungs are its specialists, mixed by a softmax gate over features computed strictly before the rating, trained on the training window and judged under Protocol A for each cold-start bucket against the bias baseline" },
   { id = "A.346", first_title = "The site shows the mixture of experts from data: Models and techniques lists it as a model with its shared and specialist experts and its gate, Results' board holds its pending row for Milestone 4, and the overview's model count follows the data" },
+  { id = "A.347", first_title = "recsys imports the hub's never-rewrite layers: a plain push, no amend, no rebase continue or skip, a merge-based refresh, a pre-push fast-forward guard and the reference-transaction hook" },
 ]
