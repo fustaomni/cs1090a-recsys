@@ -16,7 +16,11 @@ from site_record import ROOT, Estimate, Metrics, load, recorded
 
 TODAY = dt.date(2026, 11, 30)
 BASELINES = ["global-mean", "user-mean", "movie-mean", "bias"]
-EXPECTED = [f"baseline:{name}" for name in BASELINES] + [f"model:{n}" for n in range(1, 13)]
+EXPECTED = [
+    *(f"baseline:{name}" for name in BASELINES),
+    *(f"model:{n}" for n in range(1, 13)),
+    "model:15",
+]
 
 
 def _metrics() -> Metrics:
@@ -28,6 +32,14 @@ def test_the_site_results_validate_and_cover_every_row() -> None:
     results = load(ROOT)
     assert [row.key for row in results.rows] == EXPECTED
     assert results.primary.status == "pending"
+
+
+def test_the_board_holds_a_pending_mixture_row() -> None:
+    """A.346: the results board holds the mixture of experts, pending, for Milestone 4."""
+    rows = load(ROOT).rows
+    row = next((row for row in rows if row.key == "model:15"), None)
+    assert row is not None, [row.key for row in rows]
+    assert (row.kind, row.milestone, row.status) == ("model", "M4", "pending"), row
 
 
 def test_a_measured_row_is_recorded_with_its_run() -> None:
