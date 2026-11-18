@@ -17,6 +17,7 @@ from typing import Any
 import nbformat
 import pytest
 from jupyter_client.manager import KernelManager
+from ms2_fixture import MOVIES, RATINGS, USERS
 from nbclient import NotebookClient
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -78,20 +79,6 @@ ANSWERED = (
     "Cold start",
     "Usable table",
     "Project question",
-)
-USERS = ("1::F::1::10::48067", "2::M::56::16::70072")
-MOVIES = (
-    "1193::One Flew Over the Cuckoo's Nest (1975)::Drama",
-    "661::James and the Giant Peach (1996)::Animation|Children's|Musical",
-    "1357::Shine (1996)::Drama|Romance",
-)
-RATINGS = (
-    "1::1193::5::978300760",
-    "1::661::3::978302109",
-    "1::1357::4::978300100",
-    "2::1357::5::978298709",
-    "2::1193::4::978299000",
-    "2::661::2::978301000",
 )
 
 
