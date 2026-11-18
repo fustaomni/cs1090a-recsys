@@ -1,7 +1,7 @@
 """Every toolchain operation is a task, recorded like every other operation (A.26).
 
 The founding ran mise lock and mise install by hand, and neither left a run record. tools:lock
-writes mise.lock for the one platform this repository locks, and tools:install installs exactly
+writes mise.lock for each development platform (A.347), and tools:install installs exactly
 what it records. Each is a task, so it runs through the gateway and is recorded, and each is a
 registered capability.
 """
@@ -15,7 +15,7 @@ from pathlib import Path
 from nonvacuous import nonempty
 
 ROOT = Path(__file__).resolve().parent.parent
-PLATFORM = "linux-x64"
+PLATFORM = "linux-x64,macos-arm64"
 TOOLCHAIN = {
     "tools:lock": f"mise lock --platform {PLATFORM}",
     "tools:install": "mise install --locked",
