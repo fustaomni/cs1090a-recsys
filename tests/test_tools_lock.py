@@ -11,6 +11,8 @@ from __future__ import annotations
 import tomllib
 from pathlib import Path
 
+from nonvacuous import nonempty
+
 ROOT = Path(__file__).resolve().parent.parent
 PLATFORMS = ("linux-x64", "macos-arm64")
 
@@ -20,9 +22,9 @@ def test_every_locked_tool_has_an_entry_for_each_development_platform() -> None:
     tools = lock["tools"]
     assert isinstance(tools, dict) and tools, lock.keys()
     missing: list[str] = []
-    for name, entries in tools.items():
+    for name, entries in nonempty(tools.items()):
         assert isinstance(entries, list) and entries, name
-        for entry in entries:
+        for entry in nonempty(entries):
             assert isinstance(entry, dict), name
             missing += [f"{name}: {key}" for key in PLATFORMS if f"platforms.{key}" not in entry]
     assert not missing, missing
