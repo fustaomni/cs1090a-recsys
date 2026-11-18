@@ -27,7 +27,8 @@ def _subject() -> ModuleType:
 
 def test_gate_weights_are_non_negative_and_sum_to_one() -> None:
     subject = _subject()
-    weights = subject.gate_weights((2.0, -1.0, 0.5, 700.0))
+    # PAST FLOAT64'S EXP LIMIT (about 709.78): without the max-logit subtraction this overflows.
+    weights = subject.gate_weights((2.0, -1.0, 0.5, 1000.0))
     assert all(weight >= 0.0 for weight in weights), weights
     assert math.isclose(sum(weights), 1.0), weights
 

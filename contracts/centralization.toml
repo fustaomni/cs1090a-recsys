@@ -311,6 +311,11 @@ class = "project"
 reason = "this recommender's offline evaluation evidence record, evaluation-evidence/v1 (A.283)"
 
 [[capabilities]]
+id = "script:scripts/moe.py"
+class = "project"
+reason = "this recommender's gated mixture of experts: a stable softmax gate, its mixing and per-bucket RMSE (A.345)"
+
+[[capabilities]]
 id = "script:scripts/milestone2.py"
 class = "project"
 reason = "this recommender Milestone 2 walking skeleton, from the verified archive to the proposal line (A.244)"
