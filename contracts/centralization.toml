@@ -306,6 +306,16 @@ class = "project"
 reason = "this recommender fitted model as a governed artifact (A.100)"
 
 [[capabilities]]
+id = "script:scripts/evaluation_evidence.py"
+class = "project"
+reason = "this recommender's offline evaluation evidence record, evaluation-evidence/v1 (A.283)"
+
+[[capabilities]]
+id = "script:scripts/evaluation_protocol.py"
+class = "project"
+reason = "this recommender's research policy, evaluation-protocol/v1, whose digest every evidence record names (A.284)"
+
+[[capabilities]]
 id = "script:scripts/milestone2.py"
 class = "project"
 reason = "this recommender Milestone 2 walking skeleton, from the verified archive to the proposal line (A.244)"
