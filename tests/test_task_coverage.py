@@ -15,9 +15,9 @@ from pathlib import Path
 from nonvacuous import nonempty
 
 ROOT = Path(__file__).resolve().parent.parent
-PLATFORM = "linux-x64,macos-arm64"
+PLATFORMS = ("linux-x64", "macos-arm64")
 TOOLCHAIN = {
-    "tools:lock": f"mise lock --platform {PLATFORM}",
+    "tools:lock": f"mise lock --platform {','.join(PLATFORMS)}",
     "tools:install": "mise install --locked",
 }
 
@@ -44,7 +44,7 @@ def test_every_toolchain_operation_is_a_task() -> None:
         for key in entries[0]
         if key.startswith("platforms.")
     }
-    assert platforms == {PLATFORM}, platforms
+    assert platforms == set(PLATFORMS), platforms
 
 
 def test_a_tool_arrives_only_through_tools_install() -> None:
