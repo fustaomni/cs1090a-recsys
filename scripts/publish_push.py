@@ -265,7 +265,6 @@ def _held(
         "--porcelain",
         "--atomic",
         *(["--no-verify"] if skip_hook else []),
-        f"--force-with-lease=refs/heads/{branch}:{expected}",
         remote,
         f"{commit}:refs/heads/{branch}",
     ]
