@@ -391,6 +391,15 @@
       "status": "pending",
       "metrics": null,
       "run_id": null
+    },
+    {
+      "key": "model:15",
+      "name": "Gated mixture of experts",
+      "kind": "model",
+      "milestone": "M4",
+      "status": "pending",
+      "metrics": null,
+      "run_id": null
     }
   ]
 }

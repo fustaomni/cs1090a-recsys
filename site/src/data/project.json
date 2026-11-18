@@ -74,7 +74,8 @@
     { "id": 11, "name": "Gradient boosting", "phase": "9" },
     { "id": 12, "name": "Stacking and blending", "phase": "10" },
     { "id": 13, "name": "Crossed random-effects bias model", "phase": "6" },
-    { "id": 14, "name": "Ordinal regression, a cumulative link model", "phase": "12" }
+    { "id": 14, "name": "Ordinal regression, a cumulative link model", "phase": "12" },
+    { "id": 15, "name": "Gated mixture of experts", "phase": "10", "experts": { "shared": "Regularised bias model", "specialists": ["Movie mean", "Regularised linear regression", "kNN regression"] }, "gate": "softmax over features computed strictly before the rating" }
   ],
   "baseline_note": "A well-tuned simple baseline is hard to beat on dense rating data, and an under-tuned one makes the whole comparison an artefact of how the tuning budget was spent. So the bias model gets its own tuned penalties and the same budget as {model:12}.",
   "families": {
