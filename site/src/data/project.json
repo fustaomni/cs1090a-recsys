@@ -105,7 +105,10 @@
     { "id": 9, "name": "Bootstrap inference", "where": "Phases 6 and 11, clustered by user" },
     { "id": 10, "name": "Hypothesis tests and prediction intervals", "where": "Phase 11, one pre-specified primary test" },
     { "id": 11, "name": "Prediction-interval coverage audit", "where": "Phase 11, empirical against nominal coverage, overall and by user group" },
-    { "id": 12, "name": "User-level sign-flip permutation test", "where": "Phase 11, the paired per-user differences with their signs flipped per user" }
+    { "id": 12, "name": "User-level sign-flip permutation test", "where": "Phase 11, the paired per-user differences with their signs flipped per user" },
+    { "id": 13, "name": "Softmax gate", "where": "Phase 10, the mixture of experts' soft weights over its experts, computed after subtracting the largest score" },
+    { "id": 14, "name": "Leakage guard", "where": "Phases 2 and 10, every gate feature read only from ratings strictly before the one it predicts" },
+    { "id": 15, "name": "Per-bucket RMSE", "where": "Phases 2 and 10, warm, new-user, new-movie and both-new test ratings, each with its count and a user-clustered interval" }
   ],
   "evidence": {
     "principle": "A recommendation is a traceable decision with supporting evidence, not merely a number a model returns.",

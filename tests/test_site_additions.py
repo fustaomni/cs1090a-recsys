@@ -14,7 +14,7 @@ DATA = SITE / "src" / "data"
 MECHANISMS = SITE / "src" / "mechanisms"
 # THE DESIGN'S REQUIRED SET (A.223, A.246, A.346): fifteen models and twelve techniques.
 MODELS = list(range(1, 16))
-TECHNIQUES = list(range(1, 13))
+TECHNIQUES = list(range(1, 16))
 ADDITIONS = ("M13", "M14", "T11", "T12")
 
 
