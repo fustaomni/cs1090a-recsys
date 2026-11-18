@@ -234,6 +234,76 @@ def joined_shape(
     return rows, JOINED_COLUMNS
 
 
+@dataclass(frozen=True)
+class ThreeWaySplit:
+    validation_cutoff: int
+    test_cutoff: int
+    train: tuple[Rating, ...]
+    validation: tuple[Rating, ...]
+    test: tuple[Rating, ...]
+
+
+def split_three(
+    ratings: tuple[Rating, ...], validation_fraction: float, test_fraction: float
+) -> ThreeWaySplit:
+    """Training before the validation cut, validation up to the test cut, test from it (A.350).
+
+    Both cuts are global time points at their quantiles, taken as time_cutoff takes them, so
+    the test window is exactly split_at's at the test fraction: the delivered window is kept.
+    """
+    early = time_cutoff(ratings, validation_fraction)
+    late = time_cutoff(ratings, test_fraction)
+    if early > late:
+        raise ValueError(f"the validation cut {early} falls after the test cut {late}")
+    return ThreeWaySplit(
+        validation_cutoff=early,
+        test_cutoff=late,
+        train=tuple(r for r in ratings if r.timestamp < early),
+        validation=tuple(r for r in ratings if early <= r.timestamp < late),
+        test=tuple(r for r in ratings if r.timestamp >= late),
+    )
+
+
+def _window(ratings: tuple[Rating, ...]) -> dict[str, int]:
+    """A window's ratings, users, movies and its first and last time, refusing an empty one."""
+    if not ratings:
+        raise ValueError("a split window holds no rating")
+    stamps = [r.timestamp for r in ratings]
+    return {
+        "ratings": len(ratings),
+        "users": len({r.user_id for r in ratings}),
+        "movies": len({r.movie_id for r in ratings}),
+        "first": min(stamps),
+        "last": max(stamps),
+    }
+
+
+def _unseen(before: tuple[Rating, ...], window: tuple[Rating, ...]) -> dict[str, int]:
+    """How many of a window's ratings come from a user, or a movie, nothing before it rated."""
+    users = {r.user_id for r in before}
+    movies = {r.movie_id for r in before}
+    return {
+        "user-unseen": sum(r.user_id not in users for r in window),
+        "movie-unseen": sum(r.movie_id not in movies for r in window),
+    }
+
+
+def split_audit(split: ThreeWaySplit) -> dict[str, object]:
+    """Each window as data, and whether any rating sits outside its own window (A.350)."""
+    early, late = split.validation_cutoff, split.test_cutoff
+    leaked = (
+        any(r.timestamp >= early for r in split.train)
+        or any(not early <= r.timestamp < late for r in split.validation)
+        or any(r.timestamp < late for r in split.test)
+    )
+    validation = {**_window(split.validation), **_unseen(split.train, split.validation)}
+    test = {**_window(split.test), **_unseen(split.train + split.validation, split.test)}
+    return {
+        "windows": {"train": _window(split.train), "validation": validation, "test": test},
+        "leakage": "fail" if leaked else "pass",
+    }
+
+
 def cold_start(split: Split) -> dict[str, int]:
     """Test ratings whose user, or whose movie, has no rating in the training set."""
     users = {r.user_id for r in split.train}

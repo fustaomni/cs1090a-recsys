@@ -48,6 +48,24 @@ def test_an_interval_that_excludes_its_value_is_refused() -> None:
         Estimate(value=0.95, low=0.88, high=0.92)
 
 
+def test_every_m2_finding_names_its_pointer_and_digest(tmp_path: Path) -> None:
+    """A.349: each recorded M2 entry names the pointer it was read by and the file's digest."""
+    source = tmp_path / "results.json"
+    source.write_text(json.dumps({"quality": [{"status": "pass", "count": 0}]}), encoding="utf-8")
+    pointers = {
+        "Ratings outside 1 to 5": "/quality/0/count",
+        "Ratings outside 1 to 5: verdict": "/quality/0/status",
+    }
+    updated = site_record.sectioned(load(ROOT), "M2", source, "ms2-results/v1", pointers, TODAY)
+    section = next(s for s in updated.milestones if s.milestone == "M2")
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    named = [
+        (entry.label, getattr(entry, "pointer", None), entry.evidence.sha256)
+        for entry in nonempty(section.entries)
+    ]
+    assert named == [(label, pointer, digest) for label, pointer in pointers.items()], named
+
+
 def test_a_milestone_section_is_recorded_from_its_results_file(tmp_path: Path) -> None:
     """A.342: each entry is read by its JSON pointer and names its file's digest."""
     found = tmp_path / "results.json"
