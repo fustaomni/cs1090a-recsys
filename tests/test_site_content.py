@@ -140,4 +140,4 @@ def test_the_site_data_carries_every_phase_model_and_technique() -> None:
     assert [phase["id"] for phase in data["phases"]] == PHASES
     assert [model["id"] for model in data["models"]] == list(range(1, 16))
     assert len(data["baselines"]) == 4
-    assert len(data["techniques"]) == 12
+    assert len(data["techniques"]) == 15

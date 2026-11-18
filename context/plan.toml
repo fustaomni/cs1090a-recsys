@@ -4064,7 +4064,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.353"
-title = "Lab M15 shows the mixture of experts in 3-D after the owner's router sample: each specialist's prediction plane over the gate's two features, the user's and the movie's training-window rating counts, with seeded synthetic ratings around it, a query point whose slider walks the warm, new-user, new-movie and both-new buckets, every expert's softmax weight as a percentage summing to 100 with the shared bias expert always present, and the planes shaded by weight because the gate is soft, computed by pure functions in lib/moe.js proven by vitest"
+title = "Lab M15 shows the mixture of experts in 3-D after the owner's router sample: each expert's softmax weight drawn as a surface over the gate's two features, the user's and the movie's training-window rating counts, a query point whose sliders walk the warm, new-user, new-movie and both-new buckets, every expert's weight as a percentage summing to 100 with the shared bias expert always present, and the share of seeded synthetic test ratings in each bucket, computed by pure functions in lib/moe.js proven by vitest"
 thread = "A"
 depends_on = ["A.346", "A.345", "A.99"]
 because = { "A.346" = "the registry row M15 that this lab builds", "A.345" = "the gate, mixing and features the lab computes", "A.99" = "the lab pattern every mechanism follows" }
