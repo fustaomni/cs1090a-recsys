@@ -164,3 +164,33 @@ def test_the_m2_results_are_recorded_from_the_notebook_run() -> None:
     digests = {entry["evidence"]["sha256"] for entry in nonempty(entries)}
     contracts = {entry["evidence"]["contract"] for entry in entries}
     assert len(digests) == 1 and contracts == {"ms2-results/v1"}, (digests, contracts)
+
+
+QUALITY_RULES = 5
+
+
+def test_the_m2_findings_are_recorded_from_the_notebook_run() -> None:
+    """A.349: M2 shows each ratings-quality/v1 finding's count, read by its pointer from the run."""
+    pointers = ROOT / "contracts" / "site-sections" / "M2.toml"
+    named = set(tomllib.loads(pointers.read_text(encoding="utf-8"))["pointers"].values())
+    wanted = [f"/quality/{rule}/count" for rule in range(QUALITY_RULES)]
+    wanted += [f"/quality/{rule}/status" for rule in range(QUALITY_RULES)]
+    missing = [pointer for pointer in wanted if pointer not in named]
+    assert missing == [], missing
+
+
+SPLIT_WINDOWS = ("train", "validation", "test")
+SPLIT_FIELDS = ("ratings", "users", "movies", "first", "last")
+
+
+def test_the_split_audit_is_recorded_from_the_notebook_run() -> None:
+    """A.350: M2 shows each split window and the leakage verdict, each read from the run."""
+    pointers = ROOT / "contracts" / "site-sections" / "M2.toml"
+    named = set(tomllib.loads(pointers.read_text(encoding="utf-8"))["pointers"].values())
+    wanted = ["/split_audit/leakage"] + [
+        f"/split_audit/windows/{window}/{field}"
+        for window in SPLIT_WINDOWS
+        for field in SPLIT_FIELDS
+    ]
+    missing = [pointer for pointer in wanted if pointer not in named]
+    assert missing == [], missing
