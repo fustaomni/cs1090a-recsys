@@ -16,7 +16,11 @@ from site_record import ROOT, Estimate, Metrics, load, recorded
 
 TODAY = dt.date(2026, 11, 30)
 BASELINES = ["global-mean", "user-mean", "movie-mean", "bias"]
-EXPECTED = [f"baseline:{name}" for name in BASELINES] + [f"model:{n}" for n in range(1, 13)]
+EXPECTED = [
+    *(f"baseline:{name}" for name in BASELINES),
+    *(f"model:{n}" for n in range(1, 13)),
+    "model:15",
+]
 
 
 def _metrics() -> Metrics:
@@ -28,6 +32,14 @@ def test_the_site_results_validate_and_cover_every_row() -> None:
     results = load(ROOT)
     assert [row.key for row in results.rows] == EXPECTED
     assert results.primary.status == "pending"
+
+
+def test_the_board_holds_a_pending_mixture_row() -> None:
+    """A.346: the results board holds the mixture of experts, pending, for Milestone 4."""
+    rows = load(ROOT).rows
+    row = next((row for row in rows if row.key == "model:15"), None)
+    assert row is not None, [row.key for row in rows]
+    assert (row.kind, row.milestone, row.status) == ("model", "M4", "pending"), row
 
 
 def test_a_measured_row_is_recorded_with_its_run() -> None:
@@ -46,6 +58,24 @@ def test_an_unknown_row_is_refused() -> None:
 def test_an_interval_that_excludes_its_value_is_refused() -> None:
     with pytest.raises(ValidationError, match="excludes"):
         Estimate(value=0.95, low=0.88, high=0.92)
+
+
+def test_every_m2_finding_names_its_pointer_and_digest(tmp_path: Path) -> None:
+    """A.349: each recorded M2 entry names the pointer it was read by and the file's digest."""
+    source = tmp_path / "results.json"
+    source.write_text(json.dumps({"quality": [{"status": "pass", "count": 0}]}), encoding="utf-8")
+    pointers = {
+        "Ratings outside 1 to 5": "/quality/0/count",
+        "Ratings outside 1 to 5: verdict": "/quality/0/status",
+    }
+    updated = site_record.sectioned(load(ROOT), "M2", source, "ms2-results/v1", pointers, TODAY)
+    section = next(s for s in updated.milestones if s.milestone == "M2")
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    named = [
+        (entry.label, getattr(entry, "pointer", None), entry.evidence.sha256)
+        for entry in nonempty(section.entries)
+    ]
+    assert named == [(label, pointer, digest) for label, pointer in pointers.items()], named
 
 
 def test_a_milestone_section_is_recorded_from_its_results_file(tmp_path: Path) -> None:
