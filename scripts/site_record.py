@@ -88,6 +88,8 @@ class Entry(Contract):
     label: str = Field(min_length=1)
     value: str | int | float
     evidence: Evidence
+    # A.349: the RFC 6901 pointer this value was read by, beside its file's digest.
+    pointer: str | None = None
 
 
 class Section(Contract):
@@ -164,7 +166,12 @@ def sectioned(
     document: object = json.loads(raw)
     evidence = Evidence(contract=contract, sha256=hashlib.sha256(raw).hexdigest())
     entries = tuple(
-        Entry(label=label, value=_resolved(document, pointer, source), evidence=evidence)
+        Entry(
+            label=label,
+            value=_resolved(document, pointer, source),
+            evidence=evidence,
+            pointer=pointer,
+        )
         for label, pointer in pointers.items()
     )
     names = [section.milestone for section in results.milestones]
