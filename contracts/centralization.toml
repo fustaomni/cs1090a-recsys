@@ -186,6 +186,16 @@ class = "generic"
 reason = "spec building: an upstream file becomes a measured source:apply spec (A.29)"
 
 [[capabilities]]
+id = "script:scripts/source_diff.py"
+class = "generic"
+reason = "worktree review: uncommitted changes read as data before any is discarded, ported from cscie103 D.476 (A.351)"
+
+[[capabilities]]
+id = "task:source:diff"
+class = "generic"
+reason = "worktree review: uncommitted changes read as data before any is discarded, ported from cscie103 D.476 (A.351)"
+
+[[capabilities]]
 id = "script:scripts/template_update.py"
 class = "generic"
 reason = "a generated project is brought to a later commit of its template, pinned (A.134)"
