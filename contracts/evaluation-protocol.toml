@@ -1,0 +1,18 @@
+# contracts/evaluation-protocol.toml
+# A.284: the research policy every offline evaluation follows, fixed before any result. Its
+# SHA-256 is the protocol_digest every evaluation-evidence/v1 record must name, and a record
+# under any other digest is refused. Changing any value here declares a different protocol.
+contract = "evaluation-protocol/v1"
+hypotheses = [
+  "The gated mixture of experts predicts test ratings with a lower RMSE than the regularised bias baseline.",
+]
+baselines = ["global-mean", "user-mean", "movie-mean", "bias"]
+metrics = ["rmse", "mae", "rmsem", "maem"]
+tuning_budget = 20
+primary_test = "user-level sign-flip permutation test of the paired per-user differences"
+practical_threshold = "contracts/practical-threshold.toml"
+
+[split]
+protocol = "A, a global temporal split"
+validation_quantile = 0.8
+test_quantile = 0.9
