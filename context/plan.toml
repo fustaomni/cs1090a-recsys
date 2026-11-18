@@ -4053,14 +4053,39 @@ done_when = [
 ]
 [[steps]]
 id = "A.346"
-title = "The site shows the mixture of experts from data: Models and techniques lists it as a model with its shared and specialist experts and its gate, Results' board holds its pending row for Milestone 4, and the overview's model count follows the data"
+title = "The site shows the mixture of experts from data as planned, before A.345 fits it: Models and techniques lists it as a model with its shared and specialist experts and its gate, Results' board holds its pending row for Milestone 4, and the overview's model count follows the data"
 thread = "A"
-depends_on = ["A.345", "A.95", "A.245"]
-because = { "A.345" = "the mixture this shows", "A.95" = "the results board its row joins", "A.245" = "the rule that every count on the page comes from its source" }
+depends_on = ["A.95", "A.245"]
+because = { "A.95" = "the results board its row joins", "A.245" = "the rule that every count on the page comes from its source" }
 branch = "feature/site-moe"
 done_when = [
   { kind = "proof", test = "tests/test_site_bindings.py::test_the_mixture_of_experts_is_listed_from_data" },
   { kind = "proof", test = "tests/test_site_record.py::test_the_board_holds_a_pending_mixture_row" },
+]
+[[steps]]
+id = "A.349"
+title = "Results' Milestone 2 section shows the notebook run's findings from its results file: the five quality rules each with its verdict and count, the ratings' time span, movies rated against movies listed, missingness by gender, the decisions taken and every figure's title and axes, each read by site:record and naming the file's digest"
+thread = "A"
+depends_on = ["A.344", "A.342"]
+because = { "A.344" = "the Milestone 2 section these findings join", "A.342" = "site:record, which reads each value by a pointer into the results file" }
+branch = "feature/site-ms2-findings"
+done_when = [
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_m2_findings_are_recorded_from_the_notebook_run" },
+  { kind = "proof", test = "tests/test_site_record.py::test_every_m2_finding_names_its_pointer_and_digest" },
+]
+[[steps]]
+id = "A.350"
+title = "Milestone 2's split is a three-way global temporal split reported as data: training before the 0.7 quantile, validation from it to the delivered 0.8 test cut, test from that cut, each window's ratings, users, movies, time span, cold-start shares and the leakage verdict written by the notebook into its results file and shown on Results by site:record, and Overview's quantile claim bound to that data"
+thread = "A"
+depends_on = ["A.331", "A.328", "A.344"]
+because = { "A.331" = "the test buckets the windows keep", "A.328" = "the cleaning checks every window is cut after", "A.344" = "the section the split audit is recorded into" }
+branch = "feature/site-ms2-findings"
+done_when = [
+  { kind = "proof", test = "tests/test_ms2_split.py::test_the_windows_are_cut_at_the_declared_quantiles" },
+  { kind = "proof", test = "tests/test_ms2_split.py::test_each_window_reports_its_rows_users_movies_and_span" },
+  { kind = "proof", test = "tests/test_ms2_split.py::test_no_training_or_validation_rating_reaches_past_its_window" },
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_split_audit_is_recorded_from_the_notebook_run" },
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_overview_quantile_claim_follows_the_data" },
 ]
 [[steps]]
 id = "A.353"
