@@ -15,6 +15,7 @@ dependencies = [
     "pysequoia>=0.1.35",
     "securesystemslib[crypto]>=1.5.1",
     "tomlkit>=0.15.1",
+    "unidiff==1.0.1",
 ]
 
 [dependency-groups]
