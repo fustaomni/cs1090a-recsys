@@ -16,6 +16,7 @@ from types import ModuleType
 
 import pytest
 
+from nonvacuous import nonempty
 from wrangling import Rating
 
 
@@ -29,14 +30,14 @@ def test_gate_weights_are_non_negative_and_sum_to_one() -> None:
     subject = _subject()
     # PAST FLOAT64'S EXP LIMIT (about 709.78): without the max-logit subtraction this overflows.
     weights = subject.gate_weights((2.0, -1.0, 0.5, 1000.0))
-    assert all(weight >= 0.0 for weight in weights), weights
+    assert all(weight >= 0.0 for weight in nonempty(weights)), weights
     assert math.isclose(sum(weights), 1.0), weights
 
 
 def test_a_gate_collapsed_to_one_expert_reproduces_that_expert() -> None:
     subject = _subject()
     experts = (3.1, 4.4, 2.2, 3.9)
-    for chosen, expected in enumerate(experts):
+    for chosen, expected in nonempty(tuple(enumerate(experts))):
         logits = tuple(50.0 if index == chosen else -50.0 for index in range(len(experts)))
         mixed = subject.mix(experts, subject.gate_weights(logits))
         assert math.isclose(mixed, expected, abs_tol=1e-9), (chosen, mixed)
