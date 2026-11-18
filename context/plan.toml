@@ -4068,7 +4068,7 @@ title = "Results' Milestone 2 section shows the notebook run's findings from its
 thread = "A"
 depends_on = ["A.344", "A.342"]
 because = { "A.344" = "the Milestone 2 section these findings join", "A.342" = "site:record, which reads each value by a pointer into the results file" }
-branch = "feature/site-ms2-gaps"
+branch = "feature/site-ms2-findings"
 done_when = [
   { kind = "proof", test = "tests/test_site_bindings.py::test_the_m2_findings_are_recorded_from_the_notebook_run" },
   { kind = "proof", test = "tests/test_site_record.py::test_every_m2_finding_names_its_pointer_and_digest" },
@@ -4079,7 +4079,7 @@ title = "Milestone 2's split is a three-way global temporal split reported as da
 thread = "A"
 depends_on = ["A.331", "A.328", "A.344"]
 because = { "A.331" = "the test buckets the windows keep", "A.328" = "the cleaning checks every window is cut after", "A.344" = "the section the split audit is recorded into" }
-branch = "feature/site-ms2-gaps"
+branch = "feature/site-ms2-findings"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_split.py::test_the_windows_are_cut_at_the_declared_quantiles" },
   { kind = "proof", test = "tests/test_ms2_split.py::test_each_window_reports_its_rows_users_movies_and_span" },
