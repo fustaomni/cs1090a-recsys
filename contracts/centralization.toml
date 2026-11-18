@@ -311,6 +311,11 @@ class = "project"
 reason = "this recommender's offline evaluation evidence record, evaluation-evidence/v1 (A.283)"
 
 [[capabilities]]
+id = "script:scripts/point_in_time.py"
+class = "project"
+reason = "this recommender's point-in-time features, read only from ratings strictly before each target (A.292)"
+
+[[capabilities]]
 id = "script:scripts/milestone2.py"
 class = "project"
 reason = "this recommender Milestone 2 walking skeleton, from the verified archive to the proposal line (A.244)"
