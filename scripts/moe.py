@@ -15,7 +15,16 @@ from dataclasses import dataclass
 
 from wrangling import LeakageError, Rating
 
-__all__ = ["GateFeatures", "LeakageError", "bucket_report", "gate_features", "gate_weights", "mix"]
+__all__ = [
+    "GateFeatures",
+    "LeakageError",
+    "bucket_report",
+    "fit_gate",
+    "fitted_weights",
+    "gate_features",
+    "gate_weights",
+    "mix",
+]
 
 
 def gate_weights(logits: Sequence[float]) -> tuple[float, ...]:
@@ -65,3 +74,57 @@ def bucket_report(rows: Sequence[tuple[str, float, float, float]]) -> dict[str, 
         }
         for bucket, found in errors.items()
     }
+
+
+def _inputs(feature: GateFeatures) -> tuple[float, float, float]:
+    """The fitted gate's inputs: an intercept and the two counts as log(1 + n)."""
+    return (1.0, math.log1p(feature.user_count), math.log1p(feature.movie_count))
+
+
+def fitted_weights(theta: Sequence[Sequence[float]], feature: GateFeatures) -> tuple[float, ...]:
+    """The fitted gate's weights for one rating: a softmax of one linear score per expert."""
+    x = _inputs(feature)
+    scores = [math.fsum(t * v for t, v in zip(row, x, strict=True)) for row in theta]
+    return gate_weights(scores)
+
+
+def fit_gate(
+    features: Sequence[GateFeatures],
+    predictions: Sequence[Sequence[float]],
+    targets: Sequence[float],
+    *,
+    rate: float = 0.5,
+    steps: int = 400,
+) -> tuple[tuple[tuple[float, ...], ...], tuple[float, ...]]:
+    """The gate fitted by gradient descent on the mixture's squared error (A.360).
+
+    The experts are held fixed. From the uniform gate (every score zero), each step moves expert
+    j's scores by the mean over ratings of 2 (mix - y) w_j (p_j - mix) times the inputs, the same
+    descent as site/src/mechanisms/lib/moefit.js, so the page and the model fit the same gate.
+    """
+    if not features:
+        raise ValueError("a gate is fitted on at least one rating")
+    experts = len(predictions[0])
+    theta = [[0.0, 0.0, 0.0] for _ in range(experts)]
+    inputs = [_inputs(feature) for feature in features]
+    rows = list(zip(features, inputs, predictions, targets, strict=True))
+    losses: list[float] = []
+    for step in range(steps + 1):
+        gradient = [[0.0, 0.0, 0.0] for _ in range(experts)]
+        loss = 0.0
+        for feature, x, prediction, target in rows:
+            weights = fitted_weights(theta, feature)
+            mixed = mix(prediction, weights)
+            error = mixed - target
+            loss += error * error
+            for j, weight in enumerate(weights):
+                slope = 2.0 * error * weight * (prediction[j] - mixed)
+                for d, value in enumerate(x):
+                    gradient[j][d] += slope * value
+        losses.append(loss / len(rows))
+        if step == steps:
+            break
+        for j in range(experts):
+            for d in range(3):
+                theta[j][d] -= rate * gradient[j][d] / len(rows)
+    return tuple(tuple(row) for row in theta), tuple(losses)
