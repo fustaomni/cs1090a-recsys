@@ -515,6 +515,36 @@ claim = "Shifting the cut-points together flips no star at zero and more as the 
 evidence = "site/src/mechanisms/lib/ordinal.test.js > ordinal regression, a cumulative link model (A.246) > flips nothing at zero shift, and more ratings as the cut-offs move further"
 
 [[claims]]
+lab = "M15"
+claim = "The gate is soft: a softmax turns each expert's score into a weight, every weight above zero and summing to one."
+evidence = "site/src/mechanisms/lib/moe.test.js > the softmax gate > turns the scores 4.2, 1.1 and -2.5 into weights of about 95.6%, 4.3% and 0.1%"
+
+[[claims]]
+lab = "M15"
+claim = "The mixture weights each expert's prediction by its gate weight."
+evidence = "site/src/mechanisms/lib/moe.test.js > mixing the experts > weights each expert's prediction by its gate weight"
+
+[[claims]]
+lab = "M15"
+claim = "The gate reads two features, how many ratings the user and the movie had before the window being predicted."
+evidence = "site/src/mechanisms/lib/moe.test.js > the leakage guard > counts the user's and the movie's training ratings as the gate's two features"
+
+[[claims]]
+lab = "M15"
+claim = "The gate is fitted on the validation window by gradient descent on the mixture's squared error, the experts held fixed."
+evidence = "site/src/mechanisms/lib/moepipeline.test.js > runMixture > fits its gate on validate, where it beats the uniform mix of the same experts"
+
+[[claims]]
+lab = "M15"
+claim = "Fitting moves the gate well away from the uniform mix it starts from."
+evidence = "site/src/mechanisms/lib/moefit.test.js > fitGate > cuts the error of the uniform gate it starts from by at least four times"
+
+[[claims]]
+lab = "M15"
+claim = "The fitted gate sends its weight to the expert that is right in each region of the features."
+evidence = "site/src/mechanisms/lib/moefit.test.js > fitGate > routes each region to the expert that is right there"
+
+[[claims]]
 lab = "T1"
 claim = "Rating values stay locked until the split is made, the risk register included."
 evidence = "site/src/mechanisms/lib/register.test.js > the risk register, as Technique 1 shows it > shows no rating value until the split is made, for either pair of cutoffs"
@@ -893,3 +923,58 @@ evidence = "site/src/mechanisms/lib/signflip.test.js > user-level sign-flip perm
 lab = "T12"
 claim = "The row-level flip overstates the certainty at every user count the slider allows."
 evidence = "site/src/mechanisms/lib/blocks.test.js > the sign-flip test, as Technique 12 shows it > is less certain than the row-level flip for every user count from 5 to 12"
+
+[[claims]]
+lab = "T13"
+claim = "Each weight is e to its score over the temperature, divided by the sum for all experts; a low temperature sharpens the gate and a high one flattens it."
+evidence = "site/src/mechanisms/lib/moefit.test.js > softmaxT and topK > is the softmax at temperature 1, sharp when cold and flat when hot"
+
+[[claims]]
+lab = "T13"
+claim = "Subtracting the largest score first keeps e to a large score from overflowing, since no term exceeds one."
+evidence = "site/src/mechanisms/lib/moe.test.js > the softmax gate > stays finite past exp's range, because it subtracts the largest score first"
+
+[[claims]]
+lab = "T13"
+claim = "Keeping only the top two experts and renormalising them turns the soft gate into a sparse one."
+evidence = "site/src/mechanisms/lib/moefit.test.js > softmaxT and topK > keeps the k largest weights and renormalises them to one"
+
+[[claims]]
+lab = "T14"
+claim = "Two walls cut time into three windows, train, validate and test, in time order and keeping every rating."
+evidence = "site/src/mechanisms/lib/moefit.test.js > threeWindows > cuts three non-empty windows in time order and keeps every rating"
+
+[[claims]]
+lab = "T14"
+claim = "Put the second wall on or before the first and the split is refused."
+evidence = "site/src/mechanisms/lib/moefit.test.js > threeWindows > refuses a validation window that does not end before the test window"
+
+[[claims]]
+lab = "T14"
+claim = "Handing the validation features their own window is refused by the guard rather than silently counting the future."
+evidence = "site/src/mechanisms/lib/moefit.test.js > windowFeatures > refuses history that reaches into the rows it describes"
+
+[[claims]]
+lab = "T14"
+claim = "A feature may only use what was known when the prediction was asked for: strictly before, so a rating in the same second is blocked."
+evidence = "site/src/mechanisms/lib/moe.test.js > the leakage guard > keeps a rating strictly before the request and blocks one at the same second"
+
+[[claims]]
+lab = "T15"
+claim = "Every cold-start bucket of the test window holds ratings, each rating in one bucket by what the earlier windows knew."
+evidence = "site/src/mechanisms/lib/moefit.test.js > arrivingRatings > fills every cold-start bucket of the test window with at least 30 ratings"
+
+[[claims]]
+lab = "T15"
+claim = "The pooled RMSE is computed from every error, not averaged over buckets."
+evidence = "site/src/mechanisms/lib/moe.test.js > per-bucket RMSE > pools every error, rather than averaging the buckets' RMSEs"
+
+[[claims]]
+lab = "T15"
+claim = "Each bucket shows its own RMSE and count, and a block too small to trust is flagged."
+evidence = "site/src/mechanisms/lib/moe.test.js > per-bucket RMSE > gives each bucket its count and RMSE, and flags one too small to trust"
+
+[[claims]]
+lab = "T15"
+claim = "Each bucket's RMSE carries a bootstrap interval."
+evidence = "site/src/mechanisms/lib/moe.test.js > per-bucket RMSE > brackets each bucket's RMSE with a seeded bootstrap interval"
