@@ -476,7 +476,7 @@ def retract(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
 
 
 if __name__ == "__main__":
-    verbs = {"add": add, "amend": amend, "record": record, "retract": retract}
+    verbs = {"add": add, "amend": amend, "record": record, "retire": retire, "retract": retract}
     if len(sys.argv) < 2 or sys.argv[1] not in verbs:
-        raise SystemExit("usage: plan_edit.py add|amend|record|retract <spec.toml>")
+        raise SystemExit("usage: plan_edit.py add|amend|record|retire|retract <spec.toml>")
     sys.exit(verbs[sys.argv[1]]())
