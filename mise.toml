@@ -574,14 +574,27 @@ description = "Run one named proof and judge its RED from the JUnit report: exit
 run = "uv run --no-sync python scripts/red_verify.py"
 
 [tasks."source:read"]
+raw_args = true
+usage = """
+arg "<path>" help="The file to read, inside this checkout"
+arg "[first]" help="The first line, 1 when omitted"
+arg "[last]" help="The last line, the file's end when omitted"
+"""
 description = "Read a file's lines, numbered, as data, refusing a missing file or a range past its end"
 run = "uv run --no-sync python scripts/source_read.py"
 
 [tasks."source:outline"]
+raw_args = true
+usage = 'arg "<file>" help="The Python file to outline"'
 description = "Outline a Python file's definitions with their line ranges, as data"
 run = "uv run --no-sync python scripts/source_outline.py"
 
 [tasks."source:search"]
+raw_args = true
+usage = """
+arg "<pattern>" help="A POSIX extended regular expression"
+arg "[path]..." help="Tracked paths to search; every tracked file when omitted"
+"""
 description = "Search tracked source for a pattern, returning each match as data"
 run = "uv run --no-sync python scripts/source_search.py"
 
@@ -610,6 +623,8 @@ description = "Plan a port: print a source:apply spec bringing files from anothe
 run = "uv run --no-sync python scripts/source_port.py"
 
 [tasks."source:diff"]
+raw_args = true
+usage = 'arg "<slug>" help="The slug worktree:add was given"'
 description = "Show a worktree's uncommitted changes as data; untracked files by name and size, never read"
 # Ported from cscie103 D.476 at c4c420b (A.351): git diff HEAD through gitenv, parsed by
 # python-unidiff into files and hunks; a slug that names no worktree is refused, and a failed git
@@ -618,6 +633,8 @@ description = "Show a worktree's uncommitted changes as data; untracked files by
 run = "uv run --no-sync python scripts/source_diff.py"
 
 [tasks."source:apply"]
+raw_args = true
+usage = 'arg "<spec>" help="A source-apply/v1 TOML spec, or - to read it from stdin"'
 description = "Create and edit source from a declarative spec, judged by policy, all or nothing"
 # THE ONLY WAY SOURCE CHANGES (D.25): a source-apply/v1 spec, or - for stdin. No
 # edit logic is written at execution time; runs.source_apply judges every operation.
@@ -724,11 +741,15 @@ run = 'uv run --no-sync python scripts/template_update.py "${usage_destination?}
 
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.120).
 [tasks."worktree:conflicts"]
+raw_args = true
+usage = 'arg "<slug>" help="The slug worktree:add was given"'
 description = "Read a worktree's rebase conflicts as data: each block's sides and context"
 # D.30: what a stopped refresh left, as data, so a resolution is never guessed.
 run = "uv run --no-sync python scripts/rebase_state.py conflicts"
 
 [tasks."worktree:continue"]
+raw_args = true
+usage = 'arg "<slug>" help="The slug worktree:add was given"'
 description = "Continue a worktree's resolved rebase, refused while any marker remains"
 # D.31: continue-plan/v1 judged by runs.worktree_continue before anything is staged.
 run = "uv run --no-sync python scripts/rebase_state.py continue"
@@ -745,10 +766,14 @@ description = "Resolve a merge or rebase stopped on the plan files as data, then
 run = "uv run --no-sync python scripts/plan_conflicts.py"
 
 [tasks."worktree:conclude"]
+raw_args = true
+usage = 'arg "<slug>" help="The slug worktree:add was given"'
 description = "Conclude a worktree's resolved merge by its merge commit, refused while a marker remains"
 run = "uv run --no-sync python scripts/rebase_state.py conclude"
 
 [tasks."worktree:abort"]
+raw_args = true
+usage = 'arg "<slug>" help="The slug worktree:add was given"'
 description = "Abort a worktree's stopped rebase or merge, returning its branch to its own tip"
 run = "uv run --no-sync python scripts/rebase_state.py abort"
 
@@ -768,11 +793,19 @@ run = "uv run --no-sync python scripts/rebase_skip.py"
 # Ported from cscie103-data-engineering at 25061c1 (plan A.137): cscie103 built it after this
 # repository's pin, and provenance records each of its files at that commit (A.136).
 [tasks."branches:prune"]
+raw_args = true
+usage = 'flag "--yes" help="Delete the branches it lists, rather than only listing them"'
 description = "Delete a merged branch left behind, locally or on origin, once proven merged; a dry run unless --yes"
 run = "uv run --no-sync python scripts/branches_prune.py"
 
 # Ported from cscie103-data-engineering at 25061c1 (plan A.138), as branches:prune was (A.137).
 [tasks."branches:retire"]
+raw_args = true
+usage = """
+arg "<branch>" help="The branch to retire"
+arg "<step>" help="The plan step the retirement serves"
+flag "--yes" help="Retire it, rather than only reporting what would go"
+"""
 description = "Retire a superseded unmerged branch for a plan step: archive its tip, then delete it; a dry run unless --yes"
 run = "uv run --no-sync python scripts/branches_retire.py"
 
@@ -860,6 +893,8 @@ run = 'uv run --no-sync python scripts/mutation_check.py "${usage_spec?}"'
 
 # Ported from cscie103-data-engineering at 58af9d3 (plan A.107).
 [tasks."audit:assertions"]
+raw_args = true
+usage = 'flag "--pins" help="Also audit the pinned assertions"'
 description = "Refuse any test assertion over a collection it has not proven non-empty"
 # M40 (D.107): all() and not any() over nothing are True, and a loop over nothing asserts nothing.
 # Each such claim must range over a non-empty literal or nonempty(...). Runs in check and in CI.
@@ -996,22 +1031,47 @@ usage = 'arg "<name>" help="A sibling contracts/siblings.toml declares"'
 run = 'uv run --no-sync python scripts/sibling_checkout.py --override "${usage_name?}"'
 
 [tasks."sibling:refresh"]
+raw_args = true
+usage = """
+arg "<name>" help="A sibling contracts/siblings.toml declares"
+arg "<step>" help="The plan step the merge serves"
+arg "[ref]" help="The origin ref to merge; the declared branch when omitted"
+"""
 description = "Merge a named ref of a sibling's origin, by default its declared branch, into the clone's feature branch by a merge commit"
 run = "uv run --no-sync python scripts/sibling_checkout.py --refresh"
 
 [tasks."sibling:conclude"]
+raw_args = true
+usage = """
+arg "<name>" help="A sibling contracts/siblings.toml declares"
+arg "<step>" help="The plan step the merge serves"
+flag "--include <path>" help="A path to stage into the merge; repeatable"
+"""
 description = "Conclude a sibling merge that stopped on conflicts: the clone resolver first, refused while anything stays unmerged or marked, then a commit naming the step"
 run = "uv run --no-sync python scripts/sibling_checkout.py --conclude"
 
 [tasks."sibling:trust"]
+raw_args = true
+usage = """
+arg "<name>" help="A sibling contracts/siblings.toml declares"
+arg "[digest]" help="The digest of the edited mise.toml to trust"
+"""
 description = "Show a sibling clone's edited mise.toml against its commit with its digest, and trust it only at the digest its reviewer names"
 run = "uv run --no-sync python scripts/sibling_checkout.py --trust"
 
 [tasks."sibling:conflicts"]
+raw_args = true
+usage = 'arg "<name>" help="A sibling contracts/siblings.toml declares"'
 description = "Read a sibling clone's stopped merge as data: each conflicted file with both sides of every block"
 run = "uv run --no-sync python scripts/sibling_checkout.py --conflicts"
 
 [tasks."sibling:pin"]
+raw_args = true
+usage = """
+arg "<name>" help="A sibling contracts/siblings.toml declares"
+flag "--out <spec>" help="Write the pins as a source-apply spec"
+flag "--check" help="Refuse pins that differ from the sibling's flake.lock"
+"""
 description = "Generate a sibling's FAS pins from its own flake.lock: plan them with --out, or name stale ones with --check"
 run = "uv run --no-sync python scripts/sibling_pins.py"
 
