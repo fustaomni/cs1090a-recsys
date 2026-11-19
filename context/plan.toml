@@ -4205,3 +4205,13 @@ done_when = [
   { kind = "proof", test = "tests/test_commit_merge.py::test_a_held_merge_refusal_says_to_name_the_merged_paths" },
   { kind = "proof", test = "tests/test_commit_merge.py::test_an_unnamed_path_outside_a_merge_is_still_told_to_unstage" },
 ]
+[[steps]]
+id = "A.358"
+title = "recsys imports the hub's never-rewrite layers: a plain push, no amend, no rebase continue or skip, a merge-based refresh, a pre-push fast-forward guard and the reference-transaction hook"
+thread = "A"
+depends_on = ["A.191"]
+branch = "feature/never-rewrite-import"
+because = { "A.191" = "the publication whose leased push becomes a plain one" }
+done_when = [
+  { kind = "proof", test = "tests/test_lineage_audit.py::test_the_repository_rewrites_no_lineage" },
+]
