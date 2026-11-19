@@ -163,7 +163,7 @@ def test_the_m2_results_are_recorded_from_the_notebook_run() -> None:
     assert [entry.get("label") for entry in entries] == labels, entries
     digests = {entry["evidence"]["sha256"] for entry in nonempty(entries)}
     contracts = {entry["evidence"]["contract"] for entry in entries}
-    assert len(digests) == 1 and contracts == {"ms2-results/v1"}, (digests, contracts)
+    assert len(digests) == 1 and contracts == {"milestone2-results/v1"}, (digests, contracts)
 
 
 QUALITY_RULES = 5

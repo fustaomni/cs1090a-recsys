@@ -197,6 +197,12 @@ def test_every_number_the_milestone_requires_is_a_results_field(
     assert results["size_megabytes"] > 0, results["size_megabytes"]
 
 
+def test_the_results_name_their_contract(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A.261: the results file names milestone2-results/v1, the contract the site checks."""
+    _, results = _run(_data(tmp_path), monkeypatch)
+    assert results.get("contract") == "milestone2-results/v1", sorted(results)
+
+
 def test_each_quality_rule_reports_pass_fail_or_unknown_with_its_count(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
