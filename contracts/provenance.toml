@@ -647,6 +647,12 @@ sha256 = "cf3aca92233688c323867340b5dba36f8fc3917990ef62cb0da586c919890f5f"
 path = "scripts/publish_push.py"
 sha256 = "031c2c50a60fd2bf6cff3529cce5b9c75d732326e0f3e8a4772fe2dd4809ddb5"
 
+[[adapted]]
+path = "scripts/publish_push.py"
+reason = "cscie103 D.500's never-rewrite publication: a plain push in place of the leased one (A.358)"
+patch = "contracts/vendor-patches/scripts/publish_push.py.patch"
+sha256 = "752d2b49b43007b2d4492880fad60d112a35bd24d3ea072aff0c5a01e2c1e0c4"
+
 [[files]]
 path = "scripts/publish_policy.py"
 sha256 = "77a76df3b380003022457e82d94867fc8985a9cbc420f17ce3b9408b2da88d76"
@@ -734,6 +740,12 @@ sha256 = "bd7b43d062a2390b4058fc794cca745da49623fc2322413d48fab1d476ddf3e4"
 [[files]]
 path = "tests/test_publish_push.py"
 sha256 = "a078020192267efc1bc702bfdf95801dd6d1d66538965faf0d3a5fcd48cea848"
+
+[[adapted]]
+path = "tests/test_publish_push.py"
+reason = "the proofs of the plain push that replaces the leased one (A.358)"
+patch = "contracts/vendor-patches/tests/test_publish_push.py.patch"
+sha256 = "a22ff35797ccd8d8c0a9fc30c0ec00138d7a95d52d84611f1d9dd9f3f91a49b1"
 
 [[files]]
 path = "tests/test_publish_policy.py"
