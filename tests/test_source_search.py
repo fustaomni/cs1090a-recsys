@@ -11,10 +11,15 @@ A REAL REPOSITORY, BUILT LOCALLY: C.20's isolation keeps these git calls off thi
 
 from __future__ import annotations
 
+import json
 import subprocess
 from pathlib import Path
 
-from source_search import search
+import pytest
+
+import source_search
+from command_outcome import CommandOutcome
+from source_search import SourceMatches, search
 
 
 def _git(repo: Path, *args: str) -> None:
@@ -64,8 +69,137 @@ def test_no_match_is_an_empty_result(tmp_path: Path) -> None:
     assert (found.count, found.matches) == (0, ())
 
 
-def test_an_alternation_with_groups_matches_as_extended(tmp_path: Path) -> None:
-    """Grouping and alternation work unescaped: one declared dialect, never git's default."""
-    found = search(_repo(tmp_path), "^(x|needle) = [0-9]$", ("a.py",))
-    assert [m.number for m in found.matches] == [1, 2]
-    assert found.dialect == "extended"
+def test_an_alternation_finds_what_each_branch_finds(tmp_path: Path) -> None:
+    """D.226: a|b finds every line a finds and every line b finds, on any platform.
+
+    git grep reads a pattern as basic regex by default, where | is a literal, so this
+    pattern once found nothing and the search reported success.
+    """
+    repo = _repo(tmp_path)
+    words = ("needle", "x = 1")
+    each = {(m.path, m.number) for word in words for m in search(repo, word, ()).matches}
+    both = {(m.path, m.number) for m in search(repo, "needle|x = 1", ()).matches}
+    assert len(each) == 4, each
+    assert both == each, (both, each)
+
+
+def test_a_literal_is_searched_as_a_fixed_string(tmp_path: Path) -> None:
+    """D.226: a literal, such as an identity value, is never read as a regex.
+
+    As a regex, (x+1) is a group and + a repetition, so it would also match costx1.
+    """
+    _git(tmp_path, "init", "-q", "-b", "main")
+    (tmp_path / "f.txt").write_text("cost(x+1)\ncostx1\ncostxx1\n", encoding="utf-8")
+    _git(tmp_path, "add", ".")
+    _git(tmp_path, "commit", "-q", "-m", "start")
+    found = search(tmp_path, "cost(x+1)", (), dialect="fixed")
+    assert (found.dialect, [m.text for m in found.matches]) == ("fixed", ["cost(x+1)"])
+
+
+def _main(
+    repo: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    *args: str,
+) -> tuple[int, CommandOutcome]:
+    """source:search as the task runs it, against the repository built here (D.230)."""
+    monkeypatch.setattr(source_search, "ROOT", repo)
+    code = source_search.main(list(args))
+    return code, CommandOutcome.model_validate_json(capsys.readouterr().out)
+
+
+def test_an_unknown_option_is_refused_never_searched(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """D.230: an option the task does not declare was taken as a path matching nothing."""
+    code, outcome = _main(_repo(tmp_path), monkeypatch, capsys, "needle", "--case", "a.py")
+    assert (code, outcome.outcome, outcome.code) == (2, "refused", "usage_invalid"), outcome
+    assert "not an option" in outcome.message, outcome
+
+
+def test_a_path_that_does_not_exist_is_refused(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """D.230: a path naming no file made git grep find nothing, reported as success."""
+    code, outcome = _main(_repo(tmp_path), monkeypatch, capsys, "needle", "no/such/file.py")
+    assert (code, outcome.outcome, outcome.code) == (2, "refused", "usage_invalid"), outcome
+    assert "names no file" in outcome.message, outcome
+
+
+def test_the_dialect_is_chosen_on_the_command_line(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """D.230: --dialect fixed reads the pattern as a literal; it is never taken as a path."""
+    repo = _repo(tmp_path)
+    code, outcome = _main(repo, monkeypatch, capsys, "needle|x", "--dialect", "fixed")
+    found = SourceMatches.model_validate_json(json.dumps(outcome.data))
+    assert (code, found.dialect, found.count) == (0, "fixed", 0), outcome
+
+
+def test_an_untracked_file_is_searched_from_the_command_line(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """D.230: a file about to be committed is found by the task, not silently skipped."""
+    code, outcome = _main(_repo(tmp_path), monkeypatch, capsys, "needle")
+    found = SourceMatches.model_validate_json(json.dumps(outcome.data))
+    assert code == 0 and "untracked.txt" in {m.path for m in found.matches}, outcome
+
+
+def _ignored(repo: Path) -> Path:
+    """An ignored directory holding one file, as .artifacts holds a sibling's checkout (D.336)."""
+    (repo / ".gitignore").write_text("vendor/\n", encoding="utf-8")
+    (repo / "vendor").mkdir()
+    (repo / "vendor" / "tasks.toml").write_text("needle in an ignored file\n", encoding="utf-8")
+    return repo
+
+
+def test_a_named_ignored_file_is_searched(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """D.336: a file the caller names is searched even where git ignores it, never skipped."""
+    repo = _ignored(_repo(tmp_path))
+    code, outcome = _main(repo, monkeypatch, capsys, "needle", "vendor/tasks.toml")
+    found = SourceMatches.model_validate_json(json.dumps(outcome.data))
+    assert code == 0 and [m.path for m in found.matches] == ["vendor/tasks.toml"], outcome
+
+
+def test_an_unnamed_search_still_skips_ignored_files(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """D.336: naming no path keeps .gitignore, so ignored trees such as .venv stay out."""
+    repo = _ignored(_repo(tmp_path))
+    code, outcome = _main(repo, monkeypatch, capsys, "needle")
+    found = SourceMatches.model_validate_json(json.dumps(outcome.data))
+    assert code == 0 and found.count > 0, outcome
+    assert "vendor/tasks.toml" not in {m.path for m in found.matches}, outcome
+
+
+def test_a_directory_holding_another_repository_is_refused(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """D.444: a named directory holding a repository is refused, never reported as no match."""
+    code, outcome = _main(_nested(_repo(tmp_path)), monkeypatch, capsys, "needle", "vendor")
+    assert code != 0 and outcome.code == "usage_invalid", outcome
+    assert "vendor/sibling" in outcome.message, outcome
+
+
+def _nested(repo: Path) -> Path:
+    """A repository under an ignored directory, as upstream:checkout clones a sibling (D.337)."""
+    (repo / ".gitignore").write_text("vendor/\n", encoding="utf-8")
+    clone = repo / "vendor" / "sibling"
+    clone.mkdir(parents=True)
+    _git(clone, "init", "-q", "-b", "main")
+    (clone / "tasks.toml").write_text("needle in another repository\n", encoding="utf-8")
+    return repo
+
+
+def test_a_named_path_inside_another_repository_is_refused(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """D.337: git grep never enters another repository, so a path inside one is refused."""
+    repo = _nested(_repo(tmp_path))
+    named = "vendor/sibling/tasks.toml"
+    code, outcome = _main(repo, monkeypatch, capsys, "needle", named)
+    assert (code, outcome.outcome, outcome.code) == (2, "refused", "usage_invalid"), outcome
+    assert named in outcome.message and "another repository" in outcome.message, outcome
+    assert "source:read" in outcome.message, outcome
