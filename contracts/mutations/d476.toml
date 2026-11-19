@@ -1,0 +1,23 @@
+# contracts/mutations/d476.toml
+# D.476: source:diff reports every hunk and every untracked path, and refuses a missing worktree.
+
+[[mutants]]
+id = "hunks-dropped"
+file = "scripts/source_diff.py"
+before = "            hunks=tuple(_hunk(hunk) for hunk in patched),"
+after = "            hunks=(),"
+killers = ["tests/test_source_diff.py::test_a_modified_file_reports_each_hunk_with_its_added_and_removed_lines"]
+
+[[mutants]]
+id = "untracked-dropped"
+file = "scripts/source_diff.py"
+before = "    names = sorted(name for name in listed.stdout.split(\"\\0\") if name)"
+after = "    names: list[str] = []"
+killers = ["tests/test_source_diff.py::test_an_untracked_file_is_listed_without_being_read"]
+
+[[mutants]]
+id = "missing-worktree-read"
+file = "scripts/source_diff.py"
+before = "    if not path.exists():"
+after = "    if False:"
+killers = ["tests/test_source_diff.py::test_a_slug_naming_no_worktree_is_refused"]

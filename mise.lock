@@ -13,6 +13,12 @@ url = "https://github.com/betterleaks/betterleaks/releases/download/v1.9.0/bette
 url_api = "https://api.github.com/repos/betterleaks/betterleaks/releases/assets/599108929"
 provenance = "cosign"
 
+[tools.betterleaks."platforms.macos-arm64"]
+checksum = "sha256:83dd7eaab13d44a1e8e347a17064cdef153a1478db473276d41b38d55613d3f2"
+url = "https://github.com/betterleaks/betterleaks/releases/download/v1.9.0/betterleaks_1.9.0_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/betterleaks/betterleaks/releases/assets/599108927"
+provenance = "cosign"
+
 [[tools.gh]]
 version = "2.102.0"
 backend = "aqua:cli/cli"
@@ -22,6 +28,12 @@ specifiers = ["2.102.0"]
 checksum = "sha256:bb766f710eef8ede859c18578c72c327597cd4c8a85b06001b1f3843c6019386"
 url = "https://github.com/cli/cli/releases/download/v2.102.0/gh_2.102.0_linux_amd64.tar.gz"
 url_api = "https://api.github.com/repos/cli/cli/releases/assets/599854672"
+provenance = "github-attestations"
+
+[tools.gh."platforms.macos-arm64"]
+checksum = "sha256:da922c20d1792e5b2cbf375593d7a658acf034c12c84e007e71c76ef959c337e"
+url = "https://github.com/cli/cli/releases/download/v2.102.0/gh_2.102.0_macOS_arm64.zip"
+url_api = "https://api.github.com/repos/cli/cli/releases/assets/599854720"
 provenance = "github-attestations"
 
 [[tools.lefthook]]
@@ -35,6 +47,12 @@ url = "https://github.com/evilmartians/lefthook/releases/download/v2.2.0/lefthoo
 url_api = "https://api.github.com/repos/evilmartians/lefthook/releases/assets/619550696"
 provenance = "github-attestations"
 
+[tools.lefthook."platforms.macos-arm64"]
+checksum = "sha256:41eceba8ceeb954e9dabfd10cd7a3caed16dd65448cacee7347c43d49ab07f23"
+url = "https://github.com/evilmartians/lefthook/releases/download/v2.2.0/lefthook_2.2.0_MacOS_arm64.gz"
+url_api = "https://api.github.com/repos/evilmartians/lefthook/releases/assets/619550718"
+provenance = "github-attestations"
+
 [[tools.opa]]
 version = "1.21.1"
 backend = "aqua:open-policy-agent/opa"
@@ -45,6 +63,11 @@ checksum = "sha256:668506eb17a2eaa1fce6cc0d1f42ef85125d4ac5bda5fc74d1152d0c77145
 url = "https://github.com/open-policy-agent/opa/releases/download/v1.21.1/opa_linux_amd64_static"
 url_api = "https://api.github.com/repos/open-policy-agent/opa/releases/assets/599034191"
 
+[tools.opa."platforms.macos-arm64"]
+checksum = "sha256:a00a6469a0968c47c01137ed0dacaa88148be5d0eaa8524310cd371f3a98a169"
+url = "https://github.com/open-policy-agent/opa/releases/download/v1.21.1/opa_darwin_arm64_static"
+url_api = "https://api.github.com/repos/open-policy-agent/opa/releases/assets/599034098"
+
 [[tools.regal]]
 version = "0.43.0"
 backend = "aqua:open-policy-agent/regal"
@@ -54,6 +77,11 @@ specifiers = ["0.43.0"]
 checksum = "sha256:5e7d030064e307d54e6ffa3d85b8d9052d3d40b7afa10262c86c886f8a76559d"
 url = "https://github.com/open-policy-agent/regal/releases/download/v0.43.0/regal_Linux_x86_64"
 url_api = "https://api.github.com/repos/open-policy-agent/regal/releases/assets/598403603"
+
+[tools.regal."platforms.macos-arm64"]
+checksum = "sha256:23a6e4ef62f288c53e65d770e9325e6d8a9c35ca3f33f6ffb5943c1f381ef540"
+url = "https://github.com/open-policy-agent/regal/releases/download/v0.43.0/regal_Darwin_arm64"
+url_api = "https://api.github.com/repos/open-policy-agent/regal/releases/assets/598403601"
 
 [[tools.uv]]
 version = "0.12.23"
@@ -66,6 +94,12 @@ url = "https://github.com/astral-sh/uv/releases/download/0.12.23/uv-x86_64-unkno
 url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/608232628"
 provenance = "github-attestations"
 
+[tools.uv."platforms.macos-arm64"]
+checksum = "sha256:50487ae565ccd96e499056b4674d438f4c53170202617b4c759defe0c6a1b544"
+url = "https://github.com/astral-sh/uv/releases/download/0.12.23/uv-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/608232483"
+provenance = "github-attestations"
+
 [[tools.zizmor]]
 version = "1.30.1"
 backend = "aqua:zizmorcore/zizmor"
@@ -75,4 +109,10 @@ specifiers = ["1.30.1"]
 checksum = "sha256:e65324f4430c2717591937edcec90ccbefaf14c174f8ec9415e03ca875b46e1a"
 url = "https://github.com/zizmorcore/zizmor/releases/download/v1.30.1/zizmor-x86_64-unknown-linux-gnu.tar.gz"
 url_api = "https://api.github.com/repos/zizmorcore/zizmor/releases/assets/552067642"
+provenance = "github-attestations"
+
+[tools.zizmor."platforms.macos-arm64"]
+checksum = "sha256:e28d22b087f9ebb8d99da6e740d348c930f559961c7c3f12badda54f882195a2"
+url = "https://github.com/zizmorcore/zizmor/releases/download/v1.30.1/zizmor-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/zizmorcore/zizmor/releases/assets/552067640"
 provenance = "github-attestations"

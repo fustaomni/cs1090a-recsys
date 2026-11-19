@@ -1,0 +1,16 @@
+# contracts/mutations/A.342.toml
+# A.342: a milestone section is read from its run's results file by pointer, naming its digest.
+
+[[mutants]]
+id = "pointer-not-followed"
+file = "scripts/site_record.py"
+before = "            found = found[key]"
+after = "            found = found"
+killers = ["tests/test_site_record.py::test_a_milestone_section_is_recorded_from_its_results_file"]
+
+[[mutants]]
+id = "digest-of-other-bytes"
+file = "scripts/site_record.py"
+before = "    evidence = Evidence(contract=contract, sha256=hashlib.sha256(raw).hexdigest())"
+after = "    evidence = Evidence(contract=contract, sha256=hashlib.sha256(b\"\").hexdigest())"
+killers = ["tests/test_site_record.py::test_a_milestone_section_is_recorded_from_its_results_file"]

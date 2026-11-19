@@ -1,0 +1,16 @@
+# contracts/mutations/A.345.toml
+# A.345: the gate is a stable softmax, and its features never reach the test window.
+
+[[mutants]]
+id = "softmax-without-max-subtraction"
+file = "scripts/moe.py"
+before = '    raised = [math.exp(logit - top) for logit in logits]'
+after = '    raised = [math.exp(logit) for logit in logits]'
+killers = ["tests/test_moe.py::test_gate_weights_are_non_negative_and_sum_to_one"]
+
+[[mutants]]
+id = "boundary-rating-admitted"
+file = "scripts/moe.py"
+before = '    late = [r for r in training if r.timestamp >= boundary]'
+after = '    late = [r for r in training if r.timestamp > boundary]'
+killers = ["tests/test_moe.py::test_no_gate_feature_reads_the_test_window"]

@@ -228,8 +228,10 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "defusedxml" },
+    { name = "pysequoia" },
     { name = "securesystemslib", extra = ["crypto"] },
     { name = "tomlkit" },
+    { name = "unidiff" },
 ]
 
 [package.dev-dependencies]
@@ -251,8 +253,10 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "defusedxml", specifier = "==0.7.1" },
+    { name = "pysequoia", specifier = ">=0.1.35" },
     { name = "securesystemslib", extras = ["crypto"], specifier = ">=1.5.1" },
     { name = "tomlkit", specifier = ">=0.15.1" },
+    { name = "unidiff", specifier = "==1.0.1" },
 ]
 
 [package.metadata.requires-dev]
@@ -935,6 +939,28 @@ wheels = [
 ]
 
 [[package]]
+name = "pysequoia"
+version = "0.1.35"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/85/8f/d3971580b1d987ef203e7c8bc6511a8ea2894e42a02b5174855221701965/pysequoia-0.1.35.tar.gz", hash = "sha256:9b697b7acbab9485a7a8cfa130f87f63f8e4a1d654ee88305b197e1cbae13dca", size = 309025, upload-time = "2026-08-30T11:42:10.387Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ee/f7/32c90e465713619694be2180a122847bfb1a121da036ecdf4aeb94fb2834/pysequoia-0.1.35-cp312-cp312-macosx_10_12_x86_64.whl", hash = "sha256:57884aa2449aab350ab7952723ac5bea7bca1222a01ba2fe1c6184eb28e6843c", size = 2887936, upload-time = "2026-08-30T11:39:53.669Z" },
+    { url = "https://files.pythonhosted.org/packages/4e/19/98a16c71a7bd46f391dcc8926738548de645f57b0b022b3eefd3b7a21739/pysequoia-0.1.35-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:a2191dd0c34e74af3d80f8332d61f0ce19ac31673fc67fb16140920a0ec8f863", size = 2815593, upload-time = "2026-08-30T11:39:55.301Z" },
+    { url = "https://files.pythonhosted.org/packages/c3/48/e953b46782d882b470097f96511422e6b35036d7af08ecc009270215e4a5/pysequoia-0.1.35-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5d621f5ea88556c5dcf99d92b7e4b0955ff27bd16c140b1c3e9ff4b5946d6cf5", size = 3237505, upload-time = "2026-08-30T11:39:56.687Z" },
+    { url = "https://files.pythonhosted.org/packages/90/a1/46b157d06416822fb7abf079bcda69e2f22425cbb34a8c3b3817ea650db8/pysequoia-0.1.35-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:359b2584e1c5b1ae799dd75f044f1eeca2a5a340f0840825af3ed1a731007c9e", size = 3228245, upload-time = "2026-08-30T11:39:58.188Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/7c/1f27e045c842dc634515104fd8e2527b4525d86ddaee25ed61256c371408/pysequoia-0.1.35-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:b7d5a8a69af732e15590b99bb11742479b71d5e2ebb0b0d522c265420d38cea9", size = 3613699, upload-time = "2026-08-30T11:39:59.725Z" },
+    { url = "https://files.pythonhosted.org/packages/bf/44/f126119d000be3afdf171684b2abab7877ad76b57ff8eb526801be62ae8b/pysequoia-0.1.35-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:e6e39c5e51d4e8b8e62251aac5061c80a3fe9b54453d94294b33addf932d1537", size = 3226211, upload-time = "2026-08-30T11:40:01.425Z" },
+    { url = "https://files.pythonhosted.org/packages/2c/c8/7c4686cc7f5b4e5f47d2526ee67487adfe0d2c532c8d7897ab81cc8d3bf0/pysequoia-0.1.35-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d4a31fe2496dfc35cdfdf5fb5d2e27bbff89acdb11b7fa301c2090b3870667ff", size = 3119103, upload-time = "2026-08-30T11:40:03.109Z" },
+    { url = "https://files.pythonhosted.org/packages/89/1a/ed55c08b23f4395d5b105aa4b525fa4e1dba7f99443201e149cdbcc54648/pysequoia-0.1.35-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:41bcab1c131f6e99405b6f746b1f63064f98dd92e5303529beac9127c779b62e", size = 3645730, upload-time = "2026-08-30T11:40:04.537Z" },
+    { url = "https://files.pythonhosted.org/packages/67/a6/9d77c6337458f751f1c54f91115ba25c9dc8aca9020db05bbae146cfe4e5/pysequoia-0.1.35-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:dad1ce328126eda7f2030e78c7e29a3037b7f90669b304d45cbd4b720f02b7bb", size = 3422319, upload-time = "2026-08-30T11:40:06.188Z" },
+    { url = "https://files.pythonhosted.org/packages/da/0b/143d5a50205b3a1650c37743c2e3861e96d78a1f4b7ca29a0c22e292c145/pysequoia-0.1.35-cp312-cp312-musllinux_1_2_armv7l.whl", hash = "sha256:fbca66bce7bf18255627f62b1338cda0c37f9c3edd66545414a64d633f51ae4d", size = 3500203, upload-time = "2026-08-30T11:40:07.678Z" },
+    { url = "https://files.pythonhosted.org/packages/f1/68/b05ff18e59f616a538871131036cedb12ae77619386211d708c8d7604b4e/pysequoia-0.1.35-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:d2f4825641988c97492c4156eb398e96b367203264b4dee4842fdeed23644974", size = 3656919, upload-time = "2026-08-30T11:40:09.233Z" },
+    { url = "https://files.pythonhosted.org/packages/d2/2a/81e9e754d205384664e291e41e397cbbbec73a0e5092ded5e557c45ceab3/pysequoia-0.1.35-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:fb19c758f25b128758f3c03b8400d8f782c06d20e3749f1b608f27592273710d", size = 3465900, upload-time = "2026-08-30T11:40:10.696Z" },
+    { url = "https://files.pythonhosted.org/packages/0e/29/45e9ecc72eaf1df9a4ac787e11416866556c3daa68b51bb555358f509d22/pysequoia-0.1.35-cp312-cp312-win_amd64.whl", hash = "sha256:78f77b88c61ee3600067f03256e968b530a7fbd8876056ac8e41d090b0e2c5fb", size = 2676652, upload-time = "2026-08-30T11:40:12.13Z" },
+    { url = "https://files.pythonhosted.org/packages/2c/8c/7304f4afd9a4504e8c1da47c358203371240c4a37e02a0d6be177715a07d/pysequoia-0.1.35-cp312-cp312-win_arm64.whl", hash = "sha256:fd9dfc0ea1299c7f3bb64784edc1408e2e2d36363d588429e942f482938d9d41", size = 2592671, upload-time = "2026-08-30T11:40:13.65Z" },
+]
+
+[[package]]
 name = "pytest"
 version = "9.1.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1206,6 +1232,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a3/26/b09b8010994eccc3c09092e6b34058f36a460eea2d4c3e8b910c695975a0/typing_inspection-0.4.4.tar.gz", hash = "sha256:547274fa6b0a561ccf549cc9524b999a578e737d015d8709d021f9d0d13bea47", size = 76928, upload-time = "2026-08-12T12:37:25.997Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/67/81/4add07e5172b7ac40d8ed5ff580409a7801a4fe26d529bdd915401dabfbe/typing_inspection-0.4.4-py3-none-any.whl", hash = "sha256:65b8397ba37ccbce054456aaccddfc91e6e3083c92824df348d96ca832f3f147", size = 14750, upload-time = "2026-08-12T12:37:24.648Z" },
+]
+
+[[package]]
+name = "unidiff"
+version = "1.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9f/7a/f891dba8225c20cce4417443073e67f33e01fae9715a6477f59eb32654ae/unidiff-1.0.1.tar.gz", hash = "sha256:d9425bc516390c54743a1045b2c1c97f02d245a913a241dd499f958adb2df998", size = 31800, upload-time = "2026-09-15T01:39:10.847Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/af/c9/a0529375e0162327fd1cb0dc6785c7a6e56dfae011c2d7b57d611ff84347/unidiff-1.0.1-py3-none-any.whl", hash = "sha256:5e2ca461eda8a4c761ad0922e3e8a65742f359dc60301a3a055b70fd7c158680", size = 18733, upload-time = "2026-09-15T01:39:09.395Z" },
 ]
 
 [[package]]

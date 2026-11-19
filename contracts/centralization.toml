@@ -51,6 +51,16 @@ class = "generic"
 reason = "the upstream's capabilities are recorded as data, so the classification proof is hermetic (A.277)"
 
 [[capabilities]]
+id = "script:scripts/tools_verify.py"
+class = "generic"
+reason = "each locked tool without mise provenance is verified by its publisher's own method and recorded (A.279)"
+
+[[capabilities]]
+id = "task:tools:verify"
+class = "generic"
+reason = "each locked tool without mise provenance is verified by its publisher's own method and recorded (A.279)"
+
+[[capabilities]]
 id = "script:scripts/claims_audit.py"
 class = "generic"
 reason = "claims are credited only with contract, task, proof and run evidence (A.36)"
@@ -176,6 +186,16 @@ class = "generic"
 reason = "spec building: an upstream file becomes a measured source:apply spec (A.29)"
 
 [[capabilities]]
+id = "script:scripts/source_diff.py"
+class = "generic"
+reason = "worktree review: uncommitted changes read as data before any is discarded, ported from cscie103 D.476 (A.351)"
+
+[[capabilities]]
+id = "task:source:diff"
+class = "generic"
+reason = "worktree review: uncommitted changes read as data before any is discarded, ported from cscie103 D.476 (A.351)"
+
+[[capabilities]]
 id = "script:scripts/template_update.py"
 class = "generic"
 reason = "a generated project is brought to a later commit of its template, pinned (A.134)"
@@ -294,6 +314,26 @@ reason = "this recommender fitted model as a governed artifact (A.100)"
 id = "task:model:fit"
 class = "project"
 reason = "this recommender fitted model as a governed artifact (A.100)"
+
+[[capabilities]]
+id = "script:scripts/evaluation_evidence.py"
+class = "project"
+reason = "this recommender's offline evaluation evidence record, evaluation-evidence/v1 (A.283)"
+
+[[capabilities]]
+id = "script:scripts/evaluation_protocol.py"
+class = "project"
+reason = "this recommender's research policy, evaluation-protocol/v1, whose digest every evidence record names (A.284)"
+
+[[capabilities]]
+id = "script:scripts/point_in_time.py"
+class = "project"
+reason = "this recommender's point-in-time features, read only from ratings strictly before each target (A.292)"
+
+[[capabilities]]
+id = "script:scripts/moe.py"
+class = "project"
+reason = "this recommender's gated mixture of experts: a stable softmax gate, its mixing and per-bucket RMSE (A.345)"
 
 [[capabilities]]
 id = "script:scripts/milestone2.py"
