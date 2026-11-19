@@ -2,13 +2,38 @@
 // Every figure the site's text names, read from its source and never typed in (A.245).
 import data from "./data/project.json";
 import movielens from "./data/movielens.json";
+import results from "./data/results.json";
 
 const NUMBER = new Intl.NumberFormat("en-US");
 const MONTH = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
 
-export function sources(project = data, summary = movielens) {
+// A.350: one value the notebook recorded for Milestone 2, read from Results by its pointer.
+function recorded(pointer, sections) {
+  const section = sections.find((entry) => entry.milestone === "M2");
+  const entry = section?.entries.find((item) => item.pointer === pointer);
+  if (!entry) {
+    throw new Error(`no Milestone 2 value at ${pointer}`);
+  }
+  return entry.value;
+}
+
+// The cut quantiles: the share of every recorded rating before each cut, to two places.
+function cutQuantiles(sections) {
+  const [train, validation, test] = ["train", "validation", "test"].map((window) =>
+    recorded(`/split_audit/windows/${window}/ratings`, sections),
+  );
+  const total = train + validation + test;
+  const share = (count) => Math.round((count / total) * 100) / 100;
+  return {
+    ms2ValidationQuantile: share(train),
+    ms2TestQuantile: share(train + validation),
+  };
+}
+
+export function sources(project = data, summary = movielens, recordedResults = results) {
   const { structure } = summary;
   return {
+    ...cutQuantiles(recordedResults.milestones),
     ratings: structure.ratings,
     users: structure.users,
     moviesRated: structure.moviesRated,

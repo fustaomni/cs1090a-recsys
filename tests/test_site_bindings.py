@@ -194,3 +194,38 @@ def test_the_split_audit_is_recorded_from_the_notebook_run() -> None:
     ]
     missing = [pointer for pointer in wanted if pointer not in named]
     assert missing == [], missing
+
+
+def _ms2(pointer: str) -> object:
+    """One value the notebook recorded for Milestone 2, read from Results by its pointer."""
+    sections = _load("results.json").get("milestones")
+    assert isinstance(sections, list), sections
+    section = next(entry for entry in sections if entry.get("milestone") == "M2")
+    found = [entry["value"] for entry in section["entries"] if entry.get("pointer") == pointer]
+    assert len(found) == 1, (pointer, found)
+    return found[0]
+
+
+QUANTILE_TOKENS = ("ms2ValidationQuantile", "ms2TestQuantile")
+TYPED_QUANTILE = re.compile(r"\b0\.\d+\b")
+
+
+def test_the_overview_quantile_claim_follows_the_data() -> None:
+    """A.350: Milestone 2's cut quantiles are bound from the recorded windows, never typed."""
+    counts = [_ms2(f"/split_audit/windows/{window}/ratings") for window in SPLIT_WINDOWS]
+    assert all(isinstance(count, int) and count > 0 for count in nonempty(counts)), counts
+    project = _load("project.json")
+    phases = project.get("phases")
+    assert isinstance(phases, list), project.keys()
+    phase = next(entry for entry in phases if entry.get("id") == "2")
+    claims = [point for point in nonempty(phase["points"]) if "Milestone 2" in point]
+    assert len(claims) == 1, claims
+    milestone_2 = claims[0].split("Milestone 3")[0]
+    missing = [token for token in QUANTILE_TOKENS if f"{{{token}}}" not in milestone_2]
+    assert missing == [], (missing, milestone_2)
+    assert not TYPED_QUANTILE.search(milestone_2), milestone_2
+    binder = (SITE / "src" / "bind.js").read_text(encoding="utf-8")
+    assert 'import results from "./data/results.json";' in binder, "bind.js reads no results"
+    unbound = [token for token in QUANTILE_TOKENS if f"{token}:" not in binder]
+    assert unbound == [], unbound
+    assert "/split_audit/windows/" in binder, "the quantiles are not read from the split audit"

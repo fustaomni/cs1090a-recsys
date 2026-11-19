@@ -27,6 +27,7 @@ from pydantic import ValidationError, model_validator
 from bounded import Exited, run
 from contract_base import Contract
 from gitenv import scrubbed_env
+from library_errors import PreconditionError
 
 DEADLINE = 30.0
 HEX = frozenset("0123456789abcdef")
@@ -134,6 +135,70 @@ def branch_name(root: Path, name: str) -> str | GitObservationFailure:
     if isinstance(seen, GitObservationFailure):
         return seen
     return seen.stdout.strip()
+
+
+class NoWorkingTree(Contract):
+    """git answered: the main repository is bare, so it has no working tree (D.340)."""
+
+    kind: Literal["no_working_tree"] = "no_working_tree"
+    path: str
+
+
+class MainCheckoutUnknownError(PreconditionError):
+    """The main checkout could not be named, so a caller that needs it stops (D.340)."""
+
+
+def common_dir(root: Path) -> Path | GitObservationFailure:
+    """The git common directory every worktree shares, as an absolute path (D.172, D.340)."""
+    seen = git(root, "rev-parse", "--path-format=absolute", "--git-common-dir")
+    if isinstance(seen, GitObservationFailure):
+        return seen
+    return Path(seen.stdout.strip())
+
+
+def main_checkout(root: Path) -> Path | GitObservationFailure | NoWorkingTree:
+    """The main worktree, the first git lists, or why there is none (D.340).
+
+    NOT THE COMMON DIRECTORY'S PARENT: in a bare repository that names a folder no checkout
+    owns, so git's own first worktree record is read, and a bare one is refused, never guessed.
+    """
+    seen = git(root, "worktree", "list", "--porcelain", "-z")
+    if isinstance(seen, GitObservationFailure):
+        return seen
+    fields = seen.stdout.split("\0\0", 1)[0].split("\0")
+    if not fields[0].startswith("worktree "):
+        return GitObservationFailure(argv=seen.argv, reason="malformed", detail=fields[0][:200])
+    named = fields[0].removeprefix("worktree ")
+    if "bare" in fields:
+        return NoWorkingTree(path=named)
+    return Path(named).resolve()
+
+
+def not_a_repository(failure: GitObservationFailure) -> bool:
+    """git answered that no repository holds the path: an answer, unlike a timeout (D.340)."""
+    # BOTH OF GIT'S LINES NAME IT (D.382): a search that reached a mount says it stopped at the
+    # filesystem boundary, and that line may be the only one the detail keeps.
+    detail = failure.detail.lower()
+    return failure.reason == "exited" and (
+        "not a git repository" in detail or "stopping at filesystem boundary" in detail
+    )
+
+
+def unknown_main_checkout(root: Path, found: object) -> MainCheckoutUnknownError:
+    """The error a caller raises when git could not name the main checkout of root (D.340)."""
+    return MainCheckoutUnknownError(
+        f"the main checkout of {root} is unknown: {found}",
+        remediation="run inside a checkout of this repository whose main worktree is not bare",
+        root=str(root),
+    )
+
+
+def require_main_checkout(root: Path) -> Path:
+    """main_checkout for a caller that cannot go on without it: anything else is raised."""
+    found = main_checkout(root)
+    if not isinstance(found, Path):
+        raise unknown_main_checkout(root, found)
+    return found
 
 
 def tree_state(root: Path) -> TreeObservation:
