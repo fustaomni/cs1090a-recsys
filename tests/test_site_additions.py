@@ -12,9 +12,9 @@ ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 DATA = SITE / "src" / "data"
 MECHANISMS = SITE / "src" / "mechanisms"
-# THE DESIGN'S REQUIRED SET (A.223, A.246): fourteen models and twelve techniques.
-MODELS = list(range(1, 15))
-TECHNIQUES = list(range(1, 13))
+# THE DESIGN'S REQUIRED SET (A.223, A.246, A.346): fifteen models and twelve techniques.
+MODELS = list(range(1, 16))
+TECHNIQUES = list(range(1, 16))
 ADDITIONS = ("M13", "M14", "T11", "T12")
 
 

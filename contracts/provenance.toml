@@ -1478,3 +1478,18 @@ path = "contracts/mutations/A.321.toml"
 reason = "the upstream mutant some finding in [] does not compile once the rule reads finding.file, so OPA's session-wide check crashes; an undefined input path defeats the same rule and compiles"
 patch = "contracts/vendor-patches/contracts/mutations/A.321.toml.patch"
 sha256 = "d46ff16afad33c1b319d251414b5d6ae6f9bcce2acce7ff0339f717ec6c8146e"
+
+[[files]]
+path = "scripts/source_diff.py"
+sha256 = "64070413483816bab0ae1821a79d646713ee9f933b327b8de17c5f7086193405"
+commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
+
+[[files]]
+path = "tests/test_source_diff.py"
+sha256 = "c97e795813f17852cee606a387ca526694b5ee592901e105fbce9d25df7d5574"
+commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
+
+[[files]]
+path = "contracts/mutations/d476.toml"
+sha256 = "2b958e304c10b4a0a71bf0eb53efe31c4d86b21ec77cba7e30268bd5861cf95d"
+commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
