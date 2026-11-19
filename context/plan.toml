@@ -4171,3 +4171,18 @@ done_when = [
   { kind = "proof", test = "tests/test_moe_fit.py::test_the_fitted_gate_agrees_with_the_site" },
   { kind = "proof", test = "tests/test_moe_fit.py::test_a_gate_is_never_fitted_on_no_ratings" },
 ]
+[[steps]]
+id = "A.351"
+title = "source:diff returns from cscie103's D.476: a worktree's uncommitted changes are read as data, each changed path with its status and every hunk with its line ranges and its added and removed lines, untracked paths listed by name and size without being read, git run through gitenv and the diff parsed by python-unidiff 1.0.1, so a dirty worktree is inspected before source:restore discards anything"
+thread = "A"
+depends_on = ["A.81", "A.118"]
+because = { "A.81" = "source:read, the read-as-data contract this extends to changes", "A.118" = "source:restore, the discard this lets a person inspect first" }
+branch = "feature/source-diff"
+done_when = [
+  { kind = "task", name = "source:diff" },
+  { kind = "path", path = "contracts/mutations/d476.toml" },
+  { kind = "proof", test = "tests/test_source_diff.py::test_a_modified_file_reports_each_hunk_with_its_added_and_removed_lines" },
+  { kind = "proof", test = "tests/test_source_diff.py::test_an_untracked_file_is_listed_without_being_read" },
+  { kind = "proof", test = "tests/test_source_diff.py::test_a_clean_worktree_reports_no_changes" },
+  { kind = "proof", test = "tests/test_source_diff.py::test_a_slug_naming_no_worktree_is_refused" },
+]

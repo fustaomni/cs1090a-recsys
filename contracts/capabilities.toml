@@ -394,6 +394,12 @@ implementation = "scripts/source_port.py"
 emits = "text"
 
 [[capabilities]]
+task = "source:diff"
+version = "1.0.0"
+implementation = "scripts/source_diff.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
 task = "source:apply"
 version = "1.0.0"
 implementation = "scripts/source_apply.py"
