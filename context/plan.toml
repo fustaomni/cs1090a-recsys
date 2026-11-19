@@ -4234,3 +4234,15 @@ done_when = [
   { kind = "proof", test = "tests/test_node_pin.py::test_every_site_task_runs_the_pinned_node_major" },
   { kind = "proof", test = "tests/test_node_pin.py::test_the_lock_records_node_for_every_development_platform" },
 ]
+[[steps]]
+id = "A.362"
+title = "Every task whose script states its usage declares it: the seventeen tasks whose implementation states usage: mise run run <task> with arguments but carry no mise usage spec -- source:read, source:search, source:outline, source:diff, source:apply, worktree:conflicts, worktree:continue, worktree:conclude, worktree:abort, sibling:refresh, sibling:conclude, sibling:trust, sibling:conflicts, sibling:pin, branches:prune, branches:retire and audit:assertions -- become raw_args tasks with a usage spec naming each argument and flag their script states, so mise tasks info shows the interface while every argument still reaches the script unchanged, and A.320's usage findings refuse any task whose implementation states arguments and declares no usage spec"
+thread = "A"
+depends_on = ["A.320"]
+because = { "A.320" = "the usage findings this widens from raw_args tasks to every task whose script states its usage" }
+branch = "feature/source-read-usage"
+done_when = [
+  { kind = "proof", test = "tests/test_capabilities.py::test_every_task_whose_script_states_its_usage_declares_it" },
+  { kind = "proof", test = "tests/test_capabilities.py::test_a_task_stating_arguments_without_a_usage_spec_is_refused" },
+  { kind = "task", name = "check" },
+]
