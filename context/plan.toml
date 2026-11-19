@@ -4145,6 +4145,18 @@ done_when = [
   { kind = "proof", test = "tests/test_site_content.py::test_every_mechanism_is_registered_and_each_built_one_has_its_lab" },
 ]
 [[steps]]
+id = "A.359"
+title = "The MoE labs fit their gate on a train, validate and test time split"
+thread = "A"
+branch = "feature/moe-revise"
+depends_on = ["A.353", "A.354", "A.355", "A.356"]
+because = { "A.353" = "a MoE lab on develop that this step reworks", "A.354" = "a MoE lab on develop that this step reworks", "A.355" = "a MoE lab on develop that this step reworks", "A.356" = "a MoE lab on develop that this step reworks" }
+done_when = [
+  { kind = "task", name = "site:test" },
+  { kind = "path", path = "site/src/mechanisms/lib/moefit.js" },
+  { kind = "path", path = "site/src/mechanisms/lib/moefit.test.js" },
+]
+[[steps]]
 id = "A.360"
 title = "scripts/moe.py fits its gate on the validation window, as the site's Model 15 does"
 thread = "A"

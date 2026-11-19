@@ -2,57 +2,67 @@ import { useCallback, useMemo, useState } from "react";
 import Plot from "../Plot.jsx";
 import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
-import { gateFeatures, usable } from "../lib/moe.js";
-import { timedRatings } from "../lib/ratings.js";
+import { arrivingRatings, threeWindows, windowFeatures } from "../lib/moefit.js";
 
-const SAFE = "#4ade80";
-const BLOCKED = "#f87171";
+const TRAIN = "#4ade80";
+const VALIDATE = "#facc15";
+const TEST = "#f87171";
 const whole = (value) => value.toFixed(0);
 
+// Each window's features may read only the windows before it: validate reads train, and test
+// reads train and validate. The guard refuses any history that reaches the window it describes.
+function guard(history, rows, label) {
+  try {
+    const found = windowFeatures(history, rows);
+    const known = found.filter((f) => f.userCount > 0 && f.movieCount > 0).length;
+    return `Allowed: ${label} reads ${history.length} earlier ratings; ${known} of its ${rows.length} ratings have both histories.`;
+  } catch (error) {
+    return `Refused: ${error.message}.`;
+  }
+}
+
 export default function T14() {
-  const [boundary, setBoundary] = useState(500);
+  const [validateFrom, setValidateFrom] = useState(600);
+  const [testFrom, setTestFrom] = useState(800);
   const [leak, setLeak] = useState(false);
 
-  const rows = useMemo(() => timedRatings({ seed: 181 }), []);
+  const rows = useMemo(() => arrivingRatings({ seed: 191 }), []);
   const users = useMemo(() => Math.max(...rows.map((row) => row.user)) + 1, [rows]);
-  const { before, blocked } = useMemo(() => usable(rows, boundary), [rows, boundary]);
-  const sameSecond = blocked.filter((row) => row.time === boundary).length;
-  const target = blocked[0];
-
-  const verdict = useMemo(() => {
-    if (!target) return "No rating sits at or after this request time.";
+  const cut = useMemo(() => {
     try {
-      const found = gateFeatures(leak ? rows : before, target, boundary);
-      return `Allowed: the gate reads ${found.userCount} of user ${target.user}'s ratings and ${found.movieCount} of movie ${target.movie}'s, all before the wall.`;
+      return { windows: threeWindows(rows, { validateFrom, testFrom }) };
     } catch (error) {
-      return `Refused: ${error.message}.`;
+      return { error: error.message };
     }
-  }, [leak, rows, before, target, boundary]);
+  }, [rows, validateFrom, testFrom]);
+
+  const verdicts = useMemo(() => {
+    if (cut.error) return null;
+    const { train, validate, test } = cut.windows;
+    const validateHistory = leak ? [...train, ...validate] : train;
+    return {
+      validate: guard(validateHistory, validate, "validate"),
+      test: guard([...train, ...validate], test, "test"),
+    };
+  }, [cut, leak]);
 
   const space = useCallback(
-    (colors) => [
-      {
+    (colors) => {
+      if (cut.error) return [];
+      const { train, validate, test } = cut.windows;
+      const points = (name, found, color) => ({
         type: "scatter3d",
         mode: "markers",
-        name: "Usable clues, strictly before",
-        x: before.map((row) => row.time),
-        y: before.map((row) => row.user),
-        z: before.map((row) => row.rating),
-        marker: { size: 2.5, color: SAFE, opacity: 0.8 },
-      },
-      {
-        type: "scatter3d",
-        mode: "markers",
-        name: "Blocked, at or after",
-        x: blocked.map((row) => row.time),
-        y: blocked.map((row) => row.user),
-        z: blocked.map((row) => row.rating),
-        marker: { size: 2.5, color: BLOCKED, opacity: 0.8 },
-      },
-      {
+        name,
+        x: found.map((row) => row.time),
+        y: found.map((row) => row.user),
+        z: found.map((row) => row.rating),
+        marker: { size: 2.5, color, opacity: 0.8 },
+      });
+      const wall = (name, at) => ({
         type: "mesh3d",
-        name: "Request time",
-        x: [boundary, boundary, boundary, boundary],
+        name,
+        x: [at, at, at, at],
         y: [0, users, users, 0],
         z: [0.5, 0.5, 5.5, 5.5],
         i: [0, 0],
@@ -61,9 +71,16 @@ export default function T14() {
         color: colors.accent,
         opacity: 0.25,
         hoverinfo: "name",
-      },
-    ],
-    [before, blocked, boundary, users],
+      });
+      return [
+        points("Train", train, TRAIN),
+        points("Validate", validate, VALIDATE),
+        points("Test", test, TEST),
+        wall("Validation starts", validateFrom),
+        wall("Test starts", testFrom),
+      ];
+    },
+    [cut, users, validateFrom, testFrom],
   );
 
   const spaceLayout = useMemo(
@@ -82,41 +99,51 @@ export default function T14() {
   return (
     <article className="lab">
       <p>
-        A feature may only use what was known when the prediction was asked for. The wall is the
-        request time: ratings strictly before it are clues the gate may count, and ratings at or
-        after it, including one in the same second, are blocked. Slide the wall and the clues
-        change; tick the leak box and the gate is handed every rating, which the guard refuses
-        rather than silently counting the future.
+        A feature may only use what was known when the prediction was asked for. Two walls cut
+        time into three windows: train, validate and test. The validation window's features, which
+        the gate is fitted on, may read only train; the test window's features may read train and
+        validate, never test itself. Slide the walls and the windows change; put the second wall
+        on or before the first and the split is refused; tick the leak box and the validation
+        features are handed their own window, which the guard refuses rather than silently
+        counting the future.
       </p>
-      <Plot traces={space} layout={spaceLayout} label="Ratings by time, user and rating, split by the request time" />
+      <Plot traces={space} layout={spaceLayout} label="Ratings by time, user and rating, cut into train, validate and test" />
       <div className="controls">
-        <Slider label="Request time" value={boundary} min={1} max={999} step={1} onChange={setBoundary} format={whole} />
+        <Slider label="Validation starts" value={validateFrom} min={100} max={950} step={10} onChange={setValidateFrom} format={whole} />
+        <Slider label="Test starts" value={testFrom} min={150} max={990} step={10} onChange={setTestFrom} format={whole} />
         <label className="toggle">
           <input type="checkbox" checked={leak} onChange={(event) => setLeak(event.target.checked)} />{" "}
-          Hand the gate every rating, the future included
+          Hand the validation features their own window too
         </label>
       </div>
       <dl className="readouts">
-        <div style={{ borderTop: `3px solid ${SAFE}` }}>
-          <dt>Usable clues</dt>
-          <dd>{before.length}</dd>
-        </div>
-        <div style={{ borderTop: `3px solid ${BLOCKED}` }}>
-          <dt>Blocked</dt>
-          <dd>
-            {blocked.length}, of which {sameSecond} fall in the request's own second
-          </dd>
-        </div>
-        <div>
-          <dt>The guard</dt>
-          <dd>{verdict}</dd>
-        </div>
+        {cut.error ? (
+          <div>
+            <dt>The split</dt>
+            <dd>Refused: {cut.error}.</dd>
+          </div>
+        ) : (
+          <>
+            <div style={{ borderTop: `3px solid ${TRAIN}` }}>
+              <dt>Train</dt>
+              <dd>{cut.windows.train.length} ratings</dd>
+            </div>
+            <div style={{ borderTop: `3px solid ${VALIDATE}` }}>
+              <dt>Validate</dt>
+              <dd>{verdicts.validate}</dd>
+            </div>
+            <div style={{ borderTop: `3px solid ${TEST}` }}>
+              <dt>Test</dt>
+              <dd>{verdicts.test}</dd>
+            </div>
+          </>
+        )}
       </dl>
       <Provenance
-        data="Synthetic ratings, generated in this page: timedRatings({ seed: 181 }); no real ratings"
-        split="A rating is usable only when its time is strictly before the request time"
-        features="The user's and the movie's rating counts, read by gateFeatures in lib/moe.js"
-        method="Strictly-before boundary, the same rule as scripts/moe.py's gate_features, which raises on any later rating"
+        data="Synthetic ratings from users and movies that arrive over time, generated in this page: arrivingRatings({ seed: 191 }); no real ratings"
+        split="Train before the first wall, validate up to the second, test from it; the second wall must come after the first"
+        features="The user's and the movie's rating counts from the windows before each one, read by windowFeatures in lib/moefit.js"
+        method="Strictly-before boundary at the start of each window, the same rule as scripts/moe.py's gate_features, which raises on any later rating"
       />
     </article>
   );
