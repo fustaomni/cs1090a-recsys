@@ -4145,6 +4145,33 @@ done_when = [
   { kind = "proof", test = "tests/test_site_content.py::test_every_mechanism_is_registered_and_each_built_one_has_its_lab" },
 ]
 [[steps]]
+id = "A.359"
+title = "The MoE labs fit their gate on a train, validate and test time split"
+thread = "A"
+branch = "feature/moe-revise"
+depends_on = ["A.353", "A.354", "A.355", "A.356"]
+because = { "A.353" = "a MoE lab on develop that this step reworks", "A.354" = "a MoE lab on develop that this step reworks", "A.355" = "a MoE lab on develop that this step reworks", "A.356" = "a MoE lab on develop that this step reworks" }
+done_when = [
+  { kind = "task", name = "site:test" },
+  { kind = "path", path = "site/src/mechanisms/lib/moefit.js" },
+  { kind = "path", path = "site/src/mechanisms/lib/moefit.test.js" },
+]
+[[steps]]
+id = "A.360"
+title = "scripts/moe.py fits its gate on the validation window, as the site's Model 15 does"
+thread = "A"
+branch = "feature/moe-gate-python"
+depends_on = ["A.345"]
+because = { "A.345" = "scripts/moe.py holds the softmax gate, its mix and its leakage-safe features that the fitted gate builds on" }
+done_when = [
+  { kind = "task", name = "test" },
+  { kind = "path", path = "contracts/mutations/a360.toml" },
+  { kind = "proof", test = "tests/test_moe_fit.py::test_the_fitted_gate_cuts_the_uniform_gates_error_by_four_times" },
+  { kind = "proof", test = "tests/test_moe_fit.py::test_the_fitted_gate_routes_each_region_to_its_expert" },
+  { kind = "proof", test = "tests/test_moe_fit.py::test_the_fitted_gate_agrees_with_the_site" },
+  { kind = "proof", test = "tests/test_moe_fit.py::test_a_gate_is_never_fitted_on_no_ratings" },
+]
+[[steps]]
 id = "A.351"
 title = "source:diff returns from cscie103's D.476: a worktree's uncommitted changes are read as data, each changed path with its status and every hunk with its line ranges and its added and removed lines, untracked paths listed by name and size without being read, git run through gitenv and the diff parsed by python-unidiff 1.0.1, so a dirty worktree is inspected before source:restore discards anything"
 thread = "A"
