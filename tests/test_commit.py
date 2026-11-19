@@ -102,6 +102,8 @@ def test_the_root_commit_is_made_on_main_through_the_task(
     def unborn(argv: list[str]) -> tuple[int, str]:
         if argv[:1] == ["symbolic-ref"]:
             return 0, "main"
+        if argv[:3] == ["diff", "--cached", "--name-only"]:
+            return 0, ""
         if argv[:2] == ["diff", "--cached"]:
             return 1, ""
         return (1, "") if argv[:3] == ["rev-parse", "--quiet", "--verify"] else (0, "")
