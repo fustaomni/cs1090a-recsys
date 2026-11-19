@@ -19,3 +19,12 @@ kind = "github-immutable-release"
 asset = "regal_Linux_x86_64"
 sha256 = "5e7d030064e307d54e6ffa3d85b8d9052d3d40b7afa10262c86c886f8a76559d"
 verified = "2026-11-10"
+
+[[tools]]
+name = "node"
+version = "24.21.0"
+kind = "nodejs-signed-shasums"
+asset = "node-v24.21.0-linux-x64.tar.gz"
+sha256 = "6e1db87ef58b8819e5d5402eff1536491b18edd8eb7bee5ef7897876e88dc5ff"
+method = "nodejs.org SHASUMS256.txt, GPG-signed in SHASUMS256.txt.sig by a key in nodejs/release-keys; mise's core node backend checks the signature and the archive's sha256 at install and fails closed"
+verified = "2026-11-19"
