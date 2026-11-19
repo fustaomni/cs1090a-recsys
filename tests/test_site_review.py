@@ -7,6 +7,7 @@ typed into this proof, so the page is held to what the course asked for.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -357,6 +358,38 @@ def test_results_state_the_decision_rule_and_its_worked_example() -> None:
     assert "Hypothetical" in rule["example"] and "inconclusive" in rule["example"], rule
     app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
     assert "{data.decision_rule.example}" in app, "Results omits the worked example"
+
+
+MS2_EVIDENCE = ROOT / "evidence" / "milestone2" / "results.json"
+MS2_CONTRACT = "milestone2-results/v1"
+RESULTS_DATA = ROOT / "site" / "src" / "data" / "results.json"
+
+
+def _pointed(document: Any, pointer: str) -> Any:
+    """The value an RFC 6901 pointer names in a document."""
+    found = document
+    for token in pointer.split("/")[1:]:
+        key = token.replace("~1", "/").replace("~0", "~")
+        found = found[int(key)] if isinstance(found, list) else found[key]
+    return found
+
+
+def test_results_state_only_their_recorded_evidence() -> None:
+    # A.261: M2 states only what its committed milestone2-results/v1 file holds, and every
+    # model row is named through bind as Model N, never typed.
+    assert MS2_EVIDENCE.is_file(), "the Milestone 2 results file is not committed"
+    raw = MS2_EVIDENCE.read_bytes()
+    document = json.loads(raw)
+    assert document.get("contract") == MS2_CONTRACT, document.get("contract")
+    cited = {"contract": MS2_CONTRACT, "sha256": hashlib.sha256(raw).hexdigest()}
+    results = json.loads(RESULTS_DATA.read_text(encoding="utf-8"))
+    section = next(entry for entry in results["milestones"] if entry["milestone"] == "M2")
+    for entry in nonempty(section["entries"]):
+        assert entry["evidence"] == cited, entry
+        assert _pointed(document, entry["pointer"]) == entry["value"], entry
+    app = (ROOT / "site" / "src" / "App.jsx").read_text(encoding="utf-8")
+    assert '<th scope="row">{row.name}</th>' not in app, "Results types its model names"
+    assert "bind(`{${row.key}}`)" in app, "Results does not name model rows through bind"
 
 
 def test_overview_states_three_questions_and_which_the_data_can_answer() -> None:

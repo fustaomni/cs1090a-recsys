@@ -1,6 +1,6 @@
 {
   "contract": "site-results/v1",
-  "updated": "2026-11-18",
+  "updated": "2026-11-19",
   "protocol": "Protocol A, a global temporal split. Milestone 2 split the ratings once in time, its recorded cutoff and counts below; Milestone 3's validation and test boundaries are planned",
   "milestones": [
     {
@@ -14,8 +14,8 @@
           "label": "Size of the three files (MB)",
           "value": 24.899807,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/size_megabytes"
         },
@@ -23,8 +23,8 @@
           "label": "Ratings",
           "value": 1000209,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/tables/ratings/0"
         },
@@ -32,8 +32,8 @@
           "label": "Users",
           "value": 6040,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/tables/users/0"
         },
@@ -41,8 +41,8 @@
           "label": "Movies listed",
           "value": 3883,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/tables/movies/0"
         },
@@ -50,8 +50,8 @@
           "label": "Joined table rows",
           "value": 1000209,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/joined_table/0"
         },
@@ -59,8 +59,8 @@
           "label": "Joined table columns",
           "value": 10,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/joined_table/1"
         },
@@ -68,8 +68,8 @@
           "label": "Mean rating (stars)",
           "value": 3.581564453029317,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/summaries/rating/mean"
         },
@@ -77,8 +77,8 @@
           "label": "Ratings outside 1 to 5",
           "value": 0,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/quality/0/count"
         },
@@ -86,8 +86,8 @@
           "label": "Duplicate user and movie pairs",
           "value": 0,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/quality/1/count"
         },
@@ -95,8 +95,8 @@
           "label": "Ratings by unknown users",
           "value": 0,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/quality/2/count"
         },
@@ -104,8 +104,8 @@
           "label": "Ratings of unknown movies",
           "value": 0,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/quality/3/count"
         },
@@ -113,8 +113,8 @@
           "label": "Empty fields",
           "value": 0,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/quality/4/count"
         },
@@ -122,8 +122,8 @@
           "label": "Ratings outside 1 to 5: verdict",
           "value": "pass",
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/quality/0/status"
         },
@@ -131,8 +131,8 @@
           "label": "Duplicate user and movie pairs: verdict",
           "value": "pass",
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/quality/1/status"
         },
@@ -140,8 +140,8 @@
           "label": "Ratings by unknown users: verdict",
           "value": "pass",
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/quality/2/status"
         },
@@ -149,8 +149,8 @@
           "label": "Ratings of unknown movies: verdict",
           "value": "pass",
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/quality/3/status"
         },
@@ -158,8 +158,8 @@
           "label": "Empty fields: verdict",
           "value": "pass",
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/quality/4/status"
         },
@@ -167,8 +167,8 @@
           "label": "Zip codes not five digits",
           "value": 81,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/unusual_users/zip-not-five-digits"
         },
@@ -176,8 +176,8 @@
           "label": "1-star ratings",
           "value": 56174,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/rating_balance/1"
         },
@@ -185,8 +185,8 @@
           "label": "2-star ratings",
           "value": 107557,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/rating_balance/2"
         },
@@ -194,8 +194,8 @@
           "label": "3-star ratings",
           "value": 261197,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/rating_balance/3"
         },
@@ -203,8 +203,8 @@
           "label": "4-star ratings",
           "value": 348971,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/rating_balance/4"
         },
@@ -212,8 +212,8 @@
           "label": "5-star ratings",
           "value": 226310,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/rating_balance/5"
         },
@@ -221,8 +221,8 @@
           "label": "Split cutoff (Unix time)",
           "value": 975768738,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split/cutoff"
         },
@@ -230,8 +230,8 @@
           "label": "Training ratings",
           "value": 800164,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split/train"
         },
@@ -239,8 +239,8 @@
           "label": "Test ratings",
           "value": 200045,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split/test"
         },
@@ -248,8 +248,8 @@
           "label": "Test ratings by users unseen in training",
           "value": 95502,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/cold_start/user-unseen"
         },
@@ -257,8 +257,8 @@
           "label": "Test ratings of movies unseen in training",
           "value": 115,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/cold_start/movie-unseen"
         },
@@ -266,8 +266,8 @@
           "label": "Warm test ratings",
           "value": 104452,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/test_buckets/warm"
         },
@@ -275,8 +275,8 @@
           "label": "New-user test ratings",
           "value": 95478,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/test_buckets/new-user"
         },
@@ -284,8 +284,8 @@
           "label": "New-movie test ratings",
           "value": 91,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/test_buckets/new-movie"
         },
@@ -293,8 +293,8 @@
           "label": "Both-new test ratings",
           "value": 24,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/test_buckets/both-new"
         },
@@ -302,8 +302,8 @@
           "label": "Split audit: leakage",
           "value": "pass",
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/leakage"
         },
@@ -311,8 +311,8 @@
           "label": "Training window: ratings",
           "value": 700144,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/train/ratings"
         },
@@ -320,8 +320,8 @@
           "label": "Training window: users",
           "value": 4870,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/train/users"
         },
@@ -329,8 +329,8 @@
           "label": "Training window: movies",
           "value": 3633,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/train/movies"
         },
@@ -338,8 +338,8 @@
           "label": "Training window: first (Unix time)",
           "value": 956703932,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/train/first"
         },
@@ -347,8 +347,8 @@
           "label": "Training window: last (Unix time)",
           "value": 974862369,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/train/last"
         },
@@ -356,8 +356,8 @@
           "label": "Validation window: ratings",
           "value": 100020,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/validation/ratings"
         },
@@ -365,8 +365,8 @@
           "label": "Validation window: users",
           "value": 945,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/validation/users"
         },
@@ -374,8 +374,8 @@
           "label": "Validation window: movies",
           "value": 3367,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/validation/movies"
         },
@@ -383,8 +383,8 @@
           "label": "Validation window: first (Unix time)",
           "value": 974862386,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/validation/first"
         },
@@ -392,8 +392,8 @@
           "label": "Validation window: last (Unix time)",
           "value": 975768719,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/validation/last"
         },
@@ -401,8 +401,8 @@
           "label": "Test window: ratings",
           "value": 200045,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/test/ratings"
         },
@@ -410,8 +410,8 @@
           "label": "Test window: users",
           "value": 1783,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/test/users"
         },
@@ -419,8 +419,8 @@
           "label": "Test window: movies",
           "value": 3511,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/test/movies"
         },
@@ -428,8 +428,8 @@
           "label": "Test window: first (Unix time)",
           "value": 975768738,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/test/first"
         },
@@ -437,8 +437,8 @@
           "label": "Test window: last (Unix time)",
           "value": 1046454590,
           "evidence": {
-            "contract": "ms2-results/v1",
-            "sha256": "92f13365e1957c60f80a5e2318b01d3fefbd82a3cdabaffe2ae1d4e03328801b"
+            "contract": "milestone2-results/v1",
+            "sha256": "756782b82bbae9d3a43998e729a08573529fe0df47878f485e3fa83deeb046f1"
           },
           "pointer": "/split_audit/windows/test/last"
         }
