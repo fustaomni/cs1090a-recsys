@@ -104,16 +104,6 @@ path = "scripts/opa.py"
 sha256 = "35de7db337fc9e191c6bc6f6fc2b5b660e075bede2ec5caab5e3f36a22a57aa2"
 
 [[files]]
-path = "scripts/plan_edit.py"
-sha256 = "b52e795a1ba2e6aaff5bc3834325f9e82d7ec693b04f6c4fdbca2ad81a4be4ea"
-
-[[adapted]]
-path = "scripts/plan_edit.py"
-reason = "plan:retire supersedes steps with their reasons and keeps every id, ported from cscie103 D.260 and wired into the verb dispatch (A.82)"
-patch = "contracts/vendor-patches/scripts/plan_edit.py.patch"
-sha256 = "2e420826548b2e8d4e1323c5c83fbcd32b6826539a536fe0a875c69748739141"
-
-[[files]]
 path = "scripts/plan_files.py"
 sha256 = "49c44f79b88b3da117fe3074025a5928e6dffeb24e5002ccf0f9ecde737633bc"
 
@@ -650,10 +640,6 @@ path = "scripts/snapshot_gate.py"
 sha256 = "097665e69c5b56f5a41abc597a040193d8b56f7cb9fc6f910cd355e02f32a783"
 
 [[files]]
-path = "scripts/git_observe.py"
-sha256 = "00fa52f9d8e0a8afb1b0b050e46fc402cc430d7122d928737513f9c00a579cba"
-
-[[files]]
 path = "scripts/exemptions.py"
 sha256 = "8adcff74b0568ed81129ff285daaa8e163d836f4a15def71599a3e0516f57596"
 
@@ -748,10 +734,6 @@ sha256 = "062a7f20a78198718c8553581fbe9538941d776f48396180567413c99a080a83"
 [[files]]
 path = "tests/test_snapshot_gate.py"
 sha256 = "edc6c492cfa054dcf2c68a3f31c977002ed4600cdcfa06d3203809aff9b82d5f"
-
-[[files]]
-path = "tests/test_git_observe.py"
-sha256 = "52b5e27d68b99d727c477831e32333ecd53223f7880015a092ca75e13ceb33a8"
 
 [[files]]
 path = "tests/test_exemptions.py"
@@ -991,9 +973,9 @@ sha256 = "83f723e72a23bb4a4783e7354bd4101b3c8284e5fb6e225d4266d69f41e0989f"
 
 [[adapted]]
 path = "contracts/project-identity.toml"
-reason = "this repository's own identity and repository, with slots in pyproject.toml and in uv.lock's root package line, so a generated project's lock takes its name with its identity (A.129); exempt adds bootstrap/, the ledger anchor and contracts/vendor-patches/, whose diffs quote identity lines verbatim, and the coursework paths are dropped (A.121)"
+reason = "this repository's own identity and repository, with slots in pyproject.toml and in uv.lock's root package line, so a generated project's lock takes its name with its identity (A.129); exempt adds bootstrap/, the ledger anchor and contracts/vendor-patches/, whose diffs quote identity lines verbatim, and the coursework paths are dropped (A.121); exempt adds scripts/plan_proofs.py, ported verbatim from the hub at 8745442, whose docstring names this repository (A.82)"
 patch = "contracts/vendor-patches/contracts/project-identity.toml.patch"
-sha256 = "861240f18e56b3df0e37983877c1889260b3e01c3e1f7a431aa302d5b45617a1"
+sha256 = "a705dfce70cf107ddc2960257c395798c874a10c24ae6be2e5e582f59a147c1a"
 
 [[files]]
 path = "scripts/project_identity.py"
@@ -1417,9 +1399,9 @@ commit = "25ed9e72aeea0a0f6b141d33dfe48df8271e9923"
 
 [[adapted]]
 path = "tests/test_plan_conflicts.py"
-reason = "a proof that the policy refuses an absent resolve plan, which ERR_PLAN_RESOLVE_INPUT_MISSING's safeguard names"
+reason = "a proof that the policy refuses an absent resolve plan, which ERR_PLAN_RESOLVE_INPUT_MISSING's safeguard names; _diverge issues each side's id in its own clone, as the hub's does at 8745442, since one clone reserves every id it issues (D.162, A.82)"
 patch = "contracts/vendor-patches/tests/test_plan_conflicts.py.patch"
-sha256 = "4a4116778b97f0effdabf5cffa7d43a4b89866f4437805cd9c427166c347f70b"
+sha256 = "2629ff06f46f88605916f41a7c63a65da53b4d4f55acc69133df905d8ffb48c1"
 
 [[files]]
 path = "contracts/mutations/A.249.toml"
@@ -1510,6 +1492,37 @@ commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
 path = "tests/test_plan_retire.py"
 sha256 = "19def3f6930f8c86b6aa52ced09542d6ae40b5829ba9c687e64a6f39d047a721"
 commit = "043a74a6b7f995980d116363786d5a8160d4bbdc"
+
+[[files]]
+path = "tests/test_plan_add.py"
+sha256 = "d7674233d3de6960c6d75470f9410238e9901f632279083760583021703ac2f4"
+commit = "8745442ddaa7e8888498ac54328d15e7ed091cef"
+
+[[files]]
+path = "scripts/plan_edit.py"
+sha256 = "fa805beb296054ba162b9f28cbc66947e3ee64d85d98fefcad8e4d55c2a82a6f"
+commit = "8745442ddaa7e8888498ac54328d15e7ed091cef"
+
+[[adapted]]
+path = "scripts/plan_edit.py"
+reason = "every verb reads its spec through _read_spec and refuses a bad one as spec_invalid or spec_unreadable, never a traceback (A.128); the hub at 8745442 guards only retire and retract, against ValidationError alone"
+patch = "contracts/vendor-patches/scripts/plan_edit.py.patch"
+sha256 = "79ee293aa81efda224d98a2032664d08ce592be3bd321f63e10ef6f8e7295f3a"
+
+[[files]]
+path = "scripts/git_observe.py"
+sha256 = "fc34c2c705804ddbe00f7c73885fd858c8aa91eb539d2af48ac8c8594bbe3dfc"
+commit = "8745442ddaa7e8888498ac54328d15e7ed091cef"
+
+[[files]]
+path = "tests/test_git_observe.py"
+sha256 = "c7186a4d4c77f084042bbc941280d7b034818e6e2f744f664957c90c5f025a1d"
+commit = "8745442ddaa7e8888498ac54328d15e7ed091cef"
+
+[[files]]
+path = "scripts/plan_proofs.py"
+sha256 = "9a2a966adf88040ddcb2f2274add6298c74ca08b7ea69b927a8a319ec034a899"
+commit = "8745442ddaa7e8888498ac54328d15e7ed091cef"
 
 [[files]]
 path = "scripts/source_search.py"
