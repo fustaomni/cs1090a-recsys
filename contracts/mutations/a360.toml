@@ -1,0 +1,30 @@
+# contracts/mutations/a360.toml
+# A.360: each mutant reverts one part of the fitted gate; a named proof must go red for each.
+
+[[mutants]]
+id = "descent-climbs"
+file = "scripts/moe.py"
+before = "theta[j][d] -= rate * gradient[j][d] / len(rows)"
+after = "theta[j][d] += rate * gradient[j][d] / len(rows)"
+killers = ["tests/test_moe_fit.py::test_the_fitted_gate_cuts_the_uniform_gates_error_by_four_times"]
+
+[[mutants]]
+id = "empty-fit-allowed"
+file = "scripts/moe.py"
+before = "    if not features:"
+after = "    if features is None:"
+killers = ["tests/test_moe_fit.py::test_a_gate_is_never_fitted_on_no_ratings"]
+
+[[mutants]]
+id = "raw-counts"
+file = "scripts/moe.py"
+before = "math.log1p(feature.user_count)"
+after = "float(feature.user_count)"
+killers = ["tests/test_moe_fit.py::test_the_fitted_gate_agrees_with_the_site"]
+
+[[mutants]]
+id = "slope-without-weight"
+file = "scripts/moe.py"
+before = "slope = 2.0 * error * weight * (prediction[j] - mixed)"
+after = "slope = 2.0 * error * (prediction[j] - mixed)"
+killers = ["tests/test_moe_fit.py::test_the_fitted_gate_agrees_with_the_site"]
