@@ -4216,3 +4216,16 @@ because = { "A.191" = "the publication whose leased push becomes a plain one" }
 done_when = [
   { kind = "proof", test = "tests/test_lineage_audit.py::test_the_repository_rewrites_no_lineage" },
 ]
+[[steps]]
+id = "A.361"
+title = "node is a locked project tool: mise.toml's [tools] pins node 24, the major every site task already runs with mise exec node@24, and tools:lock records its checksummed archive for linux-x64 and macos-arm64, so tools:install installs the site's node from the lock on every development platform"
+thread = "A"
+depends_on = ["A.347"]
+because = { "A.347" = "tools:lock, which locks every development platform in one run" }
+branch = "feature/node-pin"
+done_when = [
+  { kind = "task", name = "tools:install" },
+  { kind = "proof", test = "tests/test_node_pin.py::test_node_is_a_pinned_project_tool" },
+  { kind = "proof", test = "tests/test_node_pin.py::test_every_site_task_runs_the_pinned_node_major" },
+  { kind = "proof", test = "tests/test_node_pin.py::test_the_lock_records_node_for_every_development_platform" },
+]
