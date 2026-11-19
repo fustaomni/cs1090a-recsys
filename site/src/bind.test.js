@@ -24,6 +24,6 @@ describe("bind (A.245)", () => {
   });
 
   it("refuses a model or technique the data does not hold (A.258)", () => {
-    expect(() => bind("{model:15}")).toThrow(/unbound \{model:15\}/);
+    expect(() => bind("{model:999}")).toThrow(/unbound \{model:999\}/);
   });
 });
