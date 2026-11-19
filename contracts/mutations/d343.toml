@@ -1,0 +1,31 @@
+# contracts/mutations/d343.toml
+# D.343: commit refuses a staged path it was not given; commit:unstage unstages only named,
+# staged paths with restore --staged, and never touches their files.
+
+[[mutants]]
+id = "unnamed-not-refused"
+file = "scripts/commit.py"
+before = "    refused = refuse_unnamed(paths, staged, held)"
+after = "    refused = None"
+killers = ["tests/test_commit_unstage.py::test_commit_refuses_a_staged_path_it_was_not_given"]
+
+[[mutants]]
+id = "not-staged-accepted"
+file = "scripts/commit.py"
+before = "    if idle:"
+after = "    if False:"
+killers = ["tests/test_commit_unstage.py::test_unstage_refuses_a_named_path_that_is_not_staged"]
+
+[[mutants]]
+id = "restore-skipped"
+file = "scripts/commit.py"
+before = '    code, err = git(["restore", "--staged", "--", *paths])'
+after = '    code, err = 0, ""'
+killers = ["tests/test_commit_unstage.py::test_unstage_clears_named_paths_and_keeps_their_bytes"]
+
+[[mutants]]
+id = "worktree-restored"
+file = "scripts/commit.py"
+before = '    code, err = git(["restore", "--staged", "--", *paths])'
+after = '    code, err = git(["restore", "--staged", "--worktree", "--", *paths])'
+killers = ["tests/test_commit_unstage.py::test_unstage_clears_named_paths_and_keeps_their_bytes"]

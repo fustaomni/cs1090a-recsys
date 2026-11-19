@@ -3775,6 +3775,29 @@ done_when = [
   { kind = "task", name = "check:offline" },
 ]
 [[steps]]
+id = "A.279"
+title = "tools:verify verifies every locked tool whose provenance mise.lock does not record, by the method its publisher provides, and records the evidence in contracts/tool-provenance.toml: a GitHub immutable release by gh release verify-asset, node by a release key's OpenPGP signature on SHASUMS256.txt, checked in Python with pysequoia against nodejs/release-keys pinned by commit, and an npm package by npm audit signatures with its integrity equal to the aube lock's; test_tool_provenance accepts an npm-backend entry only through its recorded verification"
+thread = "A"
+depends_on = ["A.9", "A.278"]
+because = { "A.9" = "the provenance register and its proof", "A.278" = "the gate that must stay within its deadline while the new proofs run" }
+branch = "feature/tools-verify"
+done_when = [
+  { kind = "proof", test = "tests/test_tool_provenance.py::test_every_locked_tool_names_its_provenance" },
+  { kind = "proof", test = "tests/test_tools_verify.py::test_each_publisher_kind_is_verified_by_its_own_method" },
+  { kind = "task", name = "tools:verify" },
+]
+[[steps]]
+id = "A.280"
+title = "tools:which records, for every tool mise.toml declares, the binary mise resolves and the version it reports, as typed evidence, so which npm or node a task runs is observed through a task, never a raw mise which or mise exec probe"
+thread = "A"
+depends_on = ["A.279"]
+because = { "A.279" = "the verified tools whose resolution this records" }
+branch = "feature/tools-which"
+done_when = [
+  { kind = "proof", test = "tests/test_tools_which.py::test_each_tool_resolves_to_its_locked_install" },
+  { kind = "task", name = "tools:which" },
+]
+[[steps]]
 id = "A.320"
 title = "Every raw_args task declares its arguments as its script states them: each of the twelve tasks that forward arguments unparsed carries a mise usage spec, which mise tasks info and --help show while the arguments still pass unchanged, and A.44's capability findings refuse a raw_args task with no usage spec or with an argument its script's own usage line does not name; it is the first slice of A.178's declared inputs, later moved into A.162's typed input schemas"
 thread = "A"
@@ -3968,4 +3991,228 @@ because = { "A.334" = "the IPC kernel manager ms2:execute now gives nbclient, wh
 branch = "feature/ms2-kernel-shutdown"
 done_when = [
   { kind = "proof", test = "tests/test_ms2_execute.py::test_no_kernel_outlives_the_run" },
+]
+[[steps]]
+id = "A.341"
+title = "A generated project inherits A.322's reviewed finding: .betterleaksignore also lists its commit-less fingerprint scripts/tools_verify.py:generic-api-key:35, so the same reviewed line passes the secrets (history) gate in a project whose history re-commits it"
+thread = "A"
+depends_on = ["A.322", "A.279"]
+because = { "A.322" = "the reviewed finding, suppressed only in commit 274309de", "A.279" = "tools:verify, whose pinned KEYS_COMMIT is the finding" }
+branch = "feature/tools-verify"
+done_when = [
+  { kind = "path", path = ".betterleaksignore" },
+  { kind = "proof", test = "tests/test_betterleaks_ignore.py::test_the_reviewed_finding_is_ignored_in_every_commit_of_its_line" },
+  { kind = "proof", test = "tests/integration/test_generated_gate.py::test_a_generated_project_with_its_own_identity_passes_its_own_gate" },
+]
+[[steps]]
+id = "A.342"
+title = "site:record fills a milestone's results section from the run that recorded it: each entry's value is read by a JSON pointer from that run's results file, the entry names the file's contract and SHA-256, and a pointer the file lacks is refused before anything is written"
+thread = "A"
+depends_on = ["A.95", "A.329"]
+because = { "A.95" = "the site's one results document the section lives in", "A.329" = "ms2:execute, which writes the notebook's results file" }
+branch = "feature/site-ms2-results"
+done_when = [
+  { kind = "path", path = "contracts/mutations/A.342.toml" },
+  { kind = "proof", test = "tests/test_site_record.py::test_a_milestone_section_is_recorded_from_its_results_file" },
+  { kind = "proof", test = "tests/test_site_record.py::test_a_pointer_the_results_file_lacks_is_refused" },
+]
+[[steps]]
+id = "A.343"
+title = "The site states where the project stands from data: the group card names the next meeting, Milestone 3 TF Meeting, TBD, while the first meeting stays recorded; Milestones 1 and 2 are done and 3 is current, so their phases follow; and the protocol header separates the split Milestone 2 ran from the validation and test boundaries Milestone 3 plans"
+thread = "A"
+depends_on = ["A.245", "A.256"]
+because = { "A.245" = "the group card and its first meeting, proven by its own test", "A.256" = "the milestone statuses the phases follow" }
+branch = "feature/site-ms2-results"
+done_when = [
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_group_card_names_the_next_meeting" },
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_delivered_milestones_are_done_and_the_next_is_current" },
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_protocol_separates_what_ran_from_what_is_planned" },
+]
+[[steps]]
+id = "A.344"
+title = "Results' Milestone 2 section holds the notebook run's findings, recorded by site:record from the results file ms2:execute wrote, so every value it shows is read from that file and names its digest"
+thread = "A"
+depends_on = ["A.342"]
+because = { "A.342" = "the writer that records a section from a results file" }
+branch = "feature/site-ms2-results"
+done_when = [
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_m2_results_are_recorded_from_the_notebook_run" },
+]
+[[steps]]
+id = "A.347"
+title = "tools:lock locks every development platform, linux-x64 and macos-arm64, in one run, so mise install --locked installs the same locked tools on the MacBook Pro as on FAS OnDemand"
+thread = "A"
+depends_on = ["A.279"]
+because = { "A.279" = "the locked tools whose provenance is verified, which this lock now covers on both platforms" }
+branch = "feature/tools-mac"
+done_when = [
+  { kind = "proof", test = "tests/test_tools_lock.py::test_every_locked_tool_has_an_entry_for_each_development_platform" },
+  { kind = "task", name = "tools:install" },
+]
+[[steps]]
+id = "A.345"
+title = "A gated mixture of experts predicts each rating: the bias baseline is its shared expert and the movie mean, regularised linear and kNN rungs are its specialists, mixed by a softmax gate over features computed strictly before the rating, trained on the training window and judged under Protocol A for each cold-start bucket against the bias baseline"
+thread = "A"
+depends_on = ["A.292", "A.284", "A.331"]
+because = { "A.292" = "the point-in-time rule every gate feature obeys", "A.284" = "the declared protocol the mixture is judged under", "A.331" = "the four training-history buckets the experts specialise in" }
+branch = "feature/moe"
+done_when = [
+  { kind = "path", path = "contracts/mutations/A.345.toml" },
+  { kind = "proof", test = "tests/test_moe.py::test_gate_weights_are_non_negative_and_sum_to_one" },
+  { kind = "proof", test = "tests/test_moe.py::test_a_gate_collapsed_to_one_expert_reproduces_that_expert" },
+  { kind = "proof", test = "tests/test_moe.py::test_no_gate_feature_reads_the_test_window" },
+  { kind = "proof", test = "tests/test_moe.py::test_each_bucket_reports_its_rmse_beside_the_baseline" },
+]
+[[steps]]
+id = "A.346"
+title = "The site shows the mixture of experts from data as planned, before A.345 fits it: Models and techniques lists it as a model with its shared and specialist experts and its gate, Results' board holds its pending row for Milestone 4, and the overview's model count follows the data"
+thread = "A"
+depends_on = ["A.95", "A.245"]
+because = { "A.95" = "the results board its row joins", "A.245" = "the rule that every count on the page comes from its source" }
+branch = "feature/site-moe"
+done_when = [
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_mixture_of_experts_is_listed_from_data" },
+  { kind = "proof", test = "tests/test_site_record.py::test_the_board_holds_a_pending_mixture_row" },
+]
+[[steps]]
+id = "A.349"
+title = "Results' Milestone 2 section shows the notebook run's findings from its results file: the five quality rules each with its verdict and count, the ratings' time span, movies rated against movies listed, missingness by gender, the decisions taken and every figure's title and axes, each read by site:record and naming the file's digest"
+thread = "A"
+depends_on = ["A.344", "A.342"]
+because = { "A.344" = "the Milestone 2 section these findings join", "A.342" = "site:record, which reads each value by a pointer into the results file" }
+branch = "feature/site-ms2-findings"
+done_when = [
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_m2_findings_are_recorded_from_the_notebook_run" },
+  { kind = "proof", test = "tests/test_site_record.py::test_every_m2_finding_names_its_pointer_and_digest" },
+]
+[[steps]]
+id = "A.350"
+title = "Milestone 2's split is a three-way global temporal split reported as data: training before the 0.7 quantile, validation from it to the delivered 0.8 test cut, test from that cut, each window's ratings, users, movies, time span, cold-start shares and the leakage verdict written by the notebook into its results file and shown on Results by site:record, and Overview's quantile claim bound to that data"
+thread = "A"
+depends_on = ["A.331", "A.328", "A.344"]
+because = { "A.331" = "the test buckets the windows keep", "A.328" = "the cleaning checks every window is cut after", "A.344" = "the section the split audit is recorded into" }
+branch = "feature/site-ms2-findings"
+done_when = [
+  { kind = "proof", test = "tests/test_ms2_split.py::test_the_windows_are_cut_at_the_declared_quantiles" },
+  { kind = "proof", test = "tests/test_ms2_split.py::test_each_window_reports_its_rows_users_movies_and_span" },
+  { kind = "proof", test = "tests/test_ms2_split.py::test_no_training_or_validation_rating_reaches_past_its_window" },
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_split_audit_is_recorded_from_the_notebook_run" },
+  { kind = "proof", test = "tests/test_site_bindings.py::test_the_overview_quantile_claim_follows_the_data" },
+]
+[[steps]]
+id = "A.353"
+title = "Lab M15 shows the mixture of experts in 3-D after the owner's router sample: each expert's softmax weight drawn as a surface over the gate's two features, the user's and the movie's training-window rating counts, a query point whose sliders walk the warm, new-user, new-movie and both-new buckets, every expert's weight as a percentage summing to 100 with the shared bias expert always present, and the share of seeded synthetic test ratings in each bucket, computed by pure functions in lib/moe.js proven by vitest"
+thread = "A"
+depends_on = ["A.346", "A.345", "A.99"]
+because = { "A.346" = "the registry row M15 that this lab builds", "A.345" = "the gate, mixing and features the lab computes", "A.99" = "the lab pattern every mechanism follows" }
+branch = "feature/moe-labs"
+done_when = [
+  { kind = "path", path = "site/src/mechanisms/labs/M15.jsx" },
+  { kind = "path", path = "site/src/mechanisms/lib/moe.js" },
+  { kind = "path", path = "site/src/mechanisms/lib/moe.test.js" },
+  { kind = "proof", test = "tests/test_site_content.py::test_every_mechanism_is_registered_and_each_built_one_has_its_lab" },
+]
+[[steps]]
+id = "A.354"
+title = "Lab T13 shows the softmax gate after the owner's gating-landscape sample: a 3-D surface of one expert's weight over two raw gate scores, a marker with its drop line at the chosen scores, readouts of both scores and the weight, and a sentence whose percentages are computed by the same max-subtracted softmax as scripts/moe.py, never typed"
+thread = "A"
+depends_on = ["A.353"]
+because = { "A.353" = "lib/moe.js, whose stable softmax this lab draws" }
+branch = "feature/moe-labs"
+done_when = [
+  { kind = "path", path = "site/src/mechanisms/labs/T13.jsx" },
+  { kind = "proof", test = "tests/test_site_content.py::test_every_mechanism_is_registered_and_each_built_one_has_its_lab" },
+]
+[[steps]]
+id = "A.355"
+title = "Lab T14 shows the leakage guard after the owner's wall-of-time sample: seeded ratings in 3-D by time, a feature value and user, a wall at the request time that a slider moves, ratings strictly before it counted as usable clues and ratings at or after it counted as blocked, the same strictly-before rule gate_features enforces, so a same-second rating is blocked"
+thread = "A"
+depends_on = ["A.353", "A.292"]
+because = { "A.353" = "lib/moe.js, where the guard's rule is written once", "A.292" = "the strictly-before boundary the wall draws" }
+branch = "feature/moe-labs"
+done_when = [
+  { kind = "path", path = "site/src/mechanisms/labs/T14.jsx" },
+  { kind = "proof", test = "tests/test_site_content.py::test_every_mechanism_is_registered_and_each_built_one_has_its_lab" },
+]
+[[steps]]
+id = "A.356"
+title = "Lab T15 shows per-bucket RMSE after the owner's scoreboard sample: a toggle between the pooled RMSE drawn as one flat plane and each bucket's RMSE drawn as a block over user-history and movie-history buckets, the pooled value computed from every error rather than averaged over buckets, each block with its rating count and a bootstrap interval, buckets too small to trust flagged, and the best and worst buckets named from the data"
+thread = "A"
+depends_on = ["A.353", "A.331"]
+because = { "A.353" = "lib/moe.js, whose bucket report this lab draws", "A.331" = "the training-history buckets the blocks are cut by" }
+branch = "feature/moe-labs"
+done_when = [
+  { kind = "path", path = "site/src/mechanisms/labs/T15.jsx" },
+  { kind = "proof", test = "tests/test_site_content.py::test_every_mechanism_is_registered_and_each_built_one_has_its_lab" },
+]
+[[steps]]
+id = "A.359"
+title = "The MoE labs fit their gate on a train, validate and test time split"
+thread = "A"
+branch = "feature/moe-revise"
+depends_on = ["A.353", "A.354", "A.355", "A.356"]
+because = { "A.353" = "a MoE lab on develop that this step reworks", "A.354" = "a MoE lab on develop that this step reworks", "A.355" = "a MoE lab on develop that this step reworks", "A.356" = "a MoE lab on develop that this step reworks" }
+done_when = [
+  { kind = "task", name = "site:test" },
+  { kind = "path", path = "site/src/mechanisms/lib/moefit.js" },
+  { kind = "path", path = "site/src/mechanisms/lib/moefit.test.js" },
+]
+[[steps]]
+id = "A.360"
+title = "scripts/moe.py fits its gate on the validation window, as the site's Model 15 does"
+thread = "A"
+branch = "feature/moe-gate-python"
+depends_on = ["A.345"]
+because = { "A.345" = "scripts/moe.py holds the softmax gate, its mix and its leakage-safe features that the fitted gate builds on" }
+done_when = [
+  { kind = "task", name = "test" },
+  { kind = "path", path = "contracts/mutations/a360.toml" },
+  { kind = "proof", test = "tests/test_moe_fit.py::test_the_fitted_gate_cuts_the_uniform_gates_error_by_four_times" },
+  { kind = "proof", test = "tests/test_moe_fit.py::test_the_fitted_gate_routes_each_region_to_its_expert" },
+  { kind = "proof", test = "tests/test_moe_fit.py::test_the_fitted_gate_agrees_with_the_site" },
+  { kind = "proof", test = "tests/test_moe_fit.py::test_a_gate_is_never_fitted_on_no_ratings" },
+]
+[[steps]]
+id = "A.351"
+title = "source:diff returns from cscie103's D.476: a worktree's uncommitted changes are read as data, each changed path with its status and every hunk with its line ranges and its added and removed lines, untracked paths listed by name and size without being read, git run through gitenv and the diff parsed by python-unidiff 1.0.1, so a dirty worktree is inspected before source:restore discards anything"
+thread = "A"
+depends_on = ["A.81", "A.118"]
+because = { "A.81" = "source:read, the read-as-data contract this extends to changes", "A.118" = "source:restore, the discard this lets a person inspect first" }
+branch = "feature/source-diff"
+done_when = [
+  { kind = "task", name = "source:diff" },
+  { kind = "path", path = "contracts/mutations/d476.toml" },
+  { kind = "proof", test = "tests/test_source_diff.py::test_a_modified_file_reports_each_hunk_with_its_added_and_removed_lines" },
+  { kind = "proof", test = "tests/test_source_diff.py::test_an_untracked_file_is_listed_without_being_read" },
+  { kind = "proof", test = "tests/test_source_diff.py::test_a_clean_worktree_reports_no_changes" },
+  { kind = "proof", test = "tests/test_source_diff.py::test_a_slug_naming_no_worktree_is_refused" },
+]
+[[steps]]
+id = "A.357"
+title = "commit records only the paths it is named: a staged path it was not given is refused by name, commit:unstage takes named staged paths out of the index with git restore --staged and never reset, every commit passes its paths as a pathspec, and a held merge is committed whole, as cscie103 D.343 and D.360 have them at c4c420b"
+thread = "A"
+depends_on = ["A.12"]
+because = { "A.12" = "the commit execution this narrows to its named paths" }
+branch = "feature/commit-scope"
+done_when = [
+  { kind = "path", path = "contracts/mutations/d343.toml" },
+  { kind = "path", path = "contracts/mutations/d360.toml" },
+  { kind = "proof", test = "tests/test_commit_unstage.py::test_unstage_clears_named_paths_and_keeps_their_bytes" },
+  { kind = "proof", test = "tests/test_commit_unstage.py::test_unstage_refuses_a_named_path_that_is_not_staged" },
+  { kind = "proof", test = "tests/test_commit_unstage.py::test_commit_refuses_a_staged_path_it_was_not_given" },
+  { kind = "proof", test = "tests/test_commit_merge.py::test_a_held_merge_concludes_as_a_merge_commit_with_its_plan_step" },
+  { kind = "proof", test = "tests/test_commit_merge.py::test_a_held_merge_with_an_unnamed_staged_path_is_refused" },
+  { kind = "proof", test = "tests/test_commit_merge.py::test_an_ordinary_commit_still_commits_only_its_named_paths" },
+  { kind = "proof", test = "tests/test_commit_merge.py::test_a_held_merge_refusal_says_to_name_the_merged_paths" },
+  { kind = "proof", test = "tests/test_commit_merge.py::test_an_unnamed_path_outside_a_merge_is_still_told_to_unstage" },
+]
+[[steps]]
+id = "A.358"
+title = "recsys imports the hub's never-rewrite layers: a plain push, no amend, no rebase continue or skip, a merge-based refresh, a pre-push fast-forward guard and the reference-transaction hook"
+thread = "A"
+depends_on = ["A.191"]
+branch = "feature/never-rewrite-import"
+because = { "A.191" = "the publication whose leased push becomes a plain one" }
+done_when = [
+  { kind = "proof", test = "tests/test_lineage_audit.py::test_the_repository_rewrites_no_lineage" },
 ]

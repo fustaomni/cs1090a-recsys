@@ -1,0 +1,141 @@
+{
+  "$defs": {
+    "DataSnapshot": {
+      "additionalProperties": false,
+      "description": "The bytes the run read: the archive and the two splits, each by SHA-256.",
+      "properties": {
+        "archive_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Archive Sha256",
+          "type": "string"
+        },
+        "test_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Test Sha256",
+          "type": "string"
+        },
+        "train_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Train Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "archive_sha256",
+        "train_sha256",
+        "test_sha256"
+      ],
+      "title": "DataSnapshot",
+      "type": "object"
+    },
+    "Metric": {
+      "additionalProperties": false,
+      "description": "One measured value, its user-clustered interval, and what it was measured on.",
+      "properties": {
+        "dataset_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Dataset Digest",
+          "type": "string"
+        },
+        "high": {
+          "title": "High",
+          "type": "number"
+        },
+        "low": {
+          "title": "Low",
+          "type": "number"
+        },
+        "model_id": {
+          "minLength": 1,
+          "title": "Model Id",
+          "type": "string"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "name",
+        "value",
+        "low",
+        "high",
+        "model_id",
+        "dataset_digest"
+      ],
+      "title": "Metric",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "evaluation-evidence/v1: everything one offline evaluation run's numbers rest on.",
+  "properties": {
+    "code_commit": {
+      "pattern": "^[0-9a-f]{40}$",
+      "title": "Code Commit",
+      "type": "string"
+    },
+    "contract": {
+      "const": "evaluation-evidence/v1",
+      "default": "evaluation-evidence/v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "data_snapshot": {
+      "$ref": "#/$defs/DataSnapshot"
+    },
+    "environment_lock": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Environment Lock",
+      "type": "string"
+    },
+    "metrics": {
+      "items": {
+        "$ref": "#/$defs/Metric"
+      },
+      "minItems": 1,
+      "title": "Metrics",
+      "type": "array"
+    },
+    "protocol_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Protocol Digest",
+      "type": "string"
+    },
+    "run_id": {
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "seeds": {
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 1,
+      "title": "Seeds",
+      "type": "array"
+    },
+    "tuning_budget": {
+      "minimum": 0,
+      "title": "Tuning Budget",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "run_id",
+    "data_snapshot",
+    "protocol_digest",
+    "seeds",
+    "code_commit",
+    "environment_lock",
+    "tuning_budget",
+    "metrics"
+  ],
+  "title": "EvaluationEvidence",
+  "type": "object"
+}

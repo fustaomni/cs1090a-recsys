@@ -262,3 +262,23 @@ def test_the_preflight_is_one_tagged_union(tmp_path: Path) -> None:
     stopped = preflight(repo, "feature/x", "origin", _failing)
     assert isinstance(stopped, Stopped), stopped
     assert stopped.outcome == "refused_gate", stopped
+
+
+def test_a_push_is_never_forced(tmp_path: Path) -> None:
+    """No push forces (the hub's D.300, imported by A.347): no --force and no + refspec.
+
+    A forced push replaces what the remote holds, so commits other clones, CI runs and plan
+    trailers already name would vanish. The proof reads the argv publish hands git and runs
+    none of it, so no forced push ever executes, even into a scratch repository.
+    """
+    repo, _ = _setup(tmp_path)
+    pushed: list[list[str]] = []
+
+    def recording(argv: list[str], root: Path, env: dict[str, str]) -> tuple[int, str]:
+        pushed.append(argv)
+        return 1, "recorded, never run"
+
+    publish(repo, "feature/x", gate_fn=_passing, pusher=recording)
+    assert pushed, "publish handed git no push to judge"
+    forced = [t for argv in pushed for t in argv if t.startswith(("--force", "+"))]
+    assert forced == [], pushed
