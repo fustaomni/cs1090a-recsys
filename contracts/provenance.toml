@@ -1480,6 +1480,21 @@ patch = "contracts/vendor-patches/contracts/mutations/A.321.toml.patch"
 sha256 = "d46ff16afad33c1b319d251414b5d6ae6f9bcce2acce7ff0339f717ec6c8146e"
 
 [[files]]
+path = "scripts/source_diff.py"
+sha256 = "64070413483816bab0ae1821a79d646713ee9f933b327b8de17c5f7086193405"
+commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
+
+[[files]]
+path = "tests/test_source_diff.py"
+sha256 = "c97e795813f17852cee606a387ca526694b5ee592901e105fbce9d25df7d5574"
+commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
+
+[[files]]
+path = "contracts/mutations/d476.toml"
+sha256 = "2b958e304c10b4a0a71bf0eb53efe31c4d86b21ec77cba7e30268bd5861cf95d"
+commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
+
+[[files]]
 path = "tests/test_commit_unstage.py"
 sha256 = "613d2f5b41ac66b399cbe107b1504a2539de20cc3da206ed453e5a8fa92f7b7a"
 commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
