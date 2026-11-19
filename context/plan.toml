@@ -742,12 +742,13 @@ done_when = [
 ]
 [[steps]]
 id = "A.84"
-title = "source:search matches in one declared dialect, extended, recorded in its contract"
+title = "source:search reads a pattern in one declared dialect, POSIX extended unless fixed is named, recorded in its contract, as cscie103's D.226 does at 8745442"
 thread = "A"
 depends_on = ["A.81", "A.85"]
-because = { "A.81" = "it changes the ported source:search", "A.85" = "the change is recorded as an adaptation by provenance:adapt" }
+because = { "A.81" = "it changes the ported source:search", "A.85" = "a ported file's change is recorded in provenance, here as cscie103's own file at 8745442" }
 done_when = [
-  { kind = "proof", test = "tests/test_source_search.py::test_an_alternation_with_groups_matches_as_extended" },
+  { kind = "proof", test = "tests/test_source_search.py::test_an_alternation_finds_what_each_branch_finds" },
+  { kind = "proof", test = "tests/test_source_search.py::test_a_literal_is_searched_as_a_fixed_string" },
 ]
 [[steps]]
 id = "A.85"
@@ -1537,14 +1538,18 @@ done_when = [
 ]
 [[steps]]
 id = "A.148"
-title = "source:search refuses a path it cannot search, instead of reporting no matches, as cscie103's D.230 does"
+title = "source:search searches what it is named and refuses what it cannot see, as cscie103 does at 8745442: an undeclared option or a path naming nothing is refused (D.230), a named path git ignores is searched (D.336), and a path inside or holding another repository, which git grep never enters, is refused by name pointing to source:read (D.337, D.444)"
 thread = "A"
 depends_on = ["A.84"]
 because = { "A.84" = "source:search matches tracked files as POSIX extended; an ignored path is outside what git grep sees" }
 done_when = [
-  { kind = "proof", test = "tests/test_source_search.py::test_an_untracked_or_ignored_path_is_refused" },
+  { kind = "proof", test = "tests/test_source_search.py::test_a_path_that_does_not_exist_is_refused" },
+  { kind = "proof", test = "tests/test_source_search.py::test_a_named_ignored_file_is_searched" },
+  { kind = "proof", test = "tests/test_source_search.py::test_a_named_path_inside_another_repository_is_refused" },
+  { kind = "proof", test = "tests/test_source_search.py::test_a_directory_holding_another_repository_is_refused" },
   { kind = "task", name = "check" },
 ]
+branch = "feature/source-search-refuse"
 [[steps]]
 id = "A.149"
 title = "Every task emits a versioned, schema-backed envelope, and audit:capabilities refuses any task off the governance spine"
@@ -4232,4 +4237,16 @@ done_when = [
   { kind = "proof", test = "tests/test_node_pin.py::test_node_is_a_pinned_project_tool" },
   { kind = "proof", test = "tests/test_node_pin.py::test_every_site_task_runs_the_pinned_node_major" },
   { kind = "proof", test = "tests/test_node_pin.py::test_the_lock_records_node_for_every_development_platform" },
+]
+[[steps]]
+id = "A.362"
+title = "Every task whose script states its usage declares it: the seventeen tasks whose implementation states usage: mise run run <task> with arguments but carry no mise usage spec -- source:read, source:search, source:outline, source:diff, source:apply, worktree:conflicts, worktree:continue, worktree:conclude, worktree:abort, sibling:refresh, sibling:conclude, sibling:trust, sibling:conflicts, sibling:pin, branches:prune, branches:retire and audit:assertions -- become raw_args tasks with a usage spec naming each argument and flag their script states, so mise tasks info shows the interface while every argument still reaches the script unchanged, and A.320's usage findings refuse any task whose implementation states arguments and declares no usage spec"
+thread = "A"
+depends_on = ["A.320"]
+because = { "A.320" = "the usage findings this widens from raw_args tasks to every task whose script states its usage" }
+branch = "feature/source-read-usage"
+done_when = [
+  { kind = "proof", test = "tests/test_capabilities.py::test_every_task_whose_script_states_its_usage_declares_it" },
+  { kind = "proof", test = "tests/test_capabilities.py::test_a_task_stating_arguments_without_a_usage_spec_is_refused" },
+  { kind = "task", name = "check" },
 ]

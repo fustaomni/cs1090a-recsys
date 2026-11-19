@@ -10,6 +10,7 @@ emitting another contract names it, and one emitting text builds no envelope at 
 
 from __future__ import annotations
 
+import re
 import sys
 import tomllib
 from collections import Counter
@@ -110,14 +111,43 @@ def _stated(token: str, source: str) -> bool:
     return f"<{name}" in source or f"[{name}" in source
 
 
+PLACEHOLDER = re.compile(r"\{([A-Z][A-Z0-9_]*)\}")
+CONSTANT = re.compile(r'^([A-Z][A-Z0-9_]*) = "([a-z][a-z0-9-]*:[a-z0-9:-]+)"$', re.MULTILINE)
+STATED = re.compile(r"usage: mise run run (\S+)([^\"'\n]*)")
+
+
+def stated_tasks(source: str) -> set[str]:
+    """A.362: each task a usage line in `source` names with an argument, <x> or [x].
+
+    A shared head names its siblings, worktree:conflicts|continue, and a placeholder takes
+    the value of the same file's string constant, {CONFLICTS_COMMAND}.
+    """
+    constants: dict[str, str] = dict(CONSTANT.findall(source))
+    named: set[str] = set()
+    for head, rest in STATED.findall(source):
+        if "<" not in rest and "[" not in rest:
+            continue
+        resolved = PLACEHOLDER.sub(lambda found: constants.get(found[1], found[0]), head)
+        first, *others = resolved.split("|")
+        namespace = first.rpartition(":")[0]
+        named |= {first, *(f"{namespace}:{verb}" for verb in others if namespace)}
+    return named
+
+
 def usage_findings(
     tasks: dict[str, dict[str, object]], register: Capabilities, root: Path
 ) -> list[str]:
-    """A.320: each raw_args task declares its arguments, each one its implementation states."""
+    """A.320 and A.362: a task declares the arguments its implementation states, each one."""
     places = {entry.task: entry.implementation for entry in register.capabilities}
     found: list[str] = []
     for task, body in sorted(tasks.items()):
         if body.get("raw_args") is not True:
+            place = places.get(task, MISE)
+            path = root / place
+            if "usage" in body or place == MISE or not path.is_file():
+                continue
+            if task in stated_tasks(path.read_text(encoding="utf-8")):
+                found.append(f"{task}: {place} states arguments but declares no usage spec")
             continue
         usage = body.get("usage")
         declared = _declared(usage) if isinstance(usage, str) else []
