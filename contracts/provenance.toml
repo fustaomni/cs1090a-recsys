@@ -109,9 +109,9 @@ sha256 = "b52e795a1ba2e6aaff5bc3834325f9e82d7ec693b04f6c4fdbca2ad81a4be4ea"
 
 [[adapted]]
 path = "scripts/plan_edit.py"
-reason = "every verb reads its spec through one reader, as plan:retract alone did: an invalid spec is refused as spec_invalid and an unreadable or unparseable one as spec_unreadable, never a traceback, and every refusal names each field (A.128)"
+reason = "plan:retire supersedes steps with their reasons and keeps every id, ported from cscie103 D.260 and wired into the verb dispatch (A.82)"
 patch = "contracts/vendor-patches/scripts/plan_edit.py.patch"
-sha256 = "75c50e5fa7a4625dead6a82218111fa38e252c627b651980ad7ec0df0c4f1b1a"
+sha256 = "2e420826548b2e8d4e1323c5c83fbcd32b6826539a536fe0a875c69748739141"
 
 [[files]]
 path = "scripts/plan_files.py"
@@ -1525,3 +1525,8 @@ commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
 path = "contracts/mutations/d360.toml"
 sha256 = "f4dccb9e321a179e713c0ae4274af2012eba821a938a345d55530f2768875381"
 commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
+
+[[files]]
+path = "tests/test_plan_retire.py"
+sha256 = "19def3f6930f8c86b6aa52ced09542d6ae40b5829ba9c687e64a6f39d047a721"
+commit = "043a74a6b7f995980d116363786d5a8160d4bbdc"
