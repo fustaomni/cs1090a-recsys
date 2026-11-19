@@ -643,10 +643,11 @@ description = "Verify each locked tool mise records no provenance for, by its pu
 run = "uv run --no-sync python scripts/tools_verify.py"
 
 [tasks."tools:lock"]
-description = "Lock every [tools] pin for linux-x64, keeping versions already locked; installs nothing"
+description = "Lock every [tools] pin for each development platform; installs nothing"
 # mise lock writes the lockfile without installing, and keeps a locked version unless --bump is
-# given, which this task never passes. linux-x64 is the one platform mise.lock records.
-run = "mise lock --platform linux-x64"
+# given, which this task never passes. mise.lock records every development platform (A.347):
+# linux-x64 for FAS OnDemand and macos-arm64 for the MacBook Pro.
+run = "mise lock --platform linux-x64,macos-arm64"
 
 [tasks."tools:install"]
 description = "Install exactly the tools mise.lock records, refusing any it does not"
