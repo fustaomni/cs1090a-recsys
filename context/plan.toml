@@ -4144,3 +4144,18 @@ done_when = [
   { kind = "path", path = "site/src/mechanisms/labs/T15.jsx" },
   { kind = "proof", test = "tests/test_site_content.py::test_every_mechanism_is_registered_and_each_built_one_has_its_lab" },
 ]
+[[steps]]
+id = "A.360"
+title = "scripts/moe.py fits its gate on the validation window, as the site's Model 15 does"
+thread = "A"
+branch = "feature/moe-gate-python"
+depends_on = ["A.345"]
+because = { "A.345" = "scripts/moe.py holds the softmax gate, its mix and its leakage-safe features that the fitted gate builds on" }
+done_when = [
+  { kind = "task", name = "test" },
+  { kind = "path", path = "contracts/mutations/a360.toml" },
+  { kind = "proof", test = "tests/test_moe_fit.py::test_the_fitted_gate_cuts_the_uniform_gates_error_by_four_times" },
+  { kind = "proof", test = "tests/test_moe_fit.py::test_the_fitted_gate_routes_each_region_to_its_expert" },
+  { kind = "proof", test = "tests/test_moe_fit.py::test_the_fitted_gate_agrees_with_the_site" },
+  { kind = "proof", test = "tests/test_moe_fit.py::test_a_gate_is_never_fitted_on_no_ratings" },
+]
