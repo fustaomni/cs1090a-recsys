@@ -1,6 +1,31 @@
 --- a/tests/test_plan_conflicts.py
 +++ b/tests/test_plan_conflicts.py
-@@ -201,6 +201,15 @@
+@@ -75,13 +75,19 @@
+ 
+ 
+ def _diverge(repo: Path, tmp_path: Path, ours: tuple[str, str], theirs: tuple[str, str]) -> None:
+-    """develop adds ours, theirs adds theirs, and merging theirs into develop conflicts."""
++    """Two clones start from day one; each issues its id unaware of the other (D.162).
++
++    One clone reserves every id it issues and sees every id its refs hold, so one id is
++    issued twice only by two clones that have not yet fetched each other's work.
++    """
++    other = tmp_path / "other"
++    _git(tmp_path, "clone", "--quiet", "--branch", "theirs", str(repo), str(other))
++    # THEIRS COMMITS FIRST, UNPUSHED: neither side can yet read the other's id.
++    _add(other, tmp_path, theirs[0], theirs[1], "theirs")
++    _commit(other, "theirs")
+     _add(repo, tmp_path, ours[0], ours[1], "ours")
+     _commit(repo, "ours")
+-    _git(repo, "switch", "--quiet", "theirs")
+-    _add(repo, tmp_path, theirs[0], theirs[1], "theirs")
+-    _commit(repo, "theirs")
+-    _git(repo, "switch", "--quiet", "develop")
++    _git(other, "push", "--quiet", "origin", "theirs")
+     merged = _git(repo, "merge", "--no-ff", "--no-commit", "theirs", check=False)
+     assert merged.returncode != 0, "the two additions were expected to conflict"
+ 
+@@ -201,6 +207,15 @@
      assert _unmerged(repo) == set(), _unmerged(repo)
  
  

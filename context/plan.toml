@@ -717,7 +717,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.82"
-title = "Decisions are recorded as cscie103 records them, ported from it: plan:retire supersedes a step with its reason and keeps its id (D.260), and plan:add records a declined decision with its reason, its id issued and traced (D.338)"
+title = "Decisions and threads are recorded as cscie103 records them at 8745442: plan:retire supersedes a step with its reason and keeps its id (D.260), plan:add records a declined decision with its reason, its id issued and traced (D.338), and plan:add writes a thread its spec declares and refuses a thread taken or undeclared as data (D.272)"
 thread = "A"
 depends_on = ["A.18"]
 because = { "A.18" = "the verb arrives through source:apply specs" }
@@ -725,8 +725,12 @@ done_when = [
   { kind = "task", name = "plan:retire" },
   { kind = "proof", test = "tests/test_plan_retire.py::test_a_step_is_retired_with_its_reason" },
   { kind = "proof", test = "tests/test_plan_add.py::test_a_declined_decision_is_added_issued_and_traced" },
+  { kind = "proof", test = "tests/test_plan_add.py::test_a_decision_id_already_issued_is_refused" },
+  { kind = "proof", test = "tests/test_plan_add.py::test_a_spec_adds_a_new_thread_with_its_steps" },
+  { kind = "proof", test = "tests/test_plan_add.py::test_an_existing_thread_id_is_refused" },
+  { kind = "proof", test = "tests/test_plan_add.py::test_a_step_naming_an_undeclared_thread_is_refused_as_data" },
 ]
-branch = "feature/plan-decide"
+branch = "feature/plan-add-decline"
 [[steps]]
 id = "A.83"
 title = "test:red judges a set of named proofs: each red on its behaviour, nothing else failing"
