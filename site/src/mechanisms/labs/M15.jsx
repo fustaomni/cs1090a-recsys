@@ -3,74 +3,69 @@ import Plot from "../Plot.jsx";
 import Provenance from "../Provenance.jsx";
 import Slider from "../Slider.jsx";
 import { steps } from "../lib/grid.js";
-import { bucketOf, gateFeatures, softmax, usable } from "../lib/moe.js";
-import { timedRatings } from "../lib/ratings.js";
+import { bucketOf } from "../lib/moe.js";
+import { gateWeights } from "../lib/moefit.js";
+import { EXPERT_NAMES, runMixture } from "../lib/moepipeline.js";
 
-// An illustrative gate, not a fitted one: each expert's score rises where its kind of evidence
-// is rich, so the soft weights move across the two training-history features.
-const EXPERTS = [
-  { name: "Shared bias", color: "#94a3b8", score: () => 0 },
-  { name: "Movie mean", color: "#3b82f6", score: (u, m) => 1.2 * m - 0.6 * u },
-  { name: "Regularised linear", color: "#4ade80", score: (u, m) => 0.8 * u + 0.8 * m - 1.5 },
-  { name: "kNN", color: "#f472b6", score: (u, m) => 1.4 * u + 1.0 * m - 3 },
-];
-const BOUNDARY = 700;
+// The gate is fitted, not drawn: runMixture fits it on the validation window, and the surfaces
+// below are that fitted gate's weights across the two training-history features.
+const COLORS = ["#94a3b8", "#3b82f6", "#4ade80", "#f472b6"];
 const USERS = steps(0, Math.log1p(40), 25);
 const MOVIES = steps(0, Math.log1p(60), 25);
-const weightsAt = (u, m) => softmax(EXPERTS.map((expert) => expert.score(u, m)));
 const percent = (value) => `${(100 * value).toFixed(1)}%`;
+const three = (value) => value.toFixed(3);
 const whole = (value) => value.toFixed(0);
+const fromLog = (value) => Math.expm1(value);
 
 export default function M15() {
   const [userCount, setUserCount] = useState(8);
   const [movieCount, setMovieCount] = useState(20);
 
-  const rows = useMemo(() => timedRatings({ seed: 151 }), []);
-  const { before, blocked } = useMemo(() => usable(rows, BOUNDARY), [rows]);
-  const buckets = useMemo(() => {
-    const counts = { warm: 0, "new user": 0, "new movie": 0, "both new": 0 };
-    blocked.forEach((row) => {
-      counts[bucketOf(gateFeatures(before, row, BOUNDARY))] += 1;
-    });
-    return counts;
-  }, [before, blocked]);
-
+  const run = useMemo(() => runMixture({ seed: 191 }), []);
+  const weightsAt = useCallback(
+    (userTotal, movieTotal) => gateWeights(run.theta, { userCount: userTotal, movieCount: movieTotal }),
+    [run],
+  );
+  const weights = useMemo(
+    () => weightsAt(userCount, movieCount),
+    [weightsAt, userCount, movieCount],
+  );
   const u = Math.log1p(userCount);
   const m = Math.log1p(movieCount);
-  const weights = useMemo(() => weightsAt(u, m), [u, m]);
   const bucket = bucketOf({ userCount, movieCount });
+  const bestExpert = run.validation.experts.indexOf(Math.min(...run.validation.experts));
 
   const space = useCallback(
     (colors) => [
-      ...EXPERTS.map((expert, k) => ({
+      ...EXPERT_NAMES.map((name, k) => ({
         type: "surface",
-        name: expert.name,
+        name,
         x: USERS,
         y: MOVIES,
-        z: MOVIES.map((my) => USERS.map((ux) => weightsAt(ux, my)[k])),
+        z: MOVIES.map((my) => USERS.map((ux) => weightsAt(fromLog(ux), fromLog(my))[k])),
         showscale: false,
         opacity: 0.55,
         colorscale: [
-          [0, expert.color],
-          [1, expert.color],
+          [0, COLORS[k]],
+          [1, COLORS[k]],
         ],
-        hovertemplate: `${expert.name}<br>weight %{z:.2f}<extra></extra>`,
+        hovertemplate: `${name}<br>weight %{z:.2f}<extra></extra>`,
       })),
       {
         type: "scatter3d",
         mode: "markers",
         name: "This request",
-        x: EXPERTS.map(() => u),
-        y: EXPERTS.map(() => m),
+        x: EXPERT_NAMES.map(() => u),
+        y: EXPERT_NAMES.map(() => m),
         z: weights,
         marker: {
           size: 6,
-          color: EXPERTS.map((expert) => expert.color),
+          color: COLORS,
           line: { color: colors.ink, width: 1 },
         },
       },
     ],
-    [u, m, weights],
+    [weightsAt, u, m, weights],
   );
 
   const spaceLayout = useMemo(
@@ -78,7 +73,7 @@ export default function M15() {
       scene: {
         xaxis: { title: { text: "User's training ratings, log(1 + n)" } },
         yaxis: { title: { text: "Movie's training ratings, log(1 + n)" } },
-        zaxis: { title: { text: "Gate weight" }, range: [0, 1] },
+        zaxis: { title: { text: "Fitted gate weight" }, range: [0, 1] },
         camera: { eye: { x: 1.6, y: -1.6, z: 0.9 } },
       },
       margin: { l: 0, r: 0, t: 0, b: 0 },
@@ -91,15 +86,16 @@ export default function M15() {
       <p>
         A mixture of experts lets several models answer at once and a gate decide how much to
         trust each. This gate is soft: a softmax turns each expert's score into a weight, every
-        weight stays above zero and they sum to one, so the shared bias expert always contributes.
-        The gate reads only two features, how many ratings the user and the movie had before the
-        training cut. Move the request across them and watch the weight pass from the movie mean,
-        which needs only the movie, to the neighbour model, which needs both histories.
+        weight stays above zero and they sum to one. It reads two features, how many ratings the
+        user and the movie had before the window being predicted, and it is fitted: its scores are
+        learned on the validation window by gradient descent on the mixture's squared error, the
+        experts held fixed. Move the request across the features and watch where the fitted gate
+        sends its weight; then compare it, on the untouched test window, with each expert alone.
       </p>
-      <Plot traces={space} layout={spaceLayout} label="Each expert's gate weight over the two histories" />
+      <Plot traces={space} layout={spaceLayout} label="The fitted gate's weight for each expert over the two histories" />
       <div className="controls">
         <Slider
-          label="The user's ratings before the cut"
+          label="The user's ratings before the window"
           value={userCount}
           min={0}
           max={40}
@@ -108,7 +104,7 @@ export default function M15() {
           format={whole}
         />
         <Slider
-          label="The movie's ratings before the cut"
+          label="The movie's ratings before the window"
           value={movieCount}
           min={0}
           max={60}
@@ -122,27 +118,41 @@ export default function M15() {
           <dt>Bucket</dt>
           <dd>{bucket}</dd>
         </div>
-        {EXPERTS.map((expert, k) => (
-          <div key={expert.name} style={{ borderTop: `3px solid ${expert.color}` }}>
-            <dt>{expert.name}</dt>
-            <dd>{percent(weights[k])}</dd>
+        {EXPERT_NAMES.map((name, k) => (
+          <div key={name} style={{ borderTop: `3px solid ${COLORS[k]}` }}>
+            <dt>{name}</dt>
+            <dd>
+              weight {percent(weights[k])}; average on test {percent(run.utilisation[k])}
+            </dd>
           </div>
         ))}
         <div>
-          <dt>Test ratings by bucket</dt>
+          <dt>Validation RMSE, where the gate was fitted</dt>
           <dd>
-            {Object.entries(buckets)
-              .map(([name, count]) => `${name} ${count}`)
-              .join(", ")}{" "}
-            of {blocked.length}
+            fitted mixture {three(run.validation.mixture)}, equal weights{" "}
+            {three(run.validation.uniform)}, best single expert{" "}
+            {three(run.validation.experts[bestExpert])} ({EXPERT_NAMES[bestExpert]})
+          </dd>
+        </div>
+        <div>
+          <dt>Test RMSE, scored once</dt>
+          <dd>
+            fitted mixture {three(run.tested.mixture)}, equal weights {three(run.tested.uniform)},
+            the same single expert {three(run.tested.experts[bestExpert])}
+          </dd>
+        </div>
+        <div>
+          <dt>Ratings in each window</dt>
+          <dd>
+            train {run.windows.train}, validate {run.windows.validate}, test {run.windows.test}
           </dd>
         </div>
       </dl>
       <Provenance
-        data="Synthetic ratings, generated in this page: timedRatings({ seed: 151 }); no real ratings"
-        split={`Ratings before time ${BOUNDARY} train the gate's features; ratings at or after it are the test window`}
-        features="The user's and the movie's rating counts strictly before the cut, as log(1 + n)"
-        method="Soft gate: a max-subtracted softmax over illustrative linear scores, one per expert; not fitted"
+        data="Synthetic ratings from users and movies that arrive over time, generated in this page: arrivingRatings({ seed: 191 }); no real ratings"
+        split="Train before time 600 fits the experts; validate, 600 to 800, fits the gate; test, from 800, is scored once after the experts are refit on train and validate"
+        features="The user's and the movie's rating counts strictly before the window being predicted, as log(1 + n)"
+        method="Soft gate: a max-subtracted softmax over one linear score per expert, fitted from equal weights by 400 steps of gradient descent on validation squared error; experts held fixed"
       />
     </article>
   );
