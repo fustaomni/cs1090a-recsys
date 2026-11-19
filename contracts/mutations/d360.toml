@@ -1,0 +1,9 @@
+# contracts/mutations/d360.toml
+# D.360: while a merge is held, commit drops the pathspec git refuses and commits the index whole.
+
+[[mutants]]
+id = "merge-keeps-pathspec"
+file = "scripts/commit.py"
+before = "    scope = [] if held else [\"--\", *paths]"
+after = "    scope = [\"--\", *paths]"
+killers = ["tests/test_commit_merge.py::test_a_held_merge_concludes_as_a_merge_commit_with_its_plan_step"]
