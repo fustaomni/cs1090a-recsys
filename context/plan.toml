@@ -4038,6 +4038,17 @@ done_when = [
   { kind = "proof", test = "tests/test_site_bindings.py::test_the_m2_results_are_recorded_from_the_notebook_run" },
 ]
 [[steps]]
+id = "A.347"
+title = "tools:lock locks every development platform, linux-x64 and macos-arm64, in one run, so mise install --locked installs the same locked tools on the MacBook Pro as on FAS OnDemand"
+thread = "A"
+depends_on = ["A.279"]
+because = { "A.279" = "the locked tools whose provenance is verified, which this lock now covers on both platforms" }
+branch = "feature/tools-mac"
+done_when = [
+  { kind = "proof", test = "tests/test_tools_lock.py::test_every_locked_tool_has_an_entry_for_each_development_platform" },
+  { kind = "task", name = "tools:install" },
+]
+[[steps]]
 id = "A.345"
 title = "A gated mixture of experts predicts each rating: the bias baseline is its shared expert and the movie mean, regularised linear and kNN rungs are its specialists, mixed by a softmax gate over features computed strictly before the rating, trained on the training window and judged under Protocol A for each cold-start bucket against the bias baseline"
 thread = "A"
