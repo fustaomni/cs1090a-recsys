@@ -4186,3 +4186,22 @@ done_when = [
   { kind = "proof", test = "tests/test_source_diff.py::test_a_clean_worktree_reports_no_changes" },
   { kind = "proof", test = "tests/test_source_diff.py::test_a_slug_naming_no_worktree_is_refused" },
 ]
+[[steps]]
+id = "A.357"
+title = "commit records only the paths it is named: a staged path it was not given is refused by name, commit:unstage takes named staged paths out of the index with git restore --staged and never reset, every commit passes its paths as a pathspec, and a held merge is committed whole, as cscie103 D.343 and D.360 have them at c4c420b"
+thread = "A"
+depends_on = ["A.12"]
+because = { "A.12" = "the commit execution this narrows to its named paths" }
+branch = "feature/commit-scope"
+done_when = [
+  { kind = "path", path = "contracts/mutations/d343.toml" },
+  { kind = "path", path = "contracts/mutations/d360.toml" },
+  { kind = "proof", test = "tests/test_commit_unstage.py::test_unstage_clears_named_paths_and_keeps_their_bytes" },
+  { kind = "proof", test = "tests/test_commit_unstage.py::test_unstage_refuses_a_named_path_that_is_not_staged" },
+  { kind = "proof", test = "tests/test_commit_unstage.py::test_commit_refuses_a_staged_path_it_was_not_given" },
+  { kind = "proof", test = "tests/test_commit_merge.py::test_a_held_merge_concludes_as_a_merge_commit_with_its_plan_step" },
+  { kind = "proof", test = "tests/test_commit_merge.py::test_a_held_merge_with_an_unnamed_staged_path_is_refused" },
+  { kind = "proof", test = "tests/test_commit_merge.py::test_an_ordinary_commit_still_commits_only_its_named_paths" },
+  { kind = "proof", test = "tests/test_commit_merge.py::test_a_held_merge_refusal_says_to_name_the_merged_paths" },
+  { kind = "proof", test = "tests/test_commit_merge.py::test_an_unnamed_path_outside_a_merge_is_still_told_to_unstage" },
+]
