@@ -29,6 +29,13 @@ the working tree happened to hold.
 THE ORDER OF REFUSALS IS DELIBERATE. The branch is checked first because it is
 the cheapest and most fundamental guard. The subject is checked BEFORE the
 paths, so a rejected message never leaves a half-staged index behind.
+
+ONLY THE NAMED PATHS ARE COMMITTED (D.343). A path someone else staged -- an IDE, a stray
+`git add` -- is refused by name once the plan allows the commit, and commit:unstage is the way
+out: it unstages named, staged paths with `git restore --staged`, never reset, so no file on
+disk changes. The commit names its paths as a pathspec too, a second protection, except while a
+merge is held (D.360): git refuses a pathspec then, and the index, already exactly the named
+paths, is committed whole as the merge commit.
 """
 
 from __future__ import annotations
@@ -39,7 +46,7 @@ import re
 import sys
 import tempfile
 from collections.abc import Callable, Sequence
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from command_outcome import CommandOutcome
 from gitenv import git as scrubbed_git
@@ -48,6 +55,7 @@ __all__ = [
     "CONVENTIONAL_SUBJECT",
     "PROTECTED",
     "execute_commit",
+    "execute_unstage",
     "main",
     "plan_commit",
     "run_git",
@@ -74,11 +82,13 @@ CONVENTIONAL_SUBJECT = re.compile(
 )
 
 
-def _outcome(code: str, message: str, verdict: str, **data: object) -> CommandOutcome:
+def _outcome(
+    code: str, message: str, verdict: str, command: str = "commit", **data: object
+) -> CommandOutcome:
     """One envelope, so every exit from this module has the same shape."""
     return CommandOutcome.model_validate(
         {
-            "command": "commit",
+            "command": command,
             "outcome": verdict,
             "code": code,
             "message": message,
@@ -207,6 +217,84 @@ def publication(branch: str, git: GitRunner = run_git) -> bool | None:
     return {0: True, 1: False}.get(code)
 
 
+UNSTAGE = "commit:unstage"
+
+
+def _staged(git: GitRunner) -> tuple[frozenset[str], str | None]:
+    """The staged paths, NUL-separated so any name survives; git's error when it cannot say."""
+    code, listed = git(["diff", "--cached", "--name-only", "-z"])
+    if code != 0:
+        return frozenset(), listed
+    return frozenset(name for name in listed.split("\0") if name), None
+
+
+def _covered(entry: str, paths: Sequence[str]) -> bool:
+    """Is entry a named path, or inside a named directory? By parts: a/bc is not under a/b."""
+    target = PurePosixPath(entry).parts
+    for name in paths:
+        named = PurePosixPath(name).parts
+        if target[: len(named)] == named:
+            return True
+    return False
+
+
+def refuse_unnamed(
+    paths: Sequence[str], staged: frozenset[str], held: bool = False
+) -> CommandOutcome | None:
+    """A staged path the commit was not given, refused by name with its remedy (D.343, D.371).
+
+    A HELD MERGE IS COMMITTED WHOLE (D.360), so a path its merge staged is part of the merge:
+    unstaging it would drop the merged side's change from the merge commit. The refusal stays,
+    so a commit's contents are still a decision, but its remedy is to name the path too, and
+    held and remedy are data, so a caller branches on them rather than on the message (D.371).
+    """
+    unnamed = sorted(entry for entry in staged if not _covered(entry, paths))
+    if not unnamed:
+        return None
+    listed = ", ".join(unnamed)
+    if held:
+        message = (
+            f"staged but not named, in a held merge: {listed}; name them too, since a merge "
+            "is committed whole and unstaging them would drop them from it"
+        )
+        remedy = "name"
+    else:
+        message = f"staged but not named: {listed}; unstage them with commit:unstage"
+        remedy = "unstage"
+    return _outcome("staged_unnamed", message, "refused", unnamed=unnamed, held=held, remedy=remedy)
+
+
+def _merge_held(git: GitRunner) -> bool:
+    """Whether a merge is held: git names MERGE_HEAD's commit only while one is (D.360)."""
+    code, named = git(["rev-parse", "-q", "--verify", "MERGE_HEAD"])
+    return code == 0 and bool(named)
+
+
+def execute_unstage(paths: Sequence[str], git: GitRunner = run_git) -> CommandOutcome:
+    """commit:unstage -- named, staged paths leave the index, their files untouched (D.343).
+
+    `git restore --staged`, NEVER reset: reset's other modes discard work, and restore --staged
+    has no such neighbour. A named path that is not staged is refused by name: reporting it as
+    unstaged would be a claim without effect.
+    """
+    if not paths:
+        message = "no paths named: name the paths to unstage"
+        return _outcome("no_paths_named", message, "refused", command=UNSTAGE)
+    staged, unreadable = _staged(git)
+    if unreadable is not None:
+        message = "could not read the index: " + unreadable
+        return _outcome("index_unreadable", message, "failed", command=UNSTAGE)
+    idle = sorted(name for name in paths if not any(_covered(entry, [name]) for entry in staged))
+    if idle:
+        message = f"named but not staged: {', '.join(idle)}"
+        return _outcome("not_staged", message, "refused", command=UNSTAGE, idle=idle)
+    code, err = git(["restore", "--staged", "--", *paths])
+    if code != 0:
+        return _outcome("unstage_failed", "git refused: " + err, "failed", command=UNSTAGE)
+    message = f"unstaged {len(paths)} path(s); their files are untouched"
+    return _outcome("unstaged", message, "success", command=UNSTAGE, paths=list(paths))
+
+
 def execute_commit(
     branch: str,
     message: str,
@@ -245,6 +333,18 @@ def execute_commit(
     if planned.outcome != "success":
         return planned
 
+    # THE INDEX IS READ ONLY ONCE THE RULES ALLOW A COMMIT (D.343): a refused plan never
+    # reaches git, and a path someone else staged is refused before anything is staged.
+    staged, unreadable = _staged(git)
+    if unreadable is not None:
+        return _outcome("index_unreadable", "could not read the index: " + unreadable, "failed")
+    # A HELD MERGE IS KNOWN BEFORE THE REFUSAL (D.371): its remedy depends on it, and the
+    # same observation decides below whether the index is committed whole.
+    held = _merge_held(git)
+    refused = refuse_unnamed(paths, staged, held)
+    if refused is not None:
+        return refused
+
     replaced = git(["rev-parse", "HEAD"])[1] if amend else ""
     code, err = git(["add", "--", *paths])
     if code != 0:
@@ -255,13 +355,21 @@ def execute_commit(
     # 0 when they have none; any other status is an error, never read as either. An amend
     # may change only the message, so it is exempt.
     if not amend:
-        staged, err = git(["diff", "--cached", "--quiet", "--", *paths])
-        if staged == 0:
+        quiet, err = git(["diff", "--cached", "--quiet", "--", *paths])
+        if quiet == 0:
             reason = "nothing to commit: the named paths match HEAD"
             return _outcome("nothing_staged", reason, "refused", paths=list(paths))
-        if staged != 1:
+        if quiet != 1:
             reason = "could not read the stage: " + err
             return _outcome("stage_unverified", reason, "failed", paths=list(paths))
+
+    # A HELD MERGE IS COMMITTED WHOLE (D.360). git refuses a pathspec while MERGE_HEAD exists
+    # ("cannot do a partial commit during a merge"), and by now the index holds exactly the
+    # named paths, any other refused above, so the merge's own index is the commit.
+    scope = [] if held else ["--", *paths]
+    # AN AMEND (D.101) KEEPS THE SAME SCOPE: only the named paths, or the held merge whole.
+    if amend:
+        scope = ["--amend", *scope]
 
     # delete_on_close=False IS THE DOCUMENTED ANSWER TO EXACTLY THIS NEED.
     #
@@ -285,7 +393,7 @@ def execute_commit(
         # CLOSED SO GIT SEES THE WHOLE MESSAGE: an unflushed buffer would hand
         # git a truncated file, and a short commit message is worse than none.
         draft.close()
-        code, err = git(["commit", "--file", draft.name, *(["--amend"] if amend else [])])
+        code, err = git(["commit", "--file", draft.name, *scope])
 
     if code != 0:
         return _outcome("commit_failed", "git refused: " + err, "failed", branch=branch)
@@ -359,11 +467,19 @@ def main(
     --path REPEATS rather than splitting a list, so a path containing a space
     needs no quoting convention invented for it.
     """
+    given = list(sys.argv[1:] if argv is None else argv)
+    if given[:1] == ["unstage"]:
+        unstage = argparse.ArgumentParser(prog=UNSTAGE, add_help=True)
+        unstage.add_argument("--path", "-p", action="append", default=[])
+        named = unstage.parse_args(given[1:])
+        unstaged = execute_unstage(tuple(named.path), git=git)
+        print(json.dumps(unstaged.model_dump(), indent=2))
+        return unstaged.exit_code
     parser = argparse.ArgumentParser(prog="commit", add_help=True)
     parser.add_argument("--message", "-m", required=True)
     parser.add_argument("--path", "-p", action="append", default=[])
     parser.add_argument("--amend", action="store_true")
-    parsed = parser.parse_args(list(argv) if argv is not None else None)
+    parsed = parser.parse_args(given)
 
     on = branch if branch is not None else current_branch(git)
     outcome = execute_commit(

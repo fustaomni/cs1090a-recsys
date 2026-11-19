@@ -6,9 +6,9 @@
  
 +import json
  from pathlib import Path
- 
-+import pytest
 +
++import pytest
+ 
  from command_outcome import CommandOutcome
  from commit import (
      CONVENTIONAL_SUBJECT,
@@ -20,10 +20,12 @@
  )
  from nonvacuous import nonempty
  
-@@ -65,6 +71,47 @@
+@@ -63,6 +69,49 @@
+ 
+ def test_a_feature_branch_is_allowed() -> None:
      assert plan().outcome == "success"
- 
- 
++
++
 +def test_the_root_commit_names_its_branch() -> None:
 +    """Before its first commit, HEAD names a branch that rev-parse cannot resolve (A.5)."""
 +
@@ -55,6 +57,8 @@
 +    def unborn(argv: list[str]) -> tuple[int, str]:
 +        if argv[:1] == ["symbolic-ref"]:
 +            return 0, "main"
++        if argv[:3] == ["diff", "--cached", "--name-only"]:
++            return 0, ""
 +        if argv[:2] == ["diff", "--cached"]:
 +            return 1, ""
 +        return (1, "") if argv[:3] == ["rev-parse", "--quiet", "--verify"] else (0, "")
@@ -63,12 +67,10 @@
 +    assert main(argv, git=unborn) == 0
 +    outcome = json.loads(capsys.readouterr().out)
 +    assert (outcome["code"], outcome["message"]) == ("committed", "committed 1 path(s) on main")
-+
-+
+ 
+ 
  # --- the message ----------------------------------------------------------------
- 
- 
-@@ -144,3 +191,12 @@
+@@ -144,3 +193,12 @@
      is distinguishable from a crash."""
      assert plan().exit_code == 0
      assert plan(branch="develop").exit_code == 2

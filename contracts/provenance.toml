@@ -447,14 +447,14 @@ patch = "contracts/vendor-patches/scripts/check_all.py.patch"
 sha256 = "8623a42840e2399c81a462e55f5d8eb1ad1f6fe60ba55558c2c807cae510b267"
 [[adapted]]
 path = "scripts/commit.py"
-reason = "the root commit names its branch (A.5); nothing staged is refused and git reasons kept (A.12)"
+reason = "cscie103's D.343 index gate, D.360 held-merge commit and D.371 merge-aware remedy, with commit:unstage as a subcommand; amend, the root commit and publication stay this repository's own (A.357)"
 patch = "contracts/vendor-patches/scripts/commit.py.patch"
-sha256 = "858186ee7516a5e6184d1a4b78443078f0f13a5cda1bf578633e27b726ed57e4"
+sha256 = "25c8b05c4ecb222164bc5525333174b910fbeb04e268d6646c571f25e25aae94"
 [[adapted]]
 path = "tests/test_commit.py"
-reason = "A.5's and A.12's proofs"
+reason = "the root-commit fake answers the index read that the D.343 gate adds (A.357)"
 patch = "contracts/vendor-patches/tests/test_commit.py.patch"
-sha256 = "8e9612d1b3f1fdee95e664819ac4dcb187900ef428c50b0d5cd991737d9d5e2f"
+sha256 = "e68d5f83135da1252e595d6294876475e23db25dcd563e285779e52b6e3a8cd6"
 [[adapted]]
 path = ".gitignore"
 reason = "data ignored only at the repository root, so a nested data directory is never hidden; A.95"
@@ -1492,4 +1492,24 @@ commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
 [[files]]
 path = "contracts/mutations/d476.toml"
 sha256 = "2b958e304c10b4a0a71bf0eb53efe31c4d86b21ec77cba7e30268bd5861cf95d"
+commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
+
+[[files]]
+path = "tests/test_commit_unstage.py"
+sha256 = "613d2f5b41ac66b399cbe107b1504a2539de20cc3da206ed453e5a8fa92f7b7a"
+commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
+
+[[files]]
+path = "tests/test_commit_merge.py"
+sha256 = "3d014f3421acf9f2d148a597b6fe067aaa18ae512ad7ca1068bedaffe6918ea1"
+commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
+
+[[files]]
+path = "contracts/mutations/d343.toml"
+sha256 = "4ae7212dce63b99bc3ff1b7dc5e9815714c732a88aae1242b5e4db77f7f383f9"
+commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
+
+[[files]]
+path = "contracts/mutations/d360.toml"
+sha256 = "f4dccb9e321a179e713c0ae4274af2012eba821a938a345d55530f2768875381"
 commit = "c4c420bd2bc2d8224298c8cd34cd85c39c01ef49"
