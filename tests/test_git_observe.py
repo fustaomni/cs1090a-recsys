@@ -33,6 +33,44 @@ def _repo(tmp_path: Path) -> Path:
     return repo
 
 
+def test_a_linked_worktree_names_the_main_checkout(tmp_path: Path) -> None:
+    """D.340: from a linked worktree, the main checkout is the repository, not the worktree."""
+    from git_observe import main_checkout
+
+    repo = _repo(tmp_path)
+    linked = tmp_path / "linked"
+    _git(repo, "worktree", "add", "-q", "--detach", str(linked))
+    assert main_checkout(linked) == repo.resolve()
+
+
+def test_the_main_checkout_names_itself(tmp_path: Path) -> None:
+    """D.340: in the main checkout, git's own answer is the checkout itself."""
+    from git_observe import main_checkout
+
+    repo = _repo(tmp_path)
+    assert main_checkout(repo) == repo.resolve()
+
+
+def test_outside_a_repository_is_a_failure_never_a_path(tmp_path: Path) -> None:
+    """D.340: failing to resolve is not resolving here; no fallback path is invented."""
+    from git_observe import main_checkout
+
+    plain = tmp_path / "plain"
+    plain.mkdir()
+    assert isinstance(main_checkout(plain), GitObservationFailure)
+
+
+def test_a_bare_main_repository_is_refused(tmp_path: Path) -> None:
+    """D.340: a bare repository has no working tree to hold evidence, so no path is given."""
+    from git_observe import main_checkout
+
+    bare = tmp_path / "bare.git"
+    _git(tmp_path, "clone", "-q", "--bare", str(_repo(tmp_path)), str(bare))
+    linked = tmp_path / "linked"
+    _git(bare, "worktree", "add", "-q", "--detach", str(linked))
+    assert not isinstance(main_checkout(linked), Path)
+
+
 def test_a_clean_tree_is_clean(tmp_path: Path) -> None:
     observed = tree_state(_repo(tmp_path))
     assert observed.state == "clean", observed

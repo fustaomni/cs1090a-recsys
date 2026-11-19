@@ -23,6 +23,8 @@ exempt = [
   ".copier-answers.yml",
   # quoted verbatim: a vendor patch reproduces the identity lines it changes (A.121)
   "contracts/vendor-patches/",
+  # quoted verbatim: ported unchanged from the hub at 8745442, its docstring names its origin (A.82)
+  "scripts/plan_proofs.py",
 ]
 
 # Lines that cannot read this file. Each renders exactly as the file holds it.
