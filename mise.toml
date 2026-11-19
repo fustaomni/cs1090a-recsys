@@ -381,6 +381,11 @@ description = "Withdraw recorded trace candidates, each with its reason, never l
 usage = 'arg "<spec>" help="TOML spec: [[candidates]] with source, ref and reason"'
 run = 'uv run --no-sync python scripts/plan_edit.py retract "${usage_spec?}"'
 
+[tasks."plan:retire"]
+description = "Supersede plan steps, each with its reason, keeping every id as a superseded decision"
+usage = 'arg "<spec>" help="TOML spec: the steps to supersede, each with its reason"'
+run = 'uv run --no-sync python scripts/plan_edit.py retire "${usage_spec?}"'
+
 [tasks."plan:init"]
 description = "Start this project's plan, trace and id ledger, refusing when a plan already exists"
 # A GENERATED PROJECT'S SECOND OPERATION, after identity:set: its plan starts here.
