@@ -1,9 +1,11 @@
 --- a/scripts/plan_edit.py
 +++ b/scripts/plan_edit.py
-@@ -149,6 +149,30 @@
+@@ -168,6 +168,30 @@
+     )
+     print(json.dumps(envelope.model_dump(), indent=2))
      return envelope.exit_code
- 
- 
++
++
 +def _summary(error: ValidationError) -> str:
 +    """Each validation error as `field: message`, joined: never the count line alone (A.128)."""
 +    return "; ".join(
@@ -15,8 +17,8 @@
 +def _read_spec[S: Contract](model: type[S], argv: Sequence[str] | None, verb: str) -> S | int:
 +    """The verb's spec as its contract, or its refusal reported and that exit code (A.128).
 +
-+    plan:retract alone refused an invalid spec; the other verbs let ValidationError escape as a
-+    traceback, and every verb did so for a spec that could not be read or parsed as TOML.
++    Every verb refuses an invalid spec as spec_invalid and one that cannot be read or parsed
++    as TOML as spec_unreadable: a closed outcome to branch on, never a traceback.
 +    """
 +    command = f"plan:{verb}"
 +    try:
@@ -26,32 +28,21 @@
 +        return _report(command, "refused", "spec_invalid", _summary(error), data)
 +    except (OSError, tomllib.TOMLDecodeError) as error:
 +        return _report(command, "refused", "spec_unreadable", str(error), {})
-+
-+
+ 
+ 
  def _spec_text(argv: Sequence[str] | None, verb: str) -> str:
-     args = list(sys.argv[2:] if argv is None else argv)
-     if len(args) != 1:
-@@ -158,7 +182,9 @@
+@@ -254,7 +278,9 @@
  
  def add(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
-     """plan:add <spec> -- steps, their ids and one trace entry, together or not at all."""
+     """plan:add <spec> -- threads, steps, their ids and one trace entry, all or nothing."""
 -    spec = from_document(AddSpec, tomllib.loads(_spec_text(argv, "add")))
 +    spec = _read_spec(AddSpec, argv, "add")
 +    if isinstance(spec, int):
 +        return spec
-     documents = {relative: _parse(root, relative) for relative in (PLAN, IDS, TRACE)}
-     planned = {str(step["id"]) for step in _steps(documents[PLAN])}
-     issued = {str(entry["id"]) for entry in _array(documents[IDS], "issued")}
-@@ -191,7 +217,7 @@
-             "plan:add",
-             "refused",
-             "contract_violated",
--            str(error).splitlines()[0],
-+            _summary(error),
-             {"ids": list(new_ids), "errors": _errors(error)},
-         )
-     for relative, text in rendered.items():
-@@ -217,7 +243,9 @@
+     common = _common(root)
+     with _locked(common):
+         return _add(spec, root, common)
+@@ -411,7 +437,9 @@
  
  def amend(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
      """plan:amend <spec> -- replace named fields of one step or decision, in place."""
@@ -62,16 +53,7 @@
      document = _parse(root, PLAN)
      target = next((t for t in _entries(document) if t["id"] == spec.id), None)
      if target is None:
-@@ -237,7 +265,7 @@
-             "plan:amend",
-             "refused",
-             "contract_violated",
--            str(error).splitlines()[0],
-+            _summary(error),
-             {"id": spec.id, "errors": _errors(error)},
-         )
-     (root / PLAN).write_text(rendered[PLAN], encoding="utf-8")
-@@ -265,7 +293,9 @@
+@@ -469,7 +497,9 @@
  
  def record(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
      """plan:record <spec> -- sources, and candidates mapped to planned steps or declared not."""
@@ -82,87 +64,22 @@
      documents = {relative: _parse(root, relative) for relative in (PLAN, TRACE)}
      planned = {str(step["id"]) for step in _steps(documents[PLAN])}
      named = {step for candidate in spec.candidates for step in _mapped(candidate)}
-@@ -302,7 +332,7 @@
-             "plan:record",
-             "refused",
-             "contract_violated",
--            str(error).splitlines()[0],
-+            _summary(error),
-             {"errors": _errors(error)},
-         )
-     (root / TRACE).write_text(rendered[TRACE], encoding="utf-8")
-@@ -316,6 +346,70 @@
-     )
- 
- 
-+class _Retirement(Contract):
-+    """One step to retire, and why."""
-+
-+    id: str = Field(min_length=1)
-+    reason: str = Field(min_length=1)
-+
-+
-+class RetireSpec(Contract):
-+    """plan:retire's spec: the steps to supersede, each with its reason (A.82, from D.260)."""
-+
-+    steps: tuple[_Retirement, ...] = Field(min_length=1)
-+
-+
-+def retire(argv: Sequence[str] | None = None, *, root: Path = ROOT) -> int:
-+    """plan:retire <spec> -- supersede steps with their reasons, keeping every id (A.82).
-+
-+    Ported from cscie103 (D.260): a retired step becomes a decision with the same id and title,
-+    state superseded, so the commits naming it still trace to it and its ledger entry stays issued.
-+    """
-+    try:
-+        spec = from_document(RetireSpec, tomllib.loads(_spec_text(argv, "retire")))
-+    except ValidationError as error:
-+        first = str(error).splitlines()[0]
-+        return _report("plan:retire", "refused", "spec_invalid", first, {"errors": _errors(error)})
-+    documents = {PLAN: _parse(root, PLAN)}
-+    steps = _steps(documents[PLAN])
-+    reasons = {r.id: r.reason for r in spec.steps}
-+    live = {str(entry["id"]) for entry in steps if isinstance(entry, dict)}
-+    not_live = sorted(set(reasons) - live)
-+    if not_live:
-+        message = f"not a live step: {', '.join(not_live)}"
-+        return _report("plan:retire", "refused", "step_unknown", message, {"unknown": [*not_live]})
-+    if "decisions" not in documents[PLAN]:
-+        documents[PLAN].append("decisions", tomlkit.aot())
-+    decisions = documents[PLAN]["decisions"]
-+    if not isinstance(decisions, AoT):
-+        raise SystemExit("decisions is not an array of tables")
-+    for index in reversed(range(len(steps))):
-+        entry = steps[index]
-+        if str(entry["id"]) in reasons:
-+            step_id = str(entry["id"])
-+            decision = tomlkit.table()
-+            decision.add("id", step_id)
-+            decision.add("title", str(entry["title"]))
-+            decision.add("state", "superseded")
-+            decision.add("reason", reasons[step_id])
-+            decisions.append(decision)
-+            del steps[index]
-+    try:
-+        checked = _validated(documents)
-+    except ValidationError as error:
-+        first = str(error).splitlines()[0]
-+        return _report("plan:retire", "refused", "contract_violated", first, {})
-+    (root / PLAN).write_text(checked[PLAN], encoding="utf-8")
-+    retired = [f"{r.id}: {r.reason}" for r in spec.steps]
-+    return _report(
-+        "plan:retire",
-+        "success",
-+        "steps_retired",
-+        f"retired {len(retired)} step(s)",
-+        {"retired": [*retired]},
-+    )
-+
-+
- class _Retraction(Contract):
-     source: str = Field(min_length=1)
-     ref: str = Field(min_length=1)
-@@ -332,11 +426,9 @@
+@@ -552,11 +582,9 @@
+     commits naming it still trace to it and its ledger entry stays issued. The plan's own
+     model refuses a step a live step still depends on; nothing is written unless all holds.
+     """
+-    try:
+-        spec = from_document(RetireSpec, tomllib.loads(_spec_text(argv, "retire")))
+-    except ValidationError as error:
+-        first = str(error).splitlines()[0]
+-        return _report("plan:retire", "refused", "spec_invalid", first, {"errors": _errors(error)})
++    spec = _read_spec(RetireSpec, argv, "retire")
++    if isinstance(spec, int):
++        return spec
+     documents = {PLAN: _parse(root, PLAN)}
+     steps = _steps(documents[PLAN])
+     reasons = {r.id: r.reason for r in spec.steps}
+@@ -606,11 +634,9 @@
      """plan:retract <spec> -- withdraw candidates, never leaving a step untraced."""
      from plan_models import untraced
  
@@ -177,24 +94,3 @@
      documents = {relative: _parse(root, relative) for relative in (PLAN, TRACE)}
      text = (root / TRACE).read_text(encoding="utf-8")
      current = from_document(PlanTrace, tomllib.loads(text)).candidates
-@@ -360,8 +452,8 @@
-     try:
-         rendered = _validated(documents)
-     except ValidationError as error:
--        first = str(error).splitlines()[0]
--        return _report("plan:retract", "refused", "contract_violated", first, {})
-+        data: dict[str, JsonValue] = {"errors": _errors(error)}
-+        return _report("plan:retract", "refused", "contract_violated", _summary(error), data)
-     plan = from_document(ProjectPlan, tomllib.loads(rendered[PLAN]))
-     broken = untraced(from_document(PlanTrace, tomllib.loads(rendered[TRACE])), plan)
-     if broken:
-@@ -384,7 +476,7 @@
- 
- 
- if __name__ == "__main__":
--    verbs = {"add": add, "amend": amend, "record": record, "retract": retract}
-+    verbs = {"add": add, "amend": amend, "record": record, "retire": retire, "retract": retract}
-     if len(sys.argv) < 2 or sys.argv[1] not in verbs:
--        raise SystemExit("usage: plan_edit.py add|amend|record|retract <spec.toml>")
-+        raise SystemExit("usage: plan_edit.py add|amend|record|retire|retract <spec.toml>")
-     sys.exit(verbs[sys.argv[1]]())
