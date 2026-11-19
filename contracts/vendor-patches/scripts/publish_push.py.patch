@@ -1,0 +1,10 @@
+--- a/scripts/publish_push.py
++++ b/scripts/publish_push.py
+@@ -265,7 +265,6 @@
+         "--porcelain",
+         "--atomic",
+         *(["--no-verify"] if skip_hook else []),
+-        f"--force-with-lease=refs/heads/{branch}:{expected}",
+         remote,
+         f"{commit}:refs/heads/{branch}",
+     ]
