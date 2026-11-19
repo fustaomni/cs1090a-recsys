@@ -603,6 +603,14 @@ run = "uv run --no-sync python scripts/provenance_adapt.py"
 description = "Plan a port: print a source:apply spec bringing files from another checkout, as they are"
 run = "uv run --no-sync python scripts/source_port.py"
 
+[tasks."source:diff"]
+description = "Show a worktree's uncommitted changes as data; untracked files by name and size, never read"
+# Ported from cscie103 D.476 at c4c420b (A.351): git diff HEAD through gitenv, parsed by
+# python-unidiff into files and hunks; a slug that names no worktree is refused, and a failed git
+# call is an error, never an empty diff. Read what a dirty worktree holds before source:restore
+# discards it.
+run = "uv run --no-sync python scripts/source_diff.py"
+
 [tasks."source:apply"]
 description = "Create and edit source from a declarative spec, judged by policy, all or nothing"
 # THE ONLY WAY SOURCE CHANGES (D.25): a source-apply/v1 spec, or - for stdin. No

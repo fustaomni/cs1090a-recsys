@@ -342,4 +342,5 @@ issued = [
   { id = "A.356", first_title = "Lab T15 shows per-bucket RMSE after the owner's scoreboard sample: a toggle between the pooled RMSE drawn as one flat plane and each bucket's RMSE drawn as a block over user-history and movie-history buckets, the pooled value computed from every error rather than averaged over buckets, each block with its rating count and a bootstrap interval, buckets too small to trust flagged, and the best and worst buckets named from the data" },
   { id = "A.359", first_title = "The MoE labs fit their gate on a train, validate and test time split" },
   { id = "A.360", first_title = "scripts/moe.py fits its gate on the validation window, as the site's Model 15 does" },
+  { id = "A.351", first_title = "source:diff returns from cscie103's D.476: a worktree's uncommitted changes are read as data, each changed path with its status and every hunk with its line ranges and its added and removed lines, untracked paths listed by name and size without being read, git run through gitenv and the diff parsed by python-unidiff 1.0.1, so a dirty worktree is inspected before source:restore discards anything" },
 ]
