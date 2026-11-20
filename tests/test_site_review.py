@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import re
+import tomllib
 from pathlib import Path
 from typing import Any
 
@@ -484,6 +485,42 @@ def test_round_nine_practices_name_their_step_or_why_they_are_out_of_scope() -> 
     for org, status in nonempty(list(ROUND_NINE.items())):
         assert org in practices, org
         assert practices[org]["status"] == status, practices[org]
+
+
+# A.260: EVERY LAB CLAIM IS TRACEABLE, forward and back, to a vitest case that exists.
+LAB_CLAIMS = ROOT / "contracts" / "lab-claims.toml"
+
+
+def _declares(source: str, calls: tuple[str, ...], title: str) -> bool:
+    """Whether a vitest file declares one of these calls with exactly this title."""
+    return any(
+        f"{call}({quote}{title}{quote}" in source for call in calls for quote in ('"', "'", "`")
+    )
+
+
+def test_every_lab_claim_names_the_computation_that_checks_it() -> None:
+    """Each built lab states claims; each claim names a lab and a vitest case that exists."""
+    recorded = tomllib.loads(LAB_CLAIMS.read_text(encoding="utf-8"))
+    assert recorded.get("contract") == "lab-claims/v1", recorded.get("contract")
+    claims = nonempty(recorded["claims"])
+    labs = ROOT / "site" / "src" / "mechanisms" / "labs"
+    built = {path.stem for path in nonempty(sorted(labs.glob("*.jsx")))}
+    claimed = {str(claim["lab"]) for claim in claims}
+    assert sorted(built - claimed) == [], f"built labs with no claim: {sorted(built - claimed)}"
+    assert sorted(claimed - built) == [], f"claims naming no lab: {sorted(claimed - built)}"
+    dangling = []
+    for claim in claims:
+        parts = [part.strip() for part in str(claim["evidence"]).split(" > ")]
+        source = ROOT / parts[0]
+        text = source.read_text(encoding="utf-8") if source.is_file() else ""
+        found = (
+            len(parts) == 3
+            and _declares(text, ("describe",), parts[1])
+            and _declares(text, ("it", "test"), parts[2])
+        )
+        if not found:
+            dangling.append(f"{claim['lab']}: {claim['evidence']}")
+    assert dangling == [], dangling
 
 
 def test_the_example_record_states_its_confidence_interval() -> None:
