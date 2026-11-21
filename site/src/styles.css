@@ -664,6 +664,18 @@ nav a[aria-current="page"] {
   color: var(--accent);
 }
 
+@media print {
+  /* A.281: the sticky header would repeat over every printed page; the page prints its content. */
+  .bar {
+    display: none;
+  }
+
+  .provenance,
+  .foot {
+    break-inside: avoid;
+  }
+}
+
 @media (max-width: 720px) {
   .group-card {
     float: none;
