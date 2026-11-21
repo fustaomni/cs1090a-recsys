@@ -3034,7 +3034,7 @@ depends_on = ["A.246", "A.95"]
 because = { "A.246" = "the fourteen models, twelve techniques and four new labs this deploys", "A.95" = "site:build and site:deploy, the deployment this records" }
 branch = "feature/site-deployed"
 done_when = [
-  { kind = "proof", test = "tests/test_site_deployed.py::test_the_recorded_deployment_names_its_commit_and_carries_fourteen_models_and_twelve_techniques" },
+  { kind = "proof", test = "tests/test_site_deployed.py::test_the_recorded_deployment_names_its_commit_and_carries_the_counts_it_deployed" },
   { kind = "proof", test = "tests/test_site_deployed.py::test_site_deploy_targets_only_the_declared_railway_identity" },
   { kind = "proof", test = "tests/test_site_deployed.py::test_a_generated_project_carries_no_railway_identity_or_deployment" },
   { kind = "path", path = "contracts/site-railway.toml" },
