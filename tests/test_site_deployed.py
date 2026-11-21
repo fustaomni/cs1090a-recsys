@@ -21,7 +21,7 @@ PROJECT = ROOT / "site" / "src" / "data" / "project.json"
 IDENTITY = ROOT / "contracts" / "site-railway.toml"
 
 
-def test_the_recorded_deployment_names_its_commit_and_carries_fourteen_models_and_twelve_techniques(
+def test_the_recorded_deployment_names_its_commit_and_carries_the_counts_it_deployed(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.chdir(ROOT)
@@ -30,7 +30,6 @@ def test_the_recorded_deployment_names_its_commit_and_carries_fourteen_models_an
     assert record["contract"] == "site-deployment/v1", record
     assert record["status"] == "SUCCESS", record
     assert isinstance(record["deployment"], str) and record["deployment"], record
-    assert (record["models"], record["techniques"]) == (14, 12), record
     commit = record["commit"]
     assert isinstance(commit, str), record
     # THE RECORD DESCRIBES ITS OWN COMMIT (A.346): compared with the data that commit deployed,
