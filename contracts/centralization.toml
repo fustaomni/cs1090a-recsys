@@ -321,6 +321,11 @@ class = "project"
 reason = "this recommender's offline evaluation evidence record, evaluation-evidence/v1 (A.283)"
 
 [[capabilities]]
+id = "script:scripts/evaluation_contracts.py"
+class = "project"
+reason = "this study's evaluation policy, comparison evidence and verdict types for its pre-registered MovieLens comparison against the bias baseline (A.302)"
+
+[[capabilities]]
 id = "script:scripts/evaluation_protocol.py"
 class = "project"
 reason = "this recommender's research policy, evaluation-protocol/v1, whose digest every evidence record names (A.284)"
