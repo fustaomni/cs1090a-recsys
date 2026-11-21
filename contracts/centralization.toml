@@ -341,6 +341,11 @@ class = "project"
 reason = "this recommender's gated mixture of experts: a stable softmax gate, its mixing and per-bucket RMSE (A.345)"
 
 [[capabilities]]
+id = "script:scripts/reproduce.py"
+class = "project"
+reason = "this study's re-run of a recorded MovieLens evaluation from its evidence record alone, refusing a changed data snapshot before anything re-runs (A.287)"
+
+[[capabilities]]
 id = "script:scripts/milestone2.py"
 class = "project"
 reason = "this recommender Milestone 2 walking skeleton, from the verified archive to the proposal line (A.244)"
