@@ -164,6 +164,10 @@ def sectioned(
     """
     raw = source.read_bytes()
     document: object = json.loads(raw)
+    # THE FILE NAMES ITS OWN CONTRACT (A.261): the section cites only what its source declares.
+    named = document.get("contract") if isinstance(document, dict) else None
+    if named != contract:
+        raise SystemExit(f"{source} names contract {named!r}, not {contract!r}")
     evidence = Evidence(contract=contract, sha256=hashlib.sha256(raw).hexdigest())
     entries = tuple(
         Entry(

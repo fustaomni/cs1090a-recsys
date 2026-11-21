@@ -1,0 +1,188 @@
+{
+  "size_megabytes": 24.899807,
+  "tables": {
+    "ratings": [
+      1000209,
+      4
+    ],
+    "users": [
+      6040,
+      5
+    ],
+    "movies": [
+      3883,
+      3
+    ]
+  },
+  "summaries": {
+    "rating": {
+      "count": 1000209,
+      "mean": 3.581564453029317,
+      "minimum": 1,
+      "maximum": 5
+    },
+    "timestamp": {
+      "count": 1000209,
+      "mean": 972243695.4046655,
+      "minimum": 956703932,
+      "maximum": 1046454590
+    },
+    "age": {
+      "count": 6040,
+      "mean": 30.639238410596025,
+      "minimum": 1,
+      "maximum": 56
+    },
+    "occupation": {
+      "count": 6040,
+      "mean": 8.146854304635761,
+      "minimum": 0,
+      "maximum": 20
+    }
+  },
+  "missing_by_column": {
+    "ratings.dat": {
+      "user_id": 0,
+      "movie_id": 0,
+      "rating": 0,
+      "timestamp": 0
+    },
+    "users.dat": {
+      "user_id": 0,
+      "gender": 0,
+      "age": 0,
+      "occupation": 0,
+      "zip_code": 0
+    },
+    "movies.dat": {
+      "movie_id": 0,
+      "title": 0,
+      "genres": 0
+    }
+  },
+  "missing_by_gender": {
+    "F": 0,
+    "M": 0
+  },
+  "quality": [
+    {
+      "name": "rating-in-range",
+      "kind": "validity",
+      "status": "pass",
+      "count": 0
+    },
+    {
+      "name": "user-movie-unique",
+      "kind": "uniqueness",
+      "status": "pass",
+      "count": 0
+    },
+    {
+      "name": "rating-user-exists",
+      "kind": "referential-integrity",
+      "status": "pass",
+      "count": 0
+    },
+    {
+      "name": "rating-movie-exists",
+      "kind": "referential-integrity",
+      "status": "pass",
+      "count": 0
+    },
+    {
+      "name": "fields-present",
+      "kind": "completeness",
+      "status": "pass",
+      "count": 0
+    }
+  ],
+  "unusual_users": {
+    "gender-not-F-or-M": 0,
+    "age-not-a-documented-code": 0,
+    "occupation-outside-0-to-20": 0,
+    "zip-not-five-digits": 81
+  },
+  "rating_balance": {
+    "1": 56174,
+    "2": 107557,
+    "3": 261197,
+    "4": 348971,
+    "5": 226310
+  },
+  "leakage_refused": true,
+  "split": {
+    "cutoff": 975768738,
+    "train": 800164,
+    "test": 200045,
+    "train_latest": 975768719,
+    "test_earliest": 975768738
+  },
+  "cold_start": {
+    "test": 200045,
+    "user-unseen": 95502,
+    "movie-unseen": 115
+  },
+  "test_buckets": {
+    "warm": 104452,
+    "new-user": 95478,
+    "new-movie": 91,
+    "both-new": 24
+  },
+  "split_audit": {
+    "windows": {
+      "train": {
+        "ratings": 700144,
+        "users": 4870,
+        "movies": 3633,
+        "first": 956703932,
+        "last": 974862369
+      },
+      "validation": {
+        "ratings": 100020,
+        "users": 945,
+        "movies": 3367,
+        "first": 974862386,
+        "last": 975768719,
+        "user-unseen": 73759,
+        "movie-unseen": 34
+      },
+      "test": {
+        "ratings": 200045,
+        "users": 1783,
+        "movies": 3511,
+        "first": 975768738,
+        "last": 1046454590,
+        "user-unseen": 95502,
+        "movie-unseen": 115
+      }
+    },
+    "leakage": "pass"
+  },
+  "joined_table": [
+    1000209,
+    10
+  ],
+  "contract": "milestone2-results/v1",
+  "figures": [
+    {
+      "title": "Ratings per user",
+      "xlabel": "Ratings made by one user",
+      "ylabel": "Number of users (log scale)"
+    },
+    {
+      "title": "Ratings per movie",
+      "xlabel": "Ratings received by one movie",
+      "ylabel": "Number of movies (log scale)"
+    },
+    {
+      "title": "Ratings per star",
+      "xlabel": "Star rating",
+      "ylabel": "Number of ratings"
+    },
+    {
+      "title": "Ratings over time, split at one time point",
+      "xlabel": "Rating time (year)",
+      "ylabel": "Number of ratings"
+    }
+  ]
+}
