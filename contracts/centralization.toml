@@ -316,6 +316,11 @@ class = "project"
 reason = "this recommender fitted model as a governed artifact (A.100)"
 
 [[capabilities]]
+id = "script:scripts/independent_evaluator.py"
+class = "project"
+reason = "this study's offline evaluator, which asks a MovieLens rating model only the user, movie and time of each held-out rating and scores it alone (A.291)"
+
+[[capabilities]]
 id = "script:scripts/evaluation_evidence.py"
 class = "project"
 reason = "this recommender's offline evaluation evidence record, evaluation-evidence/v1 (A.283)"
