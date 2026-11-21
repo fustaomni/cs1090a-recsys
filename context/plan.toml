@@ -3461,7 +3461,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.295"
-title = "Offline experiment runs are tracked in a local MLflow file store, with no server, through MLflow's scikit-learn autologging so nothing is logged by hand: each fit records its parameters, seed, runtime and metrics, each fitted model is a logged model linked to the digests of the datasets it was trained and measured on, and each evidence record names its MLflow run and model ids, so the typed record stays the source of truth and MLflow the index"
+title = "Offline experiment runs are tracked in a local MLflow SQLite store under the run's evidence root, with no server and never the deprecated file store, through MLflow's scikit-learn autologging so nothing is logged by hand: each fit records its parameters, seed, runtime and metrics, each fitted model is a logged model linked to the digests of the datasets it was trained and measured on, and each evidence record names its MLflow run and model ids, so the typed record stays the source of truth and MLflow the index"
 thread = "A"
 depends_on = ["A.283"]
 because = { "A.283" = "the evidence record names the MLflow run and model it indexes" }
