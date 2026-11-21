@@ -4258,6 +4258,7 @@ depends_on = ["A.203"]
 because = { "A.203" = "sibling:pin and the Java proof whose naming rule this corrects" }
 branch = "feature/temurin-canonical-pin"
 done_when = [
+  { kind = "proof", test = "tests/test_sibling_pins.py::test_a_temurin_hotfix_is_never_named_by_its_folded_build" },
   { kind = "proof", test = "tests/test_sibling_pins.py::test_the_java_pin_is_the_one_temurin_release_nixpkgs_matches" },
   { kind = "proof", test = "tests/integration/test_sibling_toolchain.py::test_every_pin_is_the_version_nixpkgs_ships" },
   { kind = "proof", test = "tests/integration/test_sibling_toolchain.py::test_every_pin_resolves_in_mise" },

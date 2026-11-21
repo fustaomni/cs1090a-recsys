@@ -75,6 +75,14 @@ def test_the_java_pin_is_the_one_temurin_release_nixpkgs_matches() -> None:
     assert pins.resolve("java", version, listed) == "temurin-17.0.20.1+1"
 
 
+def test_a_temurin_hotfix_is_never_named_by_its_folded_build() -> None:
+    """A.363: a hotfix is pinned by its canonical name, never by its folded build."""
+    pins = _pins()
+    version = pins.shipped(REVISION, JAVA, fetch=lambda url: SOURCES)
+    listed = ["temurin-17.0.20+101", "temurin-17.0.20.1+1"]
+    assert pins.resolve("java", version, listed) == "temurin-17.0.20.1+1", version
+
+
 def test_a_version_mise_does_not_list_is_refused() -> None:
     """What nixpkgs ships but mise cannot install is refused, naming the tool and the version."""
     pins = _pins()
