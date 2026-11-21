@@ -286,6 +286,11 @@ class = "project"
 reason = "worktree:skip rewrites lineage and retires here under A.193, so it is not centralized"
 
 [[capabilities]]
+id = "script:scripts/bitemporal.py"
+class = "project"
+reason = "this study's replay of MovieLens ratings with an event time and a declared observation time, refusing a feature source observed at or after its prediction (A.300)"
+
+[[capabilities]]
 id = "script:scripts/data_fetch.py"
 class = "project"
 reason = "the MovieLens data this recommender is built on (A.99, A.100)"
