@@ -78,6 +78,11 @@ enable_error_code = [
 module = "securesystemslib.signer"
 implicit_reexport = true
 
+# scikit-learn ships no py.typed marker (A.295): its imports are excused by package, never strict.
+[[tool.mypy.overrides]]
+module = ["sklearn", "sklearn.*"]
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
