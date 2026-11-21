@@ -306,6 +306,11 @@ class = "project"
 reason = "this recommender Milestone 2 notebook, run in a fresh kernel on the verified MovieLens 1M and saved with its outputs (A.329)"
 
 [[capabilities]]
+id = "script:scripts/lineage.py"
+class = "project"
+reason = "this study's offline pipeline lineage, each MovieLens stage written as OpenLineage run events and traced back to the source files; the run gateway's own lineage is A.181 (A.293)"
+
+[[capabilities]]
 id = "script:scripts/model_run.py"
 class = "project"
 reason = "this recommender fitted model as a governed artifact (A.100)"
