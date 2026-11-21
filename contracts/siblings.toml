@@ -14,7 +14,7 @@ nixpkgs = "5adc50831c259f87faeb09ddf930d43597197473"
 [siblings.tools]
 betterleaks = "1.9.0"
 databricks-cli = "1.20.0"
-java = "temurin-17.0.20+101"
+java = "temurin-17.0.20.1+1"
 lefthook = "2.1.15"
 opa = "1.19.1"
 osv-scanner = "2.7.0"
