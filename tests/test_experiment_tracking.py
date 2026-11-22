@@ -20,6 +20,7 @@ import pytest
 from sklearn.linear_model import Ridge
 
 from evaluation_evidence import DataSnapshot, EvaluationEvidence, Metric
+from nonvacuous import nonempty
 
 TEST = "c" * 64
 
@@ -59,7 +60,7 @@ def test_every_evidence_record_names_its_mlflow_run_and_model(tmp_path: Path) ->
     client = mlflow.MlflowClient(tracking_uri=subject.store_uri(tmp_path))
     run = client.get_run(tracked.run_id)
     assert run.data.params["alpha"] == "1.0", run.data.params
-    for metric in tracked.metrics:
+    for metric in nonempty(tracked.metrics):
         model = client.get_logged_model(metric.model_id)
         assert model.source_run_id == tracked.run_id, model
     assert tracked.data_snapshot == _draft().data_snapshot, tracked
