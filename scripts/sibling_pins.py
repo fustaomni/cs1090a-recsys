@@ -62,20 +62,6 @@ def fetch(url: str) -> str:
     return done.stdout
 
 
-def _semver(release: str) -> str:
-    """Adoptium's semver for a release: a point release's fourth number joins its build.
-
-    Semver has three numbers, so Adoptium names jdk-17.0.20.1+1 as 17.0.20+101 (the fourth
-    number times 100, plus the build), and mise lists Temurin by that name. Any other shape
-    is returned unchanged, for resolve to judge against what mise lists.
-    """
-    numbers, plus, build = release.partition("+")
-    parts = numbers.split(".")
-    if len(parts) != 4 or not plus or not build.isdigit() or not parts[3].isdigit():
-        return release
-    return f"{'.'.join(parts[:3])}+{int(parts[3]) * 100 + int(build)}"
-
-
 def shipped(revision: str, source: str, fetch: Fetch = fetch) -> str:
     """The version nixpkgs ships at revision: a package file's, or a key path into JSON."""
     path, _, key = source.partition("#")
@@ -95,7 +81,8 @@ def shipped(revision: str, source: str, fetch: Fetch = fetch) -> str:
         tag = RELEASE_TAG.search(str(value.get("url", "")))
         build = value.get("build")
         if tag is not None:
-            value = _semver(unquote(tag.group(1)))
+            # A.363: the canonical release, as java -version prints it and mise lists it.
+            value = unquote(tag.group(1))
         else:
             value = f"{value['version']}+{build}" if build else value["version"]
     if not isinstance(value, str):
