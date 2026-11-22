@@ -15,6 +15,8 @@ from types import ModuleType
 
 import pytest
 
+from nonvacuous import nonempty
+
 
 def _subject() -> ModuleType:
     found = importlib.util.find_spec("independent_evaluator")
@@ -59,7 +61,7 @@ def test_a_model_never_receives_a_held_out_rating() -> None:
     spy = _Spy()
     subject.evaluate(spy, _held_out(subject))
     assert len(spy.seen) == 2, spy.seen
-    for query in spy.seen:
+    for query in nonempty(spy.seen):
         assert isinstance(query, subject.Query), type(query)
         assert set(type(query).model_fields) == {"user", "movie", "time"}, query
         assert not hasattr(query, "rating"), query
