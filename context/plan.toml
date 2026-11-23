@@ -4315,3 +4315,13 @@ done_when = [
   { kind = "proof", test = "tests/test_branches_retire.py::test_an_archive_origin_already_holds_at_the_tip_is_neither_tagged_nor_pushed_again" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.368"
+title = "history:publish refuses while origin holds a branch or tag the verified mirror lacks, naming each, since a ref left in place keeps its old history reachable after the publish: every such ref is merged, or retired to an archive tag the mirror then carries, before anything is pushed"
+thread = "A"
+depends_on = ["A.366", "A.367"]
+because = { "A.366" = "history:publish, whose plan this extends", "A.367" = "a resumable branches:retire, which turns a branch only origin holds into an archive tag the mirror carries" }
+done_when = [
+  { kind = "proof", test = "tests/test_history_publish.py::test_a_branch_origin_holds_that_the_mirror_lacks_refuses_the_whole_publish" },
+  { kind = "task", name = "check" },
+]
