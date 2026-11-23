@@ -10,6 +10,10 @@ ARCHIVED FIRST, THEN DELETED. Git has no archive state for a branch; the practic
 its tip, pushed, before the branch goes, so the work stays recoverable by name. branch -D runs
 only after that tag exists, and the run stops at the first effect that fails.
 
+RESUMED, NEVER REDONE (A.367). Git's refs are the checkpoint: an archive tag already at the tip
+is a step done, so a run stopped after it is finished by the next; an archive at another tip is
+refused, here or on origin, because an archive is never overwritten.
+
 A DRY RUN UNLESS --yes. The state is observed afresh in the run that deletes, so the tip that is
 archived is the tip that was judged.
 """
@@ -45,10 +49,12 @@ class Observed(Contract):
     tip: str
     held_by: str | None
     on_origin: bool
-    archived: bool
     step_known: bool
     # False when only origin still holds the branch (D.229).
     local: bool = True
+    # THE ARCHIVE AS IT STANDS (A.367): the commit its tag holds here, and on origin.
+    archive_tip: str | None = None
+    origin_archive_tip: str | None = None
 
 
 class RetireRequest(Contract):
@@ -60,10 +66,11 @@ class RetireRequest(Contract):
     held_by: str | None
     protected: tuple[str, ...]
     step_known: bool
-    archived: bool
     on_origin: bool
     execute: bool
     local: bool = True
+    archive_tip: str | None = None
+    origin_archive_tip: str | None = None
 
 
 class Retirer(Protocol):
@@ -101,6 +108,23 @@ def _rev(ref: str) -> str | None:
     return result.stdout.strip() if result.returncode == 0 else None
 
 
+def _origin_tag(name: str) -> str | None:
+    """The commit origin's tag holds, peeled, or None when origin has no such tag."""
+    listed = git("ls-remote", "--tags", REMOTE, f"refs/tags/{name}*", cwd=ROOT)
+    if listed.returncode != 0:
+        raise ToolFailedError(
+            f"git ls-remote --tags {REMOTE} failed: {listed.stderr.strip()}",
+            remediation=f"Check {REMOTE} is reachable, then branches:retire again.",
+            tool="git",
+        )
+    held: dict[str, str] = {}
+    for line in listed.stdout.splitlines():
+        commit, _, listed_ref = line.partition("\t")
+        held[listed_ref] = commit
+    ref = f"refs/tags/{name}"
+    return held.get(f"{ref}^{{}}", held.get(ref))
+
+
 def observe_repository(branch: str, step: str) -> Observed:
     """The branch as it stands now, after pruning refs to branches origin no longer has."""
     fetched = git("fetch", "--prune", REMOTE, cwd=ROOT)
@@ -126,7 +150,8 @@ def observe_repository(branch: str, step: str) -> Observed:
         tip=tip,
         held_by=None if holder is None else str(holder),
         on_origin=_rev(f"refs/remotes/{REMOTE}/{branch}") is not None,
-        archived=_rev(f"refs/tags/archive/{branch}") is not None,
+        archive_tip=_rev(f"refs/tags/archive/{branch}"),
+        origin_archive_tip=_origin_tag(f"archive/{branch}"),
         step_known=step in {entry.id for entry in plan.steps},
         local=local is not None,
     )
@@ -159,10 +184,11 @@ def main(
         held_by=observed.held_by,
         protected=tuple(sorted(PROTECTED_BRANCHES)),
         step_known=observed.step_known,
-        archived=observed.archived,
         on_origin=observed.on_origin,
         execute=execute,
         local=observed.local,
+        archive_tip=observed.archive_tip,
+        origin_archive_tip=observed.origin_archive_tip,
     )
     facts = request.model_dump(mode="json")
     found = evaluate(request, SUBJECT, POLICY, ENTRYPOINT)
@@ -173,8 +199,13 @@ def main(
     archive = f"archive/{branch}"
     present = (("locally", observed.local), ("on origin", observed.on_origin))
     where = " and ".join(place for place, held in present if held)
+    tagged = observed.archive_tip is not None or observed.origin_archive_tip is not None
+    pushed = observed.origin_archive_tip is not None
+    resumed = [step for step, done in (("tagged", tagged), ("pushed", pushed)) if done]
+    already = f" ({' and '.join(resumed)} already)" if resumed else ""
     if not execute:
-        message = f"would archive {observed.tip} as {archive}, then delete {branch} {where}"
+        message = f"would archive {observed.tip} as {archive}{already}, then delete {branch}"
+        message = f"{message} {where}"
         return enforce(announce(COMMAND, decision, "retire_planned", message, facts))
     target = retire if retire is not None else GitRetirer()
     why = f"retired: superseded by {step}"
@@ -183,6 +214,11 @@ def main(
         ("push the tag", lambda: target.push_tag(archive)),
         ("delete the local branch", lambda: target.delete_local(branch)),
     ]
+    # A STEP GIT ALREADY SHOWS DONE IS SKIPPED (A.367): the policy proved any archive is at the tip.
+    if tagged:
+        effects = [effect for effect in effects if effect[0] != "tag the tip"]
+    if pushed:
+        effects = [effect for effect in effects if effect[0] != "push the tag"]
     if not observed.local:
         # NOTHING LOCAL TO DELETE (D.229): the archive tag and origin's copy are all there is.
         effects = [effect for effect in effects if effect[0] != "delete the local branch"]
@@ -195,7 +231,7 @@ def main(
             stopped = halted(SUBJECT, ENTRYPOINT, POLICY, reason)
             return enforce(announce(COMMAND, stopped, "retire_incomplete", reason, facts))
         done.append(name)
-    message = f"archived {observed.tip[:12]} as {archive}, deleted {branch} {where}"
+    message = f"archived {observed.tip[:12]} as {archive}{already}, deleted {branch} {where}"
     return enforce(announce(COMMAND, decision, "retired", message, facts))
 
 
