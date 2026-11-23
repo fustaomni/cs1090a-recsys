@@ -19,6 +19,7 @@ import worktree
 from branches_retire import ENTRYPOINT, POLICY, Observed, RetireRequest, main
 
 TIP = "ae60fa835f0d0fcbb99a0975eccbba9b9709dc0e"
+OTHER = "1746b612beb6ce171b245d3b789ae26696bc56b0"
 PROTECTED = ("develop", "main")
 
 
@@ -99,9 +100,36 @@ def test_a_step_the_plan_does_not_know_is_refused(capsys: pytest.CaptureFixture[
 
 
 def test_an_existing_archive_is_never_overwritten(capsys: pytest.CaptureFixture[str]) -> None:
-    code, retirer = _run(_observed(archived=True), ["feature/old", "D.125", "--yes"])
+    code, retirer = _run(_observed(archive_tip=OTHER), ["feature/old", "D.125", "--yes"])
     assert (code, retirer.calls) == (2, [])
     assert "ERR_BRANCHES_RETIRE_ARCHIVED" in _message(capsys)
+
+
+def test_an_archive_origin_holds_at_another_tip_is_never_overwritten(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    held = _observed(origin_archive_tip=OTHER)
+    code, retirer = _run(held, ["feature/old", "D.125", "--yes"])
+    assert (code, retirer.calls) == (2, [])
+    assert "ERR_BRANCHES_RETIRE_ARCHIVED" in _message(capsys)
+
+
+def test_an_archive_at_the_tip_origin_lacks_is_pushed_then_the_branch_deleted() -> None:
+    """A run stopped after its tag: the re-run pushes that tag, never tagging the tip again."""
+    code, retirer = _run(_observed(archive_tip=TIP), ["feature/old", "D.125", "--yes"])
+    assert code == 0
+    assert retirer.calls == [
+        ("push_tag", "archive/feature/old"),
+        ("delete_local", "feature/old"),
+        ("delete_remote", "feature/old"),
+    ]
+
+
+def test_an_archive_origin_already_holds_at_the_tip_is_neither_tagged_nor_pushed_again() -> None:
+    held = _observed(archive_tip=TIP, origin_archive_tip=TIP)
+    code, retirer = _run(held, ["feature/old", "D.125", "--yes"])
+    assert code == 0
+    assert retirer.calls == [("delete_local", "feature/old"), ("delete_remote", "feature/old")]
 
 
 def test_a_dry_run_retires_nothing(capsys: pytest.CaptureFixture[str]) -> None:
