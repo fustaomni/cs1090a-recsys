@@ -797,9 +797,9 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 
 [[adapted]]
 path = "contracts/problems.toml"
-reason = "secrets:report's two codes, ERR_SECRETS_FOUND and ERR_SECRETS_SCAN_INPUT_MISSING, registered by problems:register (A.321)"
+reason = "history:rewrite's seven codes, ERR_REWRITE_*, registered by problems:register (A.364)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "3764679be0d642b6631b983f1ccf8aeb75c0288bdab8c84a1e3114f728868e70"
+sha256 = "2ead0755d2303534cc8b2e1cb9f7c50cfacbca34e577bc1317c91eeba57d3ba8"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
