@@ -52,7 +52,6 @@ def _observed(branch: str = "feature/old", **facts: object) -> Observed:
         "tip": TIP,
         "held_by": None,
         "on_origin": True,
-        "archived": False,
         "step_known": True,
     }
     return Observed.model_validate({**defaults, **facts})
@@ -148,7 +147,6 @@ def test_an_absent_request_is_refused_by_the_policy() -> None:
         held_by=None,
         protected=PROTECTED,
         step_known=True,
-        archived=False,
         on_origin=True,
         execute=True,
     )
