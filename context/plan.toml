@@ -4288,3 +4288,17 @@ done_when = [
   { kind = "proof", test = "tests/test_history_rewrite.py::test_an_unverified_rewrite_is_refused_by_its_policy" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.366"
+title = "A verified mirror replaces origin's history only through history:publish: a dry run unless --yes, every branch and tag pushed with a lease on the tip history:rewrite recorded when it cut the mirror, never a --mirror push, and the ruleset's deletion and non-fast-forward rules lifted only for that push and restored from contracts/ruleset-develop-and-main.json afterwards, even when the push fails"
+thread = "A"
+depends_on = ["A.364"]
+because = { "A.364" = "the verified mirror this publishes, and the moment its leases are recorded" }
+done_when = [
+  { kind = "proof", test = "tests/test_history_publish.py::test_without_yes_nothing_is_pushed_and_every_ref_is_reported" },
+  { kind = "proof", test = "tests/test_history_publish.py::test_every_ref_is_pushed_with_a_lease_on_the_tip_recorded_when_the_mirror_was_cut" },
+  { kind = "proof", test = "tests/test_history_publish.py::test_a_ref_moved_since_the_mirror_was_cut_refuses_the_whole_publish" },
+  { kind = "proof", test = "tests/test_history_publish.py::test_the_ruleset_is_restored_from_its_contract_even_when_the_push_fails" },
+  { kind = "proof", test = "tests/test_history_publish.py::test_the_publish_plan_is_judged_by_its_policy" },
+  { kind = "task", name = "check" },
+]

@@ -400,6 +400,12 @@ implementation = "scripts/source_port.py"
 emits = "text"
 
 [[capabilities]]
+task = "history:publish"
+version = "1.0.0"
+implementation = "scripts/history_publish.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
 task = "history:rewrite"
 version = "1.0.0"
 implementation = "scripts/history_rewrite.py"
