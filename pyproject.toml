@@ -12,6 +12,7 @@ description = "Offline prediction of the next recorded MovieLens 1M rating, gove
 requires-python = "==3.12.3"
 dependencies = [
     "defusedxml==0.7.1",
+    "git-filter-repo==2.47.0",
     "pysequoia>=0.1.35",
     "securesystemslib[crypto]>=1.5.1",
     "tomlkit>=0.15.1",
