@@ -1136,3 +1136,8 @@ severity = "error"
 code = "ERR_HISTORY_PUBLISH_REF_MOVED"
 title = "No ref moved since the mirror was cut"
 severity = "error"
+
+[[problems]]
+code = "ERR_HISTORY_PUBLISH_REF_UNCOVERED"
+title = "Every branch and tag origin holds is in the mirror"
+severity = "error"

@@ -155,6 +155,23 @@ def test_the_ruleset_is_restored_from_its_contract_even_when_the_push_fails(
     assert _tips(origin) == before
 
 
+def test_a_branch_origin_holds_that_the_mirror_lacks_refuses_the_whole_publish(
+    tmp_path: Path,
+) -> None:
+    """A branch only origin holds would keep its old history reachable, so nothing is pushed."""
+    subject = _subject()
+    origin, work = _origin(tmp_path)
+    mirror = _mirror(tmp_path, origin)
+    _git(work, "push", "-q", "origin", "develop:refs/heads/feature/elsewhere")
+    held = _tips(origin)
+    ruleset = _Ruleset()
+    with pytest.raises(subject.PublishRefusedError) as refused:
+        subject.publish(mirror, subject.GitRemote(str(origin), mirror), ruleset, execute=True)
+    assert "refs/heads/feature/elsewhere" in str(refused.value)
+    assert _tips(origin) == held
+    assert ruleset.calls == []
+
+
 def _failed(evidence: BaseModel, subject_name: str, policy: Path, entrypoint: str) -> set[str]:
     found = spine.evaluate(evidence, subject_name, policy, entrypoint)
     return {rule.code for rule in found.rules if rule.outcome == "fail"}
