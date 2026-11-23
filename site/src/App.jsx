@@ -310,7 +310,7 @@ function Results() {
           <tbody>
             {rows.map((row) => (
               <tr key={row.key} className={row.kind}>
-                <th scope="row">{row.name}</th>
+                <th scope="row">{row.kind === "model" ? bind(`{${row.key}}`) : row.name}</th>
                 {METRICS.map(([key]) => (
                   <td key={key}>{row.metrics ? estimate(row.metrics[key]) : "—"}</td>
                 ))}
