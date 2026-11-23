@@ -67,12 +67,20 @@ def test_a_source_without_a_version_is_refused_not_written(tmp_path: Path) -> No
 
 
 def test_the_java_pin_is_the_one_temurin_release_nixpkgs_matches() -> None:
-    """nixpkgs downloads 17.0.20.1+1, which Adoptium's semver and mise name 17.0.20+101."""
+    """nixpkgs downloads 17.0.20.1+1, which mise's catalogue names by that canonical version."""
     pins = _pins()
     version = pins.shipped(REVISION, JAVA, fetch=lambda url: SOURCES)
-    assert version == "17.0.20+101", version
-    listed = ["temurin-17.0.19+10", "temurin-17.0.20+8", "temurin-17.0.20+101", "zulu-17.0.20"]
-    assert pins.resolve("java", version, listed) == "temurin-17.0.20+101"
+    assert version == "17.0.20.1+1", version
+    listed = ["temurin-17.0.19+10", "temurin-17.0.20+8", "temurin-17.0.20.1+1", "zulu-17.0.20"]
+    assert pins.resolve("java", version, listed) == "temurin-17.0.20.1+1"
+
+
+def test_a_temurin_hotfix_is_never_named_by_its_folded_build() -> None:
+    """A.363: a hotfix is pinned by its canonical name, never by its folded build."""
+    pins = _pins()
+    version = pins.shipped(REVISION, JAVA, fetch=lambda url: SOURCES)
+    listed = ["temurin-17.0.20+101", "temurin-17.0.20.1+1"]
+    assert pins.resolve("java", version, listed) == "temurin-17.0.20.1+1", version
 
 
 def test_a_version_mise_does_not_list_is_refused() -> None:
