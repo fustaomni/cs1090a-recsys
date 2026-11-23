@@ -61,9 +61,15 @@ deny contains denial if {
 # custom:
 #   code: ERR_BRANCHES_RETIRE_ARCHIVED
 deny contains denial if {
-	input.branches_retire.archived == true
+	some held in [input.branches_retire.archive_tip, input.branches_retire.origin_archive_tip]
+	held != null
+	held != input.branches_retire.tip
 	denial := {
 		"code": rego.metadata.rule().custom.code,
-		"message": sprintf("archive/%s already exists", [input.branches_retire.branch]),
+		"message": sprintf("archive/%s already holds %s, not the tip %s", [
+			input.branches_retire.branch,
+			held,
+			input.branches_retire.tip,
+		]),
 	}
 }

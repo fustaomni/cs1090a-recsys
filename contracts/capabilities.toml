@@ -653,7 +653,7 @@ emits = "command-outcome/v1"
 
 [[capabilities]]
 task = "branches:retire"
-version = "1.0.0"
+version = "1.1.0"
 implementation = "scripts/branches_retire.py"
 emits = "command-outcome/v1"
 

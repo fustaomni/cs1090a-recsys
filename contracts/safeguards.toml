@@ -1259,7 +1259,7 @@ id = "BRANCHES_RETIRE.ARCHIVED"
 engine = "branches:retire"
 guard = "ERR_BRANCHES_RETIRE_ARCHIVED"
 path = "policies/runs/branches_retire/branches_retire.rego"
-anchor = "\tinput.branches_retire.archived == true\n"
+anchor = "\theld != input.branches_retire.tip\n"
 mutant = "\tfalse\n"
 proof = "tests/test_branches_retire.py::test_an_existing_archive_is_never_overwritten"
 

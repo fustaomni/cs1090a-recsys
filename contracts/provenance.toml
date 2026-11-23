@@ -1327,15 +1327,33 @@ path = "scripts/branches_retire.py"
 sha256 = "79b77100d01c0960451cac6770bab30543c7fe2585d6e339530572db220d40af"
 commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
 
+[[adapted]]
+path = "scripts/branches_retire.py"
+reason = "an archive already at the tip is resumed, never redone; one at another tip is refused, here or on origin (A.367)"
+patch = "contracts/vendor-patches/scripts/branches_retire.py.patch"
+sha256 = "1d5bf3096ab6db925f4f6d01a9913c46f46986ef3977e2e0c2082385bbb943ac"
+
 [[files]]
 path = "policies/runs/branches_retire/branches_retire.rego"
 sha256 = "9a0fe7be86242f93e1b02abd3ab51fcfa488b0521fa2dae7e667f536800abbb6"
 commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
 
+[[adapted]]
+path = "policies/runs/branches_retire/branches_retire.rego"
+reason = "ERR_BRANCHES_RETIRE_ARCHIVED refuses only an archive at another tip, here or on origin (A.367)"
+patch = "contracts/vendor-patches/policies/runs/branches_retire/branches_retire.rego.patch"
+sha256 = "480181c72c92a526aa8fc50cf5576bd7c30954dc72b22630cd3e9330551ad64f"
+
 [[files]]
 path = "tests/test_branches_retire.py"
 sha256 = "20eb17b9db3e196d2af64f61ca357dde5120d354745fa9895cc6e11c5630f0c0"
 commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[adapted]]
+path = "tests/test_branches_retire.py"
+reason = "proofs that a retirement stopped after its tag is resumed, and an archive at another tip refused (A.367)"
+patch = "contracts/vendor-patches/tests/test_branches_retire.py.patch"
+sha256 = "82cd2c1b94482bd2954ed0f7fb305c42cd790d170ec06287a3078269a4613ea3"
 
 [[files]]
 path = "tests/integration/test_generated_gate.py"
