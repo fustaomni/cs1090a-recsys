@@ -392,6 +392,10 @@ run = "uv run --no-sync python scripts/signing.py"
 betterleaks = "1.9.0"
 gh = "2.102.0"
 lefthook = "2.2.0"
+# npm:npm IS DECLARED BEFORE node (A.255): node's own bin carries npm 11, and mise orders PATH
+# as tools are declared, so the pinned npm 12 must come first; devEngines refuses any other.
+"npm:npm" = "12.2.0"
+node = "24.21.0"
 opa = "1.21.1"
 regal = "0.43.0"
 uv = "0.12.23"
@@ -450,17 +454,17 @@ run = "uv run --no-sync python scripts/worktree.py remove"
 
 [tasks."site:lock"]
 description = "Resolve the project site's npm dependencies into site/package-lock.json with a pinned Node"
-run = "cd site && mise exec node@24 -- npm install --package-lock-only --no-audit --no-fund"
+run = "cd site && mise exec -- npm install --package-lock-only --no-audit --no-fund"
 
 [tasks."site:build"]
 description = "Install the site's locked dependencies and build it with Vite, exactly as Railway will"
-run = "cd site && mise exec node@24 -- npm ci --no-audit --no-fund && mise exec node@24 -- npm run build"
+run = "cd site && mise exec -- npm ci --no-audit --no-fund && mise exec -- npm run build"
 
 [tasks."site:install"]
 description = "Install the site's locked packages when the Railway CLI is not installed yet"
 # A.273: EVERY RAILWAY TASK RUNS THIS FIRST. The CLI runs by the npm script railway, which resolves
 # only node_modules/.bin; npx would fall back to the registry, where railway is the IaC SDK.
-run = "cd site && mise exec node@24 -- sh -c 'test -x node_modules/.bin/railway || npm ci --no-audit --no-fund'"
+run = "cd site && mise exec -- sh -c 'test -x node_modules/.bin/railway || npm ci --no-audit --no-fund'"
 
 [tasks."site:link"]
 description = "Link this checkout's site/ to the Railway service contracts/site-railway.toml declares"
@@ -470,7 +474,7 @@ run = "mise run site:install && uv run --no-sync python scripts/site_record.py l
 
 [tasks."site:railway-login"]
 description = "Sign the Railway CLI in without a browser on this machine, by a pairing code"
-run = "mise run site:install && cd site && mise exec node@24 -- npm run --silent railway -- login --browserless"
+run = "mise run site:install && cd site && mise exec -- npm run --silent railway -- login --browserless"
 
 [tasks."site:deploy"]
 description = "Build the site, then deploy site/ to the Railway service contracts/site-railway.toml declares"
@@ -480,11 +484,11 @@ run = "mise run site:build && uv run --no-sync python scripts/site_record.py dep
 [tasks."site:domain"]
 description = "Attach a custom domain to the site (or generate one), printing the DNS records it needs"
 raw_args = true
-run = "mise run site:install && cd site && mise exec node@24 -- npm run --silent railway -- domain"
+run = "mise run site:install && cd site && mise exec -- npm run --silent railway -- domain"
 
 [tasks."site:status"]
 description = "Report the Railway project, service and environment site/ is linked to"
-run = "mise run site:install && mise run site:link && cd site && mise exec node@24 -- npm run --silent railway -- status"
+run = "mise run site:install && mise run site:link && cd site && mise exec -- npm run --silent railway -- status"
 
 [tasks."site:config-pull"]
 description = "Import the linked service's live configuration into site/.railway/railway.ts"
@@ -494,11 +498,11 @@ description = "Import the linked service's live configuration into site/.railway
 # live state with pull and translating railway.json by hand. Writes a local file only.
 # VARIABLES ARE UNMANAGED, A PROJECT DECISION: the site is a static build with no application
 # variables, so none enter git or the file's ownership, and no apply can delete one.
-run = "mise run site:install && mise run site:link && cd site && mise exec node@24 -- npm run --silent railway -- config pull --variables=unmanaged"
+run = "mise run site:install && mise run site:link && cd site && mise exec -- npm run --silent railway -- config pull --variables=unmanaged"
 
 [tasks."site:config-plan"]
 description = "Show what .railway/railway.ts would change on Railway, changing nothing"
-run = "mise run site:install && mise run site:link && cd site && mise exec node@24 -- npm run --silent railway -- config plan"
+run = "mise run site:install && mise run site:link && cd site && mise exec -- npm run --silent railway -- config plan"
 
 [tasks."data:fetch"]
 description = "Download MovieLens 1M, check its published MD5, and unpack it only if nothing is refused"
@@ -511,7 +515,7 @@ run = "uv run --no-sync python scripts/model_run.py"
 [tasks."site:movielens"]
 description = "Regenerate site/src/data/movielens.json from a verified MovieLens 1M folder, with digests"
 usage = 'arg "<folder>" help="The ml-1m folder that data:fetch verified and unpacked"'
-run = 'cd site && mise exec node@24 -- node scripts/movielens-summary.mjs "${usage_folder?}"'
+run = 'cd site && mise exec -- node scripts/movielens-summary.mjs "${usage_folder?}"'
 
 [tasks."site:record"]
 description = "Turn one measured result into a source-apply spec that updates the site's results"
@@ -520,7 +524,7 @@ run = "uv run --no-sync python scripts/site_record.py"
 
 [tasks."site:test"]
 description = "Run the mechanism labs' math proofs with Vitest, under the pinned Node"
-run = "mise run site:install && cd site && mise exec node@24 -- npm run --silent test"
+run = "mise run site:install && cd site && mise exec -- npm run --silent test"
 
 [tasks."capabilities:list"]
 description = "List every task as a versioned capability with its enforced effect, or refuse on drift"

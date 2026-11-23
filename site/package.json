@@ -6,6 +6,18 @@
   "engines": {
     "node": "24.x"
   },
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "version": "12.2.0",
+      "onFail": "error"
+    }
+  },
+  "allowScripts": {
+    "@railway/cli@5.70.0": true,
+    "esbuild@0.28.2": true,
+    "fsevents": false
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

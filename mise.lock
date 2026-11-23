@@ -35,6 +35,21 @@ url = "https://github.com/evilmartians/lefthook/releases/download/v2.2.0/lefthoo
 url_api = "https://api.github.com/repos/evilmartians/lefthook/releases/assets/619550696"
 provenance = "github-attestations"
 
+[[tools.node]]
+version = "24.21.0"
+backend = "core:node"
+specifiers = ["24.21.0"]
+
+[tools.node."platforms.linux-x64"]
+checksum = "sha256:6e1db87ef58b8819e5d5402eff1536491b18edd8eb7bee5ef7897876e88dc5ff"
+url = "https://nodejs.org/dist/v24.21.0/node-v24.21.0-linux-x64.tar.gz"
+
+[[tools."npm:npm"]]
+version = "12.2.0"
+aube = { path = ".mise/locks/npm-npm/12.2.0", digest = "sha256:ce704ee0a99dacc7181715a5d854470a968908ad4eed463cf838cfba38b1f027" }
+backend = "npm:npm"
+specifiers = ["12.2.0"]
+
 [[tools.opa]]
 version = "1.21.1"
 backend = "aqua:open-policy-agent/opa"

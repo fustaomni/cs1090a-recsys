@@ -35,7 +35,7 @@ POLL_SECONDS = 10.0
 DEADLINE_SECONDS = 900.0
 IDENTITY = Path("contracts") / "site-railway.toml"
 # A.273: THE SITE'S OWN @railway/cli, BY ITS npm SCRIPT; npx could resolve railway to the IaC SDK.
-CLI = ("mise", "exec", "node@24", "--", "npm", "run", "--silent", "railway", "--")
+CLI = ("mise", "exec", "--", "npm", "run", "--silent", "railway", "--")
 
 
 class Listed(Contract):

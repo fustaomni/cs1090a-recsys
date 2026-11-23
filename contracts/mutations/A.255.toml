@@ -1,0 +1,23 @@
+# contracts/mutations/A.255.toml
+# A.255: npm's pin and the reviewed script list, each undone alone.
+
+[[mutants]]
+id = "approval-widened"
+file = "site/package.json"
+before = '"esbuild@0.28.2": true'
+after = '"esbuild": true'
+killers = ["tests/test_site_toolchain.py::test_the_site_installs_under_npm_12_with_only_reviewed_install_scripts"]
+
+[[mutants]]
+id = "npm-pinned-back"
+file = "mise.toml"
+before = '"npm:npm" = "12.2.0"'
+after = '"npm:npm" = "11.19.0"'
+killers = ["tests/test_site_toolchain.py::test_the_site_installs_under_npm_12_with_only_reviewed_install_scripts"]
+
+[[mutants]]
+id = "task-overrides-node"
+file = "mise.toml"
+before = 'run = "mise run site:install && cd site && mise exec -- npm run --silent test"'
+after = 'run = "mise run site:install && cd site && mise exec node@24 -- npm run --silent test"'
+killers = ["tests/test_site_toolchain.py::test_the_site_installs_under_npm_12_with_only_reviewed_install_scripts"]
