@@ -28,6 +28,8 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Literal, Protocol
 
+from pydantic import Field
+
 from command_outcome import announce
 from contract_base import Contract, from_document
 from gitenv import git
@@ -53,13 +55,15 @@ class RefUpdate(Contract):
 
 
 class PublishPlan(Contract):
-    """history-publish-plan/v1: every ref the mirror would replace, and any that has moved."""
+    """history-publish-plan/v1: every ref the mirror would replace, any that has moved, and any
+    branch or tag origin holds that the mirror lacks (A.368)."""
 
     contract: Literal["history-publish-plan/v1"] = "history-publish-plan/v1"
     mirror: str
     remote: str
     refs: list[RefUpdate]
     moved: list[str]
+    uncovered: list[str] = Field(default_factory=list)
 
 
 class PublishReport(Contract):
@@ -184,12 +188,16 @@ def publish(mirror: Path, remote: Remote, ruleset: Ruleset, *, execute: bool) ->
     local = tips(mirror)
     current = remote.tips()
     moved = sorted(ref for ref, old in leases.items() if current.get(ref) != old)
+    # A REF ONLY ORIGIN HOLDS KEEPS ITS OLD HISTORY REACHABLE (A.368): it refuses the publish.
+    uncovered = sorted(ref for ref in current if ref not in local)
     updates = [
         RefUpdate(ref=ref, old=leases[ref], new=new)
         for ref, new in sorted(local.items())
         if ref in leases
     ]
-    plan = PublishPlan(mirror=str(mirror), remote=remote.url, refs=updates, moved=moved)
+    plan = PublishPlan(
+        mirror=str(mirror), remote=remote.url, refs=updates, moved=moved, uncovered=uncovered
+    )
     found = _judged(plan)
     decision = decide(found)
     if decision.action != "proceed":

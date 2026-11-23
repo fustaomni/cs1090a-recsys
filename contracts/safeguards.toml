@@ -2026,3 +2026,12 @@ path = "policies/runs/history_publish/history_publish.rego"
 anchor = "\tcount(input.history_publish.refs) == 0\n"
 mutant = "\tfalse\n"
 proof = "tests/test_history_publish.py::test_the_publish_plan_is_judged_by_its_policy"
+
+[[safeguards]]
+id = "HISTORY_PUBLISH.REF_UNCOVERED"
+engine = "history:publish"
+guard = "ERR_HISTORY_PUBLISH_REF_UNCOVERED"
+path = "policies/runs/history_publish/history_publish.rego"
+anchor = "\tcount(input.history_publish.uncovered) > 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_publish.py::test_a_branch_origin_holds_that_the_mirror_lacks_refuses_the_whole_publish"

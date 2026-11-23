@@ -797,9 +797,9 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 
 [[adapted]]
 path = "contracts/problems.toml"
-reason = "history:publish's three codes, ERR_HISTORY_PUBLISH_*, registered by problems:register (A.366)"
+reason = "history:publish's ERR_HISTORY_PUBLISH_REF_UNCOVERED, registered by problems:register (A.368)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "89a78feefd561226c1e44f7fa2c23e95004feff4e5b4016c48ae02e55dfdc141"
+sha256 = "e9ca881f346f25459a994807cb867046bd591a36529003031f1b2aa3fa93c93a"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
