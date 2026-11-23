@@ -1510,7 +1510,7 @@
  
  [[problems]]
  code = "ERR_TEMPLATE_UNPINNED"
-@@ -1086,151 +798,341 @@
+@@ -1086,151 +798,346 @@
  severity = "error"
  
  [[problems]]
@@ -1999,4 +1999,9 @@
 +[[problems]]
 +code = "ERR_HISTORY_PUBLISH_REF_MOVED"
 +title = "No ref moved since the mirror was cut"
++severity = "error"
++
++[[problems]]
++code = "ERR_HISTORY_PUBLISH_REF_UNCOVERED"
++title = "Every branch and tag origin holds is in the mirror"
 +severity = "error"
