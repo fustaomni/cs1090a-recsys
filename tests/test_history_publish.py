@@ -20,6 +20,7 @@ import pytest
 from pydantic import BaseModel
 
 import spine
+from nonvacuous import nonempty
 
 DROPPED = "Scratch-Drop: zqx"
 KEEP = "Plan-Step: A.1"
@@ -118,7 +119,8 @@ def test_every_ref_is_pushed_with_a_lease_on_the_tip_recorded_when_the_mirror_wa
     assert ruleset.calls == ["lift", "restore"]
     assert _tips(origin) == _tips(mirror)
     assert _tips(origin) != before
-    assert all(update.old == before[update.ref] for update in report.plan.refs)
+    for update in nonempty(report.plan.refs):
+        assert update.old == before[update.ref]
 
 
 def test_a_ref_moved_since_the_mirror_was_cut_refuses_the_whole_publish(tmp_path: Path) -> None:
