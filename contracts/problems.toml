@@ -1121,3 +1121,18 @@ severity = "error"
 code = "ERR_REWRITE_TARGET_EXISTS"
 title = "The mirror is a new path, never an existing repository"
 severity = "error"
+
+[[problems]]
+code = "ERR_HISTORY_PUBLISH_NO_REFS"
+title = "The mirror holds refs to publish"
+severity = "error"
+
+[[problems]]
+code = "ERR_HISTORY_PUBLISH_PLAN_MISSING"
+title = "The publish plan is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_HISTORY_PUBLISH_REF_MOVED"
+title = "No ref moved since the mirror was cut"
+severity = "error"

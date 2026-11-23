@@ -191,6 +191,16 @@ class = "generic"
 reason = "worktree review: uncommitted changes read as data before any is discarded, ported from cscie103 D.476 (A.351)"
 
 [[capabilities]]
+id = "script:scripts/history_publish.py"
+class = "generic"
+reason = "a verified mirror replaces origin's refs, each leased on its recorded tip, ruleset restored (A.366)"
+
+[[capabilities]]
+id = "task:history:publish"
+class = "generic"
+reason = "a verified mirror replaces origin's refs, each leased on its recorded tip, ruleset restored (A.366)"
+
+[[capabilities]]
 id = "script:scripts/history_rewrite.py"
 class = "generic"
 reason = "history rewritten from rules given as data into a new verified mirror, never pushed (A.364)"
