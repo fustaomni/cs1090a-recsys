@@ -3,7 +3,8 @@
 The rules name the message lines to drop, the text to replace, and the paths whose commit
 citations are remapped. history:rewrite clones the source into a fresh mirror, rewrites it there
 through git-filter-repo's library, and verifies the result. It never pushes, and it refuses to
-write into a repository that already exists. These run real git in scratch repositories.
+write into a repository that already exists. These run real git in scratch repositories; the
+last two judge each policy directly, so every rule has a proof that fails when it is removed.
 """
 
 from __future__ import annotations
@@ -14,7 +15,9 @@ from pathlib import Path
 from types import ModuleType
 
 import pytest
+from pydantic import BaseModel
 
+import spine
 from nonvacuous import nonempty
 
 KEEP = "Plan-Step: A.1"
@@ -101,10 +104,50 @@ def test_the_rewrite_never_pushes_and_refuses_a_working_checkout(tmp_path: Path)
     _commit(source, "a.txt", "one\n", f"chore(scratch): one\n\n{KEEP}\n{DROPPED}")
     before = _git(source, "for-each-ref", REFS)
     rules = _rules(["^Scratch-Drop:"], [], [])
-    with pytest.raises(subject.RewriteRefused):
+    with pytest.raises(subject.RewriteRefusedError):
         subject.rewrite(str(source), source, rules)
     mirror = tmp_path / "mirror.git"
     subject.rewrite(str(source), mirror, rules)
     assert _git(source, "for-each-ref", REFS) == before
     assert _git(source, "log", "-1", "--format=%B").count(DROPPED) == 1
     assert _git(mirror, "remote") == ""
+
+
+def _failed(evidence: BaseModel, subject: str, policy: Path, entrypoint: str) -> set[str]:
+    found = spine.evaluate(evidence, subject, policy, entrypoint)
+    return {rule.code for rule in found.rules if rule.outcome == "fail"}
+
+
+def test_a_rewrite_plan_into_an_existing_path_or_without_rules_is_refused() -> None:
+    subject = _subject()
+    judged = (subject.SUBJECT, subject.POLICY, subject.ENTRYPOINT)
+    plan = subject.RewritePlan(source="s", mirror="m", mirror_exists=True, rules=0)
+    refused = {"ERR_REWRITE_TARGET_EXISTS", "ERR_REWRITE_NO_RULES"}
+    assert _failed(plan, *judged) == refused
+    clean = plan.model_copy(update={"mirror_exists": False, "rules": 1})
+    assert _failed(clean, *judged) == set()
+    assert "ERR_REWRITE_PLAN_MISSING" in _failed(clean, "not_history_rewrite", *judged[1:])
+
+
+def test_an_unverified_rewrite_is_refused_by_its_policy() -> None:
+    subject = _subject()
+    judged = (subject.VERIFY_SUBJECT, subject.VERIFY_POLICY, subject.VERIFY_ENTRYPOINT)
+    report = subject.RewriteReport(
+        mirror="m",
+        commits=1,
+        rewritten={},
+        citation_passes=0,
+        citations_remapped=0,
+        stale_citations=1,
+        remaining_matches=1,
+        remotes=1,
+    )
+    refused = {
+        "ERR_REWRITE_MATCHES_REMAIN",
+        "ERR_REWRITE_CITATIONS_STALE",
+        "ERR_REWRITE_REMOTE_LEFT",
+    }
+    assert _failed(report, *judged) == refused
+    clean = report.model_copy(update={"stale_citations": 0, "remaining_matches": 0, "remotes": 0})
+    assert _failed(clean, *judged) == set()
+    assert "ERR_REWRITE_REPORT_MISSING" in _failed(clean, "not_history_verify", *judged[1:])
