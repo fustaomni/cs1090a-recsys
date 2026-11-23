@@ -4263,3 +4263,15 @@ done_when = [
   { kind = "proof", test = "tests/integration/test_sibling_toolchain.py::test_every_pin_is_the_version_nixpkgs_ships" },
   { kind = "proof", test = "tests/integration/test_sibling_toolchain.py::test_every_pin_resolves_in_mise" },
 ]
+[[steps]]
+id = "A.364"
+title = "History is rewritten only by history:rewrite: rules given on stdin, a separate mirror, cited commit ids remapped, the result verified, and nothing pushed"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "every repository mutation is a declarative spec, so the rewrite rules are one too" }
+done_when = [
+  { kind = "proof", test = "tests/test_history_rewrite.py::test_every_message_line_the_rules_drop_is_gone_from_the_mirror" },
+  { kind = "proof", test = "tests/test_history_rewrite.py::test_every_cited_commit_id_is_remapped_to_its_rewritten_commit" },
+  { kind = "proof", test = "tests/test_history_rewrite.py::test_the_rewrite_never_pushes_and_refuses_a_working_checkout" },
+  { kind = "task", name = "check" },
+]
