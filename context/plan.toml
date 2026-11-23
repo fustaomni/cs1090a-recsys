@@ -4263,3 +4263,14 @@ done_when = [
   { kind = "proof", test = "tests/integration/test_sibling_toolchain.py::test_every_pin_is_the_version_nixpkgs_ships" },
   { kind = "proof", test = "tests/integration/test_sibling_toolchain.py::test_every_pin_resolves_in_mise" },
 ]
+[[steps]]
+id = "A.365"
+title = "Every git child runs unattended: gitenv sets GIT_TERMINAL_PROMPT=0, GCM_INTERACTIVE=never and an SSH command in BatchMode, so a missing credential fails at once instead of waiting on a terminal"
+thread = "A"
+depends_on = ["A.64"]
+because = { "A.64" = "the one interface every git call goes through, which owns what a git child inherits" }
+done_when = [
+  { kind = "proof", test = "tests/test_git_noninteractive.py::test_every_git_child_runs_with_terminal_prompts_disabled" },
+  { kind = "proof", test = "tests/test_git_noninteractive.py::test_an_unreachable_https_remote_fails_without_prompting" },
+  { kind = "task", name = "check" },
+]
