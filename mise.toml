@@ -632,6 +632,19 @@ description = "Show a worktree's uncommitted changes as data; untracked files by
 # discards it.
 run = "uv run --no-sync python scripts/source_diff.py"
 
+[tasks."history:publish"]
+raw_args = true
+usage = """
+arg "<mirror>" help="The verified mirror history:rewrite cut"
+arg "<remote>" help="The remote whose branches and tags the mirror replaces"
+flag "--yes" help="Publish, rather than only reporting what would change"
+"""
+description = "Replace a remote's branches and tags with a verified mirror, leased; a dry run unless --yes"
+# A.366: leased on the tips history:rewrite recorded, one atomic push, never --mirror, judged by
+# runs.history_publish first; develop and main's ruleset is lifted only for the push and restored
+# from contracts/ruleset-develop-and-main.json afterwards, even when the push fails.
+run = "uv run --no-sync python scripts/history_publish.py"
+
 [tasks."history:rewrite"]
 raw_args = true
 usage = """

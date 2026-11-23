@@ -51,6 +51,7 @@ USAGE = "usage: mise run run history:rewrite <source> <mirror>, history-rewrite/
 MAX_PASSES = 30
 HASH = re.compile(rb"\b[0-9a-f]{7,40}\b")
 ABSENT = "0" * 40
+LEASES = "history-leases.json"
 
 
 class Replacement(Contract):
@@ -75,6 +76,18 @@ class RewritePlan(Contract):
     mirror: str
     mirror_exists: bool
     rules: int
+
+
+class RefLeases(Contract):
+    """history-leases/v1: each branch and tag's tip as the source held it when the mirror was cut.
+
+    history:publish leases every push on these, so a ref that moved since is never overwritten.
+    filter-repo rewrites its own ref-map on every pass, so the tips are read before the first.
+    """
+
+    contract: Literal["history-leases/v1"] = "history-leases/v1"
+    source: str
+    refs: dict[str, str]
 
 
 class RewriteReport(Contract):
@@ -144,6 +157,14 @@ def _git(mirror: Path, *argv: str) -> str:
             tool=f"git {argv[0]}",
         )
     return done.stdout
+
+
+def tips(repository: Path) -> dict[str, str]:
+    """Every branch and tag in repository, each to the object its ref names."""
+    listed = _git(repository, "for-each-ref", "--format=%(objectname) %(refname)", "refs/heads")
+    tagged = _git(repository, "for-each-ref", "--format=%(objectname) %(refname)", "refs/tags")
+    lines = (listed + tagged).splitlines()
+    return {ref: sha for sha, ref in (line.split(" ", 1) for line in lines if line.strip())}
 
 
 def _commit_map(mirror: Path) -> dict[str, str]:
@@ -269,7 +290,9 @@ def rewrite(source: str, mirror: Path, rules: RewriteRules) -> RewriteReport:
             remediation="clone the source: its URL or path must be readable",
             tool="git clone",
         )
+    leases = RefLeases(source=source, refs=tips(mirror))
     _filter(mirror, force=False, message_callback=_drop(rules), blob_callback=_replace(rules))
+    (mirror / LEASES).write_text(leases.model_dump_json(indent=2), encoding="utf-8")
     current = _commit_map(mirror)
     lineage = {original: {original, now} for original, now in current.items()}
     cited = frozenset(path.encode() for path in rules.cited_paths)
