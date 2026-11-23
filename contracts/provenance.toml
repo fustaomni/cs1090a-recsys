@@ -87,9 +87,9 @@ sha256 = "7c9c3e77a41bcba164ce41e68d95d7a13abae54b9f4f32ad7971d38ba7b93d60"
 
 [[adapted]]
 path = "scripts/gitenv.py"
-reason = "git_bytes: raw output for -z formats, so every git spawn stays in gitenv; A.93. scrubbed_env(*, base=...): an environment the caller already cleaned is scrubbed here too, so a sibling merge commit runs without this repository's VIRTUAL_ENV; A.214"
+reason = "every git child runs unattended: GIT_TERMINAL_PROMPT=0, GCM_INTERACTIVE=never and ssh in BatchMode; A.365"
 patch = "contracts/vendor-patches/scripts/gitenv.py.patch"
-sha256 = "40d3dfd6ee9fb60489ff822b69742d5df250810d8155359798bc67356cae3e8d"
+sha256 = "28af1d7576ac9f93c147092b8262a4faacc233c440b5d828a5c2ea4e1886b7c2"
 
 [[files]]
 path = "scripts/library_errors.py"
@@ -797,9 +797,9 @@ sha256 = "ef7be5b261ea880e63a6e94ed7b93c5f1839e401fb9c3e4f2508b370561bdb7a"
 
 [[adapted]]
 path = "contracts/problems.toml"
-reason = "secrets:report's two codes, ERR_SECRETS_FOUND and ERR_SECRETS_SCAN_INPUT_MISSING, registered by problems:register (A.321)"
+reason = "history:publish's three codes, ERR_HISTORY_PUBLISH_*, registered by problems:register (A.366)"
 patch = "contracts/vendor-patches/contracts/problems.toml.patch"
-sha256 = "3764679be0d642b6631b983f1ccf8aeb75c0288bdab8c84a1e3114f728868e70"
+sha256 = "89a78feefd561226c1e44f7fa2c23e95004feff4e5b4016c48ae02e55dfdc141"
 
 [[files]]
 path = "scripts/check_repo_hygiene.py"
@@ -1327,15 +1327,33 @@ path = "scripts/branches_retire.py"
 sha256 = "79b77100d01c0960451cac6770bab30543c7fe2585d6e339530572db220d40af"
 commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
 
+[[adapted]]
+path = "scripts/branches_retire.py"
+reason = "an archive already at the tip is resumed, never redone; one at another tip is refused, here or on origin (A.367)"
+patch = "contracts/vendor-patches/scripts/branches_retire.py.patch"
+sha256 = "1d5bf3096ab6db925f4f6d01a9913c46f46986ef3977e2e0c2082385bbb943ac"
+
 [[files]]
 path = "policies/runs/branches_retire/branches_retire.rego"
 sha256 = "9a0fe7be86242f93e1b02abd3ab51fcfa488b0521fa2dae7e667f536800abbb6"
 commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
 
+[[adapted]]
+path = "policies/runs/branches_retire/branches_retire.rego"
+reason = "ERR_BRANCHES_RETIRE_ARCHIVED refuses only an archive at another tip, here or on origin (A.367)"
+patch = "contracts/vendor-patches/policies/runs/branches_retire/branches_retire.rego.patch"
+sha256 = "480181c72c92a526aa8fc50cf5576bd7c30954dc72b22630cd3e9330551ad64f"
+
 [[files]]
 path = "tests/test_branches_retire.py"
 sha256 = "20eb17b9db3e196d2af64f61ca357dde5120d354745fa9895cc6e11c5630f0c0"
 commit = "25061c1d2517dce66493fdb13a89d1d5b3ea9030"
+
+[[adapted]]
+path = "tests/test_branches_retire.py"
+reason = "proofs that a retirement stopped after its tag is resumed, and an archive at another tip refused (A.367)"
+patch = "contracts/vendor-patches/tests/test_branches_retire.py.patch"
+sha256 = "82cd2c1b94482bd2954ed0f7fb305c42cd790d170ec06287a3078269a4613ea3"
 
 [[files]]
 path = "tests/integration/test_generated_gate.py"

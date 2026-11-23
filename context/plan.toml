@@ -4263,3 +4263,55 @@ done_when = [
   { kind = "proof", test = "tests/integration/test_sibling_toolchain.py::test_every_pin_is_the_version_nixpkgs_ships" },
   { kind = "proof", test = "tests/integration/test_sibling_toolchain.py::test_every_pin_resolves_in_mise" },
 ]
+[[steps]]
+id = "A.365"
+title = "Every git child runs unattended: gitenv sets GIT_TERMINAL_PROMPT=0, GCM_INTERACTIVE=never and an SSH command in BatchMode, so a missing credential fails at once instead of waiting on a terminal"
+thread = "A"
+depends_on = ["A.64"]
+because = { "A.64" = "the one interface every git call goes through, which owns what a git child inherits" }
+done_when = [
+  { kind = "proof", test = "tests/test_git_noninteractive.py::test_every_git_child_runs_with_terminal_prompts_disabled" },
+  { kind = "proof", test = "tests/test_git_noninteractive.py::test_an_unreachable_https_remote_fails_without_prompting" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.364"
+title = "History is rewritten only by history:rewrite: rules given on stdin, a separate mirror, cited commit ids remapped, the result verified, and nothing pushed"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "every repository mutation is a declarative spec, so the rewrite rules are one too" }
+done_when = [
+  { kind = "proof", test = "tests/test_history_rewrite.py::test_every_message_line_the_rules_drop_is_gone_from_the_mirror" },
+  { kind = "proof", test = "tests/test_history_rewrite.py::test_every_cited_commit_id_is_remapped_to_its_rewritten_commit" },
+  { kind = "proof", test = "tests/test_history_rewrite.py::test_the_rewrite_never_pushes_and_refuses_a_working_checkout" },
+  { kind = "proof", test = "tests/test_history_rewrite.py::test_a_rewrite_plan_into_an_existing_path_or_without_rules_is_refused" },
+  { kind = "proof", test = "tests/test_history_rewrite.py::test_an_unverified_rewrite_is_refused_by_its_policy" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.366"
+title = "A verified mirror replaces origin's history only through history:publish: a dry run unless --yes, every branch and tag pushed with a lease on the tip history:rewrite recorded when it cut the mirror, never a --mirror push, and the ruleset's deletion and non-fast-forward rules lifted only for that push and restored from contracts/ruleset-develop-and-main.json afterwards, even when the push fails"
+thread = "A"
+depends_on = ["A.364"]
+because = { "A.364" = "the verified mirror this publishes, and the moment its leases are recorded" }
+done_when = [
+  { kind = "proof", test = "tests/test_history_publish.py::test_without_yes_nothing_is_pushed_and_every_ref_is_reported" },
+  { kind = "proof", test = "tests/test_history_publish.py::test_every_ref_is_pushed_with_a_lease_on_the_tip_recorded_when_the_mirror_was_cut" },
+  { kind = "proof", test = "tests/test_history_publish.py::test_a_ref_moved_since_the_mirror_was_cut_refuses_the_whole_publish" },
+  { kind = "proof", test = "tests/test_history_publish.py::test_the_ruleset_is_restored_from_its_contract_even_when_the_push_fails" },
+  { kind = "proof", test = "tests/test_history_publish.py::test_the_publish_plan_is_judged_by_its_policy" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.367"
+title = "branches:retire resumes a retirement an earlier run left part done: git's refs are the checkpoint, so an archive tag already at the branch's tip is never made again, one origin lacks is pushed, and only an archive at another tip, here or on origin, is refused as an overwrite"
+thread = "A"
+depends_on = ["A.138"]
+because = { "A.138" = "branches:retire, whose effects this makes resumable" }
+done_when = [
+  { kind = "proof", test = "tests/test_branches_retire.py::test_an_existing_archive_is_never_overwritten" },
+  { kind = "proof", test = "tests/test_branches_retire.py::test_an_archive_origin_holds_at_another_tip_is_never_overwritten" },
+  { kind = "proof", test = "tests/test_branches_retire.py::test_an_archive_at_the_tip_origin_lacks_is_pushed_then_the_branch_deleted" },
+  { kind = "proof", test = "tests/test_branches_retire.py::test_an_archive_origin_already_holds_at_the_tip_is_neither_tagged_nor_pushed_again" },
+  { kind = "task", name = "check" },
+]

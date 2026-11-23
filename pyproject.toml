@@ -12,6 +12,7 @@ description = "Offline prediction of the next recorded MovieLens 1M rating, gove
 requires-python = "==3.12.3"
 dependencies = [
     "defusedxml==0.7.1",
+    "git-filter-repo==2.47.0",
     "pysequoia>=0.1.35",
     "securesystemslib[crypto]>=1.5.1",
     "tomlkit>=0.15.1",
@@ -76,6 +77,10 @@ enable_error_code = [
 [[tool.mypy.overrides]]
 module = "securesystemslib.signer"
 implicit_reexport = true
+
+[[tool.mypy.overrides]]
+module = ["git_filter_repo"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

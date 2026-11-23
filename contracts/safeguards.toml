@@ -1259,7 +1259,7 @@ id = "BRANCHES_RETIRE.ARCHIVED"
 engine = "branches:retire"
 guard = "ERR_BRANCHES_RETIRE_ARCHIVED"
 path = "policies/runs/branches_retire/branches_retire.rego"
-anchor = "\tinput.branches_retire.archived == true\n"
+anchor = "\theld != input.branches_retire.tip\n"
 mutant = "\tfalse\n"
 proof = "tests/test_branches_retire.py::test_an_existing_archive_is_never_overwritten"
 
@@ -1936,3 +1936,93 @@ path = "policies/runs/sibling_override/sibling_override.rego"
 anchor = "\tnot evidence.origin_matches\n"
 mutant = "\tfalse\n"
 proof = "tests/test_sibling_checkout.py::test_an_override_is_never_written_into_another_sources_clone"
+
+[[safeguards]]
+id = "REWRITE.PLAN_MISSING"
+engine = "history:rewrite"
+guard = "ERR_REWRITE_PLAN_MISSING"
+path = "policies/runs/history_rewrite/history_rewrite.rego"
+anchor = "\tnot input.history_rewrite\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_rewrite.py::test_a_rewrite_plan_into_an_existing_path_or_without_rules_is_refused"
+
+[[safeguards]]
+id = "REWRITE.TARGET_EXISTS"
+engine = "history:rewrite"
+guard = "ERR_REWRITE_TARGET_EXISTS"
+path = "policies/runs/history_rewrite/history_rewrite.rego"
+anchor = "\tinput.history_rewrite.mirror_exists\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_rewrite.py::test_a_rewrite_plan_into_an_existing_path_or_without_rules_is_refused"
+
+[[safeguards]]
+id = "REWRITE.NO_RULES"
+engine = "history:rewrite"
+guard = "ERR_REWRITE_NO_RULES"
+path = "policies/runs/history_rewrite/history_rewrite.rego"
+anchor = "\tinput.history_rewrite.rules == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_rewrite.py::test_a_rewrite_plan_into_an_existing_path_or_without_rules_is_refused"
+
+[[safeguards]]
+id = "REWRITE.REPORT_MISSING"
+engine = "history:rewrite"
+guard = "ERR_REWRITE_REPORT_MISSING"
+path = "policies/runs/history_verify/history_verify.rego"
+anchor = "\tnot input.history_verify\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_rewrite.py::test_an_unverified_rewrite_is_refused_by_its_policy"
+
+[[safeguards]]
+id = "REWRITE.MATCHES_REMAIN"
+engine = "history:rewrite"
+guard = "ERR_REWRITE_MATCHES_REMAIN"
+path = "policies/runs/history_verify/history_verify.rego"
+anchor = "\tinput.history_verify.remaining_matches > 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_rewrite.py::test_an_unverified_rewrite_is_refused_by_its_policy"
+
+[[safeguards]]
+id = "REWRITE.CITATIONS_STALE"
+engine = "history:rewrite"
+guard = "ERR_REWRITE_CITATIONS_STALE"
+path = "policies/runs/history_verify/history_verify.rego"
+anchor = "\tinput.history_verify.stale_citations > 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_rewrite.py::test_an_unverified_rewrite_is_refused_by_its_policy"
+
+[[safeguards]]
+id = "REWRITE.REMOTE_LEFT"
+engine = "history:rewrite"
+guard = "ERR_REWRITE_REMOTE_LEFT"
+path = "policies/runs/history_verify/history_verify.rego"
+anchor = "\tinput.history_verify.remotes > 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_rewrite.py::test_an_unverified_rewrite_is_refused_by_its_policy"
+
+[[safeguards]]
+id = "HISTORY_PUBLISH.PLAN_MISSING"
+engine = "history:publish"
+guard = "ERR_HISTORY_PUBLISH_PLAN_MISSING"
+path = "policies/runs/history_publish/history_publish.rego"
+anchor = "\tnot input.history_publish\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_publish.py::test_the_publish_plan_is_judged_by_its_policy"
+
+[[safeguards]]
+id = "HISTORY_PUBLISH.REF_MOVED"
+engine = "history:publish"
+guard = "ERR_HISTORY_PUBLISH_REF_MOVED"
+path = "policies/runs/history_publish/history_publish.rego"
+anchor = "\tcount(input.history_publish.moved) > 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_publish.py::test_the_publish_plan_is_judged_by_its_policy"
+
+[[safeguards]]
+id = "HISTORY_PUBLISH.NO_REFS"
+engine = "history:publish"
+guard = "ERR_HISTORY_PUBLISH_NO_REFS"
+path = "policies/runs/history_publish/history_publish.rego"
+anchor = "\tcount(input.history_publish.refs) == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_publish.py::test_the_publish_plan_is_judged_by_its_policy"
