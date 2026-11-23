@@ -3,7 +3,7 @@
 history:rewrite records each ref's tip when it cuts the mirror. history:publish reads those
 leases, compares them with what the remote holds now, and refuses the whole publish if any ref
 has moved since. Without --yes it reports what it would push and pushes nothing. With it, the
-ruleset's deletion and non-fast-forward rules are lifted, every branch and tag is pushed in one
+ruleset is disabled whole (A.369), every branch and tag is pushed in one
 atomic push leased on its recorded tip, and the ruleset is restored from its contract whether or
 not the push succeeded. These run real git against a bare scratch origin; only the ruleset, which
 lives on GitHub, is a recording stand-in, and a failed push is the origin's own pre-receive hook.
@@ -12,9 +12,11 @@ lives on GitHub, is a recording stand-in, and a failed push is the origin's own 
 from __future__ import annotations
 
 import importlib
+import json
 import subprocess
 from pathlib import Path
 from types import ModuleType
+from typing import Any
 
 import pytest
 from pydantic import BaseModel
@@ -187,3 +189,37 @@ def test_the_publish_plan_is_judged_by_its_policy() -> None:
     clean = plan.model_copy(update={"refs": [update], "moved": []})
     assert _failed(clean, *judged) == set()
     assert "ERR_HISTORY_PUBLISH_PLAN_MISSING" in _failed(clean, "not_history_publish", *judged[1:])
+
+
+def test_the_lift_disables_the_whole_ruleset_and_the_restore_puts_its_contract_back(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """A.369: a ruleset that also requires a pull request and a status check still refuses a
+    direct push with only deletion and non-fast-forward removed, so the lift disables it whole."""
+    subject = _subject()
+    declared = {
+        "name": "guard",
+        "enforcement": "active",
+        "rules": [
+            {"type": "deletion"},
+            {"type": "non_fast_forward"},
+            {"type": "pull_request"},
+            {"type": "required_status_checks"},
+        ],
+    }
+    contract = tmp_path / "ruleset.json"
+    contract.write_text(json.dumps(declared), encoding="utf-8")
+    sent: list[Any] = []
+
+    def run(argv: list[str], **kwargs: Any) -> subprocess.CompletedProcess[str]:
+        if "PUT" in argv:
+            sent.append(json.loads(kwargs["input"]))
+            return subprocess.CompletedProcess(argv, 0, "{}", "")
+        listing = json.dumps([{"id": 7, "name": "guard"}])
+        return subprocess.CompletedProcess(argv, 0, listing, "")
+
+    monkeypatch.setattr(subject.subprocess, "run", run)
+    ruleset = subject.GhRuleset(contract)
+    assert ruleset.lift() is True
+    assert ruleset.restore() is True
+    assert sent == [{**declared, "enforcement": "disabled"}, declared]
