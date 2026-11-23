@@ -4290,7 +4290,7 @@ done_when = [
 ]
 [[steps]]
 id = "A.366"
-title = "A verified mirror replaces origin's history only through history:publish: a dry run unless --yes, every branch and tag pushed with a lease on the tip history:rewrite recorded when it cut the mirror, never a --mirror push, and the ruleset's deletion and non-fast-forward rules lifted only for that push and restored from contracts/ruleset-develop-and-main.json afterwards, even when the push fails"
+title = "A verified mirror replaces origin's history only through history:publish: a dry run unless --yes, every branch and tag pushed with a lease on the tip history:rewrite recorded when it cut the mirror, never a --mirror push, and develop and main's ruleset suspended only for that push and restored from contracts/ruleset-develop-and-main.json afterwards, even when the push fails"
 thread = "A"
 depends_on = ["A.364"]
 because = { "A.364" = "the verified mirror this publishes, and the moment its leases are recorded" }
@@ -4323,5 +4323,15 @@ depends_on = ["A.366", "A.367"]
 because = { "A.366" = "history:publish, whose plan this extends", "A.367" = "a resumable branches:retire, which turns a branch only origin holds into an archive tag the mirror carries" }
 done_when = [
   { kind = "proof", test = "tests/test_history_publish.py::test_a_branch_origin_holds_that_the_mirror_lacks_refuses_the_whole_publish" },
+  { kind = "task", name = "check" },
+]
+[[steps]]
+id = "A.369"
+title = "history:publish disables develop and main's ruleset whole for its one leased push, never rule by rule, since the ruleset's pull-request and status-check rules each refuse a direct push on their own; afterwards the ruleset is put back from contracts/ruleset-develop-and-main.json, even when the push fails"
+thread = "A"
+depends_on = ["A.366"]
+because = { "A.366" = "history:publish, whose lift this corrects" }
+done_when = [
+  { kind = "proof", test = "tests/test_history_publish.py::test_the_lift_disables_the_whole_ruleset_and_the_restore_puts_its_contract_back" },
   { kind = "task", name = "check" },
 ]

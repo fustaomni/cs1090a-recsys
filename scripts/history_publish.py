@@ -13,8 +13,10 @@ A DRY RUN UNLESS --yes. Without it the plan is reported and nothing is pushed or
 NEVER --mirror. Only the branches and tags the mirror holds are pushed, each named, so a ref
 the mirror never had (a pull request's, an archive tag pushed since) is left as it is.
 
-THE RULESET IS LIFTED ONLY FOR THE PUSH. develop and main forbid deletion and non-fast-forward
-updates; for the push those two rules are removed, and afterwards the ruleset is put back from
+THE RULESET IS DISABLED ONLY FOR THE PUSH (A.369). develop and main also require a pull request
+and a passing status check, and either refuses a direct push on its own, so removing single rules
+never suffices: for the push the whole ruleset's enforcement is set to disabled, GitHub's own way
+to suspend a ruleset without deleting it, and afterwards the ruleset is put back from
 contracts/ruleset-develop-and-main.json, whether or not the push succeeded.
 """
 
@@ -44,7 +46,6 @@ POLICY = ROOT / "policies" / "runs" / "history_publish"
 ENTRYPOINT = "data.runs.history_publish.deny"
 RULESET = ROOT / "contracts" / "ruleset-develop-and-main.json"
 LISTING = "repos/{owner}/{repo}/rulesets"
-LIFTED = ("deletion", "non_fast_forward")
 USAGE = "usage: mise run run history:publish <mirror> <remote> [--yes]"
 
 
@@ -164,8 +165,7 @@ class GhRuleset:
         return put.returncode == 0
 
     def lift(self) -> bool:
-        rules = [rule for rule in self.body["rules"] if rule["type"] not in LIFTED]
-        return self._put({**self.body, "rules": rules})
+        return self._put({**self.body, "enforcement": "disabled"})
 
     def restore(self) -> bool:
         return self._put(self.body)
@@ -205,9 +205,7 @@ def publish(mirror: Path, remote: Remote, ruleset: Ruleset, *, execute: bool) ->
     if not execute:
         return PublishReport(plan=plan, execute=False, pushed=False, ruleset_restored=False)
     if not ruleset.lift():
-        raise PublishFailedError(
-            "the ruleset's deletion and non-fast-forward rules were not lifted"
-        )
+        raise PublishFailedError("the ruleset was not disabled for the push")
     try:
         pushed = remote.push(updates)
     finally:
