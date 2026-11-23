@@ -78,11 +78,29 @@ def scrubbed_env(*, base: Mapping[str, str] | None = None) -> dict[str, str]:
         # FAIL CLOSED ON THE FALLBACK. If git cannot enumerate them, remove every
         # GIT_ variable rather than guessing at a subset: over-removing makes git
         # resolve from cwd, which is exactly what the caller asked for.
-        return {key: value for key, value in environment.items() if not key.startswith("GIT_")}
+        unrouted = {key: value for key, value in environment.items() if not key.startswith("GIT_")}
+        return _unattended(unrouted)
 
     for name in listing.stdout.split():
         environment.pop(name, None)
 
+    return _unattended(environment)
+
+
+def _unattended(environment: dict[str, str]) -> dict[str, str]:
+    """No git child waits on a terminal (A.365): a missing credential fails at once instead.
+
+    git prompts on the terminal itself, so empty stdin does not stop it. GIT_TERMINAL_PROMPT=0
+    makes git fail with "terminal prompts disabled", GCM_INTERACTIVE=never does the same for Git
+    Credential Manager, and ssh in BatchMode refuses rather than asking for a passphrase or a
+    host key. A caller's own ssh command is kept, with BatchMode added to it.
+    """
+    environment["GIT_TERMINAL_PROMPT"] = "0"
+    environment["GCM_INTERACTIVE"] = "never"
+    ssh = environment.get("GIT_SSH_COMMAND", "ssh")
+    if "BatchMode" not in ssh:
+        ssh = f"{ssh} -o BatchMode=yes"
+    environment["GIT_SSH_COMMAND"] = ssh
     return environment
 
 
