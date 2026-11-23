@@ -1086,3 +1086,38 @@ severity = "error"
 code = "ERR_SECRETS_SCAN_INPUT_MISSING"
 title = "The scan is supplied, never assumed"
 severity = "error"
+
+[[problems]]
+code = "ERR_REWRITE_CITATIONS_STALE"
+title = "No cited commit id names a rewritten commit"
+severity = "error"
+
+[[problems]]
+code = "ERR_REWRITE_MATCHES_REMAIN"
+title = "Nothing the rules match remains"
+severity = "error"
+
+[[problems]]
+code = "ERR_REWRITE_NO_RULES"
+title = "The rules change something"
+severity = "error"
+
+[[problems]]
+code = "ERR_REWRITE_PLAN_MISSING"
+title = "The rewrite plan is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_REWRITE_REMOTE_LEFT"
+title = "The mirror has no remote to push to"
+severity = "error"
+
+[[problems]]
+code = "ERR_REWRITE_REPORT_MISSING"
+title = "The rewrite report is supplied, never assumed"
+severity = "error"
+
+[[problems]]
+code = "ERR_REWRITE_TARGET_EXISTS"
+title = "The mirror is a new path, never an existing repository"
+severity = "error"
