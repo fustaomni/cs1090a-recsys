@@ -1999,3 +1999,30 @@ path = "policies/runs/history_verify/history_verify.rego"
 anchor = "\tinput.history_verify.remotes > 0\n"
 mutant = "\tfalse\n"
 proof = "tests/test_history_rewrite.py::test_an_unverified_rewrite_is_refused_by_its_policy"
+
+[[safeguards]]
+id = "HISTORY_PUBLISH.PLAN_MISSING"
+engine = "history:publish"
+guard = "ERR_HISTORY_PUBLISH_PLAN_MISSING"
+path = "policies/runs/history_publish/history_publish.rego"
+anchor = "\tnot input.history_publish\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_publish.py::test_the_publish_plan_is_judged_by_its_policy"
+
+[[safeguards]]
+id = "HISTORY_PUBLISH.REF_MOVED"
+engine = "history:publish"
+guard = "ERR_HISTORY_PUBLISH_REF_MOVED"
+path = "policies/runs/history_publish/history_publish.rego"
+anchor = "\tcount(input.history_publish.moved) > 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_publish.py::test_the_publish_plan_is_judged_by_its_policy"
+
+[[safeguards]]
+id = "HISTORY_PUBLISH.NO_REFS"
+engine = "history:publish"
+guard = "ERR_HISTORY_PUBLISH_NO_REFS"
+path = "policies/runs/history_publish/history_publish.rego"
+anchor = "\tcount(input.history_publish.refs) == 0\n"
+mutant = "\tfalse\n"
+proof = "tests/test_history_publish.py::test_the_publish_plan_is_judged_by_its_policy"
