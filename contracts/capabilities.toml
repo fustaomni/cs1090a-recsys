@@ -400,6 +400,18 @@ implementation = "scripts/source_port.py"
 emits = "text"
 
 [[capabilities]]
+task = "history:publish"
+version = "1.0.0"
+implementation = "scripts/history_publish.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
+task = "history:rewrite"
+version = "1.0.0"
+implementation = "scripts/history_rewrite.py"
+emits = "command-outcome/v1"
+
+[[capabilities]]
 task = "source:diff"
 version = "1.0.0"
 implementation = "scripts/source_diff.py"
@@ -641,7 +653,7 @@ emits = "command-outcome/v1"
 
 [[capabilities]]
 task = "branches:retire"
-version = "1.0.0"
+version = "1.1.0"
 implementation = "scripts/branches_retire.py"
 emits = "command-outcome/v1"
 
