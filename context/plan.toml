@@ -4274,3 +4274,17 @@ done_when = [
   { kind = "proof", test = "tests/test_git_noninteractive.py::test_an_unreachable_https_remote_fails_without_prompting" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.364"
+title = "History is rewritten only by history:rewrite: rules given on stdin, a separate mirror, cited commit ids remapped, the result verified, and nothing pushed"
+thread = "A"
+depends_on = ["A.18"]
+because = { "A.18" = "every repository mutation is a declarative spec, so the rewrite rules are one too" }
+done_when = [
+  { kind = "proof", test = "tests/test_history_rewrite.py::test_every_message_line_the_rules_drop_is_gone_from_the_mirror" },
+  { kind = "proof", test = "tests/test_history_rewrite.py::test_every_cited_commit_id_is_remapped_to_its_rewritten_commit" },
+  { kind = "proof", test = "tests/test_history_rewrite.py::test_the_rewrite_never_pushes_and_refuses_a_working_checkout" },
+  { kind = "proof", test = "tests/test_history_rewrite.py::test_a_rewrite_plan_into_an_existing_path_or_without_rules_is_refused" },
+  { kind = "proof", test = "tests/test_history_rewrite.py::test_an_unverified_rewrite_is_refused_by_its_policy" },
+  { kind = "task", name = "check" },
+]
