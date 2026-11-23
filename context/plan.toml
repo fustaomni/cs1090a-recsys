@@ -4302,3 +4302,16 @@ done_when = [
   { kind = "proof", test = "tests/test_history_publish.py::test_the_publish_plan_is_judged_by_its_policy" },
   { kind = "task", name = "check" },
 ]
+[[steps]]
+id = "A.367"
+title = "branches:retire resumes a retirement an earlier run left part done: git's refs are the checkpoint, so an archive tag already at the branch's tip is never made again, one origin lacks is pushed, and only an archive at another tip, here or on origin, is refused as an overwrite"
+thread = "A"
+depends_on = ["A.138"]
+because = { "A.138" = "branches:retire, whose effects this makes resumable" }
+done_when = [
+  { kind = "proof", test = "tests/test_branches_retire.py::test_an_existing_archive_is_never_overwritten" },
+  { kind = "proof", test = "tests/test_branches_retire.py::test_an_archive_origin_holds_at_another_tip_is_never_overwritten" },
+  { kind = "proof", test = "tests/test_branches_retire.py::test_an_archive_at_the_tip_origin_lacks_is_pushed_then_the_branch_deleted" },
+  { kind = "proof", test = "tests/test_branches_retire.py::test_an_archive_origin_already_holds_at_the_tip_is_neither_tagged_nor_pushed_again" },
+  { kind = "task", name = "check" },
+]
