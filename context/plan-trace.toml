@@ -3,7 +3,7 @@
 contract = "plan-trace/v1"
 sources = [
   { id = "TEMPLATE", title = "the platform template this project was generated from", locator = ".copier-answers.yml" },
-  { id = "SESSION", title = "the recsys founding sessions: the critique register and the port of cscie103", locator = "claude.ai conversations of 2026-10-15, recsys founding (transcript journal)" },
+  { id = "SESSION", title = "the recsys founding sessions: the critique register and the port of cscie103", locator = "operator conversations of 2026-10-15, recsys founding (transcript journal)" },
 ]
 candidates = [
   { source = "TEMPLATE", ref = "day one", text = "its own plan, from day one", maps_to = ["A.1"] },
