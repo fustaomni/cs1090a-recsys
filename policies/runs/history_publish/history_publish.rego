@@ -42,3 +42,17 @@ deny contains denial if {
 		"message": "the mirror holds no leased branch or tag, so there is nothing to publish",
 	}
 }
+
+# METADATA
+# title: Every branch and tag origin holds is in the mirror
+# custom:
+#   code: ERR_HISTORY_PUBLISH_REF_UNCOVERED
+deny contains denial if {
+	count(input.history_publish.uncovered) > 0
+	denial := {
+		"code": rego.metadata.rule().custom.code,
+		"message": sprintf("origin holds refs the mirror lacks, so their history would stay: %s", [
+			concat(", ", input.history_publish.uncovered),
+		]),
+	}
+}
